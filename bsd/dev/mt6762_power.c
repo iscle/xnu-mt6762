@@ -15,6 +15,7 @@
 #include <sys/systm.h>
 #include "mt6762_power_protocol.h"
 #include "mt6762_charger_protocol.h"
+#include "mt6762_thermal_protocol.h"
 
 static LCK_GRP_DECLARE(power_lck_group,"mt6762-power");
 static LCK_MTX_DECLARE(pwrap_mutex,&power_lck_group);
@@ -112,6 +113,16 @@ static int adc_wr(void *unused,uint16_t address,uint16_t v)
     return e;
 }
 static const struct mt6762_adc_io adc_io={NULL,adc_rd,adc_wr,pwrap_delay};
+int mt6762_pmic_thermal_sample(unsigned sensor,uint16_t *raw)
+{
+    static const struct mt6762_thermal_adc_io io={NULL,adc_rd,adc_wr,pwrap_delay};
+    int e;
+    if(!adc_ready || !verified("pmic-thermal-adc-owned"))return -ENXIO;
+    lck_mtx_lock(&adc_mutex);
+    e=mt6762_thermal_adc(&io,sensor,raw);
+    lck_mtx_unlock(&adc_mutex);
+    return e;
+}
 static int adc_read(unsigned channel,int *mv)
 {
     int e;

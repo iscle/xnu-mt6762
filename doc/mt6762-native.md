@@ -138,6 +138,17 @@ fault on lost initialization or timeout. The PMIC identity is checked.
 Native keys are debounced; volume up/down use the actual keypad matrix
 indices, and power uses the PMIC. Invalid readings release held keys.
 
+The thermal observer reads live calibration efuses and serializes PMIC
+die/VCORE/VPROC ADC requests with the battery ADC. The additional
+`pmic-thermal-adc-owned=1` contract covers the initialized channels and CH4
+mux. It requires a READY low-to-high conversion transition, rejects generic
+calibration fallbacks, and expires observations after two seconds. Independent
+execution of the original stock calibration routine validates the integer
+formula, including nonzero slopes and both signs. These PMIC temperatures
+are not battery-cell temperatures. CPU sensor readbacks are calibrated
+diagnostics only: their conversion freshness is not established and they
+cannot authorize DVFS. See the [thermal evidence and limits](../tools/mt6762/hardware/cpu-power/THERMAL.rst).
+
 Battery samples carry explicit field-validity bits. IOKit removes values
 that become unavailable. Uncalibrated nominal thermistor conversion is
 diagnostic only; capacity, current and protected charging temperature are
@@ -175,7 +186,13 @@ they do not establish physical cache coherency or electrical correctness.
 The subsequent long native eight-CPU iOS run on kernel `77ef4533...` reached
 the Apple-logo display but hit a ticket-spinlock timeout. Its cause is not
 resolved; short SMP/input tests do not establish a stable eight-core GUI.
-The independent single-core native GUI/brightness test is still in progress.
+The independent single-core native run reached the original iOS home screen
+at 430 seconds without a panic. Its private root issued no `rwtouch` commands;
+Apple backboardd logged keys and touches delivered through the PMIC/AXS native
+workers. The model counted 44,150 touch DMA reads. The donor still contains
+an automatic-unlock helper, so the earlier native swipe is not credited with
+causing the home-screen transition. PWM writes remained zero; an explicit
+original-framework brightness-change test is still in progress.
 Compact pass/failure evidence is recorded in
 [`native-integration.json`](../tools/mt6762/evidence/native-integration.json).
 

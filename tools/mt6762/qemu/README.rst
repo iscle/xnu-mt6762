@@ -1,7 +1,7 @@
 Reproducing the local MT6762 QEMU experiment
 ==========================================
 
-These six patches reproduce the local research machine used for MT6762
+These seven patches reproduce the local research machine used for MT6762
 bring-up. They contain source code and documentation only: no phone firmware,
 iOS files, credentials, personal partitions, or built binaries.
 
@@ -15,9 +15,10 @@ Source provenance
   ``a6619bd46a471be75e626f46defa61d23017387f``,
   ``afcfb434f2ead1165e6a23ca9828c3cd414b1f21``,
   ``dafbf7f83d81cea79804ec731a6214a47e53d646``,
-  ``6c4cfc34f2c08da2bb709be5ba8a3224152273bf`` and
-  ``1cefe6067521f188fffbe2070bd520501a8c60fe``.
-* Resulting Git tree: ``709de6edab094b6df40b37a5569b27a8f99a03eb``.
+  ``6c4cfc34f2c08da2bb709be5ba8a3224152273bf``,
+  ``1cefe6067521f188fffbe2070bd520501a8c60fe`` and
+  ``63ec9fcb45cb0cf59214a3d2b676f408d724cf62``.
+* Resulting Git tree: ``3864daeae10044cb8c567cd2d4cc4d7e89f9619c``.
 
 ``apply.sh`` verifies the patch SHA-256 hashes, fetches that exact upstream
 commit, applies the patch series in order, and verifies the final tree.
@@ -133,3 +134,8 @@ The sixth patch adds QMP ``lab-touch-frame`` for explicit synthetic packets
 consumed through I2C/APDMA. ``test_lab_touch.py`` verifies exact DMA data,
 malformed setter rejection, empty contacts and restoring fixture defaults.
 The host ``touch_lab.py`` helper is packaged separately with XNU boot tools.
+
+The seventh patch adds ``lab-pmic-thermal`` with synthetic calibration and
+three independent PMIC conversions, timed READY transitions and scoped
+freshness/calibration faults. It does not model CPU thermal control or DVFS.
+``test_lab_thermal.py`` tests this fixture separately from native execution.

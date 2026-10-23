@@ -22,3 +22,15 @@ cc -std=c11 -Wall -Wextra -Werror -g -I "$testdir" test_native_cpufreq.c -o "$te
 "$testdir/test-native-cpufreq"
 cc -std=c11 -Wall -Wextra -Werror -g test_native_sspm.c -o "$testdir/test-native-sspm"
 "$testdir/test-native-sspm"
+python3 - "$testdir/thermal_slopes.h" <<'THERMAL'
+import json,sys
+from pathlib import Path
+cases=json.loads(Path('evidence/stock-thermal-slopes.json').read_text())['cases']
+lines=['static const int thermal_slopes[][8]={']
+for c in cases:
+ lines.append('{'+','.join(str(x) for x in [c['slope'],c['sign']]+c['denominators']+c['intercepts'])+'},')
+lines.append('};')
+Path(sys.argv[1]).write_text('\n'.join(lines)+'\n')
+THERMAL
+cc -std=c11 -Wall -Wextra -Werror -g -I "$testdir" test_native_thermal.c -o "$testdir/test-native-thermal"
+"$testdir/test-native-thermal"

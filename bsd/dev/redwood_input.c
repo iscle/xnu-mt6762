@@ -13,6 +13,7 @@
 #if defined(ARM64_BOARD_CONFIG_MT6762)
 #include <sys/mt6762_platform.h>
 #include <sys/mt6762_sspm.h>
+#include <sys/mt6762_thermal.h>
 extern void mt6762_touch_init(void);
 extern void mt6762_display_init(void);
 extern void mt6762_power_init(void);
@@ -234,6 +235,7 @@ redwood_input_init(void)
 	mt6762_display_init();
 	mt6762_touch_init();
 	mt6762_power_init();
+	mt6762_thermal_init();
 	mt6762_sspm_init();
 	mt6762_cpufreq_init();
 #else

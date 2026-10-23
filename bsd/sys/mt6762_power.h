@@ -22,6 +22,7 @@ void mt6762_power_init(void);
 int mt6762_charger_control_safe(void);
 int mt6762_pwrap_read16(uint16_t address, uint16_t *value);
 int mt6762_pwrap_write16(uint16_t address, uint16_t value);
+int mt6762_pmic_thermal_sample(unsigned sensor,uint16_t *raw);
 void mt6762_battery_report(const struct mt6762_battery_sample *sample);
 #ifdef __cplusplus
 }

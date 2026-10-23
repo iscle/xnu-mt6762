@@ -178,13 +178,15 @@ def load_identity(path):
     return result
 
 
-def make_adt(seed, ramdisks=(), framebuffer=False, identity=None, native_lab_i2c=False, cpus=1, native_lab_display=None, native_lab_sspm=False, native_lab_power=False):
+def make_adt(seed, ramdisks=(), framebuffer=False, identity=None, native_lab_i2c=False, cpus=1, native_lab_display=None, native_lab_sspm=False, native_lab_power=False, native_lab_thermal=False):
     if not 1 <= cpus <= 8:
         raise ValueError('MT6762 laboratory topology supports1..8 CPUs')
     if len(seed) != 64:
         raise ValueError('Random seed must be64 bytes')
     chosen_children = [node('memory-map', [('RAMDisk' + (str(i) if i else ''), u64(*disk))
                             for i, disk in enumerate(ramdisks)])]
+    if native_lab_thermal and not native_lab_power:
+        raise ValueError('Native thermal fixture requires native power fixtures')
     if native_lab_sspm and not native_lab_i2c:
         raise ValueError('Native SSPM fixture requires native I2C platform contract')
     if native_lab_power and not native_lab_i2c:
@@ -203,6 +205,8 @@ def make_adt(seed, ramdisks=(), framebuffer=False, identity=None, native_lab_i2c
             'touch-max-x': 384, 'touch-max-y': 854, 'charger-verified': 1,
             'charger-control-owned': 1,
         }
+        if native_lab_thermal:
+            fixture['pmic-thermal-adc-owned'] = 1
         if native_lab_sspm:
             fixture['sspm-mailbox-owned'] = 1
         if native_lab_power:
@@ -363,6 +367,8 @@ def main():
                    help='Opt-in native driver handoff for QEMU I2C/APDMA fixtures; never a phone handoff')
     p.add_argument('--native-lab-sspm', action='store_true',
                    help='With --native-lab-i2c, synthetic SSPM PLATFORM liveness; no DVFS')
+    p.add_argument('--native-lab-thermal', action='store_true',
+                   help='With --native-lab-power, synthetic calibrated PMIC conversions; no CPU thermal policy')
     p.add_argument('--native-lab-power', action='store_true',
                    help='With --native-lab-i2c, synthetic PWRAP, ADC and keypad; no physical charging')
     p.add_argument('--native-lab-display', action='store_true',
@@ -378,6 +384,8 @@ def main():
         raise ValueError('Boot cpus= must match --cpus exactly')
     if not cpu_args:
         a.cmdline += f' cpus={a.cpus}'
+    if a.native_lab_thermal and not a.native_lab_power:
+        raise ValueError('--native-lab-thermal requires --native-lab-power')
     if a.native_lab_sspm and not a.native_lab_i2c:
         raise ValueError('--native-lab-sspm requires --native-lab-i2c')
     if a.native_lab_power and not a.native_lab_i2c:
@@ -441,7 +449,7 @@ def main():
         cursor += size
     identity = load_identity(a.identity_header) if a.identity_header else None
     adt = make_adt(os.urandom(64), ramdisk_pairs, a.framebuffer, identity, a.native_lab_i2c, a.cpus,
-                   framebuffer if a.native_lab_display else None, a.native_lab_sspm, a.native_lab_power)
+                   framebuffer if a.native_lab_display else None, a.native_lab_sspm, a.native_lab_power, a.native_lab_thermal)
     adt_pa = skip_linux_dtb(cursor, align(len(adt)) + PAGE)
     ba_pa = align(adt_pa + len(adt))
     top = ba_pa + PAGE
@@ -488,6 +496,8 @@ def main():
         machine += ',lab-i2c=on'
     if a.native_lab_sspm:
         machine += ',lab-sspm=on'
+    if a.native_lab_thermal:
+        machine += ',lab-pmic-thermal=on'
     if a.native_lab_power:
         machine += ',lab-power=on'
     if a.native_lab_display:
@@ -508,7 +518,7 @@ def main():
                     ram_size=MEMORY, vm_page_size=PAGE, hardware_page_size=4096, cpu_count=a.cpus,
                     boot_args_pa=hex(ba_pa), adt_pa=hex(adt_pa), top_of_kernel_data=hex(top),
                     chained_rebases=nfix, ramdisk=ramdisk_info, framebuffer=framebuffer,
-                    native_lab_power=a.native_lab_power, native_lab_sspm=a.native_lab_sspm, native_lab_i2c=a.native_lab_i2c, native_lab_display=a.native_lab_display, native_lab_touch_events=a.native_lab_touch_events,
+                    native_lab_thermal=a.native_lab_thermal, native_lab_power=a.native_lab_power, native_lab_sspm=a.native_lab_sspm, native_lab_i2c=a.native_lab_i2c, native_lab_display=a.native_lab_display, native_lab_touch_events=a.native_lab_touch_events,
                     identity_header_sha256=hashlib.sha256(a.identity_header.read_bytes()).hexdigest() if a.identity_header else None,
                     regions=regions, reserved=reserved, command=command,
                     limits=['QEMU bring-up only; not a phone boot image.',

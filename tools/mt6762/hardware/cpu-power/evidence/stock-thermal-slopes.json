@@ -1,0 +1,128 @@
+{
+  "image_sha256": "82b1919185a49f268a0f8e145a6714d6264c1f66918a90df0d763266147ead4b",
+  "function_va": "0xffffff800888abf0",
+  "method": "original AArch64 instructions in Unicorn; only printk/_mcount intercepted",
+  "physical_hardware_tested": false,
+  "cases": [
+    {
+      "slope": 0,
+      "sign": 0,
+      "denominators": [
+        -1681,
+        -1863,
+        -1863
+      ],
+      "intercepts": [
+        442134,
+        387134,
+        389282
+      ],
+      "instructions": 123
+    },
+    {
+      "slope": 0,
+      "sign": 1,
+      "denominators": [
+        -1681,
+        -1863,
+        -1863
+      ],
+      "intercepts": [
+        442134,
+        387134,
+        389282
+      ],
+      "instructions": 123
+    },
+    {
+      "slope": 1,
+      "sign": 0,
+      "denominators": [
+        -1682,
+        -1864,
+        -1864
+      ],
+      "intercepts": [
+        439682,
+        385214,
+        387350
+      ],
+      "instructions": 123
+    },
+    {
+      "slope": 1,
+      "sign": 1,
+      "denominators": [
+        -1680,
+        -1862,
+        -1862
+      ],
+      "intercepts": [
+        444615,
+        389075,
+        391234
+      ],
+      "instructions": 123
+    },
+    {
+      "slope": 7,
+      "sign": 0,
+      "denominators": [
+        -1688,
+        -1870,
+        -1870
+      ],
+      "intercepts": [
+        425558,
+        374111,
+        376180
+      ],
+      "instructions": 123
+    },
+    {
+      "slope": 7,
+      "sign": 1,
+      "denominators": [
+        -1674,
+        -1856,
+        -1856
+      ],
+      "intercepts": [
+        460150,
+        401175,
+        403406
+      ],
+      "instructions": 123
+    },
+    {
+      "slope": 63,
+      "sign": 0,
+      "denominators": [
+        -1744,
+        -1926,
+        -1926
+      ],
+      "intercepts": [
+        329101,
+        296252,
+        297856
+      ],
+      "instructions": 123
+    },
+    {
+      "slope": 63,
+      "sign": 1,
+      "denominators": [
+        -1618,
+        -1800,
+        -1800
+      ],
+      "intercepts": [
+        690677,
+        570890,
+        574134
+      ],
+      "instructions": 123
+    }
+  ]
+}

@@ -103,6 +103,15 @@ class PrepareTests(unittest.TestCase):
         self.assertEqual(struct.unpack('<I', handoff['sspm-mailbox-owned'])[0], 1)
         with self.assertRaises(ValueError): p.make_adt(bytes(64), native_lab_sspm=True)
 
+    def test_thermal_handoff_requires_power(self):
+        tree, _ = parse_adt(p.make_adt(bytes(64), native_lab_i2c=True,
+                           native_lab_power=True, native_lab_thermal=True))
+        chosen = next(n for n in tree['children'] if n['name'] == b'chosen\0')
+        handoff = next(n for n in chosen['children'] if n['name'] == b'mt6762-handoff\0')
+        self.assertEqual(struct.unpack('<I', handoff['pmic-thermal-adc-owned'])[0], 1)
+        self.assertNotIn('cpu-thermal-owned', handoff)
+        with self.assertRaises(ValueError): p.make_adt(bytes(64), native_lab_thermal=True)
+
     def test_valid_macho(self):
         m = p.parse_macho(fixture())
         self.assertEqual(m['entry'], p.VIRT + 0x3004200)

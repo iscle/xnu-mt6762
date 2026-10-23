@@ -153,3 +153,19 @@ Apple logs separately before claiming that iOS accepted a gesture.
 register and frame-chain snapshots, then reports failure. The serial log
 remains authoritative: an image, timeout or successful QEMU process exit is
 not sufficient evidence of a completed iOS boot.
+
+PMIC temperature freshness
+--------------------------
+
+``--native-lab-thermal`` additionally requires ``--native-lab-power`` and
+selects only the synthetic PMIC thermal conversion fixture. The observer
+reads die/buck temperatures, sample/error counters and observed/fresh masks.
+No CPU thermal ownership is asserted; CPU temperature remains invalid.
+Synthetic calibration and temperatures are not measurements of this phone.
+
+``--thermal-fault timeout|stale|uncalibrated|bad-degc|mux|rail`` exercises
+startup rejection. The mux fault is scoped to the die channel; independently
+valid buck values remain allowed. ``--thermal-fault-after-fresh`` waits for
+actual native sysctl fresh-mask7 before injecting the requested failure,
+then requires invalidation. Use ``--queue-mode cycle --seconds 6`` so the
+read-only observer continues sampling sysctls throughout the test.

@@ -14,13 +14,14 @@ from test_lab_display import Lab
 
 
 class PowerLab(Lab):
-    def __init__(self, qemu, dtb, directory, enabled=True):
+    def __init__(self, qemu, dtb, directory, enabled=True, thermal=False):
         directory = Path(directory)
         self.log = (directory / 'qemu.log').open('w+')
         self.qmp_path = directory / 'qmp.sock'
         self.test_path = directory / 'qtest.sock'
         self.process = subprocess.Popen([
-            str(qemu), '-M', 'mt6762' + (',lab-power=on' if enabled else ''),
+            str(qemu), '-M', 'mt6762' + (',lab-power=on' if enabled else '') +
+            (',lab-pmic-thermal=on' if thermal else ''),
             '-accel', 'qtest', '-cpu', 'cortex-a53', '-m', '512M', '-smp', '1',
             '-dtb', str(dtb), '-display', 'none', '-serial', 'null',
             '-monitor', 'none', '-qmp', f'unix:{self.qmp_path},server=on,wait=off',

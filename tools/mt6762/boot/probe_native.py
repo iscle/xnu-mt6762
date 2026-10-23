@@ -19,6 +19,10 @@ def main():
                    help='Enable synthetic contacts after the static PID1 queue observer is ready')
     p.add_argument('--expect-handoff-rejected',action='store_true',
                    help='Negative test: malformed native handoff must remain headless and perform no transfers')
+    p.add_argument('--thermal-fault-after-fresh',action='store_true',
+                   help='Inject requested thermal fault only after actual native fresh-mask7 is observed')
+    p.add_argument('--thermal-fault',choices=('none','timeout','stale','uncalibrated','bad-degc','mux','rail'),default='none',
+                   help='Startup-only synthetic PMIC conversion/calibration failure')
     p.add_argument('--key-mode',choices=('none','cycle','power-fault','keypad-fault'),default='none',
                    help='Synthetic native power/keypad levels, observed via the kernel input queue')
     p.add_argument('--sspm-fault',choices=('none','timeout','ack-stuck','input-stuck','stale-ack','stale-input','dead','wrong-ack'),default='none',
@@ -42,7 +46,13 @@ def main():
         raise ValueError('SSPM fault needs --native-lab-sspm manifest')
     if a.key_mode!='none' and not m.get('native_lab_power'):
         raise ValueError('Key mode needs --native-lab-power manifest')
+    if a.thermal_fault!='none' and (not m.get('native_lab_thermal') or a.key_mode!='none'):
+        raise ValueError('Thermal fault needs its own --native-lab-thermal run, without key fault modes')
+    if a.thermal_fault_after_fresh and (a.thermal_fault=='none' or a.queue_mode!='cycle'):
+        raise ValueError('Post-fresh fault requires --thermal-fault and --queue-mode cycle')
     command=list(m['command'])
+    if a.thermal_fault!='none' and not a.thermal_fault_after_fresh:
+        command[command.index('-M')+1]+=',lab-power-fault=thermal-'+a.thermal_fault
     if a.sspm_fault!='none':
         command[command.index('-M')+1]+=',lab-sspm-fault='+a.sspm_fault
     if a.display_fault!='none':
@@ -52,6 +62,7 @@ def main():
     if socket_path.exists():raise ValueError('QMP socket exists; choose another label')
     snapshots=[];injected=False;queue_enabled=False;cycle_disabled=False;proc=None;client=None;reader=None
     framebuffer_untouched=None
+    thermal_injected=False;thermal_injected_at=None
     key_pressed=False;key_released=False;key_started=0
     expected_buttons={1,2,3} if a.key_mode=='cycle' else {1} if a.key_mode=='power-fault' else {2,3}
     qemu_sha256=hashlib.sha256(Path(m['command'][0]).read_bytes()).hexdigest()
@@ -88,6 +99,10 @@ def main():
                 if a.queue_mode!='none' and not queue_enabled and 'MT6762_QUEUE_READY' in observed:
                     execute('qom-set',path='/machine',property='lab-touch-sequence',value=True)
                     queue_enabled=True
+                fresh_records=re.findall(r'MT6762_SYSCTL mt6762_thermal_fresh=(\d+) error=0',observed)
+                if a.thermal_fault_after_fresh and not thermal_injected and fresh_records and int(fresh_records[-1])==7:
+                    execute('qom-set',path='/machine',property='lab-power-fault',value='thermal-'+a.thermal_fault)
+                    thermal_injected=True;thermal_injected_at=round(time.monotonic()-started,3)
                 if a.key_mode!='none' and not key_pressed and 'MT6762_QUEUE_READY' in observed:
                     mask=7 if a.key_mode=='cycle' else 1 if a.key_mode=='power-fault' else 6
                     execute('qom-set',path='/machine',property='lab-key-mask',value=mask)
@@ -145,6 +160,10 @@ def main():
             'native_brightness_accepted':'inherited DISP_PWM0 validated' in serial,
             'synthetic_display_state':snapshots[-1].get('display') if snapshots else None,
             'sspm_startup_fault':a.sspm_fault,
+            'thermal_startup_fault':a.thermal_fault if not a.thermal_fault_after_fresh else 'none',
+            'thermal_post_fresh_fault':a.thermal_fault if a.thermal_fault_after_fresh else 'none',
+            'thermal_fault_injected_after_fresh':thermal_injected,
+            'thermal_fault_injected_at_seconds':thermal_injected_at,
             'key_mode':a.key_mode, 'buttons_down':buttons_down,'buttons_matching_up':buttons_up,
             'buttons_held_at_end':sorted(buttons_held),
             'native_power_accepted':'power: PMIC 0x5730' in serial,
@@ -185,6 +204,28 @@ def main():
         raise SystemExit(1)
     if m.get('native_lab_power') and not result['native_power_accepted']:
         raise SystemExit(1)
+    if a.thermal_fault_after_fresh and not thermal_injected:
+        raise SystemExit(1)
+    if m.get('native_lab_thermal'):
+        diagnostic=result['native_sysctls']
+        fields=['mt6762_pmic_die_mc','mt6762_pmic_buck1_mc','mt6762_pmic_buck2_mc',
+                'mt6762_thermal_observed','mt6762_thermal_fresh','mt6762_thermal_samples','mt6762_thermal_errors','mt6762_cpu_ts1_mc']
+        if any(name not in diagnostic or diagnostic[name]['error'] for name in fields):
+            raise SystemExit(1)
+        values={name:diagnostic[name]['value'] for name in fields}
+        if values['mt6762_cpu_ts1_mc']!=-273000:
+            raise SystemExit(1)
+        if a.thermal_fault=='none':
+            if values['mt6762_thermal_fresh']!=7 or values['mt6762_thermal_observed']!=7 or values['mt6762_thermal_samples']<3:
+                raise SystemExit(1)
+        elif a.thermal_fault=='mux':
+            fresh=values['mt6762_thermal_fresh'];observed=values['mt6762_thermal_observed']
+            if fresh&~6 or observed&~6 or values['mt6762_pmic_die_mc']!=-273000:
+                raise SystemExit(1)
+            if any(values[fields[i]]!=-273000 for i in (1,2) if not observed&(1<<i)):
+                raise SystemExit(1)
+        elif values['mt6762_thermal_fresh'] or values['mt6762_thermal_observed'] or any(values[name]!=-273000 for name in fields[:3]):
+            raise SystemExit(1)
     if m.get('native_lab_sspm'):
         state=result['synthetic_sspm_state']
         if state['dvfs_emulated'] or state['rejected_commands']:

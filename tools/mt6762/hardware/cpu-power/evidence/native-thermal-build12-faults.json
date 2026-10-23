@@ -1,0 +1,498 @@
+{
+  "synthetic_model_only": true,
+  "physical_hardware_tested": false,
+  "cases": {
+    "timeout": {
+      "kernel_sha256": "179b56b68e256ab003fe5337fbd03b4db8c0d17bbca67bed78316a4f6005f31c",
+      "qemu_binary_sha256": "53724c0778ca20cdead5aa88a51487abda30a42627eccb4ef18b28a91fdba7dc",
+      "synthetic_power_state": {
+        "enabled": true,
+        "synthetic": true,
+        "fault": 7,
+        "key_mask": 0,
+        "fsm": 0,
+        "commands": 3259,
+        "reads": 3233,
+        "writes": 26,
+        "rejected": 0,
+        "clears": 3233,
+        "key_reads": 444,
+        "adc_requests": [
+          4,
+          4
+        ],
+        "adc_completions": [
+          4,
+          4
+        ],
+        "thermal_enabled": true,
+        "thermal_calibration_synthetic": true,
+        "thermal_requests": [
+          6,
+          6,
+          6
+        ],
+        "thermal_completions": [
+          0,
+          0,
+          0
+        ]
+      },
+      "kernel_panic_observed": false,
+      "secondary_cpus_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "queue_observer_ready": true,
+      "thermal_sysctls": {
+        "mt6762_pmic_die_mc": {
+          "value": -273000,
+          "error": 0
+        },
+        "mt6762_pmic_buck1_mc": {
+          "value": -273000,
+          "error": 0
+        },
+        "mt6762_pmic_buck2_mc": {
+          "value": -273000,
+          "error": 0
+        },
+        "mt6762_thermal_observed": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_thermal_fresh": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_thermal_samples": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_thermal_errors": {
+          "value": 18,
+          "error": 0
+        },
+        "mt6762_cpu_ts1_mc": {
+          "value": -273000,
+          "error": 0
+        }
+      }
+    },
+    "stale": {
+      "kernel_sha256": "179b56b68e256ab003fe5337fbd03b4db8c0d17bbca67bed78316a4f6005f31c",
+      "qemu_binary_sha256": "53724c0778ca20cdead5aa88a51487abda30a42627eccb4ef18b28a91fdba7dc",
+      "synthetic_power_state": {
+        "enabled": true,
+        "synthetic": true,
+        "fault": 8,
+        "key_mask": 0,
+        "fsm": 0,
+        "commands": 471,
+        "reads": 434,
+        "writes": 37,
+        "rejected": 0,
+        "clears": 434,
+        "key_reads": 484,
+        "adc_requests": [
+          5,
+          5
+        ],
+        "adc_completions": [
+          5,
+          5
+        ],
+        "thermal_enabled": true,
+        "thermal_calibration_synthetic": true,
+        "thermal_requests": [
+          9,
+          9,
+          9
+        ],
+        "thermal_completions": [
+          9,
+          9,
+          9
+        ]
+      },
+      "kernel_panic_observed": false,
+      "secondary_cpus_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "queue_observer_ready": true,
+      "thermal_sysctls": {
+        "mt6762_pmic_die_mc": {
+          "value": -273000,
+          "error": 0
+        },
+        "mt6762_pmic_buck1_mc": {
+          "value": -273000,
+          "error": 0
+        },
+        "mt6762_pmic_buck2_mc": {
+          "value": -273000,
+          "error": 0
+        },
+        "mt6762_thermal_observed": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_thermal_fresh": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_thermal_samples": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_thermal_errors": {
+          "value": 24,
+          "error": 0
+        },
+        "mt6762_cpu_ts1_mc": {
+          "value": -273000,
+          "error": 0
+        }
+      }
+    },
+    "uncalibrated": {
+      "kernel_sha256": "179b56b68e256ab003fe5337fbd03b4db8c0d17bbca67bed78316a4f6005f31c",
+      "qemu_binary_sha256": "53724c0778ca20cdead5aa88a51487abda30a42627eccb4ef18b28a91fdba7dc",
+      "synthetic_power_state": {
+        "enabled": true,
+        "synthetic": true,
+        "fault": 9,
+        "key_mask": 0,
+        "fsm": 0,
+        "commands": 381,
+        "reads": 373,
+        "writes": 8,
+        "rejected": 0,
+        "clears": 373,
+        "key_reads": 478,
+        "adc_requests": [
+          4,
+          4
+        ],
+        "adc_completions": [
+          4,
+          4
+        ],
+        "thermal_enabled": true,
+        "thermal_calibration_synthetic": true,
+        "thermal_requests": [
+          0,
+          0,
+          0
+        ],
+        "thermal_completions": [
+          0,
+          0,
+          0
+        ]
+      },
+      "kernel_panic_observed": false,
+      "secondary_cpus_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "queue_observer_ready": true,
+      "thermal_sysctls": {
+        "mt6762_pmic_die_mc": {
+          "value": -273000,
+          "error": 0
+        },
+        "mt6762_pmic_buck1_mc": {
+          "value": -273000,
+          "error": 0
+        },
+        "mt6762_pmic_buck2_mc": {
+          "value": -273000,
+          "error": 0
+        },
+        "mt6762_thermal_observed": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_thermal_fresh": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_thermal_samples": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_thermal_errors": {
+          "value": 21,
+          "error": 0
+        },
+        "mt6762_cpu_ts1_mc": {
+          "value": -273000,
+          "error": 0
+        }
+      }
+    },
+    "bad-degc": {
+      "kernel_sha256": "179b56b68e256ab003fe5337fbd03b4db8c0d17bbca67bed78316a4f6005f31c",
+      "qemu_binary_sha256": "53724c0778ca20cdead5aa88a51487abda30a42627eccb4ef18b28a91fdba7dc",
+      "synthetic_power_state": {
+        "enabled": true,
+        "synthetic": true,
+        "fault": 10,
+        "key_mask": 0,
+        "fsm": 0,
+        "commands": 390,
+        "reads": 380,
+        "writes": 10,
+        "rejected": 0,
+        "clears": 380,
+        "key_reads": 484,
+        "adc_requests": [
+          5,
+          5
+        ],
+        "adc_completions": [
+          5,
+          5
+        ],
+        "thermal_enabled": true,
+        "thermal_calibration_synthetic": true,
+        "thermal_requests": [
+          0,
+          0,
+          0
+        ],
+        "thermal_completions": [
+          0,
+          0,
+          0
+        ]
+      },
+      "kernel_panic_observed": false,
+      "secondary_cpus_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "queue_observer_ready": true,
+      "thermal_sysctls": {
+        "mt6762_pmic_die_mc": {
+          "value": -273000,
+          "error": 0
+        },
+        "mt6762_pmic_buck1_mc": {
+          "value": -273000,
+          "error": 0
+        },
+        "mt6762_pmic_buck2_mc": {
+          "value": -273000,
+          "error": 0
+        },
+        "mt6762_thermal_observed": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_thermal_fresh": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_thermal_samples": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_thermal_errors": {
+          "value": 24,
+          "error": 0
+        },
+        "mt6762_cpu_ts1_mc": {
+          "value": -273000,
+          "error": 0
+        }
+      }
+    },
+    "rail": {
+      "kernel_sha256": "179b56b68e256ab003fe5337fbd03b4db8c0d17bbca67bed78316a4f6005f31c",
+      "qemu_binary_sha256": "53724c0778ca20cdead5aa88a51487abda30a42627eccb4ef18b28a91fdba7dc",
+      "synthetic_power_state": {
+        "enabled": true,
+        "synthetic": true,
+        "fault": 12,
+        "key_mask": 0,
+        "fsm": 0,
+        "commands": 485,
+        "reads": 450,
+        "writes": 35,
+        "rejected": 0,
+        "clears": 450,
+        "key_reads": 472,
+        "adc_requests": [
+          4,
+          4
+        ],
+        "adc_completions": [
+          4,
+          4
+        ],
+        "thermal_enabled": true,
+        "thermal_calibration_synthetic": true,
+        "thermal_requests": [
+          9,
+          9,
+          9
+        ],
+        "thermal_completions": [
+          9,
+          9,
+          9
+        ]
+      },
+      "kernel_panic_observed": false,
+      "secondary_cpus_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "queue_observer_ready": true,
+      "thermal_sysctls": {
+        "mt6762_pmic_die_mc": {
+          "value": -273000,
+          "error": 0
+        },
+        "mt6762_pmic_buck1_mc": {
+          "value": -273000,
+          "error": 0
+        },
+        "mt6762_pmic_buck2_mc": {
+          "value": -273000,
+          "error": 0
+        },
+        "mt6762_thermal_observed": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_thermal_fresh": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_thermal_samples": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_thermal_errors": {
+          "value": 21,
+          "error": 0
+        },
+        "mt6762_cpu_ts1_mc": {
+          "value": -273000,
+          "error": 0
+        }
+      }
+    },
+    "mux": {
+      "kernel_sha256": "179b56b68e256ab003fe5337fbd03b4db8c0d17bbca67bed78316a4f6005f31c",
+      "qemu_binary_sha256": "53724c0778ca20cdead5aa88a51487abda30a42627eccb4ef18b28a91fdba7dc",
+      "synthetic_power_state": {
+        "enabled": true,
+        "synthetic": true,
+        "fault": 11,
+        "key_mask": 0,
+        "fsm": 0,
+        "commands": 475,
+        "reads": 449,
+        "writes": 26,
+        "rejected": 0,
+        "clears": 449,
+        "key_reads": 480,
+        "adc_requests": [
+          4,
+          4
+        ],
+        "adc_completions": [
+          4,
+          4
+        ],
+        "thermal_enabled": true,
+        "thermal_calibration_synthetic": true,
+        "thermal_requests": [
+          0,
+          9,
+          9
+        ],
+        "thermal_completions": [
+          0,
+          9,
+          9
+        ]
+      },
+      "kernel_panic_observed": false,
+      "secondary_cpus_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "queue_observer_ready": true,
+      "thermal_sysctls": {
+        "mt6762_pmic_die_mc": {
+          "value": -273000,
+          "error": 0
+        },
+        "mt6762_pmic_buck1_mc": {
+          "value": 27500,
+          "error": 0
+        },
+        "mt6762_pmic_buck2_mc": {
+          "value": -273000,
+          "error": 0
+        },
+        "mt6762_thermal_observed": {
+          "value": 2,
+          "error": 0
+        },
+        "mt6762_thermal_fresh": {
+          "value": 2,
+          "error": 0
+        },
+        "mt6762_thermal_samples": {
+          "value": 13,
+          "error": 0
+        },
+        "mt6762_thermal_errors": {
+          "value": 11,
+          "error": 0
+        },
+        "mt6762_cpu_ts1_mc": {
+          "value": -273000,
+          "error": 0
+        }
+      }
+    }
+  }
+}

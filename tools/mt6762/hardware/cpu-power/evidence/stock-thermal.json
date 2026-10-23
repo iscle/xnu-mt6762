@@ -1,0 +1,170 @@
+{
+  "image_sha256": "82b1919185a49f268a0f8e145a6714d6264c1f66918a90df0d763266147ead4b",
+  "historical_not_runtime": true,
+  "records": {
+    "cpu_trip_mc": {
+      "va": "0xffffff8009850098",
+      "words": [
+        117000,
+        95000,
+        85000,
+        65000,
+        63000,
+        60000,
+        55000,
+        50000,
+        45000,
+        40000
+      ]
+    },
+    "thermal_controllers": {
+      "va": "0xffffff8009852b10",
+      "words": [
+        0,
+        1,
+        2,
+        0,
+        0,
+        3,
+        0,
+        12,
+        65595,
+        781,
+        3,
+        4,
+        0,
+        0,
+        0,
+        2,
+        256,
+        12,
+        65595,
+        781
+      ]
+    },
+    "pmic_adc_reg_descriptors": {
+      "va": "0xffffff8009105ef8",
+      "words": [
+        4366,
+        0,
+        4232,
+        4366,
+        1,
+        4234,
+        4366,
+        2,
+        4236,
+        4366,
+        3,
+        4238,
+        0,
+        0,
+        0,
+        4366,
+        4,
+        4240,
+        4372,
+        5,
+        4312,
+        4372,
+        6,
+        4314,
+        0,
+        0,
+        0,
+        4366,
+        5,
+        4242,
+        0,
+        0,
+        0,
+        4366,
+        7,
+        4246,
+        4366,
+        9,
+        4250,
+        4366,
+        4,
+        4304,
+        4366,
+        11,
+        4254
+      ]
+    }
+  },
+  "expdb_sha256": "6675a9ae0eead546971136c2244be082a137f8b0b17ee5b5d5bc0ba98fce5f86",
+  "cpu_calibration_lines": [
+    "[calibration] temp0=0x9d9d514c, temp1=0x299546b, temp2=0xa5d36940"
+  ],
+  "pmic_calibration": {
+    "g_adc_cali_en": {
+      "bounded_numeric_counts": {
+        "1": 6
+      },
+      "note": "Binary log record tails can adjoin ASCII digits; mode and independently logged coefficients corroborate values."
+    },
+    "g_degc_cali": {
+      "bounded_numeric_counts": {
+        "55": 5
+      },
+      "note": "Binary log record tails can adjoin ASCII digits; mode and independently logged coefficients corroborate values."
+    },
+    "g_o_vts": {
+      "bounded_numeric_counts": {
+        "1588": 6
+      },
+      "note": "Binary log record tails can adjoin ASCII digits; mode and independently logged coefficients corroborate values."
+    },
+    "g_o_vts_2": {
+      "bounded_numeric_counts": {
+        "1526": 6
+      },
+      "note": "Binary log record tails can adjoin ASCII digits; mode and independently logged coefficients corroborate values."
+    },
+    "g_o_vts_3": {
+      "bounded_numeric_counts": {
+        "1534": 5
+      },
+      "note": "Binary log record tails can adjoin ASCII digits; mode and independently logged coefficients corroborate values."
+    },
+    "g_o_slope": {
+      "bounded_numeric_counts": {
+        "0": 6
+      },
+      "note": "Binary log record tails can adjoin ASCII digits; mode and independently logged coefficients corroborate values."
+    },
+    "g_o_slope_sign": {
+      "bounded_numeric_counts": {
+        "0": 6
+      },
+      "note": "Binary log record tails can adjoin ASCII digits; mode and independently logged coefficients corroborate values."
+    },
+    "g_id": {
+      "bounded_numeric_counts": {
+        "0": 6
+      },
+      "note": "Binary log record tails can adjoin ASCII digits; mode and independently logged coefficients corroborate values."
+    }
+  },
+  "pmic_coefficients": [
+    "[Thermal calibration] SLOPE1=1000000 SLOPE2=-1681 INTERCEPT=442134, Vbe = -697000",
+    "[Thermal calibration] SLOPE1=1000000 SLOPE2=-1863 INTERCEPT=387134, Vbe = -670000",
+    "[Thermal calibration] SLOPE1=1000000 SLOPE2=-1863 INTERCEPT=389282, Vbe = -674000"
+  ],
+  "oc_protection": {
+    "match_descriptor_va": "0xffffff80098090f0",
+    "pmic_threshold_registers": {
+      "high": "0x0d8e",
+      "low": "0x0d8c"
+    },
+    "historical_log": [
+      "r_fg=100 car_tune=1000 DEFAULT_RFG=100 UNIT_FGCURRENT=314331",
+      "4670mA(0xc8de), 5500mA(0xbf11) Done"
+    ],
+    "irq_high": "recovery level0; disableH/enableL",
+    "irq_low": "throttle level1; disableL/enableH",
+    "ppm_callback_va": "0xffffff80086863fc",
+    "ppm_level1_budget": 600
+  }
+}

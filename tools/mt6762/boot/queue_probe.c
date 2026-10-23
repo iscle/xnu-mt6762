@@ -51,7 +51,10 @@ static void observe(int fd)
         "mt6762_battery_adc_mv", "mt6762_ntc_adc_mv",
         "mt6762_adc_voltage_samples", "mt6762_adc_ntc_samples",
         "mt6762_charger_control_safe", "mt6762_charger_state",
-        "mt6762_sspm_alive", "mt6762_sspm_fault"
+        "mt6762_sspm_alive", "mt6762_sspm_fault",
+        "mt6762_pmic_die_mc", "mt6762_pmic_buck1_mc", "mt6762_pmic_buck2_mc",
+        "mt6762_thermal_observed", "mt6762_thermal_fresh", "mt6762_thermal_samples",
+        "mt6762_thermal_errors", "mt6762_cpu_ts1_mc"
     };
     for (unsigned i = 0; i < sizeof(fields) / sizeof(fields[0]); i++) {
         char name[96], line[192], *end = text(name, "kern.redwood.");
