@@ -29,8 +29,34 @@ static int adc_voltage_requests, adc_ntc_requests, adc_voltage_samples, adc_ntc_
 static int adc_voltage_min=-1,adc_voltage_max=-1,adc_ntc_min=-1,adc_ntc_max=-1;
 static int battery_adc_mv=-1, ntc_adc_mv=-1, ntc_nominal_deci_c=-2730;
 static struct mt6762_key_filter key_filter[3];
+static struct mt6762_bif_transport bif_transport;
+static int bif_ready,bif_raw=-1,bif_ntc_raw=-1,bif_samples,bif_errors,bif_fault;
+static int bif_generation_rejections,bif_last_error;
+static uint64_t bif_deadline;
+static const uint16_t bif_config_regs[]={0x10de,0x10e0,0x1120,0x1126,0x1128,
+    0x112e,0x1132,0x1136,0x113a,0x113c};
+static uint16_t bif_config[10];
 
 SYSCTL_DECL(_kern_redwood);
+static int bif_sysctl SYSCTL_HANDLER_ARGS
+{
+    uint64_t now;
+    int value;
+    lck_mtx_lock(&adc_mutex);
+    clock_get_uptime(&now);
+    int fresh=bif_deadline && now<bif_deadline && !bif_transport.fault;
+    value=arg2==2?fresh:(fresh?(arg2?bif_ntc_raw:bif_raw):-1);
+    lck_mtx_unlock(&adc_mutex);
+    return sysctl_handle_int(oidp,&value,0,req);
+}
+SYSCTL_PROC(_kern_redwood,OID_AUTO,mt6762_bif_raw,CTLTYPE_INT|CTLFLAG_RD|CTLFLAG_LOCKED,NULL,0,bif_sysctl,"I","Fresh paired BIF raw ADC count; -1 invalid, not calibrated voltage");
+SYSCTL_PROC(_kern_redwood,OID_AUTO,mt6762_bif_ntc_raw,CTLTYPE_INT|CTLFLAG_RD|CTLFLAG_LOCKED,NULL,1,bif_sysctl,"I","Fresh paired NTC raw ADC count; -1 invalid, not temperature");
+SYSCTL_PROC(_kern_redwood,OID_AUTO,mt6762_bif_pair_fresh,CTLTYPE_INT|CTLFLAG_RD|CTLFLAG_LOCKED,NULL,2,bif_sysctl,"I","Fresh paired samples with unchanged configuration and TDET");
+SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_bif_samples,CTLFLAG_RD|CTLFLAG_LOCKED,&bif_samples,0,"Completed diagnostic NTC/BIF pairs");
+SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_bif_errors,CTLFLAG_RD|CTLFLAG_LOCKED,&bif_errors,0,"BIF admission or sampling failures");
+SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_bif_fault,CTLFLAG_RD|CTLFLAG_LOCKED,&bif_fault,0,"Sticky diagnostic BIF ownership/configuration failure");
+SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_bif_generation_rejections,CTLFLAG_RD|CTLFLAG_LOCKED,&bif_generation_rejections,0,"Invalid missed-generation pairs eligible for next-period retry");
+SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_bif_last_error,CTLFLAG_RD|CTLFLAG_LOCKED,&bif_last_error,0,"Last BIF result: 0 completed, -5 missed generation; other negatives are errors");
 SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_pmic_id,CTLFLAG_RD|CTLFLAG_LOCKED,&pmic_id,0,"Observed MT6357 hardware ID, -1 unknown");
 SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_power_valid,CTLFLAG_RD|CTLFLAG_LOCKED,&power_valid,0,"Current native battery sample validity mask");
 SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_power_errors,CTLFLAG_RD|CTLFLAG_LOCKED,&power_errors,0,"Native power read failures");
@@ -98,9 +124,9 @@ int mt6762_pwrap_write16(uint16_t address,uint16_t value)
     return pwrap_transfer(1,address,&value);
 }
 
-/* The handoff grants exclusive AP ownership of these initialized ADC channels.
- * BAT_TEMP needs serialization; ISENSE is the DT battery-voltage channel.
- * VBIF is deliberately not requested: it changes BATON_TDET_EN in stock. */
+/* The handoff grants exclusive AP ownership of initialized ADC channels.
+ * BIF additionally requires an already-clear TDET bit. Native code has no
+ * independent fallback capable of restoring TDET after losing PWRAP. */
 static int adc_rd(void *unused,uint16_t address,uint16_t *v)
 {(void)unused;return mt6762_pwrap_read16(address,v);}
 static int adc_wr(void *unused,uint16_t address,uint16_t v)
@@ -114,6 +140,81 @@ static int adc_wr(void *unused,uint16_t address,uint16_t v)
     return e;
 }
 static const struct mt6762_adc_io adc_io={NULL,adc_rd,adc_wr,pwrap_delay};
+static int bif_wr(void *unused,uint16_t address,uint16_t value)
+{
+    /* A second enforcement boundary: no native BIF path can write TDET. */
+    if(address!=0x110e || (value!=8 && value!=2048))return -EPERM;
+    return adc_wr(unused,address,value);
+}
+static int bif_config_matches(void)
+{
+    uint16_t word;
+    if(mt6762_pwrap_read16(8,&word) || (word>>8)!=0x57)return 0;
+    for(unsigned i=0;i<10;i++)
+        if(mt6762_pwrap_read16(bif_config_regs[i],&word) || word!=bif_config[i])return 0;
+    return 1;
+}
+static void bif_init(void)
+{
+    static const char *names[]={"bif-sw-gain-trim","bif-sw-offset-trim",
+        "bif-adc-con0","bif-adc-con1","bif-adc-con2","bif-adc-con5",
+        "bif-adc-con7","bif-adc-con9","bif-adc-con11","bif-adc-con12"};
+    uint32_t word;
+    uint16_t observed;
+    if(!adc_ready || !verified("bif-adc-owned") || !verified("baton-tdet-owned") ||
+       !verified("bif-trim-verified"))return;
+    if(mt6762_handoff_u32("bif-tdet",&word) || word>0xffff)goto rejected;
+    if(word&2) {
+        printf("MT6762 BIF: TDET-changing sampling rejected; independent restoration fallback unavailable\n");
+        goto rejected;
+    }
+    bif_transport.expected_tdet=(uint16_t)word;
+    for(unsigned i=0;i<10;i++) {
+        if(mt6762_handoff_u32(names[i],&word) || word>0xffff)goto rejected;
+        bif_config[i]=(uint16_t)word;
+    }
+    if(!bif_config_matches() || mt6762_pwrap_read16(0x1236,&observed) ||
+       observed!=bif_transport.expected_tdet)goto rejected;
+    bif_transport.io=(struct mt6762_battery_adc_io){NULL,adc_rd,bif_wr,pwrap_delay};
+    bif_ready=1;
+    printf("MT6762 BIF: owned raw-pair diagnostic, TDET remains unchanged; battery temperature unavailable\n");
+    return;
+rejected:
+    bif_errors++;bif_fault=1;bif_transport.fault=1;bif_last_error=-6;
+}
+static int bif_read(int *ntc_mv)
+{
+    struct mt6762_bif_pair pair;
+    uint64_t expires,now;
+    int e=-EIO;
+    lck_mtx_lock(&adc_mutex);
+    bif_deadline=0;
+    if(bif_transport.fault)goto out;
+    clock_interval_to_deadline(2000,NSEC_PER_MSEC,&expires);
+    if(!bif_config_matches()) {e=-6;goto fault;}
+    e=mt6762_bif_capture(&bif_transport,&pair);
+    /* Always recheck configuration, including when no sample is admissible. */
+    if(!bif_config_matches()) {e=-6;goto fault;}
+    if(e==-5) {
+        int retry=mt6762_bif_retry_generation(&bif_transport,e,1);
+        if(retry==1) {
+            bif_last_error=e;bif_errors++;bif_generation_rejections++;goto out;
+        }
+        if(retry<0)e=retry;
+    }
+    if(e)goto fault;
+    clock_get_uptime(&now);
+    if(now>=expires) {e=-3;goto fault;}
+    bif_ntc_raw=pair.ntc_raw;bif_raw=pair.bif_raw;bif_samples++;
+    *ntc_mv=(int)((uint32_t)pair.ntc_raw*1800/4096);
+    bif_deadline=expires;
+    bif_last_error=0;e=0;
+    goto out;
+fault:
+    bif_transport.fault=1;bif_fault=1;bif_errors++;bif_last_error=e;
+out:
+    lck_mtx_unlock(&adc_mutex);return e;
+}
 int mt6762_pmic_thermal_sample(unsigned sensor,uint16_t *raw)
 {
     static const struct mt6762_thermal_adc_io io={NULL,adc_rd,adc_wr,pwrap_delay};
@@ -210,7 +311,7 @@ static void poll_battery(void)
             adc_observed(battery_adc_mv,&adc_voltage_samples,&adc_voltage_min,&adc_voltage_max);
             s.voltage_uv=battery_adc_mv*1000;s.valid|=MT6762_BAT_VOLTAGE;
         }else power_errors++;
-        if(!adc_read(3,&ntc_adc_mv)) {
+        if(!(bif_ready?bif_read(&ntc_adc_mv):adc_read(3,&ntc_adc_mv))) {
             adc_observed(ntc_adc_mv,&adc_ntc_samples,&adc_ntc_min,&adc_ntc_max);
             ntc_nominal_deci_c=nominal_ntc(ntc_adc_mv);
         }
@@ -268,6 +369,7 @@ void mt6762_power_init(void)
         }
     }
     adc_ready=pwrap_ready && verified("adc-verified");
+    bif_init();
     charger_owned=verified("charger-control-owned");
     charger_lab=verified("lab-fixture");
     charger_ready=verified("charger-verified") && mt6762_i2c_ready(5);

@@ -80,8 +80,8 @@ int mt6762_sspm_alive_recent(void)
 {
     uint64_t now;
     int alive;
-    clock_get_uptime(&now);
     lck_mtx_lock(&sspm_mutex);
+    clock_get_uptime(&now);
     alive=attached && !transport.fault && sspm_alive==1 && now<alive_deadline;
     lck_mtx_unlock(&sspm_mutex);
     return alive;

@@ -24,7 +24,10 @@ static const struct axs15260_command axs15260_suspend_commands[] = {
     {0x28,1,{0}}, {0xffe,120,{0}},
     {0x10,1,{0}}, {0xffe,30,{0}},
 };
-/* Stock selects this branch only for the proximity-preserved power state. */
+/* Stock selects this branch only after proximity-preserved suspend SKIPPED
+ * the sleep commands and bias shutdown. It is not evidence of a safe wake
+ * after the suspend table alone while retaining bias. Normal resume reinitializes
+ * bias, touch/panel reset and the full vendor table; see panel-lifecycle-audit.json. */
 static const struct axs15260_command axs15260_proximity_resume_commands[] = {
     {0x11,1,{0}}, {0xffe,150,{0}},
     {0x29,1,{0}}, {0xffe,20,{0}},

@@ -1,0 +1,65 @@
+{
+  "image_sha256": "82b1919185a49f268a0f8e145a6714d6264c1f66918a90df0d763266147ead4b",
+  "function": "psc5425e_driver_probe",
+  "range_start": "0xffffff8008a7712c",
+  "range_end_exclusive": "0xffffff8008a77570",
+  "direct_calls": [
+    "ffffff8008a77154: 97d89f92     \tbl\t0xffffff800809ef9c <_mcount>",
+    "ffffff8008a77178: 97daba6d     \tbl\t0xffffff8008125b2c <printk>",
+    "ffffff8008a77190: 97ef231b     \tbl\t0xffffff800863fdfc <devm_kmalloc>",
+    "ffffff8008a771f0: 97daba4f     \tbl\t0xffffff8008125b2c <printk>",
+    "ffffff8008a77208: 97daba49     \tbl\t0xffffff8008125b2c <printk>",
+    "ffffff8008a77228: 94030b76     \tbl\t0xffffff8008b3a000 <of_property_read_string>",
+    "ffffff8008a7724c: 97daba38     \tbl\t0xffffff8008125b2c <printk>",
+    "ffffff8008a77264: 94030b67     \tbl\t0xffffff8008b3a000 <of_property_read_string>",
+    "ffffff8008a77288: 97daba29     \tbl\t0xffffff8008125b2c <printk>",
+    "ffffff8008a772a0: 97fffb92     \tbl\t0xffffff8008a760e8 <psc5425e_read_interface>",
+    "ffffff8008a772c8: 97daba19     \tbl\t0xffffff8008125b2c <printk>",
+    "ffffff8008a772e4: 97daba12     \tbl\t0xffffff8008125b2c <printk>",
+    "ffffff8008a77304: 97daba0a     \tbl\t0xffffff8008125b2c <printk>",
+    "ffffff8008a77318: 97fffba7     \tbl\t0xffffff8008a761b4 <psc5425e_config_interface>",
+    "ffffff8008a7732c: 97fffba2     \tbl\t0xffffff8008a761b4 <psc5425e_config_interface>",
+    "ffffff8008a77340: 97fffb9d     \tbl\t0xffffff8008a761b4 <psc5425e_config_interface>",
+    "ffffff8008a77354: 97fffb98     \tbl\t0xffffff8008a761b4 <psc5425e_config_interface>",
+    "ffffff8008a77368: 97dab9f1     \tbl\t0xffffff8008125b2c <printk>",
+    "ffffff8008a77384: 94006884     \tbl\t0xffffff8008a91594 <charger_device_register>",
+    "ffffff8008a773ac: 97dab9e0     \tbl\t0xffffff8008125b2c <printk>",
+    "ffffff8008a773c8: 97da514c     \tbl\t0xffffff800810b8f8 <__init_waitqueue_head>",
+    "ffffff8008a773e4: 97d992e1     \tbl\t0xffffff80080dbf68 <kthread_create_on_node>",
+    "ffffff8008a773f0: 97d9d10a     \tbl\t0xffffff80080eb818 <wake_up_process>",
+    "ffffff8008a77408: 97db48e7     \tbl\t0xffffff80081497a4 <hrtimer_init>",
+    "ffffff8008a77430: 97db469c     \tbl\t0xffffff8008148ea0 <hrtimer_start_range_ns>",
+    "ffffff8008a7744c: 97ea41a2     \tbl\t0xffffff8008507ad4 <devm_regulator_register>",
+    "ffffff8008a77474: 97dab9ae     \tbl\t0xffffff8008125b2c <printk>",
+    "ffffff8008a7748c: 97dab9a8     \tbl\t0xffffff8008125b2c <printk>",
+    "ffffff8008a774fc: 940093c2     \tbl\t0xffffff8008a9c404 <power_supply_register>",
+    "ffffff8008a77530: 97fffc06     \tbl\t0xffffff8008a76548 <psc5425e_read_byte>",
+    "ffffff8008a7754c: 97efbd7f     \tbl\t0xffffff8008666b48 <hw_module_info_add>",
+    "ffffff8008a77560: 97dab973     \tbl\t0xffffff8008125b2c <printk>",
+    "ffffff8008a7756c: 97d8f83b     \tbl\t0xffffff80080b5658 <__stack_chk_fail>"
+  ],
+  "dt_gpio": {
+    "property": "rt,intr_gpio",
+    "gpio": 42,
+    "direction_or_disable_wiring_proven": false
+  },
+  "conclusion": "No GPIO/pinctrl calls in this probe or named DISABLE GPIO in the charger node. This does not prove absence of physical wiring; GPIO42 is named interrupt and is not a supported disable fallback.",
+  "manufacturer_sources": [
+    {
+      "url": "https://www.prisemi.com/pdf/1ldccdxp/PSC5425E.pdf",
+      "revision": "06.5",
+      "pages": {
+        "disable_pin": 3,
+        "vbus_por_default_charging": 21,
+        "control1_default": 26
+      }
+    },
+    {
+      "url": "https://www.mouser.com/catalog/specsheets/MediaTek_MTK_MT6357_Product_Brief_v1_0.pdf",
+      "version": "1.0",
+      "page": 7,
+      "scope": "BATON pin battery/temperature sensing; no TDET circuit guarantee"
+    }
+  ],
+  "physical_hardware_tested": false
+}

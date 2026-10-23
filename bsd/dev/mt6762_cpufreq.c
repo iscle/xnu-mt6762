@@ -19,7 +19,6 @@ static int vproc_programmed_uv=-1,vsram_programmed_uv=-1;
 static int cpu0_idx=-1,cpu4_idx=-1,cci_idx=-1;
 static int cpu0_ceiling_khz=-1,cpu4_ceiling_khz=-1;
 static int cpu0_table_uv=-1,cpu4_table_uv=-1,cci_table_uv=-1;
-static int sspm_platform_alive;
 static int dvfs_control_ready; /* Remains false: mailbox/liveness not established. */
 SYSCTL_DECL(_kern_redwood);
 #define CPU_SYSCTL(name,description) SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_##name,CTLFLAG_RD|CTLFLAG_LOCKED,&name,0,description)
@@ -39,9 +38,17 @@ CPU_SYSCTL(cpu4_ceiling_khz,"Shared PPM CPU4-7 frequency ceiling, -1 unknown; no
 CPU_SYSCTL(cpu0_table_uv,"Runtime table CPU0-3 voltage at reported index, -1 unknown");
 CPU_SYSCTL(cpu4_table_uv,"Runtime table CPU4-7 voltage at reported index, -1 unknown");
 CPU_SYSCTL(cci_table_uv,"Runtime table CCI voltage at reported index, -1 unknown");
-CPU_SYSCTL(sspm_platform_alive,"Recent active PLATFORM response, not CPU-DVFS readiness");
 CPU_SYSCTL(dvfs_control_ready,"DVFS control readiness; false until firmware ownership/liveness and thermal policy exist");
 #undef CPU_SYSCTL
+static int sspm_recent_sysctl SYSCTL_HANDLER_ARGS
+{
+    /* Check expiry when observed, even if this clock worker has stopped. */
+    int alive=mt6762_sspm_alive_recent();
+    return sysctl_handle_int(oidp,&alive,0,req);
+}
+SYSCTL_PROC(_kern_redwood,OID_AUTO,mt6762_sspm_platform_alive,
+    CTLTYPE_INT|CTLFLAG_RD|CTLFLAG_LOCKED,NULL,0,sspm_recent_sysctl,"I",
+    "Unexpired active PLATFORM response, not CPU-DVFS readiness");
 
 static int flag(const char *name)
 {uint32_t v;return !mt6762_handoff_u32(name,&v) && v==1;}
@@ -121,7 +128,6 @@ static int table(void)
 }
 static void poll(void)
 {
-    sspm_platform_alive=mt6762_sspm_alive_recent();
     clock_valid=table_valid=0;
     cpu0_khz=cpu4_khz=cci_khz=-1;
     vproc_programmed_uv=vsram_programmed_uv=-1;

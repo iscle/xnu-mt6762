@@ -27,8 +27,8 @@ static int thermal_sysctl SYSCTL_HANDLER_ARGS
     uint64_t now;
     int value=-273000;
     (void)oidp;(void)arg1;
-    clock_get_uptime(&now);
     lck_mtx_lock(&thermal_lock);
+    clock_get_uptime(&now);
     if(arg2<8) {
         if((observed_mask&(1u<<arg2)) && now<deadlines[arg2])value=temperatures[arg2];
     }else {
@@ -56,8 +56,8 @@ int mt6762_pmic_temperature_read(unsigned sensor,int *mc)
     int e=-ENXIO;
     uint64_t now;
     if(sensor>=3 || !mc)return -EINVAL;
-    clock_get_uptime(&now);
     lck_mtx_lock(&thermal_lock);
+    clock_get_uptime(&now);
     if((observed_mask&(1u<<sensor)) && now<deadlines[sensor]) {*mc=temperatures[sensor];e=0;}
     lck_mtx_unlock(&thermal_lock);
     return e;

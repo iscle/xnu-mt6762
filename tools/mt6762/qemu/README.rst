@@ -1,7 +1,7 @@
 Reproducing the local MT6762 QEMU experiment
 ==========================================
 
-These eight patches reproduce the local research machine used for MT6762
+These nine patches reproduce the local research machine used for MT6762
 bring-up. They contain source code and documentation only: no phone firmware,
 iOS files, credentials, personal partitions, or built binaries.
 
@@ -17,9 +17,10 @@ Source provenance
   ``dafbf7f83d81cea79804ec731a6214a47e53d646``,
   ``6c4cfc34f2c08da2bb709be5ba8a3224152273bf``,
   ``1cefe6067521f188fffbe2070bd520501a8c60fe``,
-  ``63ec9fcb45cb0cf59214a3d2b676f408d724cf62`` and
-  ``78122652f1258b3900d7fd721c9b1df06d4122d4``.
-* Resulting Git tree: ``aafff1a6302dbf3199b1c4de937899f384831435``.
+  ``63ec9fcb45cb0cf59214a3d2b676f408d724cf62``,
+  ``78122652f1258b3900d7fd721c9b1df06d4122d4`` and
+  ``49d41542f0ccfed448d90c9ad4397a592292d027``.
+* Resulting Git tree: ``b49e912496e9e0b42294f5998473ab9a0c0a18ea``.
 
 ``apply.sh`` verifies the patch SHA-256 hashes, fetches that exact upstream
 commit, applies the patch series in order, and verifies the final tree.
@@ -145,3 +146,10 @@ The eighth patch adds ``lab-gauge`` with a synthetic initialized snapshot
 engine and counter progression. Its tests verify latch commands, failures
 and rejected destructive writes. Calibration/current values are fixtures;
 no battery capacity, SOC or lifetime behavior is modeled.
+
+The ninth patch adds ``lab-bif`` for raw-pair generation and immutable TDET
+ownership checks. No calibrated battery temperature is modeled. Defaults
+retain80us NTC/BIF conversion timing; ``lab-adc-delay-us`` separately selects
+a slower synthetic protocol fixture without changing guest freshness rules.
+``test_lab_bif.py`` covers transitions, admission/ownership faults, rejected
+TDET/trim writes and default absence.

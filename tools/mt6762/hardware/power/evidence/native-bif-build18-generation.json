@@ -1,0 +1,320 @@
+{
+  "synthetic_only": true,
+  "physical_hardware_tested": false,
+  "apple_userspace_used": false,
+  "native_kernel_build": 18,
+  "notes": [
+    "Default80us eightcore10second run accepted9 rawpairs without any generationrejections; that run does not itself prove retry.",
+    "Explicit2000us startupstale fault proved invalid publication and last_error-5/generationreject1 before external model faultclear. Subsequent unchanged native kernel accepted7 fresh pairs.",
+    "Retry does not write TDET or accept stale data; model fault clearing is an external synthetic action.",
+    "No calibrated battery temperature is published."
+  ],
+  "cases": [
+    {
+      "case": "queue/positive",
+      "result_sha256": "f2fbd0084edffb66ba07adc18ee85cb95e6f43054ac1f86d24ca73d2ba7661ea",
+      "serial_sha256": "3acb16e536d7752d878526e4ba6a6af11ef18924ac0fa80c3ab53cf7d47386cb",
+      "kernel_sha256": "346cbf6ea7a10b6a5a1778cf23e852974d89fb416de63e645f86bdadcb11ee7e",
+      "qemu_sha256": "bd081f2077f2d88f69e1436712c7765bceaf496ba06081ad4499ea9e353eb84c",
+      "cpu_count": 8,
+      "secondary_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "synthetic_adc_delay_override_us": 0,
+      "native_sysctls": {
+        "mt6762_power_valid": {
+          "value": 71,
+          "error": 0
+        },
+        "mt6762_power_errors": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_battery_adc_mv": {
+          "value": 4400,
+          "error": 0
+        },
+        "mt6762_ntc_adc_mv": {
+          "value": 615,
+          "error": 0
+        },
+        "mt6762_adc_voltage_samples": {
+          "value": 9,
+          "error": 0
+        },
+        "mt6762_adc_ntc_samples": {
+          "value": 9,
+          "error": 0
+        },
+        "mt6762_bif_raw": {
+          "value": 4089,
+          "error": 0
+        },
+        "mt6762_bif_ntc_raw": {
+          "value": 1400,
+          "error": 0
+        },
+        "mt6762_bif_pair_fresh": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_bif_samples": {
+          "value": 9,
+          "error": 0
+        },
+        "mt6762_bif_errors": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_bif_fault": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_bif_generation_rejections": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_bif_last_error": {
+          "value": 0,
+          "error": 0
+        }
+      },
+      "power_model": {
+        "enabled": true,
+        "synthetic": true,
+        "fault": 0,
+        "key_mask": 0,
+        "fsm": 0,
+        "commands": 862,
+        "reads": 835,
+        "writes": 27,
+        "rejected": 0,
+        "clears": 835,
+        "key_reads": 1050,
+        "adc_requests": [
+          9,
+          9
+        ],
+        "adc_completions": [
+          9,
+          9
+        ],
+        "thermal_enabled": false,
+        "thermal_calibration_synthetic": false,
+        "thermal_requests": [
+          0,
+          0,
+          0
+        ],
+        "thermal_completions": [
+          0,
+          0,
+          0
+        ],
+        "gauge_enabled": false,
+        "gauge_calibration_synthetic": false,
+        "gauge_control": 0,
+        "gauge_ticks": 0,
+        "gauge_snapshots": 0,
+        "gauge_commands": 0,
+        "bif_enabled": true,
+        "bif_config_synthetic": true,
+        "adc_delay_us": 0,
+        "bif_requests": 9,
+        "bif_completions": 9,
+        "bif_tdet_write_attempts": 0
+      },
+      "panic": false,
+      "fault_cleared": false,
+      "clear_seconds": null,
+      "rejection_before_clear": null
+    },
+    {
+      "case": "queue-slow/stale-clear",
+      "result_sha256": "605af1db7562946f726dcfd537087925e679b2fbb187f1a8cd882789c546d990",
+      "serial_sha256": "e026eaea14f1d3e780a353e733ae52026dbbffa9de37f1f0dbe4829554f41977",
+      "kernel_sha256": "346cbf6ea7a10b6a5a1778cf23e852974d89fb416de63e645f86bdadcb11ee7e",
+      "qemu_sha256": "bd081f2077f2d88f69e1436712c7765bceaf496ba06081ad4499ea9e353eb84c",
+      "cpu_count": 8,
+      "secondary_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "synthetic_adc_delay_override_us": 2000,
+      "native_sysctls": {
+        "mt6762_power_valid": {
+          "value": 71,
+          "error": 0
+        },
+        "mt6762_power_errors": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_battery_adc_mv": {
+          "value": 4400,
+          "error": 0
+        },
+        "mt6762_ntc_adc_mv": {
+          "value": 615,
+          "error": 0
+        },
+        "mt6762_adc_voltage_samples": {
+          "value": 8,
+          "error": 0
+        },
+        "mt6762_adc_ntc_samples": {
+          "value": 7,
+          "error": 0
+        },
+        "mt6762_bif_raw": {
+          "value": 4089,
+          "error": 0
+        },
+        "mt6762_bif_ntc_raw": {
+          "value": 1400,
+          "error": 0
+        },
+        "mt6762_bif_pair_fresh": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_bif_samples": {
+          "value": 7,
+          "error": 0
+        },
+        "mt6762_bif_errors": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_bif_fault": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_bif_generation_rejections": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_bif_last_error": {
+          "value": 0,
+          "error": 0
+        }
+      },
+      "power_model": {
+        "enabled": true,
+        "synthetic": true,
+        "fault": 0,
+        "key_mask": 0,
+        "fsm": 0,
+        "commands": 917,
+        "reads": 890,
+        "writes": 27,
+        "rejected": 0,
+        "clears": 890,
+        "key_reads": 1032,
+        "adc_requests": [
+          9,
+          9
+        ],
+        "adc_completions": [
+          9,
+          9
+        ],
+        "thermal_enabled": false,
+        "thermal_calibration_synthetic": false,
+        "thermal_requests": [
+          0,
+          0,
+          0
+        ],
+        "thermal_completions": [
+          0,
+          0,
+          0
+        ],
+        "gauge_enabled": false,
+        "gauge_calibration_synthetic": false,
+        "gauge_control": 0,
+        "gauge_ticks": 0,
+        "gauge_snapshots": 0,
+        "gauge_commands": 0,
+        "bif_enabled": true,
+        "bif_config_synthetic": true,
+        "adc_delay_us": 2000,
+        "bif_requests": 9,
+        "bif_completions": 9,
+        "bif_tdet_write_attempts": 0
+      },
+      "panic": false,
+      "fault_cleared": true,
+      "clear_seconds": 0.912,
+      "rejection_before_clear": {
+        "native": {
+          "mt6762_bif_raw": -1,
+          "mt6762_bif_ntc_raw": -1,
+          "mt6762_bif_pair_fresh": 0,
+          "mt6762_bif_samples": 0,
+          "mt6762_bif_errors": 1,
+          "mt6762_bif_fault": 0,
+          "mt6762_bif_generation_rejections": 1,
+          "mt6762_bif_last_error": -5
+        },
+        "power_model": {
+          "enabled": true,
+          "synthetic": true,
+          "fault": 22,
+          "key_mask": 0,
+          "fsm": 0,
+          "commands": 56,
+          "reads": 53,
+          "writes": 3,
+          "rejected": 0,
+          "clears": 53,
+          "key_reads": 12,
+          "adc_requests": [
+            1,
+            1
+          ],
+          "adc_completions": [
+            1,
+            1
+          ],
+          "thermal_enabled": false,
+          "thermal_calibration_synthetic": false,
+          "thermal_requests": [
+            0,
+            0,
+            0
+          ],
+          "thermal_completions": [
+            0,
+            0,
+            0
+          ],
+          "gauge_enabled": false,
+          "gauge_calibration_synthetic": false,
+          "gauge_control": 0,
+          "gauge_ticks": 0,
+          "gauge_snapshots": 0,
+          "gauge_commands": 0,
+          "bif_enabled": true,
+          "bif_config_synthetic": true,
+          "adc_delay_us": 2000,
+          "bif_requests": 1,
+          "bif_completions": 1,
+          "bif_tdet_write_attempts": 0
+        }
+      }
+    }
+  ]
+}

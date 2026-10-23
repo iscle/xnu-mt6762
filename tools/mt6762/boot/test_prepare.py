@@ -122,6 +122,18 @@ class PrepareTests(unittest.TestCase):
             self.assertEqual(struct.unpack('<I', handoff[key])[0],value)
         with self.assertRaises(ValueError): p.make_adt(bytes(64), native_lab_gauge=True)
 
+    def test_bif_handoff_is_explicit_and_readonly_tdet(self):
+        tree, _ = parse_adt(p.make_adt(bytes(64), native_lab_i2c=True,
+                           native_lab_power=True, native_lab_bif=True))
+        chosen = next(n for n in tree['children'] if n['name'] == b'chosen\0')
+        handoff = next(n for n in chosen['children'] if n['name'] == b'mt6762-handoff\0')
+        for key,value in {'bif-adc-owned':1, 'baton-tdet-owned':1, 'bif-trim-verified':1,
+                'bif-tdet':4, 'bif-sw-gain-trim':0x4000, 'bif-sw-offset-trim':0}.items():
+            self.assertEqual(struct.unpack('<I', handoff[key])[0],value)
+        for n in (0,1,2,5,7,9,11,12):
+            self.assertEqual(struct.unpack('<I', handoff['bif-adc-con'+str(n)])[0],0)
+        with self.assertRaises(ValueError): p.make_adt(bytes(64), native_lab_bif=True)
+
     def test_valid_macho(self):
         m = p.parse_macho(fixture())
         self.assertEqual(m['entry'], p.VIRT + 0x3004200)

@@ -1,0 +1,454 @@
+From 49d41542f0ccfed448d90c9ad4397a592292d027 Mon Sep 17 00:00:00 2001
+From: MT6762 local experiment <mt6762-build@localhost>
+Date: Sat, 24 Oct 2026 00:51:07 +0200
+Subject: [PATCH] arm: add explicit BIF generation and ownership laboratory
+
+AI-assisted local experiment, not intended for upstream submission. Model immutable synthetic BIF calibration and TDET state, fresh ADC transitions and scoped failures. An explicit immutable timing override separates protocol tests from unchanged default conversion timing.
+---
+ docs/system/arm/mt6762.rst        | 24 +++++++++
+ hw/arm/mt6762.c                   | 58 +++++++++++++++++++++-
+ hw/arm/mt6762_lab_power.c         | 82 ++++++++++++++++++++++++-------
+ include/hw/arm/mt6762_lab_power.h | 10 ++++
+ tests/mt6762/test_lab_bif.py      | 54 ++++++++++++++++++++
+ tests/mt6762/test_lab_power.py    |  5 +-
+ 6 files changed, 212 insertions(+), 21 deletions(-)
+ create mode 100644 tests/mt6762/test_lab_bif.py
+
+diff --git a/docs/system/arm/mt6762.rst b/docs/system/arm/mt6762.rst
+index d67b723..8d09ee5 100644
+--- a/docs/system/arm/mt6762.rst
++++ b/docs/system/arm/mt6762.rst
+@@ -269,3 +269,27 @@ commands, progression, all faults, rejected destructive writes and default
+ absence. The XNU loader's ``--native-lab-gauge`` asserts only the matching
+ synthetic calibration/ownership contract. These values must never be copied
+ into a physical-phone handoff without independent live validation.
++
++Explicit synthetic BIF raw-pair diagnostics
++------------------------------------------
++
++``lab-bif=on`` requires ``lab-power=on``. It supplies invented, already-clear
++TDET/configuration words and a raw BIF output4089, paired with raw NTC1400.
++TDET, ADC trim and configuration writes remain rejected. No battery
++thermistor calibration or temperature is provided. Read-only state reports
++requests, completions and attempted TDET writes; native diagnostic runs must
++leave the latter at zero.
++
++Faults ``bif-tdet-set``, ``bif-config``, ``bif-timeout``, ``bif-stale``,
++``bif-rail`` and ``bif-tdet-changed`` exercise admission, conversion and
++post-conversion ownership checks. ``adc-stale`` affects baseline battery/NTC
++READY generation. ``tests/mt6762/test_lab_bif.py`` checks each independently.
++
++Default NTC/BIF completion remains80 virtual us. The optional immutable
++``lab-adc-delay-us=2000`` slows only those two channels for a separately
++identified protocol test. Valid values are0 (default) or80..10000 and require
++``lab-power``. It does not force READY-low on reads or alter native freshness
++checks. Eight-core and single-core native build17 runs missed the default
++READY-low transition and correctly rejected the raw pair; the explicit
++2000us fixture subsequently exercised successful raw-pair acquisition.
++Neither timing establishes physical PMIC behavior.
+diff --git a/hw/arm/mt6762.c b/hw/arm/mt6762.c
+index 9ae7878..0e46fc4 100644
+--- a/hw/arm/mt6762.c
++++ b/hw/arm/mt6762.c
+@@ -61,7 +61,8 @@ struct MT6762MachineState {
+     bool lab_sspm;
+     unsigned lab_sspm_fault;
+     MT6762SSPMLab *sspm;
+-    bool lab_power, lab_pmic_thermal, lab_gauge;
++    bool lab_power, lab_pmic_thermal, lab_gauge, lab_bif;
++    uint64_t lab_adc_delay_us;
+     unsigned lab_power_fault;
+     uint64_t lab_key_mask;
+     MT6762PowerLab *power;
+@@ -296,6 +297,14 @@ static void mt6762_init(MachineState *ms)
+         s->sspm = mt6762_sspm_lab_create(OBJECT(s), sysmem);
+         mt6762_sspm_lab_configure(s->sspm, s->lab_sspm_fault);
+     }
++    if (s->lab_adc_delay_us && !s->lab_power) {
++        error_report("lab-adc-delay-us requires lab-power");
++        exit(EXIT_FAILURE);
++    }
++    if (s->lab_bif && !s->lab_power) {
++        error_report("lab-bif requires lab-power");
++        exit(EXIT_FAILURE);
++    }
+     if (s->lab_gauge && !s->lab_power) {
+         error_report("lab-gauge requires lab-power");
+         exit(EXIT_FAILURE);
+@@ -308,6 +317,8 @@ static void mt6762_init(MachineState *ms)
+         s->power = mt6762_lab_power_create(OBJECT(s), sysmem);
+         mt6762_lab_power_set_thermal(s->power, s->lab_pmic_thermal);
+         mt6762_lab_power_set_gauge(s->power, s->lab_gauge);
++        mt6762_lab_power_set_bif(s->power, s->lab_bif);
++        mt6762_lab_power_set_adc_delay_us(s->power, s->lab_adc_delay_us);
+         mt6762_lab_power_configure(s->power, s->lab_power_fault);
+         mt6762_lab_power_set_keys(s->power, s->lab_key_mask);
+     }
+@@ -535,12 +546,29 @@ static void mt6762_set_lab_gauge(Object *obj, bool value, Error **errp)
+     s->lab_gauge = value;
+ }
+ 
++static bool mt6762_get_lab_bif(Object *obj, Error **errp)
++{
++    return MT6762_MACHINE(obj)->lab_bif;
++}
++
++static void mt6762_set_lab_bif(Object *obj, bool value, Error **errp)
++{
++    MT6762MachineState *s = MT6762_MACHINE(obj);
++    if (s->initialized) {
++        error_setg(errp, "lab-bif must be selected before initialization");
++        return;
++    }
++    s->lab_bif = value;
++}
++
+ static const char *const mt6762_power_fault_names[] = {
+     "none", "stall", "init-loss", "bad-id", "adc-timeout", "adc-rail",
+     "keypad-disabled", "thermal-timeout", "thermal-stale",
+     "thermal-uncalibrated", "thermal-bad-degc", "thermal-mux", "thermal-rail",
+     "gauge-timeout", "gauge-latch-stuck", "gauge-stale", "gauge-clock",
+-    "gauge-calibration", "gauge-counter-stuck"
++    "gauge-calibration", "gauge-counter-stuck",
++    "bif-tdet-set", "bif-config", "bif-timeout", "bif-stale", "bif-rail",
++    "bif-tdet-changed", "adc-stale"
+ };
+ 
+ static char *mt6762_get_power_fault(Object *obj, Error **errp)
+@@ -565,6 +593,28 @@ static void mt6762_set_power_fault(Object *obj, const char *value, Error **errp)
+     error_setg(errp, "unknown lab-power-fault");
+ }
+ 
++static void mt6762_get_adc_delay(Object *obj, Visitor *v, const char *name,
++                                  void *opaque, Error **errp)
++{
++    uint64_t value = MT6762_MACHINE(obj)->lab_adc_delay_us;
++    visit_type_uint64(v, name, &value, errp);
++}
++
++static void mt6762_set_adc_delay(Object *obj, Visitor *v, const char *name,
++                                  void *opaque, Error **errp)
++{
++    MT6762MachineState *s = MT6762_MACHINE(obj);
++    uint64_t value;
++    if (!visit_type_uint64(v, name, &value, errp)) {
++        return;
++    }
++    if (s->initialized || (value && (value < 80 || value > 10000))) {
++        error_setg(errp, "lab-adc-delay-us is pre-init only, 0 or 80..10000");
++        return;
++    }
++    s->lab_adc_delay_us = value;
++}
++
+ static char *mt6762_get_power_state(Object *obj, Error **errp)
+ {
+     return mt6762_lab_power_state(MT6762_MACHINE(obj)->power);
+@@ -607,6 +657,10 @@ static void mt6762_class_init(ObjectClass *oc, const void *data)
+     mc->default_cpus = 8;
+     mc->no_floppy = 1;
+     mc->no_cdrom = 1;
++    object_class_property_add(oc, "lab-adc-delay-us", "uint64",
++                              mt6762_get_adc_delay, mt6762_set_adc_delay, NULL, NULL);
++    object_class_property_add_bool(oc, "lab-bif", mt6762_get_lab_bif,
++                                   mt6762_set_lab_bif);
+     object_class_property_add_bool(oc, "lab-gauge", mt6762_get_lab_gauge,
+                                    mt6762_set_lab_gauge);
+     object_class_property_add_bool(oc, "lab-pmic-thermal", mt6762_get_lab_thermal,
+diff --git a/hw/arm/mt6762_lab_power.c b/hw/arm/mt6762_lab_power.c
+index 77f1e90..ef588ab 100644
+--- a/hw/arm/mt6762_lab_power.c
++++ b/hw/arm/mt6762_lab_power.c
+@@ -17,30 +17,35 @@
+ 
+ struct MT6762PowerLab {
+     MemoryRegion pwrap, keypad;
+-    QEMUTimer *transaction, *adc[5];
++    QEMUTimer *transaction, *adc[6];
+     bool thermal_enabled;
+-    bool gauge_enabled;
++    bool gauge_enabled, bif_enabled;
++    unsigned adc_delay_us;
++    uint64_t bif_tdet_writes;
+     uint16_t gauge_control;
+     uint64_t gauge_ticks, gauge_snapshots, gauge_commands;
+     unsigned fault, keys, fsm;
+     uint32_t command;
+-    uint16_t data, adc_data[5];
++    uint16_t data, adc_data[6];
+     uint64_t commands, reads, writes, rejected, clears, key_reads;
+-    uint64_t adc_requests[5], adc_completions[5];
++    uint64_t adc_requests[6], adc_completions[6];
+ };
+ 
+ static void adc_complete(MT6762PowerLab *s, unsigned channel)
+ {
+-    static const uint16_t values[5] = { 26700, 1400, 1588, 1526, 1534 };
++    static const uint16_t values[6] = { 26700, 1400, 1588, 1526, 1534, 4089 };
+     if (s->fault == MT6762_POWER_FAULT_ADC_TIMEOUT ||
+         s->fault == MT6762_POWER_FAULT_INIT_LOSS ||
+-        (channel >= 2 && (!s->thermal_enabled ||
+-         s->fault == MT6762_POWER_FAULT_THERMAL_TIMEOUT))) {
++        (channel >= 2 && channel < 5 && (!s->thermal_enabled ||
++         s->fault == MT6762_POWER_FAULT_THERMAL_TIMEOUT)) ||
++        (channel == 5 && (!s->bif_enabled ||
++         s->fault == MT6762_POWER_FAULT_BIF_TIMEOUT))) {
+         return;
+     }
+     s->adc_data[channel] = 0x8000 |
+         (s->fault == MT6762_POWER_FAULT_ADC_RAIL ||
+-         (channel >= 2 && s->fault == MT6762_POWER_FAULT_THERMAL_RAIL) ?
++         (channel >= 2 && channel < 5 && s->fault == MT6762_POWER_FAULT_THERMAL_RAIL) ||
++         (channel == 5 && s->fault == MT6762_POWER_FAULT_BIF_RAIL) ?
+          0 : values[channel]);
+     s->adc_completions[channel]++;
+ }
+@@ -49,6 +54,7 @@ static void adc1_complete(void *opaque) { adc_complete(opaque, 1); }
+ static void adc2_complete(void *opaque) { adc_complete(opaque, 2); }
+ static void adc3_complete(void *opaque) { adc_complete(opaque, 3); }
+ static void adc4_complete(void *opaque) { adc_complete(opaque, 4); }
++static void adc5_complete(void *opaque) { adc_complete(opaque, 5); }
+ 
+ static uint16_t pmic_read(MT6762PowerLab *s, uint16_t address)
+ {
+@@ -64,6 +70,20 @@ static uint16_t pmic_read(MT6762PowerLab *s, uint16_t address)
+     case 0x108e:
+         return s->adc_data[1];
+     }
++    if (s->bif_enabled) {
++        /* Explicit synthetic trim/configuration snapshot, not physical defaults. */
++        switch (address) {
++        case 0x1236:
++            return s->fault == MT6762_POWER_FAULT_BIF_TDET_SET ||
++                (s->fault == MT6762_POWER_FAULT_BIF_TDET_CHANGED &&
++                 s->adc_requests[5]) ? 6 : 4;
++        case 0x10de:
++            return s->fault == MT6762_POWER_FAULT_BIF_CONFIG ? 0x4001 : 0x4000;
++        case 0x10e0: case 0x1120: case 0x1126: case 0x1128: case 0x112e:
++        case 0x1132: case 0x1136: case 0x113a: case 0x113c: return 0;
++        case 0x109e: return s->adc_data[5];
++        }
++    }
+     if (s->gauge_enabled) {
+         switch (address) {
+         case 0xc0c: return s->fault == MT6762_POWER_FAULT_GAUGE_CLOCK ? 0x18 : 0;
+@@ -106,7 +126,10 @@ static uint16_t pmic_read(MT6762PowerLab *s, uint16_t address)
+ }
+ static void pmic_write(MT6762PowerLab *s, uint16_t address, uint16_t data)
+ {
+-    unsigned channel = 5;
++    unsigned channel = 6;
++    if (s->bif_enabled && address == 0x1236) {
++        s->bif_tdet_writes++; /* All TDET writes remain rejected. */
++    }
+     if (s->gauge_enabled && address == 0xd0a &&
+         s->fault != MT6762_POWER_FAULT_GAUGE_STALE) {
+         unsigned phase = s->gauge_control & 9;
+@@ -141,6 +164,8 @@ static void pmic_write(MT6762PowerLab *s, uint16_t address, uint16_t data)
+     }
+     if (address == 0x110e && (data == 2 || data == 8)) {
+         channel = data == 2 ? 0 : 1;
++    } else if (s->bif_enabled && address == 0x110e && data == 2048) {
++        channel = 5;
+     } else if (s->thermal_enabled) {
+         if (address == 0x110e && data == 16) {
+             channel = 2;
+@@ -148,12 +173,19 @@ static void pmic_write(MT6762PowerLab *s, uint16_t address, uint16_t data)
+             channel = data == 32 ? 3 : 4;
+         }
+     }
+-    if (channel < 5) {
+-        s->adc_data[channel] = channel >= 2 &&
+-            s->fault == MT6762_POWER_FAULT_THERMAL_STALE ? 0x8000 | 1500 : 0;
++    if (channel < 6) {
++        bool stale = (channel >= 2 && channel < 5 &&
++                      s->fault == MT6762_POWER_FAULT_THERMAL_STALE) ||
++                     (channel == 5 && s->fault == MT6762_POWER_FAULT_BIF_STALE) ||
++                     (channel < 2 && s->fault == MT6762_POWER_FAULT_ADC_STALE);
++        s->adc_data[channel] = stale ? 0x8000 | 1500 : 0;
+         s->adc_requests[channel]++;
+-        timer_mod(s->adc[channel], qemu_clock_get_ns(QEMU_CLOCK_VIRTUAL) +
+-                  (channel == 0 ? 1280000 : 80000));
++        uint64_t delay_ns = channel == 0 ? 1280000 : 80000;
++        if (s->adc_delay_us &&
++            (channel == 1 || channel == 5)) {
++            delay_ns = (uint64_t)s->adc_delay_us * 1000;
++        }
++        timer_mod(s->adc[channel], qemu_clock_get_ns(QEMU_CLOCK_VIRTUAL) + delay_ns);
+         return;
+     }
+     s->rejected++;
+@@ -241,7 +273,7 @@ static void power_reset(void *opaque)
+ {
+     MT6762PowerLab *s = opaque;
+     timer_del(s->transaction);
+-    for (unsigned i = 0; i < 5; i++) {
++    for (unsigned i = 0; i < 6; i++) {
+         timer_del(s->adc[i]);
+         s->adc_data[i] = 0;
+         s->adc_requests[i] = s->adc_completions[i] = 0;
+@@ -249,6 +281,7 @@ static void power_reset(void *opaque)
+     s->keys = s->fsm = s->command = s->data = 0;
+     s->commands = s->reads = s->writes = s->rejected = s->clears = s->key_reads = 0;
+     s->gauge_control = 0;
++    s->bif_tdet_writes = 0;
+     s->gauge_ticks = s->gauge_snapshots = s->gauge_commands = 0;
+ }
+ MT6762PowerLab *mt6762_lab_power_create(Object *owner, MemoryRegion *memory)
+@@ -260,6 +293,7 @@ MT6762PowerLab *mt6762_lab_power_create(Object *owner, MemoryRegion *memory)
+     s->adc[2] = timer_new_ns(QEMU_CLOCK_VIRTUAL, adc2_complete, s);
+     s->adc[3] = timer_new_ns(QEMU_CLOCK_VIRTUAL, adc3_complete, s);
+     s->adc[4] = timer_new_ns(QEMU_CLOCK_VIRTUAL, adc4_complete, s);
++    s->adc[5] = timer_new_ns(QEMU_CLOCK_VIRTUAL, adc5_complete, s);
+     memory_region_init_io(&s->pwrap, owner, &pwrap_ops, s,
+                           "mt6762-lab-pwrap", 0x1000);
+     memory_region_init_io(&s->keypad, owner, &keypad_ops, s,
+@@ -278,6 +312,14 @@ void mt6762_lab_power_set_gauge(MT6762PowerLab *s, bool enabled)
+ {
+     s->gauge_enabled = enabled;
+ }
++void mt6762_lab_power_set_bif(MT6762PowerLab *s, bool enabled)
++{
++    s->bif_enabled = enabled;
++}
++void mt6762_lab_power_set_adc_delay_us(MT6762PowerLab *s, uint64_t delay_us)
++{
++    s->adc_delay_us = (unsigned)delay_us;
++}
+ void mt6762_lab_power_configure(MT6762PowerLab *s, unsigned fault)
+ {
+     s->fault = fault < MT6762_POWER_FAULT_COUNT ? fault : MT6762_POWER_FAULT_NONE;
+@@ -303,7 +345,10 @@ char *mt6762_lab_power_state(MT6762PowerLab *s)
+         "\"thermal_completions\":[%" PRIu64 ",%" PRIu64 ",%" PRIu64 "],"
+         "\"gauge_enabled\":%s,\"gauge_calibration_synthetic\":%s,"
+         "\"gauge_control\":%u,\"gauge_ticks\":%" PRIu64 ","
+-        "\"gauge_snapshots\":%" PRIu64 ",\"gauge_commands\":%" PRIu64 "}",
++        "\"gauge_snapshots\":%" PRIu64 ",\"gauge_commands\":%" PRIu64 ","
++        "\"bif_enabled\":%s,\"bif_config_synthetic\":%s,\"adc_delay_us\":%u,"
++        "\"bif_requests\":%" PRIu64 ",\"bif_completions\":%" PRIu64 ","
++        "\"bif_tdet_write_attempts\":%" PRIu64 "}",
+         s->fault, s->keys, s->fsm, s->commands, s->reads, s->writes,
+         s->rejected, s->clears, s->key_reads, s->adc_requests[0],
+         s->adc_requests[1], s->adc_completions[0], s->adc_completions[1],
+@@ -312,5 +357,8 @@ char *mt6762_lab_power_state(MT6762PowerLab *s)
+         s->adc_completions[2], s->adc_completions[3], s->adc_completions[4],
+         s->gauge_enabled ? "true" : "false", s->gauge_enabled ? "true" : "false",
+         s->fault == MT6762_POWER_FAULT_GAUGE_STALE ? 0x8000 : s->gauge_control,
+-        s->gauge_ticks, s->gauge_snapshots, s->gauge_commands);
++        s->gauge_ticks, s->gauge_snapshots, s->gauge_commands,
++        s->bif_enabled ? "true" : "false", s->bif_enabled ? "true" : "false",
++        s->adc_delay_us,
++        s->adc_requests[5], s->adc_completions[5], s->bif_tdet_writes);
+ }
+diff --git a/include/hw/arm/mt6762_lab_power.h b/include/hw/arm/mt6762_lab_power.h
+index 2cb79d1..fcf9121 100644
+--- a/include/hw/arm/mt6762_lab_power.h
++++ b/include/hw/arm/mt6762_lab_power.h
+@@ -23,11 +23,21 @@ enum {
+     MT6762_POWER_FAULT_GAUGE_CLOCK,
+     MT6762_POWER_FAULT_GAUGE_CALIBRATION,
+     MT6762_POWER_FAULT_GAUGE_COUNTER_STUCK,
++    MT6762_POWER_FAULT_BIF_TDET_SET,
++    MT6762_POWER_FAULT_BIF_CONFIG,
++    MT6762_POWER_FAULT_BIF_TIMEOUT,
++    MT6762_POWER_FAULT_BIF_STALE,
++    MT6762_POWER_FAULT_BIF_RAIL,
++    MT6762_POWER_FAULT_BIF_TDET_CHANGED,
++    MT6762_POWER_FAULT_ADC_STALE,
+     MT6762_POWER_FAULT_COUNT,
+ };
+ MT6762PowerLab *mt6762_lab_power_create(Object *owner, MemoryRegion *memory);
+ void mt6762_lab_power_set_thermal(MT6762PowerLab *s, bool enabled);
+ void mt6762_lab_power_set_gauge(MT6762PowerLab *s, bool enabled);
++void mt6762_lab_power_set_bif(MT6762PowerLab *s, bool enabled);
++/* Explicit synthetic NTC/BIF timing override, 0 retains stock-shaped80us. */
++void mt6762_lab_power_set_adc_delay_us(MT6762PowerLab *s, uint64_t delay_us);
+ void mt6762_lab_power_configure(MT6762PowerLab *s, unsigned fault);
+ /* Bits0/1/2: power/volume-up/volume-down. Synthetic levels, not host keys. */
+ void mt6762_lab_power_set_keys(MT6762PowerLab *s, unsigned mask);
+diff --git a/tests/mt6762/test_lab_bif.py b/tests/mt6762/test_lab_bif.py
+new file mode 100644
+index 0000000..af69071
+--- /dev/null
++++ b/tests/mt6762/test_lab_bif.py
+@@ -0,0 +1,54 @@
++#!/usr/bin/env python3
++"""Opt-in raw BIF fixture; paused CPU, no real PMIC or temperature calibration."""
++import argparse,tempfile
++from pathlib import Path
++from test_lab_power import PowerLab
++
++def main():
++ p=argparse.ArgumentParser(description=__doc__)
++ p.add_argument('--qemu',type=Path,required=True);p.add_argument('--dtb',type=Path,required=True)
++ a=p.parse_args()
++ for fault in ['none','bif-tdet-set','bif-config','bif-timeout','bif-stale',
++               'bif-rail','bif-tdet-changed','adc-stale','absent']:
++  with tempfile.TemporaryDirectory(prefix='mt6762-bif-qtest-') as d:
++   lab=PowerLab(a.qemu.resolve(),a.dtb.resolve(),d,bif=fault!='absent')
++   try:
++    if fault=='absent':
++     assert not lab.state()['bif_enabled'] and lab.pmic(0x109e)==0xffff
++     n=lab.state()['rejected'];lab.pmic(0x110e,2048)
++     assert lab.state()['rejected']==n+1
++     continue
++    lab.fault(fault)
++    assert lab.pmic(0x1236)==(6 if fault=='bif-tdet-set' else 4)
++    assert lab.pmic(0x10de)==(0x4001 if fault=='bif-config' else 0x4000)
++    for reg in [0x10e0,0x1120,0x1126,0x1128,0x112e,0x1132,0x1136,0x113a,0x113c]:
++     assert lab.pmic(reg)==0
++    lab.pmic(0x110e,8)
++    assert bool(lab.pmic(0x108e)&0x8000)==(fault=='adc-stale')
++    lab.step(80000);assert lab.pmic(0x108e)==0x8000|1400
++    lab.pmic(0x110e,2048)
++    assert bool(lab.pmic(0x109e)&0x8000)==(fault=='bif-stale')
++    lab.step(80000)
++    value=lab.pmic(0x109e)
++    assert value==(0 if fault=='bif-timeout' else 0x8000 if fault=='bif-rail' else 0x8000|4089)
++    assert lab.pmic(0x1236)==(6 if fault in ['bif-tdet-set','bif-tdet-changed'] else 4)
++    state=lab.state();assert state['bif_requests']==1
++    assert state['bif_completions']==(0 if fault=='bif-timeout' else 1)
++    assert state['bif_tdet_write_attempts']==0
++    n=state['rejected'];before=lab.pmic(0x1236)
++    lab.pmic(0x1236,0);lab.pmic(0x10de,0)
++    assert lab.pmic(0x1236)==before and lab.state()['rejected']==n+2
++    assert lab.state()['bif_tdet_write_attempts']==1
++   finally:lab.close()
++ with tempfile.TemporaryDirectory(prefix='mt6762-bif-slow-qtest-') as d:
++  lab=PowerLab(a.qemu.resolve(),a.dtb.resolve(),d,bif=True,adc_delay_us=2000)
++  try:
++   assert lab.state()['adc_delay_us']==2000
++   for request,address,raw in [(8,0x108e,1400),(2048,0x109e,4089)]:
++    lab.pmic(0x110e,request);lab.step(80000)
++    assert not lab.pmic(address)&0x8000
++    lab.step(2000000);assert lab.pmic(address)==0x8000|raw
++   assert lab.state()['bif_tdet_write_attempts']==0
++  finally:lab.close()
++ print('PASS: synthetic BIF generation, faults, immutable TDET/trim and default absence')
++if __name__=='__main__':main()
+diff --git a/tests/mt6762/test_lab_power.py b/tests/mt6762/test_lab_power.py
+index 0e8305d..e58b3b7 100644
+--- a/tests/mt6762/test_lab_power.py
++++ b/tests/mt6762/test_lab_power.py
+@@ -14,7 +14,7 @@
+ 
+ 
+ class PowerLab(Lab):
+-    def __init__(self, qemu, dtb, directory, enabled=True, thermal=False, gauge=False):
++    def __init__(self, qemu, dtb, directory, enabled=True, thermal=False, gauge=False, bif=False, adc_delay_us=0):
+         directory = Path(directory)
+         self.log = (directory / 'qemu.log').open('w+')
+         self.qmp_path = directory / 'qmp.sock'
+@@ -22,7 +22,8 @@ def __init__(self, qemu, dtb, directory, enabled=True, thermal=False, gauge=Fals
+         self.process = subprocess.Popen([
+             str(qemu), '-M', 'mt6762' + (',lab-power=on' if enabled else '') +
+             (',lab-pmic-thermal=on' if thermal else '') +
+-            (',lab-gauge=on' if gauge else ''),
++            (',lab-gauge=on' if gauge else '') + (',lab-bif=on' if bif else '') +
++            (f',lab-adc-delay-us={adc_delay_us}' if adc_delay_us else ''),
+             '-accel', 'qtest', '-cpu', 'cortex-a53', '-m', '512M', '-smp', '1',
+             '-dtb', str(dtb), '-display', 'none', '-serial', 'null',
+             '-monitor', 'none', '-qmp', f'unix:{self.qmp_path},server=on,wait=off',
+-- 
+2.55.0
+

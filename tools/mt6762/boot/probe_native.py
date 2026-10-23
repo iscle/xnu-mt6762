@@ -19,6 +19,13 @@ def main():
                    help='Enable synthetic contacts after the static PID1 queue observer is ready')
     p.add_argument('--expect-handoff-rejected',action='store_true',
                    help='Negative test: malformed native handoff must remain headless and perform no transfers')
+    p.add_argument('--expect-bif-rejected',action='store_true',
+                   help='Negative BIF handoff case: reject admission before any BIF request')
+    p.add_argument('--bif-fault',choices=('none','tdet-set','config','timeout','stale','rail','tdet-changed','adc-stale'),default='none')
+    p.add_argument('--bif-clear-after-rejection',action='store_true',
+                   help='Clear an explicit startup fixture fault after native rejection; require recovery only for generation failures')
+    p.add_argument('--bif-fault-after-fresh',action='store_true',
+                   help='Inject BIF fault after actual native raw-pair freshness is observed')
     p.add_argument('--gauge-fault',choices=('none','timeout','latch-stuck','stale','clock','calibration','counter-stuck'),default='none')
     p.add_argument('--gauge-fault-after-valid',action='store_true',
                    help='Inject gauge fault after actual native current-valid1 is observed')
@@ -57,7 +64,18 @@ def main():
         raise ValueError('Gauge fault requires an isolated --native-lab-gauge run')
     if a.gauge_fault_after_valid and (a.gauge_fault=='none' or a.queue_mode!='cycle'):
         raise ValueError('Post-valid gauge fault requires --gauge-fault and --queue-mode cycle')
+    if a.bif_fault!='none' and (not m.get('native_lab_bif') or a.thermal_fault!='none' or a.gauge_fault!='none' or a.key_mode!='none'):
+        raise ValueError('BIF fault requires an isolated --native-lab-bif run')
+    if a.bif_fault_after_fresh and (a.bif_fault=='none' or a.queue_mode!='cycle'):
+        raise ValueError('Post-fresh BIF fault requires --bif-fault and --queue-mode cycle')
+    if a.bif_clear_after_rejection and (a.bif_fault=='none' or a.bif_fault_after_fresh or a.queue_mode!='cycle' or a.expect_bif_rejected):
+        raise ValueError('Fault clearing needs an isolated startup BIF fault and --queue-mode cycle')
+    if a.expect_bif_rejected and (not m.get('native_lab_bif') or a.bif_fault_after_fresh):
+        raise ValueError('BIF rejection check requires an explicitly malformed startup handoff')
+    bif_fault_name=a.bif_fault if a.bif_fault=='adc-stale' else 'bif-'+a.bif_fault
     command=list(m['command'])
+    if a.bif_fault!='none' and not a.bif_fault_after_fresh:
+        command[command.index('-M')+1]+=',lab-power-fault='+bif_fault_name
     if a.gauge_fault!='none' and not a.gauge_fault_after_valid:
         command[command.index('-M')+1]+=',lab-power-fault=gauge-'+a.gauge_fault
     if a.thermal_fault!='none' and not a.thermal_fault_after_fresh:
@@ -73,6 +91,8 @@ def main():
     framebuffer_untouched=None
     thermal_injected=False;thermal_injected_at=None
     gauge_injected=False;gauge_injected_at=None
+    bif_injected=False;bif_injected_at=None
+    bif_cleared=False;bif_cleared_at=None;bif_rejection_before_clear=None
     key_pressed=False;key_released=False;key_started=0
     expected_buttons={1,2,3} if a.key_mode=='cycle' else {1} if a.key_mode=='power-fault' else {2,3}
     qemu_sha256=hashlib.sha256(Path(m['command'][0]).read_bytes()).hexdigest()
@@ -109,6 +129,20 @@ def main():
                 if a.queue_mode!='none' and not queue_enabled and 'MT6762_QUEUE_READY' in observed:
                     execute('qom-set',path='/machine',property='lab-touch-sequence',value=True)
                     queue_enabled=True
+                bif_records=re.findall(r'MT6762_SYSCTL mt6762_bif_pair_fresh=(\d+) error=0',observed)
+                if a.bif_fault_after_fresh and not bif_injected and bif_records and int(bif_records[-1])==1:
+                    execute('qom-set',path='/machine',property='lab-power-fault',value=bif_fault_name)
+                    bif_injected=True;bif_injected_at=round(time.monotonic()-started,3)
+                if a.bif_clear_after_rejection and not bif_cleared:
+                    rejected={name:int(value) for name,value in re.findall(
+                        r'MT6762_SYSCTL (mt6762_bif_\w+)=(-?\d+) error=0',observed)}
+                    if (rejected.get('mt6762_bif_errors',0)>0 and
+                        rejected.get('mt6762_bif_pair_fresh')==0 and
+                        rejected.get('mt6762_bif_raw')==-1 and
+                        rejected.get('mt6762_bif_ntc_raw')==-1):
+                        bif_rejection_before_clear={'native':rejected,'power_model':snapshot.get('power')}
+                        execute('qom-set',path='/machine',property='lab-power-fault',value='none')
+                        bif_cleared=True;bif_cleared_at=round(time.monotonic()-started,3)
                 valid_records=re.findall(r'MT6762_SYSCTL mt6762_gauge_current_valid=(\d+) error=0',observed)
                 if a.gauge_fault_after_valid and not gauge_injected and valid_records and int(valid_records[-1])==1:
                     execute('qom-set',path='/machine',property='lab-power-fault',value='gauge-'+a.gauge_fault)
@@ -167,13 +201,21 @@ def main():
             if held.pop(key,None)==point:
                 matched_releases+=1
                 release_after_error |= error_offset>=0 and event['log_offset']>error_offset
-    result={'synthetic_model_only':True,'physical_hardware_tested':False,'kernel_sha256':m['kernel_sha256'],
+    result={'synthetic_model_only':True,
+            'synthetic_adc_delay_override_us':m.get('native_lab_adc_delay_us',0),'physical_hardware_tested':False,'kernel_sha256':m['kernel_sha256'],
             'qemu_binary_sha256':qemu_sha256,'synthetic_framebuffer_untouched':framebuffer_untouched,
             'native_display_accepted':'BGRA scanout verified; no panel reset' in serial,
             'display_startup_fault':a.display_fault,
             'native_brightness_accepted':'inherited DISP_PWM0 validated' in serial,
             'synthetic_display_state':snapshots[-1].get('display') if snapshots else None,
             'sspm_startup_fault':a.sspm_fault,
+            'expected_bif_handoff_rejection':a.expect_bif_rejected,
+            'bif_fault_cleared_after_rejection':bif_cleared,
+            'bif_fault_cleared_at_seconds':bif_cleared_at,
+            'bif_rejection_before_clear':bif_rejection_before_clear,
+            'bif_startup_fault':a.bif_fault if not a.bif_fault_after_fresh else 'none',
+            'bif_post_fresh_fault':a.bif_fault if a.bif_fault_after_fresh else 'none',
+            'bif_fault_injected_after_fresh':bif_injected,'bif_fault_injected_at_seconds':bif_injected_at,
             'gauge_startup_fault':a.gauge_fault if not a.gauge_fault_after_valid else 'none',
             'gauge_post_valid_fault':a.gauge_fault if a.gauge_fault_after_valid else 'none',
             'gauge_fault_injected_after_valid':gauge_injected,'gauge_fault_injected_at_seconds':gauge_injected_at,
@@ -221,6 +263,37 @@ def main():
         raise SystemExit(1)
     if m.get('native_lab_power') and not result['native_power_accepted']:
         raise SystemExit(1)
+    if a.bif_clear_after_rejection and not bif_cleared:
+        raise SystemExit(1)
+    if a.bif_fault_after_fresh and not bif_injected:
+        raise SystemExit(1)
+    if m.get('native_lab_bif'):
+        diagnostic=result['native_sysctls']
+        fields=['mt6762_bif_raw','mt6762_bif_ntc_raw','mt6762_bif_pair_fresh','mt6762_bif_samples','mt6762_bif_errors','mt6762_bif_fault']
+        if any(name not in diagnostic or diagnostic[name]['error'] for name in fields):
+            raise SystemExit(1)
+        values={name:diagnostic[name]['value'] for name in fields}
+        if result['synthetic_power_state']['bif_tdet_write_attempts']:
+            raise SystemExit(1)
+        if a.expect_bif_rejected:
+            if result['synthetic_power_state']['bif_requests'] or values['mt6762_bif_fault']!=1 or values['mt6762_bif_errors']<1 or values['mt6762_bif_raw']!=-1 or values['mt6762_bif_ntc_raw']!=-1 or values['mt6762_bif_pair_fresh']:
+                raise SystemExit(1)
+        elif a.bif_fault=='none' or (bif_cleared and a.bif_fault in ('stale','adc-stale')):
+            if values['mt6762_bif_raw']!=4089 or values['mt6762_bif_ntc_raw']!=1400 or values['mt6762_bif_pair_fresh']!=1 or values['mt6762_bif_samples']<1:
+                raise SystemExit(1)
+        elif values['mt6762_bif_raw']!=-1 or values['mt6762_bif_ntc_raw']!=-1 or values['mt6762_bif_pair_fresh']:
+            raise SystemExit(1)
+        if bif_cleared:
+            retryable=a.bif_fault in ('stale','adc-stale')
+            if values['mt6762_bif_fault'] != (0 if retryable else 1):
+                raise SystemExit(1)
+            if retryable and (bif_rejection_before_clear['native'].get('mt6762_bif_last_error')!=-5 or
+                              bif_rejection_before_clear['native'].get('mt6762_bif_generation_rejections',0)<1):
+                raise SystemExit(1)
+    if a.bif_fault=='adc-stale' and not bif_cleared:
+        diagnostic=result['native_sysctls']
+        if diagnostic['mt6762_battery_adc_mv']['value']!=-1 or diagnostic['mt6762_ntc_adc_mv']['value']!=-1 or diagnostic['mt6762_power_valid']['value']&4:
+            raise SystemExit(1)
     if a.gauge_fault_after_valid and not gauge_injected:
         raise SystemExit(1)
     if m.get('native_lab_gauge'):

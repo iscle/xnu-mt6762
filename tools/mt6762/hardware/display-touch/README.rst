@@ -307,3 +307,44 @@ and restore brought the total to four commits/16 writes with no rejected
 writes. Model applied0 uses EN0 with stored duty1. This validates pending-target
 and PWM lifecycle behavior; it does not independently measure framebuffer-copy
 suppression or establish physical DSI/panel sleep.
+
+Panel sleep transport investigation
+-----------------------------------
+
+``panel-lifecycle-audit.json`` separates the exact normal panel power cycle
+from the proximity branch. Normal suspend sends display-off/sleep-in, waits
+an additional120ms beyond the table delays, then disables GPIO150 bias. Normal
+resume includes bias programming, an AXS touch reset, panel reset and the full
+vendor initialization table. Proximity-enabled suspend skips sleep commands
+and bias shutdown entirely; its short resume table is not proof of wake from
+sleep with retained bias.
+
+Exact stock also stops the display path before panel suspend. Its DSI stop
+switches to command mode, waits idle and disables the HS clock. Consequently,
+sending sleep while inherited video scanout continues would be a new operating
+sequence requiring separate panel evidence.
+
+``mt6762_dsi_vm_core.h`` is an unwired, host-testable short-command transport
+for an already configured video-mode command facility. It supports only the
+four recovered short DCS commands with parameter00. An external admission
+callback must verify exclusive DSI/GCE/IRQ ownership and initialized physical
+state; this file provides no native ownership implementation. It changes only
+VM packet content, the VM trigger and its completion status. It uses the
+stock-corroborated write-zero-to-clear status semantics, observes fresh
+completion with bounded polling, and latches faults without automatic reset
+or retry. Other clocks, modes, rails, interrupts and scanout remain untouched.
+
+The corresponding synthetic test checks packets, trigger ordering, unrelated
+status preservation, stale completion, timeout and terminal faults. Controller
+completion does not acknowledge physical panel state. This transport is not
+wired into the working PWM/copy lifecycle and does not implement panel sleep.
+
+First-command admission is separate from ownership. The prototype requires an
+``admit_initial_idle`` callback backed by a verified idle handoff/drain; no
+physical implementation is supplied. It rejects an inherited high VM trigger
+before any writes, even if stale DONE is also high. Low START alone is not
+idle proof. A retained high trigger is accepted only after this transport's
+own command completed and final acknowledgement was read back cleared, with
+unchanged prior packet and no unexpected new DONE. Dropped final acknowledgement
+fails terminally. Tests cover inherited pending commands, absent idle proof,
+dropped final acknowledgement and invalidated retained-completion state.

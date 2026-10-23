@@ -12,7 +12,7 @@ mkdir -- "$output_dir"
 for helper in backlight_probe backlight_request display_power_probe battery_probe; do
     case "$helper" in battery_probe) source_file="$source_dir/power/$helper.c";;
         *) source_file="$source_dir/display-touch/$helper.c";; esac
-    "$IOS_CC" -arch arm64 -isysroot "$IOS_SDK" -O1 -Wall -Wextra -Werror \
+    "$IOS_CC" -arch arm64 -mcpu=cortex-a53 -isysroot "$IOS_SDK" -O1 -Wall -Wextra -Werror \
         -framework CoreFoundation -framework IOKit -o "$output_dir/$helper" "$source_file"
     case "$helper" in backlight_request|display_power_probe)
         "$LDID" "-S$source_dir/display-touch/backlight_request.entitlements" "$output_dir/$helper";;

@@ -192,6 +192,13 @@ they do not establish physical cache coherency or electrical correctness.
 The subsequent long native eight-CPU iOS run on kernel `77ef4533...` reached
 the Apple-logo display but hit a ticket-spinlock timeout. Its cause is not
 resolved; short SMP/input tests do not establish a stable eight-core GUI.
+Build16 later completed a 430-second eight-core run without a panic, but its
+final framebuffer still showed the Apple logo. Native workers completed
+27,446 touch DMA reads, 266 battery/NTC pairs and 377 gauge snapshots. Host
+thread counters recorded substantial scheduling delays; other existing host
+emulators were busy. This does not identify the earlier panic's cause or
+establish a completed GUI boot. The bounded result is recorded in
+[`native-gui8-build16.json`](../tools/mt6762/evidence/native-gui8-build16.json).
 The independent single-core native run reached the original iOS home screen
 at 430 seconds without a panic. Its private root issued no `rwtouch` commands;
 Apple backboardd logged keys and touches delivered through the PMIC/AXS native

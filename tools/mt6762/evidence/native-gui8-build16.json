@@ -1,0 +1,152 @@
+{
+  "synthetic_only": true,
+  "physical_tested": false,
+  "duration_seconds": 430,
+  "kernel_sha256": "03b65d7f33e5c3d5e275a638f301e67a4621c1994b63a7ea9ffa3aa1846f7d68",
+  "qemu_binary_sha256": "a73c442a61ed53cc754f4c5cb503628850d73e1db765f04bcd48f9523012f32c",
+  "run_completed": true,
+  "kernel_panic_observed": false,
+  "home_screen_observed": false,
+  "final_frame": "Apple logo, visually inspected",
+  "cpu_count": 8,
+  "native_input_actions_completed": 5,
+  "final_models": {
+    "lab-i2c-state": {
+      "enabled": true,
+      "synthetic": true,
+      "i2c0": {
+        "transactions": 27447,
+        "dma_reads": 27446,
+        "rx_bytes": 878274,
+        "last_status": 1
+      },
+      "i2c5": {
+        "transactions": 1334,
+        "dma_reads": 0,
+        "rx_bytes": 1333,
+        "last_status": 1,
+        "psc_control": 4,
+        "psc_status": 0
+      }
+    },
+    "lab-display-state": {
+      "enabled": true,
+      "synthetic": true,
+      "framebuffer_pa": 3705421824,
+      "fault": 0,
+      "applied_level": 512,
+      "enable": 1,
+      "duty": 512,
+      "pwm_writes": 0,
+      "commits": 0,
+      "rejected_writes": 0,
+      "reads": {
+        "spm": 18,
+        "mmsys": 2,
+        "ovl": 22,
+        "rdma": 2,
+        "dsi": 16,
+        "pwm": 14
+      }
+    },
+    "lab-power-state": {
+      "enabled": true,
+      "synthetic": true,
+      "fault": 0,
+      "key_mask": 0,
+      "fsm": 0,
+      "commands": 28076,
+      "reads": 26036,
+      "writes": 2040,
+      "rejected": 0,
+      "clears": 26036,
+      "key_reads": 31834,
+      "adc_requests": [
+        266,
+        266
+      ],
+      "adc_completions": [
+        266,
+        266
+      ],
+      "thermal_enabled": false,
+      "thermal_calibration_synthetic": false,
+      "thermal_requests": [
+        0,
+        0,
+        0
+      ],
+      "thermal_completions": [
+        0,
+        0,
+        0
+      ],
+      "gauge_enabled": true,
+      "gauge_calibration_synthetic": true,
+      "gauge_control": 0,
+      "gauge_ticks": 858,
+      "gauge_snapshots": 377,
+      "gauge_commands": 1508
+    }
+  },
+  "host_scheduling": {
+    "observations": 429,
+    "sched_schedstats_setting": "0",
+    "vcpu_deltas": [
+      {
+        "cpu": 0,
+        "runtime_seconds": 164.349,
+        "runqueue_wait_seconds": 134.538
+      },
+      {
+        "cpu": 1,
+        "runtime_seconds": 149.85,
+        "runqueue_wait_seconds": 132.999
+      },
+      {
+        "cpu": 2,
+        "runtime_seconds": 130.216,
+        "runqueue_wait_seconds": 129.98
+      },
+      {
+        "cpu": 3,
+        "runtime_seconds": 119.301,
+        "runqueue_wait_seconds": 127.237
+      },
+      {
+        "cpu": 4,
+        "runtime_seconds": 102.787,
+        "runqueue_wait_seconds": 122.0
+      },
+      {
+        "cpu": 5,
+        "runtime_seconds": 95.06,
+        "runqueue_wait_seconds": 117.95
+      },
+      {
+        "cpu": 6,
+        "runtime_seconds": 90.16,
+        "runqueue_wait_seconds": 114.927
+      },
+      {
+        "cpu": 7,
+        "runtime_seconds": 86.95,
+        "runqueue_wait_seconds": 111.4
+      }
+    ]
+  },
+  "limits": [
+    "No concurrent agent-owned build or QEMU run during this capture. Other existing host emulators were observed using eight cores immediately afterward; their workloads were left unchanged.",
+    "The host procfs setting was0 but runqueue counters nevertheless increased. Positive recorded deltas indicate scheduling delays; no precise cause is assigned to the previous guest timeout.",
+    "Post-run cgroup inspection showed no CPU quota or throttling in the shell ancestry; it is not a during-run configuration trace.",
+    "Passing the duration without panic does not establish a completed eight-core GUI boot or fix the earlier ticket-lock failure.",
+    "Guest lock timeout was unchanged; Apple cache/executable preservation checks were retained."
+  ],
+  "artifacts": {
+    "boot/native-gui8-build16/payload/gui430.models.json": "94fa3b6e057da1f2a6a6b720758eb5091fd9d2e0d455e7da63205e39cf9afa71",
+    "boot/native-gui8-build16/payload/gui430.host-scheduling.json": "141964cd91b09ad7122e2b01eef65c1fefb6a64b5f01dbe41478e07105a63e33",
+    "boot/native-gui8-build16/payload/gui430.serial.log": "f641b95541ee71fd124faa89b9394a5e05fc814f3769eda8b5cfd35d7a9823b8",
+    "boot/native-gui8-build16/payload/gui430.png": "860982503fbd9641439683dc421b082a9964156d6f57e72f435ddb246aa7f57b",
+    "boot/native-gui8-build16/payload/manifest.json": "93f9b21b9c747ad0249952f877690bbd72fcdced0e09d5979c5363c2696a6040"
+  }
+}

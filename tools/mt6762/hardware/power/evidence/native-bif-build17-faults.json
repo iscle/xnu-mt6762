@@ -1,0 +1,379 @@
+{
+  "kernel_sha256": "be1e15f97b8a071a8965e41106c1ada863f7a7e0cfa3bee8d8ff69abe68135ab",
+  "qemu_binary_sha256": "bd081f2077f2d88f69e1436712c7765bceaf496ba06081ad4499ea9e353eb84c",
+  "synthetic_only": true,
+  "physical_hardware_tested": false,
+  "duration_seconds_per_case": 6,
+  "cases": [
+    {
+      "label": "bif-tdet-set",
+      "assertions_passed": true,
+      "reason": null,
+      "expected_handoff_rejection": false,
+      "startup_fault": "tdet-set",
+      "post_fresh_fault": "none",
+      "fault_injected_after_fresh": false,
+      "model": {
+        "fault": 19,
+        "adc_requests": [
+          5,
+          5
+        ],
+        "adc_completions": [
+          5,
+          5
+        ],
+        "bif_enabled": true,
+        "bif_config_synthetic": true,
+        "adc_delay_us": 2000,
+        "bif_requests": 0,
+        "bif_completions": 0,
+        "bif_tdet_write_attempts": 0
+      },
+      "sysctls": {
+        "mt6762_power_valid": 71,
+        "mt6762_bif_raw": -1,
+        "mt6762_bif_ntc_raw": -1,
+        "mt6762_bif_pair_fresh": 0,
+        "mt6762_bif_samples": 0,
+        "mt6762_bif_errors": 1,
+        "mt6762_bif_fault": 1
+      },
+      "cpu_count": 8,
+      "panic": false
+    },
+    {
+      "label": "bif-config",
+      "assertions_passed": true,
+      "reason": null,
+      "expected_handoff_rejection": false,
+      "startup_fault": "config",
+      "post_fresh_fault": "none",
+      "fault_injected_after_fresh": false,
+      "model": {
+        "fault": 20,
+        "adc_requests": [
+          5,
+          5
+        ],
+        "adc_completions": [
+          5,
+          5
+        ],
+        "bif_enabled": true,
+        "bif_config_synthetic": true,
+        "adc_delay_us": 2000,
+        "bif_requests": 0,
+        "bif_completions": 0,
+        "bif_tdet_write_attempts": 0
+      },
+      "sysctls": {
+        "mt6762_power_valid": 71,
+        "mt6762_bif_raw": -1,
+        "mt6762_bif_ntc_raw": -1,
+        "mt6762_bif_pair_fresh": 0,
+        "mt6762_bif_samples": 0,
+        "mt6762_bif_errors": 1,
+        "mt6762_bif_fault": 1
+      },
+      "cpu_count": 8,
+      "panic": false
+    },
+    {
+      "label": "bif-timeout",
+      "assertions_passed": true,
+      "reason": null,
+      "expected_handoff_rejection": false,
+      "startup_fault": "timeout",
+      "post_fresh_fault": "none",
+      "fault_injected_after_fresh": false,
+      "model": {
+        "fault": 21,
+        "adc_requests": [
+          5,
+          1
+        ],
+        "adc_completions": [
+          5,
+          1
+        ],
+        "bif_enabled": true,
+        "bif_config_synthetic": true,
+        "adc_delay_us": 2000,
+        "bif_requests": 1,
+        "bif_completions": 0,
+        "bif_tdet_write_attempts": 0
+      },
+      "sysctls": {
+        "mt6762_power_valid": 71,
+        "mt6762_bif_raw": -1,
+        "mt6762_bif_ntc_raw": -1,
+        "mt6762_bif_pair_fresh": 0,
+        "mt6762_bif_samples": 0,
+        "mt6762_bif_errors": 1,
+        "mt6762_bif_fault": 1
+      },
+      "cpu_count": 8,
+      "panic": false
+    },
+    {
+      "label": "bif-stale",
+      "assertions_passed": true,
+      "reason": null,
+      "expected_handoff_rejection": false,
+      "startup_fault": "stale",
+      "post_fresh_fault": "none",
+      "fault_injected_after_fresh": false,
+      "model": {
+        "fault": 22,
+        "adc_requests": [
+          6,
+          1
+        ],
+        "adc_completions": [
+          6,
+          1
+        ],
+        "bif_enabled": true,
+        "bif_config_synthetic": true,
+        "adc_delay_us": 2000,
+        "bif_requests": 1,
+        "bif_completions": 1,
+        "bif_tdet_write_attempts": 0
+      },
+      "sysctls": {
+        "mt6762_power_valid": 71,
+        "mt6762_bif_raw": -1,
+        "mt6762_bif_ntc_raw": -1,
+        "mt6762_bif_pair_fresh": 0,
+        "mt6762_bif_samples": 0,
+        "mt6762_bif_errors": 1,
+        "mt6762_bif_fault": 1
+      },
+      "cpu_count": 8,
+      "panic": false
+    },
+    {
+      "label": "bif-rail",
+      "assertions_passed": true,
+      "reason": null,
+      "expected_handoff_rejection": false,
+      "startup_fault": "rail",
+      "post_fresh_fault": "none",
+      "fault_injected_after_fresh": false,
+      "model": {
+        "fault": 23,
+        "adc_requests": [
+          5,
+          1
+        ],
+        "adc_completions": [
+          5,
+          1
+        ],
+        "bif_enabled": true,
+        "bif_config_synthetic": true,
+        "adc_delay_us": 2000,
+        "bif_requests": 1,
+        "bif_completions": 1,
+        "bif_tdet_write_attempts": 0
+      },
+      "sysctls": {
+        "mt6762_power_valid": 71,
+        "mt6762_bif_raw": -1,
+        "mt6762_bif_ntc_raw": -1,
+        "mt6762_bif_pair_fresh": 0,
+        "mt6762_bif_samples": 0,
+        "mt6762_bif_errors": 1,
+        "mt6762_bif_fault": 1
+      },
+      "cpu_count": 8,
+      "panic": false
+    },
+    {
+      "label": "bif-tdet-changed",
+      "assertions_passed": true,
+      "reason": null,
+      "expected_handoff_rejection": false,
+      "startup_fault": "tdet-changed",
+      "post_fresh_fault": "none",
+      "fault_injected_after_fresh": false,
+      "model": {
+        "fault": 24,
+        "adc_requests": [
+          5,
+          1
+        ],
+        "adc_completions": [
+          5,
+          1
+        ],
+        "bif_enabled": true,
+        "bif_config_synthetic": true,
+        "adc_delay_us": 2000,
+        "bif_requests": 1,
+        "bif_completions": 1,
+        "bif_tdet_write_attempts": 0
+      },
+      "sysctls": {
+        "mt6762_power_valid": 71,
+        "mt6762_bif_raw": -1,
+        "mt6762_bif_ntc_raw": -1,
+        "mt6762_bif_pair_fresh": 0,
+        "mt6762_bif_samples": 0,
+        "mt6762_bif_errors": 1,
+        "mt6762_bif_fault": 1
+      },
+      "cpu_count": 8,
+      "panic": false
+    },
+    {
+      "label": "bif-adc-stale",
+      "assertions_passed": true,
+      "reason": null,
+      "expected_handoff_rejection": false,
+      "startup_fault": "adc-stale",
+      "post_fresh_fault": "none",
+      "fault_injected_after_fresh": false,
+      "model": {
+        "fault": 25,
+        "adc_requests": [
+          5,
+          1
+        ],
+        "adc_completions": [
+          5,
+          1
+        ],
+        "bif_enabled": true,
+        "bif_config_synthetic": true,
+        "adc_delay_us": 2000,
+        "bif_requests": 0,
+        "bif_completions": 0,
+        "bif_tdet_write_attempts": 0
+      },
+      "sysctls": {
+        "mt6762_power_valid": 67,
+        "mt6762_bif_raw": -1,
+        "mt6762_bif_ntc_raw": -1,
+        "mt6762_bif_pair_fresh": 0,
+        "mt6762_bif_samples": 0,
+        "mt6762_bif_errors": 1,
+        "mt6762_bif_fault": 1
+      },
+      "cpu_count": 8,
+      "panic": false
+    },
+    {
+      "label": "bif-post-config",
+      "assertions_passed": false,
+      "reason": "No initial fresh pair; requested post-fresh fault was never injected. Retained conservative missed-generation failure, not fault coverage.",
+      "expected_handoff_rejection": false,
+      "startup_fault": "none",
+      "post_fresh_fault": "config",
+      "fault_injected_after_fresh": false,
+      "model": {
+        "fault": 0,
+        "adc_requests": [
+          5,
+          1
+        ],
+        "adc_completions": [
+          5,
+          1
+        ],
+        "bif_enabled": true,
+        "bif_config_synthetic": true,
+        "adc_delay_us": 2000,
+        "bif_requests": 1,
+        "bif_completions": 1,
+        "bif_tdet_write_attempts": 0
+      },
+      "sysctls": {
+        "mt6762_power_valid": 71,
+        "mt6762_bif_raw": -1,
+        "mt6762_bif_ntc_raw": -1,
+        "mt6762_bif_pair_fresh": 0,
+        "mt6762_bif_samples": 0,
+        "mt6762_bif_errors": 1,
+        "mt6762_bif_fault": 1
+      },
+      "cpu_count": 8,
+      "panic": false
+    },
+    {
+      "label": "expected6-model4",
+      "assertions_passed": true,
+      "reason": null,
+      "expected_handoff_rejection": true,
+      "startup_fault": "none",
+      "post_fresh_fault": "none",
+      "fault_injected_after_fresh": false,
+      "model": {
+        "fault": 0,
+        "adc_requests": [
+          5,
+          5
+        ],
+        "adc_completions": [
+          5,
+          5
+        ],
+        "bif_enabled": true,
+        "bif_config_synthetic": true,
+        "adc_delay_us": 2000,
+        "bif_requests": 0,
+        "bif_completions": 0,
+        "bif_tdet_write_attempts": 0
+      },
+      "sysctls": {
+        "mt6762_power_valid": 71,
+        "mt6762_bif_raw": -1,
+        "mt6762_bif_ntc_raw": -1,
+        "mt6762_bif_pair_fresh": 0,
+        "mt6762_bif_samples": 0,
+        "mt6762_bif_errors": 1,
+        "mt6762_bif_fault": 1
+      },
+      "cpu_count": 8,
+      "panic": false
+    },
+    {
+      "label": "expected6-model6",
+      "assertions_passed": true,
+      "reason": null,
+      "expected_handoff_rejection": true,
+      "startup_fault": "tdet-set",
+      "post_fresh_fault": "none",
+      "fault_injected_after_fresh": false,
+      "model": {
+        "fault": 19,
+        "adc_requests": [
+          5,
+          5
+        ],
+        "adc_completions": [
+          5,
+          5
+        ],
+        "bif_enabled": true,
+        "bif_config_synthetic": true,
+        "adc_delay_us": 2000,
+        "bif_requests": 0,
+        "bif_completions": 0,
+        "bif_tdet_write_attempts": 0
+      },
+      "sysctls": {
+        "mt6762_power_valid": 71,
+        "mt6762_bif_raw": -1,
+        "mt6762_bif_ntc_raw": -1,
+        "mt6762_bif_pair_fresh": 0,
+        "mt6762_bif_samples": 0,
+        "mt6762_bif_errors": 1,
+        "mt6762_bif_fault": 1
+      },
+      "cpu_count": 8,
+      "panic": false
+    }
+  ]
+}

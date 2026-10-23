@@ -48,19 +48,21 @@ static void adc_tests(void)
     struct adc a={.out=0x8000|26700,.address=0x108a,.pending=2};
     struct mt6762_adc_io io={&a,adc_rd,adc_wr,adc_delay};int mv=-1;
     assert(!mt6762_adc_sample(&io,1,&mv));
-    assert(mv==4400 && a.request==2 && a.reads==3 && a.delay==1680);
-    a=(struct adc){.out=0x8000|1400,.address=0x108e};
+    assert(mv==4400 && a.request==2 && a.reads==3 && a.delay==1480);
+    a=(struct adc){.out=0x8000|1400,.address=0x108e,.pending=1};
     assert(!mt6762_adc_sample(&io,3,&mv));assert(mv==615 && a.request==8 && a.delay==80);
     a=(struct adc){.out=0,.address=0x108e};mv=777;
-    assert(mt6762_adc_sample(&io,3,&mv)==-3 && mv==777 && a.reads==160);
-    a=(struct adc){.out=0x8000,.address=0x108e};
+    assert(mt6762_adc_sample(&io,3,&mv)==-3 && mv==777 && a.reads==161);
+    a=(struct adc){.out=0x8000,.address=0x108e,.pending=1};
     assert(mt6762_adc_sample(&io,3,&mv)==-4 && mv==777);
-    a=(struct adc){.out=0x8fff,.address=0x108e};
+    a=(struct adc){.out=0x8fff,.address=0x108e,.pending=1};
     assert(mt6762_adc_sample(&io,3,&mv)==-4 && mv==777);
     a=(struct adc){.address=0x108e,.we=-9};
-    assert(mt6762_adc_sample(&io,3,&mv)==-9 && !a.reads && mv==777);
+    assert(mt6762_adc_sample(&io,3,&mv)==-2 && !a.reads && mv==777);
     a=(struct adc){.address=0x108e,.re=-8};
-    assert(mt6762_adc_sample(&io,3,&mv)==-8 && mv==777);
+    assert(mt6762_adc_sample(&io,3,&mv)==-2 && mv==777);
+    a=(struct adc){.out=0x8000|1400,.address=0x108e};
+    assert(mt6762_adc_sample(&io,3,&mv)==-5 && mv==777);
     a=(struct adc){0};assert(mt6762_adc_sample(&io,11,&mv)==-1 && !a.writes);
 }
 static void keys_tests(void)

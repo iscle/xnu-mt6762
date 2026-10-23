@@ -25,8 +25,8 @@ static int gauge_sysctl SYSCTL_HANDLER_ARGS
 {
     uint64_t now;
     int value;
-    clock_get_uptime(&now);
     lck_mtx_lock(&gauge_mutex);
+    clock_get_uptime(&now);
     int fresh=valid && now<deadline;
     value=arg2 ? fresh : (fresh?current_ua:(-2147483647-1));
     lck_mtx_unlock(&gauge_mutex);
@@ -43,8 +43,8 @@ int mt6762_gauge_current_read(int *ua)
     uint64_t now;
     int e=-ENXIO;
     if(!ua)return -EINVAL;
-    clock_get_uptime(&now);
     lck_mtx_lock(&gauge_mutex);
+    clock_get_uptime(&now);
     if(valid && now<deadline) {*ua=current_ua;e=0;}
     lck_mtx_unlock(&gauge_mutex);return e;
 }

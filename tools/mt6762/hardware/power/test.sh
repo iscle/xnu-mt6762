@@ -33,3 +33,4 @@ Path(sys.argv[1]).write_text(text+'};\n')
 NTC
 cc -std=c11 -Wall -Wextra -Werror -g -I "$testdir" thermistor.c test_ntc_compensation.c -o "$testdir/test-ntc-compensation"
 "$testdir/test-ntc-compensation"
+sh ./test_bif.sh

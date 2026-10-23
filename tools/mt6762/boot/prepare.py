@@ -178,13 +178,15 @@ def load_identity(path):
     return result
 
 
-def make_adt(seed, ramdisks=(), framebuffer=False, identity=None, native_lab_i2c=False, cpus=1, native_lab_display=None, native_lab_sspm=False, native_lab_power=False, native_lab_thermal=False, native_lab_gauge=False):
+def make_adt(seed, ramdisks=(), framebuffer=False, identity=None, native_lab_i2c=False, cpus=1, native_lab_display=None, native_lab_sspm=False, native_lab_power=False, native_lab_thermal=False, native_lab_gauge=False, native_lab_bif=False):
     if not 1 <= cpus <= 8:
         raise ValueError('MT6762 laboratory topology supports1..8 CPUs')
     if len(seed) != 64:
         raise ValueError('Random seed must be64 bytes')
     chosen_children = [node('memory-map', [('RAMDisk' + (str(i) if i else ''), u64(*disk))
                             for i, disk in enumerate(ramdisks)])]
+    if native_lab_bif and not native_lab_power:
+        raise ValueError('Native BIF fixture requires native power fixtures')
     if native_lab_gauge and not native_lab_power:
         raise ValueError('Native gauge fixture requires native power fixtures')
     if native_lab_thermal and not native_lab_power:
@@ -207,6 +209,10 @@ def make_adt(seed, ramdisks=(), framebuffer=False, identity=None, native_lab_i2c
             'touch-max-x': 384, 'touch-max-y': 854, 'charger-verified': 1,
             'charger-control-owned': 1,
         }
+        if native_lab_bif:
+            fixture.update({'bif-adc-owned': 1, 'baton-tdet-owned': 1, 'bif-trim-verified': 1,
+                'bif-tdet': 4, 'bif-sw-gain-trim': 0x4000, 'bif-sw-offset-trim': 0})
+            fixture.update({'bif-adc-con'+str(n): 0 for n in (0,1,2,5,7,9,11,12)})
         if native_lab_gauge:
             fixture.update({'fgauge-owned': 1, 'fgauge-calibration-verified': 1,
                 'fgauge-rfg': 100, 'fgauge-car-tune': 1000, 'fgauge-con0': 0x29,
@@ -374,6 +380,10 @@ def main():
                    help='Opt-in native driver handoff for QEMU I2C/APDMA fixtures; never a phone handoff')
     p.add_argument('--native-lab-sspm', action='store_true',
                    help='With --native-lab-i2c, synthetic SSPM PLATFORM liveness; no DVFS')
+    p.add_argument('--native-lab-adc-delay-us', type=int, default=0,
+                   help='Explicit synthetic channels3/11 conversion delay, 0 keeps80us; otherwise80..10000us')
+    p.add_argument('--native-lab-bif', action='store_true',
+                   help='With --native-lab-power, synthetic fresh BIF/NTC raw pair; no TDET writes')
     p.add_argument('--native-lab-gauge', action='store_true',
                    help='With --native-lab-power, synthetic owned gauge snapshots; no battery SOC')
     p.add_argument('--native-lab-thermal', action='store_true',
@@ -393,6 +403,10 @@ def main():
         raise ValueError('Boot cpus= must match --cpus exactly')
     if not cpu_args:
         a.cmdline += f' cpus={a.cpus}'
+    if a.native_lab_adc_delay_us and (not a.native_lab_power or not 80<=a.native_lab_adc_delay_us<=10000):
+        raise ValueError('--native-lab-adc-delay-us requires --native-lab-power and80..10000us')
+    if a.native_lab_bif and not a.native_lab_power:
+        raise ValueError('--native-lab-bif requires --native-lab-power')
     if a.native_lab_gauge and not a.native_lab_power:
         raise ValueError('--native-lab-gauge requires --native-lab-power')
     if a.native_lab_thermal and not a.native_lab_power:
@@ -460,7 +474,7 @@ def main():
         cursor += size
     identity = load_identity(a.identity_header) if a.identity_header else None
     adt = make_adt(os.urandom(64), ramdisk_pairs, a.framebuffer, identity, a.native_lab_i2c, a.cpus,
-                   framebuffer if a.native_lab_display else None, a.native_lab_sspm, a.native_lab_power, a.native_lab_thermal, a.native_lab_gauge)
+                   framebuffer if a.native_lab_display else None, a.native_lab_sspm, a.native_lab_power, a.native_lab_thermal, a.native_lab_gauge, a.native_lab_bif)
     adt_pa = skip_linux_dtb(cursor, align(len(adt)) + PAGE)
     ba_pa = align(adt_pa + len(adt))
     top = ba_pa + PAGE
@@ -507,6 +521,10 @@ def main():
         machine += ',lab-i2c=on'
     if a.native_lab_sspm:
         machine += ',lab-sspm=on'
+    if a.native_lab_adc_delay_us:
+        machine += f',lab-adc-delay-us={a.native_lab_adc_delay_us}'
+    if a.native_lab_bif:
+        machine += ',lab-bif=on'
     if a.native_lab_gauge:
         machine += ',lab-gauge=on'
     if a.native_lab_thermal:
@@ -531,7 +549,7 @@ def main():
                     ram_size=MEMORY, vm_page_size=PAGE, hardware_page_size=4096, cpu_count=a.cpus,
                     boot_args_pa=hex(ba_pa), adt_pa=hex(adt_pa), top_of_kernel_data=hex(top),
                     chained_rebases=nfix, ramdisk=ramdisk_info, framebuffer=framebuffer,
-                    native_lab_gauge=a.native_lab_gauge, native_lab_thermal=a.native_lab_thermal, native_lab_power=a.native_lab_power, native_lab_sspm=a.native_lab_sspm, native_lab_i2c=a.native_lab_i2c, native_lab_display=a.native_lab_display, native_lab_touch_events=a.native_lab_touch_events,
+                    native_lab_adc_delay_us=a.native_lab_adc_delay_us, native_lab_bif=a.native_lab_bif, native_lab_gauge=a.native_lab_gauge, native_lab_thermal=a.native_lab_thermal, native_lab_power=a.native_lab_power, native_lab_sspm=a.native_lab_sspm, native_lab_i2c=a.native_lab_i2c, native_lab_display=a.native_lab_display, native_lab_touch_events=a.native_lab_touch_events,
                     identity_header_sha256=hashlib.sha256(a.identity_header.read_bytes()).hexdigest() if a.identity_header else None,
                     regions=regions, reserved=reserved, command=command,
                     limits=['QEMU bring-up only; not a phone boot image.',

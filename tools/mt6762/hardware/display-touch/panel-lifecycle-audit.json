@@ -1,0 +1,131 @@
+{
+  "scope": "Source-only panel lifecycle audit and unwired host-testable transport. No physical writes, native registration, QEMU model changes or kernel integration.",
+  "image_sha256": "82b1919185a49f268a0f8e145a6714d6264c1f66918a90df0d763266147ead4b",
+  "panel": "axs15260_dsi_6580_hd",
+  "normal_suspend": {
+    "entry": "0xffffff8008747860",
+    "predicate": "psensor_enable_for_lcm at0xffffff8009c03f40 equals0",
+    "state": "is_in_sleepmode at0xffffff8009a1db50 becomes1",
+    "sequence": [
+      "DCS0x28 parameter00",
+      "delay120ms",
+      "DCS0x10 parameter00",
+      "delay30ms",
+      "additional delay120ms after push_table",
+      "disp_dts_gpio_select_state(9): lcd_bias_enp0_gpio",
+      "delay20ms"
+    ],
+    "table": "0xffffff800983ec38"
+  },
+  "normal_resume": {
+    "entry": "0xffffff80087478e0 ->lcm_init0xffffff80087477d8",
+    "predicate": "proximity flag0 OR is_in_sleepmode==1",
+    "sequence": [
+      "lcm_init_power: state10 lcd_bias_enp1_gpio",
+      "delay20ms",
+      "I2C bus5/address0x3e register0=0x12 then register1=0x12",
+      "axs_reset_proc(20) resets touch as part of panel initialization",
+      "panel reset1 delay20ms,0 delay20ms,1 delay100ms",
+      "full init table: BB0000000000005aa5,B201000006000a04219c001e,B241,1100,delay120ms,2900,delay10ms"
+    ],
+    "warning": "Bias programming/reset/panel wake are not independent from touch lifecycle. No native implementation or rollback is admitted."
+  },
+  "proximity_branch": {
+    "suspend": "If proximity flag nonzero, sets is_in_sleepmode0 and returns without DCS sleep or bias-off.",
+    "resume": "Only if proximity flag nonzero and is_in_sleepmode!=1, sends1100 delay150ms then2900 delay20ms.",
+    "warning": "This branch does NOT prove the same table is a safe resume after sleep commands with retained bias. Stock had skipped sleep in the corresponding suspend branch."
+  },
+  "gpio_mapping": {
+    "table_va": "0xffffff800909a970",
+    "stock_state_count": 13,
+    "state9": "lcd_bias_enp0_gpio",
+    "state10": "lcd_bias_enp1_gpio",
+    "dt_reset_pin": 45,
+    "dt_bias_enable_pin": 150,
+    "dt_enn_and_enp": "Both overlay ENP and ENN low/high names map GPIO150; do not infer two independent rail enable pins.",
+    "limit": "Static overlay routing; live pin state and electrical rail topology unverified. BSP enum differs (11entries), so stock indices were decoded from stock pointer table."
+  },
+  "host_suspend_order": {
+    "primary_display_suspend": "0xffffff80087be6b8",
+    "path_stop_call": "0xffffff80087beab4 ->0xffffff8008796c14",
+    "panel_suspend_call": "0xffffff80087bec14 ->0xffffff80087d23c4",
+    "ddp_dsi_stop": "0xffffff800877b4f4",
+    "actions": [
+      "clear DSI_START bit0",
+      "DSI_SetMode(...,0) at0xffffff800877b774",
+      "wait BUSY bit31 clear",
+      "DSI_clk_HS_mode(...,false) at0xffffff800877b86c",
+      "clear INTEN0x08 and INTSTA0x0c"
+    ],
+    "conclusion": "Normal stock panel suspend occurs after host path stop in command mode. Sending sleep commands while inherited video scanout stays active is not corroborated by this normal path."
+  },
+  "video_command_transport": {
+    "source": "mt6762_dsi_vm_core.h",
+    "registration": "None; no native caller",
+    "packet": "DSI_set_cmdq_V2 short branch0xffffff80087758b8 encodes DCS one-parameter ID0x15, command bits16..23, parameter bits24..31, LONG_PKT0; VM_CMD_CON offset0x130.",
+    "setup": "DSI_Set_VM_CMD0xffffff8008771cfc sets VM_CMD_EN0 and TS_VFP_EN5. Prototype requires these already configured, VFP-only timing, sync-event video mode2.",
+    "trigger": "DSI_EnableVM_CMD0xffffff8008772108, direct path0xffffff8008772274..22d0 toggles START bit16 low then high preserving other bits.",
+    "completion": "INTSTA0x0c bit5 VM_CMD_DONE; BSP GCE path clears/polls/clears that bit. Host prototype requires observed low then high and bounded timeout.",
+    "acknowledgement": "Exact stock disp_irq_handler0xffffff8008799b24 complements selected status then stores to DSI+0xc at0xffffff8008799b3c; W0C. Prototype writes literal~0x20 to preserve unrelated status.",
+    "exclusions": [
+      "No enabling VM facility, mode transitions, clock/PLL/lane programming or interrupt-mask writes.",
+      "No command-mode, BTA/read, long vendor commands, arbitrary payloads or dual DSI.",
+      "No automatic retry or reset after unknown completion; failure latches terminal state.",
+      "Completion proves controller command completion, not panel acknowledgement or physical sleep."
+    ],
+    "initial_idle_admission": "Exclusive ownership alone is insufficient. The required admit_initial_idle callback must establish a previously verified idle handoff/drain independently; no physical proof implementation is supplied. Initial START16 high is always rejected before writes, irrespective of stale DONE. START16 low alone never proves idle.",
+    "retained_trigger": "A high START16 is accepted only for this transport own command after observed fresh DONE, unchanged packet/mode and final W0C acknowledgement readback low. Subsequent calls reject changed packet content or unexpectedly reasserted DONE; faults invalidate the completion token.",
+    "final_ack": "Read back INTSTA after final W0C. DONE still high or errors fail and latch fault; no success or subsequent command is allowed."
+  },
+  "integration_plan": [
+    "Keep committed PWM/copy blanking as current working lifecycle until a separate panel ownership contract is admitted.",
+    "Transfer exclusive DSI/GCE command queue and IRQ-acknowledgement ownership; prove no bootloader/SSPM/ESD worker can reset or submit commands concurrently. Read back clocks/domain/PLL/lane/timing/reset/bias state before each operation.",
+    "Use the unwired video short-command core only for separately admitted VM command operation. It is not an automatic panel-sleep policy.",
+    "For exact normal stock sleep, implement and validate host quiesce: stop producers/GCE at frame boundary, drain fences, stop display path, transition DSI to command mode and verify idle before panel commands. Retain clocks needed for command transport; do not power gate by guessed writes.",
+    "After exact DCS delays, normal stock cuts GPIO150 bias; doing so requires verified pin/bias rail ownership and explicit touch contact release/quiesce. Resume needs exact bias, AXS reset, panel reset and full vendor init before restoring scanout/backlight.",
+    "Alternatively, a retained-bias/retained-scanout sleep design requires new proof specific to this panel; the proximity branch is insufficient.",
+    "Validate completion/fault paths and actual panel state/readback before MiniFB wiring. Any partial command/rail failure leaves backlight off and state unknown, requiring a deliberate proven recovery path."
+  ],
+  "unresolved": [
+    "Safe native display pipeline quiesce/resume order and ownership transfer.",
+    "DSI IRQ/GCE command acknowledgement ownership and inherited VM scheduling availability.",
+    "Bias pin/rail electrical verification, shared touch reset coordination and cold power lifecycle.",
+    "Panel state verification; VM command-done alone does not acknowledge the panel.",
+    "Safe physical timing and failure recovery.",
+    "Physical initial-idle admission/drain proof; ownership transfer or START low cannot substitute."
+  ],
+  "local_evidence_sha256": {
+    "lcm.asm": "ada980d5611946bed9bac8b3d8d291c8cf58aaac29bf6ad3323a0f3740ebbf2f",
+    "dsi-vm-stock.asm": "194c512cc5e8e4cdc21d8dfb56e0a604ba9ec17878ac3d5ab93c6e59e9425a4d",
+    "dsi-irq-gpio-stock.asm": "72b8fe4d3d532b9f300ca7f02b9e29a8499f26901fd093e30622a8b7e1d70ee2",
+    "stock-suspend-path.asm": "679123b3db6bc569595bc905df7636d64bbbcddc2017ba43a44a470bc9f12911",
+    "overlay.dts": "4d5a02324be3aca3908102b6ff2606f8e03c8527ee04a25903e62acf252bd15d"
+  },
+  "validation": {
+    "host_test": "test_dsi_vm.c compiled with C11 -Wall -Wextra -Werror; all display-touch tests pass.",
+    "covered": [
+      "All four short DCS packet encodings",
+      "Only VM START16 toggles; DSI_START0 and unrelated fields preserved",
+      "Other one-shot START bits2/4 rejected before any writes",
+      "W0C preserves old and newly arriving unrelated status flags",
+      "Observed low before trigger; stale-high rejected",
+      "Completion timeout/fault stops retries",
+      "Ownership/mode/config errors reject or latch fault",
+      "No native registration or MMIO execution",
+      "Inherited high START rejected with DONE high and low, zero writes",
+      "Low START rejected without independent initial idle admission",
+      "Own completed trigger may be retained for the next command only after final acknowledgement",
+      "Dropped final acknowledgement fails without creating a completion token; retries denied",
+      "Changed prior packet or reasserted DONE invalidates retained completion proof"
+    ],
+    "physical_tested": false
+  },
+  "packaged_disassembly_sha256": "56d7ed6ce3a6d567ab1b1e7339bd394355ff1b688d56986a11a20d9ddd989d1b",
+  "bsp_sha256": {
+    "dispsys/ddp_dsi.c": "5179239902f7f990a4d39513cd7371b60ba95e360bd9ebf652c7a806f32e90c4",
+    "dispsys/ddp_reg_dsi.h": "acbac4753ff02def5bdeec7462635732a4cb96991c3b1ff2623a2f5df9540c55",
+    "dispsys/ddp_irq.c": "339ffa2481e01a0aa201e10d7fef8119ef0accbf73ca1773201758acdfa490ee",
+    "videox/primary_display.c": "e6ac25c9c8bea4d656b9d38cac1a7ed1ab5922d693eb94323696a35fff342269",
+    "videox/disp_dts_gpio.h": "4ab51e5ab3d943b489d4b6b3ce03752b5f5059475b283b950f7dd5c282842471"
+  }
+}

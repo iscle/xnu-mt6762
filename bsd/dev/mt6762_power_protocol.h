@@ -2,6 +2,7 @@
 #ifndef MT6762_POWER_PROTOCOL_NATIVE_H
 #define MT6762_POWER_PROTOCOL_NATIVE_H
 #include <stdint.h>
+#include "mt6762_bif_protocol.h"
 struct mt6762_wacs_io {
     void *context;
     uint32_t (*read)(void *, uint32_t);
@@ -50,26 +51,18 @@ struct mt6762_adc_io {
 static int
 mt6762_adc_sample(const struct mt6762_adc_io *io,unsigned channel,int *mv)
 {
-    uint16_t raw,output;
-    unsigned bits,ratio,wait_us;
+    uint16_t raw;
+    unsigned bits,ratio;
     int e;
     if(!io || !io->read || !io->write || !io->delay_us || !mv)return -1;
-    if(channel==1) {output=0x108a;bits=15;ratio=3;wait_us=1280;}
-    else if(channel==3) {output=0x108e;bits=12;ratio=1;wait_us=80;}
+    if(channel==1) {bits=15;ratio=3;}
+    else if(channel==3) {bits=12;ratio=1;}
     else return -1;
-    if((e=io->write(io->context,0x110e,(uint16_t)(1u<<channel))))return e;
-    io->delay_us(io->context,wait_us);
-    for(unsigned n=0;n<160;n++) {
-        if((e=io->read(io->context,output,&raw)))return e;
-        if(raw&0x8000) {
-            raw&=(uint16_t)((1u<<bits)-1);
-            if(!raw || raw==((1u<<bits)-1))return -4;
-            *mv=(int)(((uint32_t)raw*ratio*1800)>>bits);
-            return 0;
-        }
-        io->delay_us(io->context,200);
-    }
-    return -3;
+    const struct mt6762_battery_adc_io fresh={io->context,io->read,io->write,io->delay_us};
+    e=mt6762_battery_adc_fresh(&fresh,channel,&raw);
+    if(e)return e;
+    *mv=(int)(((uint32_t)raw*ratio*1800)>>bits);
+    return 0;
 }
 /* A key must first be observed released; two equal samples debounce changes.
  * Invalid readings reset debounce and release a previously emitted key. */

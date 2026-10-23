@@ -196,3 +196,34 @@ current INT_MIN/valid0 afterwards. Use ``--queue-mode cycle --seconds 6``.
 IOKit battery publication is checked separately by the read-only
 ``battery_probe`` helper; unknown capacity/temperature/cycle fields must
 remain absent rather than fabricated.
+
+BIF generation and ownership diagnostics
+---------------------------------------
+
+``--native-lab-bif`` requires ``--native-lab-power`` and supplies an explicitly
+synthetic, already-clear TDET/configuration contract. No TDET write is
+permitted. The queue observer records raw BIF/NTC, pair freshness, samples,
+errors and faults; these raw values are not calibrated battery temperature.
+
+The independent model test is ``tests/mt6762/test_lab_bif.py`` in the QEMU
+fork. Native ``probe_native.py --bif-fault`` covers admission/configuration,
+stale generation, timeout, rail and ownership drift; ``--bif-fault-after-fresh``
+requires an observed valid raw pair before fault injection. The malformed
+handoff check ``--expect-bif-rejected`` additionally requires zero BIF
+requests. Model TDET-write attempts must always be zero for native probes.
+
+Default80us conversions may finish before the TCG guest can observe
+READY-low. Those results are invalid, not silently reused. The explicit
+loader option ``--native-lab-adc-delay-us 2000`` provides a distinct slower
+synthetic fixture for protocol acceptance tests; manifests and result JSON
+record the override. Native freshness checks are identical. Default80us
+rejections and slow-fixture positive results must be reported separately.
+
+``--bif-clear-after-rejection`` is a separate startup-fault recovery test.
+It waits for native invalid raw values, freshness0 and an error before
+clearing the synthetic model fault. For stale-generation faults it requires
+observed last-error-5/generation-rejection followed by a new valid raw pair.
+For ownership/configuration/timeout/rail failures it instead requires the
+native fault to remain latched after the model is externally repaired. The
+captured pre-clear native and model snapshots distinguish recovery evidence
+from merely starting with a healthy device.
