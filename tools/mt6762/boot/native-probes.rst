@@ -265,3 +265,39 @@ continue during expiry; unknown capacity, SOC-related fields, temperature,
 cycle count and time remaining must stay absent. Any publication-boundary
 snapshots are retained explicitly. This is emulation evidence, not physical
 battery validation or a new source of battery capacity/temperature data.
+
+Read-only MSDC with a real file backend
+--------------------------------------
+
+``make_msdc_fixture.py NEW_RAW_FILE`` creates a small deterministic synthetic
+raw file plus hashes for selected sectors. It refuses existing destinations
+and makes the resulting file read-only. Neither generated binary belongs in
+the source patch series. The QEMU MSDC fixture reads this actual file through
+a read-only raw BlockBackend; it does not supply canned sector payloads.
+
+``prepare.py --native-lab-msdc-image FILE`` enables only the explicit MSDC
+fixture and the common synthetic handoff. Other peripheral fixtures remain
+independently selected. The loader records actual file size/capacity/SHA256
+and the agreed synthetic inherited configuration, including200MHz card-clock
+metadata. No physical rail, pad, PLL or tuning state is asserted. These
+properties must not be copied into a phone handoff as hardware evidence.
+
+Build the standalone static guest observer with ``build_msdc_probe.sh`` and
+use its Mach-O as mockfs RAMDisk0. ``probe_msdc.py MANIFEST`` checks the native
+raw and block device paths, geometry/read-only ioctls, O_WRONLY rejection
+without issuing any storage write, selected sector hashes, unaligned reads
+crossing a sector boundary, partial near-EOF reads and exact/beyond-EOF
+behavior. Full host-image hashes before and after the bounded run must match.
+The observer writes only serial diagnostics and leaves PID1 alive afterward.
+
+Startup ``--fault`` cases reject inherited admission, except ``backend-error``:
+synthetic CMD8 metadata can be admitted before the first real-file read attempt
+fails. That case must latch the transport without copying user payload. With
+``--fault-after-first-read``, the host first observes actual valid guest data,
+then injects a synthetic controller failure. Subsequent failed reads must
+not copy data into the sentinel buffer. ``--clear-after-error`` separately
+checks that repairing the model does not silently reset a latched native
+transport fault. Model/QTest results and native guest results are independent;
+source availability is not a passing native test claim. No real device is
+opened by these tests and no filesystem-mount success is inferred from raw
+block reads.

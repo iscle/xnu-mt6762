@@ -122,6 +122,31 @@ class PrepareTests(unittest.TestCase):
             self.assertEqual(struct.unpack('<I', handoff[key])[0],value)
         with self.assertRaises(ValueError): p.make_adt(bytes(64), native_lab_gauge=True)
 
+    def test_msdc_handoff_is_independent_and_capacity_is_explicit(self):
+        tree,_=parse_adt(p.make_adt(bytes(64),native_lab_msdc_sectors=128))
+        chosen=next(n for n in tree['children'] if n['name']==b'chosen\0')
+        handoff=next(n for n in chosen['children'] if n['name']==b'mt6762-handoff\0')
+        for key,value in {'lab-fixture':1,'msdc-owned':1,'msdc-inherited-verified':1,
+                          'msdc-sector-count':128,'msdc-rca':1,'msdc-cfg':0x89,
+                          'msdc-sdc-cfg':0x20000,'msdc-timeout-us':10000,
+                          'msdc-card-clock-hz':200000000}.items():
+            self.assertEqual(struct.unpack('<I',handoff[key])[0],value)
+        self.assertNotIn('i2c0-verified',handoff)
+        self.assertNotIn('touch-verified',handoff)
+        for sectors in [-1,0x100000000]:
+            with self.assertRaises(ValueError):p.make_adt(bytes(64),native_lab_msdc_sectors=sectors)
+
+    def test_msdc_file_metadata_never_rewrites_source(self):
+        with tempfile.TemporaryDirectory() as d:
+            image=Path(d)/'fixture.raw';original=bytes(range(256))*4;image.write_bytes(original)
+            metadata=p.msdc_image_metadata(image)
+            self.assertEqual(metadata['sector_count'],2)
+            self.assertTrue(metadata['readonly'])
+            self.assertEqual(image.read_bytes(),original)
+            image.write_bytes(b'bad')
+            with self.assertRaises(ValueError):p.msdc_image_metadata(image)
+            with self.assertRaises(ValueError):p.msdc_image_metadata(Path(d))
+
     def test_publication_gap_requires_explicit_power_lab_and_bounds(self):
         tree,_=parse_adt(p.make_adt(bytes(64),native_lab_i2c=True,
             native_lab_power=True,native_lab_battery_gap_start_ms=60000,

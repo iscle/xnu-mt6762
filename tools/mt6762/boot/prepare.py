@@ -178,11 +178,28 @@ def load_identity(path):
     return result
 
 
-def make_adt(seed, ramdisks=(), framebuffer=False, identity=None, native_lab_i2c=False, cpus=1, native_lab_display=None, native_lab_sspm=False, native_lab_power=False, native_lab_thermal=False, native_lab_gauge=False, native_lab_bif=False, native_lab_battery_gap_start_ms=0, native_lab_battery_gap_ms=0):
+def msdc_image_metadata(path):
+    path = path.resolve(strict=True)
+    if not path.is_file() or ',' in str(path) or any(ord(c)<32 for c in str(path)):
+        raise ValueError('MSDC fixture must be a regular local file with an unambiguous QEMU filename')
+    size = path.stat().st_size
+    if size < 512 or size % 512 or size // 512 > 0xffffffff:
+        raise ValueError('MSDC fixture must contain1..UINT32_MAX complete512-byte sectors')
+    digest = hashlib.sha256()
+    with path.open('rb') as source:
+        for data in iter(lambda: source.read(1024*1024), b''):
+            digest.update(data)
+    return dict(file=str(path), bytes=size, sector_size=512, sector_count=size//512,
+                sha256=digest.hexdigest(), readonly=True, real_file_backend=True)
+
+
+def make_adt(seed, ramdisks=(), framebuffer=False, identity=None, native_lab_i2c=False, cpus=1, native_lab_display=None, native_lab_sspm=False, native_lab_power=False, native_lab_thermal=False, native_lab_gauge=False, native_lab_bif=False, native_lab_battery_gap_start_ms=0, native_lab_battery_gap_ms=0, native_lab_msdc_sectors=0):
     if not 1 <= cpus <= 8:
         raise ValueError('MT6762 laboratory topology supports1..8 CPUs')
     if len(seed) != 64:
         raise ValueError('Random seed must be64 bytes')
+    if not 0<=native_lab_msdc_sectors<=0xffffffff:
+        raise ValueError('Synthetic MSDC sector count exceeds32-bit card addressing')
     chosen_children = [node('memory-map', [('RAMDisk' + (str(i) if i else ''), u64(*disk))
                             for i, disk in enumerate(ramdisks)])]
     if native_lab_battery_gap_start_ms or native_lab_battery_gap_ms:
@@ -200,18 +217,24 @@ def make_adt(seed, ramdisks=(), framebuffer=False, identity=None, native_lab_i2c
         raise ValueError('Native power fixture requires native I2C platform contract')
     if native_lab_display and (not native_lab_i2c or not framebuffer):
         raise ValueError('Native display fixture requires I2C fixtures and framebuffer')
-    if native_lab_i2c:
+    if native_lab_i2c or native_lab_msdc_sectors:
         # These assertions describe explicitly selected QEMU fixtures only.
         # They must never be reused as a physical-phone loader handoff.
-        fixture = {
-            'version': 1, 'native-io': 1, 'lab-fixture': 1,
-            'i2c0-verified': 1, 'i2c5-verified': 1, 'dma-direct': 1,
-            'i2c-parent-index': 0, 'i2c-parent-hz': 26000000,
-            'i2c-pads-verified': 1, 'i2c0-hz': 100000, 'i2c5-hz': 100000,
-            'touch-verified': 1, 'touch-bus': 0, 'touch-address': 0x3b,
-            'touch-max-x': 384, 'touch-max-y': 854, 'charger-verified': 1,
-            'charger-control-owned': 1,
-        }
+        fixture = {'version': 1, 'native-io': 1, 'lab-fixture': 1}
+        if native_lab_i2c:
+            fixture.update({
+                'i2c0-verified': 1, 'i2c5-verified': 1, 'dma-direct': 1,
+                'i2c-parent-index': 0, 'i2c-parent-hz': 26000000,
+                'i2c-pads-verified': 1, 'i2c0-hz': 100000, 'i2c5-hz': 100000,
+                'touch-verified': 1, 'touch-bus': 0, 'touch-address': 0x3b,
+                'touch-max-x': 384, 'touch-max-y': 854, 'charger-verified': 1,
+                'charger-control-owned': 1,
+            })
+        if native_lab_msdc_sectors:
+            fixture.update({'msdc-owned': 1, 'msdc-inherited-verified': 1,
+                'msdc-sector-count': native_lab_msdc_sectors, 'msdc-rca': 1,
+                'msdc-cfg': 0x89, 'msdc-sdc-cfg': 0x20000, 'msdc-timeout-us': 10000,
+                'msdc-card-clock-hz': 200000000})
         if native_lab_battery_gap_ms:
             fixture.update({'battery-report-gap-start-ms': native_lab_battery_gap_start_ms,
                             'battery-report-gap-ms': native_lab_battery_gap_ms})
@@ -386,6 +409,8 @@ def main():
                    help='Opt-in native driver handoff for QEMU I2C/APDMA fixtures; never a phone handoff')
     p.add_argument('--native-lab-sspm', action='store_true',
                    help='With --native-lab-i2c, synthetic SSPM PLATFORM liveness; no DVFS')
+    p.add_argument('--native-lab-msdc-image',type=Path,
+                   help='Explicit real read-only raw file backing synthetic inherited MSDC PIO; no card initialization')
     p.add_argument('--native-lab-battery-gap-start-ms',type=int,default=0,
                    help='Explicit lab publication gap start after first delivery attempt,1000..300000ms; paired with gap duration')
     p.add_argument('--native-lab-battery-gap-ms',type=int,default=0,
@@ -434,6 +459,7 @@ def main():
         raise ValueError('--native-lab-touch-events requires --native-lab-i2c')
     if not 256 <= a.memory_mib <= 4096 or a.memory_mib % 32:
         raise ValueError('Emulated RAM must be256..4096MiB in32MiB multiples')
+    msdc_image = msdc_image_metadata(a.native_lab_msdc_image) if a.native_lab_msdc_image else None
     MEMORY = a.memory_mib * 1024 * 1024
     out = a.out.resolve()
     out.mkdir(parents=True, exist_ok=True)
@@ -487,7 +513,8 @@ def main():
         cursor += size
     identity = load_identity(a.identity_header) if a.identity_header else None
     adt = make_adt(os.urandom(64), ramdisk_pairs, a.framebuffer, identity, a.native_lab_i2c, a.cpus,
-                   framebuffer if a.native_lab_display else None, a.native_lab_sspm, a.native_lab_power, a.native_lab_thermal, a.native_lab_gauge, a.native_lab_bif, a.native_lab_battery_gap_start_ms, a.native_lab_battery_gap_ms)
+                   framebuffer if a.native_lab_display else None, a.native_lab_sspm, a.native_lab_power, a.native_lab_thermal, a.native_lab_gauge, a.native_lab_bif, a.native_lab_battery_gap_start_ms, a.native_lab_battery_gap_ms,
+                   msdc_image['sector_count'] if msdc_image else 0)
     adt_pa = skip_linux_dtb(cursor, align(len(adt)) + PAGE)
     ba_pa = align(adt_pa + len(adt))
     top = ba_pa + PAGE
@@ -530,6 +557,8 @@ def main():
     if image.stat().st_size > 0x10000:
         raise ValueError('Trampoline exceeded reserved size')
     machine = 'mt6762'
+    if msdc_image:
+        machine += f',lab-msdc=on,lab-msdc-image={msdc_image["file"]}'
     if a.native_lab_i2c:
         machine += ',lab-i2c=on'
     if a.native_lab_sspm:
@@ -562,6 +591,7 @@ def main():
                     ram_size=MEMORY, vm_page_size=PAGE, hardware_page_size=4096, cpu_count=a.cpus,
                     boot_args_pa=hex(ba_pa), adt_pa=hex(adt_pa), top_of_kernel_data=hex(top),
                     chained_rebases=nfix, ramdisk=ramdisk_info, framebuffer=framebuffer,
+                    native_lab_msdc=bool(msdc_image), native_lab_msdc_image=msdc_image,
                     native_lab_battery_gap_start_ms=a.native_lab_battery_gap_start_ms, native_lab_battery_gap_ms=a.native_lab_battery_gap_ms,
                     native_lab_adc_delay_us=a.native_lab_adc_delay_us, native_lab_bif=a.native_lab_bif, native_lab_gauge=a.native_lab_gauge, native_lab_thermal=a.native_lab_thermal, native_lab_power=a.native_lab_power, native_lab_sspm=a.native_lab_sspm, native_lab_i2c=a.native_lab_i2c, native_lab_display=a.native_lab_display, native_lab_touch_events=a.native_lab_touch_events,
                     identity_header_sha256=hashlib.sha256(a.identity_header.read_bytes()).hexdigest() if a.identity_header else None,

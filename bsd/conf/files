@@ -119,6 +119,8 @@ bsd/dev/mt6762_cpufreq.c	standard
 bsd/dev/mt6762_sspm.c	standard
 bsd/dev/mt6762_thermal.c	standard
 bsd/dev/mt6762_gauge.c	standard
+bsd/dev/mt6762_msdc.c	standard
+bsd/dev/mt6762_msdc_bsd.c	standard
 bsd/dev/redwood_virtio_input.c	standard
 bsd/dev/redwood_goodix.c	standard
 bsd/dev/redwood_buttons.c	standard

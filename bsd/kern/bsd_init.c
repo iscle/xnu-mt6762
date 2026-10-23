@@ -150,6 +150,7 @@
 #include <sys/redwood_input.h>
 #include <sys/redwood_audio.h>
 #include <sys/redwood_virtio_blk.h>
+#include <sys/mt6762_msdc.h>
 #include <sys/redwood_sparse.h>
 #if APFS
 #include <sys/redwood_apfs_check.h>
@@ -984,6 +985,7 @@ bsd_init(void)
 		bsd_init_kprintf("calling devfs_kernel_mount\n");
 		devfs_kernel_mount(mounthere);
 		redwood_input_init();           /* /dev/redwood-touch */
+		mt6762_storage_init();          /* Owned, read-only inherited eMMC */
 		redwood_audio_init();           /* /dev/redwood-audio */
 		redwood_virtio_blk_init();      /* /dev/rvblk0, a disk image of the host (QEMU) */
 		redwood_sparse_init();          /* /dev/rsp0, part of an image too big to hold */

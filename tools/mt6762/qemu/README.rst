@@ -1,7 +1,7 @@
 Reproducing the local MT6762 QEMU experiment
 ==========================================
 
-These nine patches reproduce the local research machine used for MT6762
+These ten patches reproduce the local research machine used for MT6762
 bring-up. They contain source code and documentation only: no phone firmware,
 iOS files, credentials, personal partitions, or built binaries.
 
@@ -18,9 +18,10 @@ Source provenance
   ``6c4cfc34f2c08da2bb709be5ba8a3224152273bf``,
   ``1cefe6067521f188fffbe2070bd520501a8c60fe``,
   ``63ec9fcb45cb0cf59214a3d2b676f408d724cf62``,
-  ``78122652f1258b3900d7fd721c9b1df06d4122d4`` and
-  ``49d41542f0ccfed448d90c9ad4397a592292d027``.
-* Resulting Git tree: ``b49e912496e9e0b42294f5998473ab9a0c0a18ea``.
+  ``78122652f1258b3900d7fd721c9b1df06d4122d4``,
+  ``49d41542f0ccfed448d90c9ad4397a592292d027`` and
+  ``20e020a98f55679572ad7d18e1c4897b9951a1b5``.
+* Resulting Git tree: ``2958156e028ff475865c0c604a56b6921b259607``.
 
 ``apply.sh`` verifies the patch SHA-256 hashes, fetches that exact upstream
 commit, applies the patch series in order, and verifies the final tree.
@@ -153,3 +154,13 @@ retain80us NTC/BIF conversion timing; ``lab-adc-delay-us`` separately selects
 a slower synthetic protocol fixture without changing guest freshness rules.
 ``test_lab_bif.py`` covers transitions, admission/ownership faults, rejected
 TDET/trim writes and default absence.
+
+The tenth patch adds paired ``lab-msdc``/``lab-msdc-image`` with an actual
+read-only raw-file backend and explicit synthetic inherited card metadata.
+Only polled CMD8/CMD13/CMD17 are supported. Model tests cover exact sector
+bytes, completion/metadata errors, regular-file/sector-size validation and
+shared-writer exclusion. Native source-built probes separately verify raw
+and block reads, range/EOF behavior and fault latching. No firmware or test
+image binaries are included, and no physical eMMC or filesystem boot is
+implied. The patch glob intentionally includes all four-digit prefixes,
+including0010 and later.

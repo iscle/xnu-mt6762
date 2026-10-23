@@ -1,0 +1,38 @@
+{
+  "scope": "Local synthetic inherited-state MSDC QTest, paused qtest CPU; no native XNU or physical device execution in these tests",
+  "files_sha256": {
+    "build/qemu-system-aarch64": "8ae2e848f1f75ee8512de2ec363c1f04024d710aefd7bd186d545390ca1654ac",
+    "hw/misc/mt6762_msdc_lab.c": "4d55103d3e9432a4dd10e6fc42504d042dcc3ad4aba2b67d02e2b8ce6116ea3b",
+    "include/hw/misc/mt6762_msdc_lab.h": "a69ac5b82d41078fb10c6e1f071b6125c02f5a78a98c3894e28ac7c121d7fa2e",
+    "tests/mt6762/test_lab_msdc.py": "4e0ec0c6905346190962274321f9146abc0c7c8b362b90cadee94ec397438c58",
+    "tests/mt6762/test_lab_msdc_inputs.py": "b91feaca398d58b93798c20ccca5fa6c0a3a82842ad12a00b7b329653b99b456"
+  },
+  "dtb_sha256": "658e181d1a13d930dc09567883e734bdbd4579350c8332ff954a0ecbb2ed08fe",
+  "qemu_io_version": "qemu-io version 10.2.2 (qemu-10.2.2-1.fc44)",
+  "commands": [
+    "python3 tests/mt6762/test_lab_msdc.py --qemu build/qemu-system-aarch64 --dtb ../firmware/boot.bin.dtb",
+    "python3 tests/mt6762/test_lab_msdc_inputs.py --qemu build/qemu-system-aarch64 --dtb ../firmware/boot.bin.dtb --qemu-io /usr/bin/qemu-io"
+  ],
+  "results": [
+    "PASS: synthetic inherited MSDC PIO, real read-only sectors, EXT_CSD, faults and absence",
+    "PASS: paired options, regular whole-sector images, read-only sharing and writer-lock exclusion"
+  ],
+  "retained_failure": {
+    "test": "initial input-negative513-byte regularfile",
+    "result": "unexpected startup success; negative subprocess reached10second timeout",
+    "cause": "QEMU raw blk_getlength rounds partialsector upward",
+    "fix": "validate stat.st_size modulo512 beforeopen and require backendlength match actualst_size afteropen",
+    "after_fix": "both suites rerun and passed"
+  },
+  "backing_data": "temporary deterministic8-sector testimage for protocol suite,2-sector image for input/locking suite; hashes unchanged after tests, no image committed",
+  "review": [
+    "core propagates command/data failures without copyingpartial output",
+    "terminalfault preventsfurtherMMIO",
+    "R1errors precedesuccess and W1C clearedbitsreadbackchecked",
+    "finalquiet rejectsunknowninterrupts, FIFOresidue andownershiploss",
+    "clockmath narrowforms follow exactdescriptor/setrate evidence; PLLlock andexclusive ownership areexternaladmission requirements"
+  ],
+  "physical_storage_validated": false,
+  "stock_linux_boot_validated": false,
+  "native_xnu_storage_validated_by_this_report": false
+}

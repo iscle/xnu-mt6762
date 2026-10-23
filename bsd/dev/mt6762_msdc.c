@@ -1,0 +1,239 @@
+/* SPDX-License-Identifier: MIT
+ * Owned inherited MSDC0 PIO consumer. No cold init, DMA, reset or media writes.
+ * Physical producer is not implemented: the ADT schema is a required contract,
+ * not evidence that LK/Android ownership has actually been transferred.
+ */
+#include <sys/mt6762_msdc.h>
+#if defined(ARM64_BOARD_CONFIG_MT6762)
+#include <kern/clock.h>
+#include <libkern/libkern.h>
+#include <sys/errno.h>
+#include <sys/mt6762_platform.h>
+#include <sys/mt6762_power.h>
+#include <sys/sysctl.h>
+#include <sys/systm.h>
+#include "mt6762_msdc_protocol.h"
+
+static struct mt6762_msdc engine;
+static uintptr_t controller,gic,top,infra,pll,gpio,pads,tuning;
+static int started,lab,ready,fault,last_error,reads,sectors;
+static uint32_t expected_pad_drive,expected_hclk;
+static uint32_t top_tune[12],controller_tune[18];
+static const uint16_t tune_regs[18]={0x04,0xb0,0xb4,0xb8,0xf0,0xf4,0xf8,0xfc,
+    0x100,0x104,0x180,0x184,0x188,0x18c,0x190,0x194,0x198,0x19c};
+static uint32_t pll_snapshot[6];
+
+SYSCTL_DECL(_kern_redwood);
+static int msdc_sysctl SYSCTL_HANDLER_ARGS
+{
+    int *field=NULL;
+    switch(arg2) {
+    case 0:field=&ready;break;case 1:field=&fault;break;
+    case 2:field=&last_error;break;case 3:field=&reads;break;case 4:field=&sectors;break;
+    default:return EINVAL;
+    }
+    int value=__atomic_load_n(field,__ATOMIC_ACQUIRE);
+    return sysctl_handle_int(oidp,&value,0,req);
+}
+SYSCTL_PROC(_kern_redwood,OID_AUTO,mt6762_msdc_ready,CTLTYPE_INT|CTLFLAG_RD|CTLFLAG_LOCKED,NULL,0,msdc_sysctl,"I","Owned inherited PIO/card accepted and read-only disk published");
+SYSCTL_PROC(_kern_redwood,OID_AUTO,mt6762_msdc_fault,CTLTYPE_INT|CTLFLAG_RD|CTLFLAG_LOCKED,NULL,1,msdc_sysctl,"I","Terminal inherited PIO ownership/transaction fault");
+SYSCTL_PROC(_kern_redwood,OID_AUTO,mt6762_msdc_last_error,CTLTYPE_INT|CTLFLAG_RD|CTLFLAG_LOCKED,NULL,2,msdc_sysctl,"I","Last negative protocol code, or negative BSD publication error");
+SYSCTL_PROC(_kern_redwood,OID_AUTO,mt6762_msdc_reads,CTLTYPE_INT|CTLFLAG_RD|CTLFLAG_LOCKED,NULL,3,msdc_sysctl,"I","Completed successful512-byte media reads; excludes EXT_CSD");
+SYSCTL_PROC(_kern_redwood,OID_AUTO,mt6762_msdc_sectors,CTLTYPE_INT|CTLFLAG_RD|CTLFLAG_LOCKED,NULL,4,msdc_sysctl,"I","Capacity corroborated by actual EXT_CSD; transport readiness separate");
+
+static uint32_t r32(uintptr_t base,unsigned offset)
+{
+    uint32_t value=*(volatile uint32_t *)(base+offset);
+    __asm__ volatile("dsb oshld":::"memory");
+    return value;
+}
+static int flag(const char *name)
+{
+    uint32_t value;
+    return !mt6762_handoff_u32(name,&value) && value==1;
+}
+static int irq_quiet(void)
+{
+    const unsigned group=111/32,bit=111%32;
+    uint32_t mask=1u<<bit;
+    /* The producer must mask/quiesce it. Never acknowledge another owner. */
+    return gic && !(r32(gic,0)&0x80000000u) &&
+        !(r32(gic,0x100+group*4)&mask) &&
+        !(r32(gic,0x200+group*4)&mask) &&
+        !(r32(gic,0x300+group*4)&mask) &&
+        !(r32(gic,0xc00+(111/16)*4)&(3u<<((111%16)*2)));
+}
+static int clocks_stable(void)
+{
+    uint32_t config=r32(top,0x70),values[6],parent_hz,hclk_hz,card_hz;
+    if((config&0x8783)!=0x101 || (r32(infra,0x94)&4) ||
+       (r32(infra,0xc8)&(1u<<9)))return 0;
+    const unsigned offsets[6]={0x27c,0x280,0x288,0x23c,0x240,0x248};
+    for(unsigned i=0;i<6;i++) {
+        values[i]=r32(pll,offsets[i]);
+        if(values[i]!=pll_snapshot[i])return 0;
+    }
+    if(mt6762_msdc_pll_hz(values[0],values[1],values[2],&parent_hz) ||
+       !(values[3]&(1u<<23)) ||
+       mt6762_msdc_pll_hz(values[3],values[4],values[5],&hclk_hz) ||
+       hclk_hz/4!=expected_hclk ||
+       mt6762_msdc_sclk_hz(parent_hz,engine.config.expected_cfg,&card_hz) ||
+       card_hz!=engine.config.card_clock_hz)return 0;
+    for(unsigned i=0;i<6;i++)if(values[i]!=r32(pll,offsets[i]))return 0;
+    return config==r32(top,0x70) && !(r32(infra,0x94)&4) &&
+        !(r32(infra,0xc8)&(1u<<9));
+}
+static int pads_stable(void)
+{
+    uint32_t trap=r32(gpio,0x6f0)&0x6000;
+    uint32_t mux0=trap?0x11111100:0x22222200;
+    uint32_t mux1=trap?0x00111111:0x00222222;
+    if((r32(gpio,0x3f0)&0x77777700)!=mux0 ||
+       (r32(gpio,0x400)&0x00777777)!=mux1 ||
+       (r32(pads,0)&0x001fffc0)!=expected_pad_drive ||
+       (r32(pads,0x30)&0xfff)!=0x401 ||
+       (r32(pads,0x50)&0xfff)!=0xbfe ||
+       (r32(pads,0x60)&0xfff)!=0x401 ||
+       (r32(pads,0x90)&0x00fffff0) || (r32(pads,0x70)&0xfffffffc))return 0;
+    for(unsigned i=0;i<12;i++)if(r32(tuning,i*4)!=top_tune[i])return 0;
+    for(unsigned i=0;i<18;i++)if(r32(controller,tune_regs[i])!=controller_tune[i])return 0;
+    return trap==(r32(gpio,0x6f0)&0x6000);
+}
+static int rails_stable(void)
+{
+    /* Fixed narrow stock3.0V VEMC +1.8V I/O. DA_EN is the selected regulator
+     * driver's is_enabled input, not an analog voltage measurement. */
+    static const uint16_t address[]={0x1988,0x1958,0x1c20,0x1996,0x1966};
+    static const uint16_t mask[]={1,1,0x700,0x8000,0x8000};
+    static const uint16_t expected[]={1,1,0x300,0x8000,0x8000};
+    uint16_t values[5],again;
+    for(unsigned i=0;i<5;i++)
+        if(mt6762_pwrap_read16(address[i],&values[i]) ||
+           (values[i]&mask[i])!=expected[i])return 0;
+    for(unsigned i=0;i<5;i++)
+        if(mt6762_pwrap_read16(address[i],&again) ||
+           (again&mask[i])!=(values[i]&mask[i]))return 0;
+    return 1;
+}
+static int admit(void *unused)
+{
+    (void)unused;
+    if(!mt6762_platform_ready() || !irq_quiet())return -1;
+    /* Lab fixtures model protocol state only; no physical gates are inferred. */
+    if(lab)return 0;
+    return clocks_stable() && pads_stable() && rails_stable() &&
+        clocks_stable() && irq_quiet()?0:-1;
+}
+static uint32_t read32(void *unused,uint32_t offset)
+{(void)unused;return r32(controller,offset);}
+static void write32(void *unused,uint32_t offset,uint32_t value)
+{
+    (void)unused;
+    *(volatile uint32_t *)(controller+offset)=value;
+    __asm__ volatile("dsb sy":::"memory");
+}
+static uint64_t time_us(void *unused)
+{
+    uint64_t ticks,ns;
+    (void)unused;clock_get_uptime(&ticks);absolutetime_to_nanoseconds(ticks,&ns);
+    return ns/1000;
+}
+static void delay_us(void *unused,uint32_t us)
+{(void)unused;delay_for_interval(us,NSEC_PER_USEC);}
+static int read_sector(uint64_t lba,void *out)
+{
+    if(!__atomic_load_n(&ready,__ATOMIC_ACQUIRE))return ENXIO;
+    int error=mt6762_msdc_read512(&engine,lba,out);
+    if(error) {
+        __atomic_store_n(&last_error,error,__ATOMIC_RELEASE);
+        if(engine.faulted) {
+            __atomic_store_n(&fault,1,__ATOMIC_RELEASE);
+            __atomic_store_n(&ready,0,__ATOMIC_RELEASE);
+            printf("MT6762 MSDC: terminal read failure %d; no reset/retry\n",error);
+        }
+        return error==MT6762_MSDC_ARGUMENT?EINVAL:
+            (error==MT6762_MSDC_TIMEOUT?ETIMEDOUT:EIO);
+    }
+    int count=__atomic_load_n(&reads,__ATOMIC_RELAXED);
+    if(count<2147483647)__atomic_store_n(&reads,count+1,__ATOMIC_RELEASE);
+    return 0;
+}
+static int physical_contract(void)
+{
+    static const char * const required[]={"msdc-irq-owned","msdc-clock-owned",
+        "msdc-pads-owned","msdc-rails-preserved","msdc-tuning-preserved",
+        "msdc-card-quiesced","msdc-writes-drained","msdc-sector-addressed",
+        "msdc-ocr-verified","msdc-handoff-producer-version"};
+    for(unsigned i=0;i<sizeof(required)/sizeof(required[0]);i++)if(!flag(required[i]))return -1;
+    uint32_t ocr;
+    if(mt6762_handoff_u32("msdc-ocr",&ocr) || (ocr&0xc0000000)!=0xc0000000 ||
+       mt6762_handoff_u32("msdc-pad-drive",&expected_pad_drive) ||
+       mt6762_handoff_u32("msdc-hclk-hz",&expected_hclk) || !expected_hclk)return -1;
+    uint32_t normal=(3u<<6)|(3u<<9)|(3u<<12)|(3u<<15)|(3u<<18);
+    uint32_t fast=(4u<<6)|(3u<<9)|(4u<<12)|(4u<<15)|(3u<<18);
+    if(expected_pad_drive!=normal && expected_pad_drive!=fast)return -1;
+    static const char * const pll_names[]={"msdc-pll-con0","msdc-pll-con1","msdc-pll-power",
+        "msdc-mainpll-con0","msdc-mainpll-con1","msdc-mainpll-power"};
+    for(unsigned i=0;i<6;i++)if(mt6762_handoff_u32(pll_names[i],&pll_snapshot[i]))return -1;
+    for(unsigned i=0;i<12;i++) {
+        char name[32];snprintf(name,sizeof(name),"msdc-top-tune-%u",i);
+        if(mt6762_handoff_u32(name,&top_tune[i]))return -1;
+    }
+    for(unsigned i=0;i<18;i++) {
+        char name[32];snprintf(name,sizeof(name),"msdc-controller-tune-%u",i);
+        if(mt6762_handoff_u32(name,&controller_tune[i]))return -1;
+    }
+    top=(uintptr_t)mt6762_map_mmio(0x10000000,0x1000);
+    infra=(uintptr_t)mt6762_map_mmio(0x10001000,0x1000);
+    pll=(uintptr_t)mt6762_map_mmio(0x1000c000,0x1000);
+    gpio=(uintptr_t)mt6762_map_mmio(0x10005000,0x1000);
+    pads=(uintptr_t)mt6762_map_mmio(0x10002000,0x1000);
+    tuning=(uintptr_t)mt6762_map_mmio(0x11cd0000,0x1000);
+    return top && infra && pll && gpio && pads && tuning?0:-1;
+}
+void mt6762_storage_init(void)
+{
+    if(__atomic_exchange_n(&started,1,__ATOMIC_ACQ_REL))return;
+    if(!mt6762_platform_ready() || !flag("msdc-owned") || !flag("msdc-inherited-verified"))return;
+    struct mt6762_msdc_config config={0};
+    uint32_t count;
+    if(mt6762_handoff_u32("msdc-sector-count",&count) || !count || count>2147483647 ||
+       mt6762_handoff_u32("msdc-rca",&config.rca) ||
+       mt6762_handoff_u32("msdc-cfg",&config.expected_cfg) ||
+       mt6762_handoff_u32("msdc-sdc-cfg",&config.expected_sdc_cfg) ||
+       mt6762_handoff_u32("msdc-timeout-us",&config.timeout_us) ||
+       mt6762_handoff_u32("msdc-card-clock-hz",&config.card_clock_hz)) {
+        last_error=MT6762_MSDC_ARGUMENT;
+        printf("MT6762 MSDC: incomplete bounded inherited configuration\n");return;
+    }
+    config.sector_count=count;
+    lab=flag("lab-fixture");
+    if(!lab && physical_contract()) {
+        last_error=MT6762_MSDC_OWNERSHIP;
+        printf("MT6762 MSDC: physical producer/clock/pad/rail/tuning contract missing; unavailable\n");return;
+    }
+    controller=(uintptr_t)mt6762_map_mmio(0x11230000,0x10000);
+    gic=(uintptr_t)mt6762_map_mmio(0x0c000000,0x10000);
+    if(!controller || !gic) {
+        last_error=MT6762_MSDC_STATE;
+        printf("MT6762 MSDC: MMIO mapping unavailable\n");return;
+    }
+    struct mt6762_msdc_io io={NULL,admit,read32,write32,time_us,delay_us};
+    int error=mt6762_msdc_init(&engine,&io,&config);
+    if(error) {
+        last_error=error;fault=engine.faulted?1:0;
+        printf("MT6762 MSDC: inherited admission/card read failed %d; no reset\n",error);return;
+    }
+    error=mt6762_msdc_publish(config.sector_count,read_sector);
+    if(error) {
+        last_error=-error;fault=1;engine.faulted=1;
+        printf("MT6762 MSDC: read-only BSD publication failed %d\n",error);return;
+    }
+    __atomic_store_n(&sectors,(int)count,__ATOMIC_RELEASE);
+    __atomic_store_n(&ready,1,__ATOMIC_RELEASE);
+    printf("MT6762 MSDC: %s inherited PIO, %u sectors, %u Hz, read-only /dev/mtkemmc0; no reset/DMA\n",
+        lab?"SYNTHETIC LAB":"verified handoff",count,config.card_clock_hz);
+}
+#else
+void mt6762_storage_init(void) {}
+#endif

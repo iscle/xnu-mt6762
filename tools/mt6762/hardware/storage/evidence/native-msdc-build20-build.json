@@ -1,0 +1,24 @@
+{
+  "artifact_ready": true,
+  "all_checks_passed": false,
+  "known_postlink_export_failures_only": true,
+  "sha256": "0678f5c1522625cfa08cd96cf0e769e23e388c652886e40a69e69422324ae62a",
+  "kernel_source_sha256": "cc224fa9ab40b8cbebbe3ef5adf449e4115603d769577becba79cb10fb0ea128",
+  "source_unchanged_during_build": true,
+  "build_log": "/home/iscle/mt6762-ios-port/evidence/builds/20261023T233612Z-1575920/make.log",
+  "initial_build": {
+    "accepted": false,
+    "reason": "Missing stdbool.h in new public header; fixed before successful link",
+    "log": "evidence/builds/20261023T233539Z-1570196/make.log"
+  },
+  "host_suite": {
+    "command": "bash tools/mt6762/test-host.sh",
+    "passed": true,
+    "log": "evidence/native-integration-host20-final.log"
+  },
+  "optional_sanitizers": {
+    "executed": false,
+    "reason": "Host linker could not find libasan.so.8.0.0 and libubsan.so.1.0.0; ordinary strict host tests passed"
+  },
+  "physical_execution": false
+}

@@ -1,0 +1,339 @@
+{
+  "stock_elf_sha256": "643474799f7c300f2d3c7f5130f697ee359929f13db0750f4dd7b9d648af14fc",
+  "expdb_sha256": "6675a9ae0eead546971136c2244be082a137f8b0b17ee5b5d5bc0ba98fce5f86",
+  "function_ranges": [
+    {
+      "name": "msdc_command_start",
+      "start": "0xffffff8008afb07c",
+      "end": "0xffffff8008afb704",
+      "sha256": "bc7da45228f50ccba7864dbc7914e2f17cf1d36f1f3bd83ec826f3d025bee1c4",
+      "range_method": "next distinct original ELF symbol"
+    },
+    {
+      "name": "msdc_command_resp_polling",
+      "start": "0xffffff8008afb704",
+      "end": "0xffffff8008afc100",
+      "sha256": "dc501f1479e1c114976943a32bce80b31e33ac3ddb2c1b5cbb8c7bd2e2a73ac8",
+      "range_method": "next distinct original ELF symbol"
+    },
+    {
+      "name": "msdc_pio_read",
+      "start": "0xffffff8008afc5d0",
+      "end": "0xffffff8008afcc60",
+      "sha256": "2e1a86c803592880f22203730fb715308b1f2793ce5490209a49c1b31fd3c74c",
+      "range_method": "next distinct original ELF symbol"
+    },
+    {
+      "name": "msdc_dma_start",
+      "start": "0xffffff8008afde5c",
+      "end": "0xffffff8008afdfa4",
+      "sha256": "9f6f9a47594526eee45062826dd6c66e3dc65ffc8d15efab84aa2772e06d0ed6",
+      "range_method": "next distinct original ELF symbol"
+    },
+    {
+      "name": "msdc_dma_stop",
+      "start": "0xffffff8008afdfa4",
+      "end": "0xffffff8008afe190",
+      "sha256": "c9c5bf0876e84b875a54e5246240529740940b0c5f3b9e664faba83f298e8241",
+      "range_method": "next distinct original ELF symbol"
+    },
+    {
+      "name": "msdc_dma_setup",
+      "start": "0xffffff8008afd87c",
+      "end": "0xffffff8008afde5c",
+      "sha256": "2979d36cf8752bf531eab7f8c7dcbe245d3347f88165ad46b74a8fedd6257370",
+      "range_method": "next distinct original ELF symbol"
+    },
+    {
+      "name": "msdc_init_hw",
+      "start": "0xffffff8008aff6fc",
+      "end": "0xffffff8008aff970",
+      "sha256": "b5855e998f2f906f6439e8cd06d6ffc0bc366f276659c5b3493c00857fc28673",
+      "range_method": "next distinct original ELF symbol"
+    },
+    {
+      "name": "msdc_set_mclk",
+      "start": "0xffffff8008afa734",
+      "end": "0xffffff8008afaa64",
+      "sha256": "17ead1ed4aa954c6140d777e322c73bba01393cb6e524231cb8738d48b5f4c57",
+      "range_method": "next distinct original ELF symbol"
+    },
+    {
+      "name": "msdc_set_pin_mode",
+      "start": "0xffffff8008af71bc",
+      "end": "0xffffff8008af72b0",
+      "sha256": "c6b3c44c52db234c9c0735c5c86d86ddd49f339ace891a3296b93338e70fbd27",
+      "range_method": "next distinct original ELF symbol"
+    },
+    {
+      "name": "msdc_emmc_power",
+      "start": "0xffffff8008af54c8",
+      "end": "0xffffff8008af5538",
+      "sha256": "225b9989e5eb89a189118e7d067061e09865cf6ff983cf08c82b1f7e6994673d",
+      "range_method": "next distinct original ELF symbol"
+    },
+    {
+      "name": "msdc_get_ccf_clk_pointer",
+      "start": "0xffffff8008af5830",
+      "end": "0xffffff8008af59b8",
+      "sha256": "4952f96443aba43f550780f595b441599dbac5562276005e8fdf399987b8b682",
+      "range_method": "next distinct original ELF symbol"
+    },
+    {
+      "name": "msdc_complete_mqr_crypto",
+      "start": "0xffffff8008b103a4",
+      "end": "0xffffff8008b10408",
+      "sha256": "451a1207070f93e6891e952296d2dc9537a626cc12320d6c27e4d7a163d495a0",
+      "range_method": "next distinct original ELF symbol"
+    },
+    {
+      "name": "mtk_pll_recalc_rate",
+      "start": "0xffffff80084e0fe4",
+      "end": "0xffffff80084e107c",
+      "sha256": "7a681518f864d03fa30bb6d5062836137f673d8b993e57873ce4deea54a78928",
+      "range_method": "next distinct original ELF symbol"
+    },
+    {
+      "name": "__mtk_pll_recalc_rate",
+      "start": "0xffffff80084e13d8",
+      "end": "0xffffff80084e1454",
+      "sha256": "e51177da83051834ac679e3ec48ffc953fc5abddb94eafb35b9fd7d7781bd632",
+      "range_method": "next distinct original ELF symbol"
+    }
+  ],
+  "historical_boot_records": [
+    {
+      "offset": "0x12017b0",
+      "text": "[SD0] SET_CLK(260kHz): SCLK(259kHz) MODE(0) DDR(0) DIV(385) DS(0) RS(0)"
+    },
+    {
+      "offset": "0x12017f9",
+      "text": "[SD0] SET_CLK(260kHz): SCLK(259kHz) MODE(2) DDR(1) DIV(192) DS(0) RS(0)"
+    },
+    {
+      "offset": "0x1201842",
+      "text": "[SD0] Size: 119280 MB, Max.Speed: 52000 kHz, blklen(512), nblks(244285440)"
+    },
+    {
+      "offset": "0x120188e",
+      "text": "[SD0] Initialized, eMMC45"
+    },
+    {
+      "offset": "0x12018a9",
+      "text": "[SD0] SET_CLK(52000kHz): SCLK(50000kHz) MODE(2) DDR(1) DIV(1) DS(0) RS(0)"
+    },
+    {
+      "offset": "0x120519a",
+      "text": "[SD0] SET_CLK(260kHz): SCLK(259kHz) MODE(0) DDR(0) DIV(385) DS(0) RS(0)"
+    },
+    {
+      "offset": "0x120535b",
+      "text": "[SD0] SET_CLK(260kHz): SCLK(259kHz) MODE(2) DDR(1) DIV(192) DS(0) RS(0)"
+    },
+    {
+      "offset": "0x12053a9",
+      "text": "[SD0] Size: 119280 MB, Max.Speed: 52000 kHz, blklen(512), nblks(244285440)"
+    },
+    {
+      "offset": "0x12053fa",
+      "text": "[SD0] Initialized, eMMC45"
+    },
+    {
+      "offset": "0x120541a",
+      "text": "[SD0] SET_CLK(52000kHz): SCLK(50000kHz) MODE(2) DDR(1) DIV(1) DS(0) RS(0)"
+    },
+    {
+      "offset": "0x12405f9",
+      "text": "msdc0 -> !!! Set<400KHz> Source<400000KHz> -> sclk<400KHz> timing<0> mode<0> div<250> hs400_div_dis<0>"
+    },
+    {
+      "offset": "0x124c99e",
+      "text": "msdc0 -> !!! Set<200000KHz> Source<400000KHz> -> sclk<200000KHz> timing<9> mode<0> div<0> hs400_div_dis<0>"
+    },
+    {
+      "offset": "0x124d1ae",
+      "text": "msdc0 -> !!! Set<52000KHz> Source<400000KHz> -> sclk<50000KHz> timing<1> mode<0> div<2> hs400_div_dis<0>"
+    },
+    {
+      "offset": "0x124d3aa",
+      "text": "msdc0 -> !!! Set<200000KHz> Source<400000KHz> -> sclk<200000KHz> timing<10> mode<3> div<0> hs400_div_dis<1>"
+    },
+    {
+      "offset": "0x124db98",
+      "text": "mmc0: new HS400 MMC card at address 0001"
+    },
+    {
+      "offset": "0x1298db0",
+      "text": "[SD0] SET_CLK(260kHz): SCLK(259kHz) MODE(0) DDR(0) DIV(385) DS(0) RS(0)"
+    },
+    {
+      "offset": "0x1298df9",
+      "text": "[SD0] SET_CLK(260kHz): SCLK(259kHz) MODE(2) DDR(1) DIV(192) DS(0) RS(0)"
+    },
+    {
+      "offset": "0x1298e42",
+      "text": "[SD0] Size: 119280 MB, Max.Speed: 52000 kHz, blklen(512), nblks(244285440)"
+    },
+    {
+      "offset": "0x1298e8e",
+      "text": "[SD0] Initialized, eMMC45"
+    },
+    {
+      "offset": "0x1298ea9",
+      "text": "[SD0] SET_CLK(52000kHz): SCLK(50000kHz) MODE(2) DDR(1) DIV(1) DS(0) RS(0)"
+    },
+    {
+      "offset": "0x129c79a",
+      "text": "[SD0] SET_CLK(260kHz): SCLK(259kHz) MODE(0) DDR(0) DIV(385) DS(0) RS(0)"
+    },
+    {
+      "offset": "0x129c95b",
+      "text": "[SD0] SET_CLK(260kHz): SCLK(259kHz) MODE(2) DDR(1) DIV(192) DS(0) RS(0)"
+    },
+    {
+      "offset": "0x129c9a9",
+      "text": "[SD0] Size: 119280 MB, Max.Speed: 52000 kHz, blklen(512), nblks(244285440)"
+    },
+    {
+      "offset": "0x129c9fa",
+      "text": "[SD0] Initialized, eMMC45"
+    },
+    {
+      "offset": "0x129ca1a",
+      "text": "[SD0] SET_CLK(52000kHz): SCLK(50000kHz) MODE(2) DDR(1) DIV(1) DS(0) RS(0)"
+    },
+    {
+      "offset": "0x12d7765",
+      "text": "msdc0 -> !!! Set<400KHz> Source<400000KHz> -> sclk<400KHz> timing<0> mode<0> div<250> hs400_div_dis<0>"
+    },
+    {
+      "offset": "0x12e3dea",
+      "text": "msdc0 -> !!! Set<200000KHz> Source<400000KHz> -> sclk<200000KHz> timing<9> mode<0> div<0> hs400_div_dis<0>"
+    },
+    {
+      "offset": "0x12e45fa",
+      "text": "msdc0 -> !!! Set<52000KHz> Source<400000KHz> -> sclk<50000KHz> timing<1> mode<0> div<2> hs400_div_dis<0>"
+    },
+    {
+      "offset": "0x12e47f6",
+      "text": "msdc0 -> !!! Set<200000KHz> Source<400000KHz> -> sclk<200000KHz> timing<10> mode<3> div<0> hs400_div_dis<1>"
+    },
+    {
+      "offset": "0x12e4fa4",
+      "text": "mmc0: new HS400 MMC card at address 0001"
+    }
+  ],
+  "limitations": [
+    "Retained historical logs are not current register readback.",
+    "Function end inferred from next symbol; exact named functions only.",
+    "No device execution, storage read or register access performed."
+  ],
+  "bsp_sources": [
+    {
+      "path": "kernel-4.14/drivers/mmc/host/mediatek/ComboA/sd.c",
+      "sha256": "cf54e1359538c331891e192b59009708a52eba859fd9e3c6bc2f34def558dd90"
+    },
+    {
+      "path": "kernel-4.14/drivers/mmc/host/mediatek/ComboA/msdc_reg.h",
+      "sha256": "12221178636b3b9813477bb749651cb37351256d6a0974941a892e48d448a1e3"
+    },
+    {
+      "path": "kernel-4.14/drivers/mmc/host/mediatek/ComboA/mt6765/msdc_cust.c",
+      "sha256": "34e50666923cb64be66c9b3c2ffb85c8fb0a10517a1a2b8e41647fc1187cb85a"
+    },
+    {
+      "path": "kernel-4.14/drivers/mmc/host/mediatek/ComboA/mt6765/msdc_cust.h",
+      "sha256": "f4ce672d52172106b971fb2c2e13c9ec2d03ffabad7f587295c0a5540b35d6a0"
+    },
+    {
+      "path": "kernel-4.14/drivers/clk/mediatek/clk-mt6765.c",
+      "sha256": "a1bc40dc8f1e9abf150ec34f7c00fbaa69d8e879b4b4df55b265365adcaf39bc"
+    },
+    {
+      "path": "kernel-4.14/drivers/misc/mediatek/pmic/mt6357/v1/regulator_codegen.c",
+      "sha256": "483189e9c4e90e3c329a3180ef37c3a2721795fa56dde6d5ad05c1a7f41c98f4"
+    },
+    {
+      "path": "kernel-4.14/include/linux/mmc/mmc.h",
+      "sha256": "f1b2180666f2e2c535478d62e59583a76988d610fde61826c78f791db96dc649"
+    },
+    {
+      "path": "kernel-4.14/drivers/misc/mediatek/include/mt-plat/mt6765/include/mach/upmu_hw.h",
+      "sha256": "ce55730f6a0b1201e25084e9a6c17e4778946105e6d4683b5e7490696ab51855"
+    }
+  ],
+  "dumped_sources": [
+    {
+      "path": "firmware/Image",
+      "sha256": "82b1919185a49f268a0f8e145a6714d6264c1f66918a90df0d763266147ead4b"
+    },
+    {
+      "path": "firmware/boot.bin.dtb",
+      "sha256": "658e181d1a13d930dc09567883e734bdbd4579350c8332ff954a0ecbb2ed08fe"
+    },
+    {
+      "path": "firmware/boot.dts",
+      "sha256": "00dcbf4602559331e085fb04d6bacd1a6b6a4d7fc1f83a85e8d135c87f5d0d6c"
+    },
+    {
+      "path": "firmware/stock.config",
+      "sha256": "fd798a564d398f021b21e305cc46a6c0579e1a9a8295712f4fb45a29ba10c99f"
+    }
+  ],
+  "observations": {
+    "platform_proof": [
+      "stock.config CONFIG_MACH_MT6765=y",
+      "stock.config CONFIG_MTK_PLATFORM=\"mt6765\"",
+      "stock.config CONFIG_MMC_MTK_PRO=y"
+    ],
+    "msdc0": {
+      "base": "0x11230000",
+      "size": "0x10000",
+      "dt_spi": 79,
+      "gic_intid": 111,
+      "historical_linux_irq": 83,
+      "bus_width": 8,
+      "max_frequency_hz": 200000000,
+      "timing_base": "0x11cd0000",
+      "gpio_pad_base": "0x10002000"
+    },
+    "command_write_evidence": "0xffffff8008afb46c..0xffffff8008afb484: ARG+0x38,dsb sy,CMD+0x34,dsb sy",
+    "command_ack_evidence": "0xffffff8008afb790..0xffffff8008afb7d4: INT+0xc status,poll,masked W1C,dsb sy",
+    "pio_evidence": "0xffffff8008afc654..0xffffff8008afc6d4: INT/FIFO/RX+0xc/0x14/0x1c,mask0xd000;0xffffff8008afc970..0xffffff8008afc9a8:64byte drain",
+    "crypto_bypass_evidence": "msdc_complete_mqr_crypto0xffffff8008b103a4..0xffffff8008b10408 checks+0x670bit2 then setsbypass ifabsent",
+    "pinmux_evidence": "msdc_set_pin_mode0xffffff8008af71bc..0xffffff8008af72b0 matchestrap/mux masks",
+    "power_evidence": "msdc_emmc_power0xffffff8008af551c requests3000mV; selectedMT6357regulator table mapsselector3to3000000uV"
+  },
+  "not_established": [
+    "Current physical register or card state",
+    "Physical bootloader ownership transfer",
+    "Safe clock/rail/pad cold initialization",
+    "eMMC DMA ownership/coherency implementation",
+    "Android userdata decryption or APFS storage placement",
+    "Hardware read or write execution"
+  ],
+  "clock": {
+    "descriptor_va": "0xffffff80090502c0",
+    "con0": "0x1000c27c",
+    "pcw_postdiv": "0x1000c280",
+    "power": "0x1000c288",
+    "pcw_bits": 22,
+    "integer_bits": 8,
+    "postdiv_shift": 24,
+    "reference_hz": 26000000,
+    "rate": "ceil(ceil(reference_hz*pcw/16384)/(1<<postdiv))",
+    "provider_parent": "TOP selector1:msdcpll_ck directly",
+    "stock_hclks_array_nominal_hz": 400000000,
+    "reference_preloader_con1": "0x820ec4ec",
+    "reference_preloader_decoded_hz": 383999878,
+    "stock_vs_bsp_minimum_vco": "Stock descriptor1600000000; suppliedBSP1500000000. No analog programming inferred."
+  },
+  "host_tests": "Protocol and clock host suites pass; actual physical MMIO/card execution not performed.",
+  "wrapper_additional_evidence": {
+    "tdsel_rdsel": "ComboA/mt6765/msdc_cust.c:msdc_emmc_power calls set_tdsel/set_rdsel withflag2/nonCUSTOM; setters lines863..913 selectvalue0 and exactdocumentedmasks. Stock binary calls flags2 at0xffffff8008af54f8/5508.",
+    "actual_rail_enables": "Selected upmu_hw.h MT6357_LDO_VEMC_CON1=0x1996,VIO18_CON1=0x1966; DA_ENshift15. regulator_codegen.c pmic_ldo_vemc_is_enabled andvio18equivalent returnda_en_cb.",
+    "power_good_limit": "PG_DEB register definitions alone do not establish analogthreshold/polarity contract; wrapperdoesnotusetheseasproof.",
+    "hclk": "clk-mt6765.c msdc5hclk parentindex1=syspll1_d2; factorsmainpll/2then/2. MAINPLL descriptorHAVE_RST_BAR bit23 and powerregister0x248.",
+    "tuning_snapshots": "msdc_reg.h fixedtop0x00..0x2c and selectedcontrolleroffsets documented; producer must capture completedtuning. No universalconstant."
+  }
+}

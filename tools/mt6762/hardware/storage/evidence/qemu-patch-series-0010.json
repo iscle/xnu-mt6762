@@ -1,0 +1,8 @@
+{
+  "base": "b6c4b7e86dec12d07f5cac65265b986d38ee9002",
+  "commit": "20e020a98f55679572ad7d18e1c4897b9951a1b5",
+  "expected_tree": "2958156e028ff475865c0c604a56b6921b259607",
+  "reconstructed_tree": "2958156e028ff475865c0c604a56b6921b259607",
+  "patch_count": 10,
+  "check": "git apply --cached using separate temporary index"
+}

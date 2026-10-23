@@ -1,0 +1,296 @@
+{
+  "synthetic_only": true,
+  "physical_hardware_tested": false,
+  "apple_userspace_used": false,
+  "cases": [
+    {
+      "synthetic_only": true,
+      "physical_hardware_tested": false,
+      "passed": true,
+      "errors": [],
+      "kernel_sha256": "0678f5c1522625cfa08cd96cf0e769e23e388c652886e40a69e69422324ae62a",
+      "qemu_binary_sha256": "8ae2e848f1f75ee8512de2ec363c1f04024d710aefd7bd186d545390ca1654ac",
+      "image_sha256_before": "1331e87a2f92a142192a93b0dcb65158098f93c967e8f19efa0559719a3f44c0",
+      "image_sha256_after": "1331e87a2f92a142192a93b0dcb65158098f93c967e8f19efa0559719a3f44c0",
+      "sector_count": 128,
+      "expected_admission_rejected": false,
+      "expected_no_commands": false,
+      "startup_fault": "none",
+      "delayed_fault": "none",
+      "fault_injected": false,
+      "fault_cleared_after_error": false,
+      "secondary_cpus_online": [],
+      "guest_scalars": {
+        "char_open": 1,
+        "blocksize_error": 0,
+        "blockcount_error": 0,
+        "writable_error": 0,
+        "blocksize": 512,
+        "blockcount": 128,
+        "writable": 0,
+        "write_open": -30,
+        "block_open": 2,
+        "negative_seek": -1,
+        "negative_read": -22,
+        "negative_buffer": 165
+      },
+      "native_sysctls": {
+        "mt6762_msdc_ready": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_msdc_fault": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_last_error": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_reads": {
+          "value": 38,
+          "error": 0
+        },
+        "mt6762_msdc_sectors": {
+          "value": 128,
+          "error": 0
+        }
+      },
+      "guest_reads": [
+        {
+          "kind": "char",
+          "lba": 0,
+          "result": 512,
+          "fnv1a": 4091845309
+        },
+        {
+          "kind": "char",
+          "lba": 1,
+          "result": 512,
+          "fnv1a": 990851793
+        },
+        {
+          "kind": "char",
+          "lba": 127,
+          "result": 512,
+          "fnv1a": 3399851825
+        },
+        {
+          "kind": "block",
+          "lba": 0,
+          "result": 512,
+          "fnv1a": 4091845309
+        }
+      ],
+      "guest_ranges": [
+        {
+          "offset": 480,
+          "count": 64,
+          "result": 64,
+          "fnv1a": 1685837457
+        },
+        {
+          "offset": 65520,
+          "count": 32,
+          "result": 16,
+          "fnv1a": 3887157621
+        },
+        {
+          "offset": 65536,
+          "count": 512,
+          "result": 0,
+          "fnv1a": 1388775365
+        },
+        {
+          "offset": 66048,
+          "count": 512,
+          "result": 0,
+          "fnv1a": 1388775365
+        }
+      ],
+      "serial_sha256": "6708de75d636181706befbadac97534bd25b2fdb69c0453b7979bc20c1a2b148",
+      "last_model_state": {
+        "enabled": true,
+        "synthetic": true,
+        "readonly": true,
+        "dma_emulated": false,
+        "irq_delivery": false,
+        "fault": 0,
+        "sectors": 128,
+        "commands": 117,
+        "cmd8": 1,
+        "cmd13": 78,
+        "cmd17": 38,
+        "completed": 39,
+        "bytes_read": 19968,
+        "backend_reads": 38,
+        "backend_errors": 0,
+        "rejected": 0,
+        "ack_writes": 156,
+        "reads": 8974,
+        "writes": 429,
+        "arg": 65536,
+        "command": 141,
+        "irq": 0,
+        "response": 2304,
+        "fifo_bytes": 0,
+        "pending": false,
+        "reading": false
+      },
+      "result_sha256": "9a5e0fedf4c284e22b5f3ea08816995f10563843c8defae80ad4c79c451618a1",
+      "cpu_count": 1
+    },
+    {
+      "synthetic_only": true,
+      "physical_hardware_tested": false,
+      "passed": true,
+      "errors": [],
+      "kernel_sha256": "0678f5c1522625cfa08cd96cf0e769e23e388c652886e40a69e69422324ae62a",
+      "qemu_binary_sha256": "8ae2e848f1f75ee8512de2ec363c1f04024d710aefd7bd186d545390ca1654ac",
+      "image_sha256_before": "1331e87a2f92a142192a93b0dcb65158098f93c967e8f19efa0559719a3f44c0",
+      "image_sha256_after": "1331e87a2f92a142192a93b0dcb65158098f93c967e8f19efa0559719a3f44c0",
+      "sector_count": 128,
+      "expected_admission_rejected": false,
+      "expected_no_commands": false,
+      "startup_fault": "none",
+      "delayed_fault": "none",
+      "fault_injected": false,
+      "fault_cleared_after_error": false,
+      "secondary_cpus_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "guest_scalars": {
+        "char_open": 1,
+        "blocksize_error": 0,
+        "blockcount_error": 0,
+        "writable_error": 0,
+        "blocksize": 512,
+        "blockcount": 128,
+        "writable": 0,
+        "write_open": -30,
+        "block_open": 2,
+        "negative_seek": -1,
+        "negative_read": -22,
+        "negative_buffer": 165
+      },
+      "native_sysctls": {
+        "mt6762_msdc_ready": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_msdc_fault": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_last_error": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_reads": {
+          "value": 38,
+          "error": 0
+        },
+        "mt6762_msdc_sectors": {
+          "value": 128,
+          "error": 0
+        }
+      },
+      "guest_reads": [
+        {
+          "kind": "char",
+          "lba": 0,
+          "result": 512,
+          "fnv1a": 4091845309
+        },
+        {
+          "kind": "char",
+          "lba": 1,
+          "result": 512,
+          "fnv1a": 990851793
+        },
+        {
+          "kind": "char",
+          "lba": 127,
+          "result": 512,
+          "fnv1a": 3399851825
+        },
+        {
+          "kind": "block",
+          "lba": 0,
+          "result": 512,
+          "fnv1a": 4091845309
+        }
+      ],
+      "guest_ranges": [
+        {
+          "offset": 480,
+          "count": 64,
+          "result": 64,
+          "fnv1a": 1685837457
+        },
+        {
+          "offset": 65520,
+          "count": 32,
+          "result": 16,
+          "fnv1a": 3887157621
+        },
+        {
+          "offset": 65536,
+          "count": 512,
+          "result": 0,
+          "fnv1a": 1388775365
+        },
+        {
+          "offset": 66048,
+          "count": 512,
+          "result": 0,
+          "fnv1a": 1388775365
+        }
+      ],
+      "serial_sha256": "c191f5966970d1d594ad36774e31d069ffc3b6e49b3020e6de7999effa6c6c1d",
+      "last_model_state": {
+        "enabled": true,
+        "synthetic": true,
+        "readonly": true,
+        "dma_emulated": false,
+        "irq_delivery": false,
+        "fault": 0,
+        "sectors": 128,
+        "commands": 117,
+        "cmd8": 1,
+        "cmd13": 78,
+        "cmd17": 38,
+        "completed": 39,
+        "bytes_read": 19968,
+        "backend_reads": 38,
+        "backend_errors": 0,
+        "rejected": 0,
+        "ack_writes": 156,
+        "reads": 8974,
+        "writes": 429,
+        "arg": 65536,
+        "command": 141,
+        "irq": 0,
+        "response": 2304,
+        "fifo_bytes": 0,
+        "pending": false,
+        "reading": false
+      },
+      "result_sha256": "60e675aff2016837d7db35843ec69f2e96de49c1dfb83f086c1a4083e44e0f4a",
+      "cpu_count": 8
+    }
+  ],
+  "limits": [
+    "Static source-built Darwin PID1 observer; no Apple Mach-O or dyld cache needed for this transport test.",
+    "Native hash comparisons cover selected raw/block sectors and byte ranges; independent QTest compares whole sector bytes.",
+    "Read-only fakecardmetadata wraps actual deterministic hostfilebytes; no physical clock/card/tuning validation.",
+    "No storage write syscall is issued; O_WRONLY is tested only for EROFS refusal.",
+    "Raw/block reads do not establish filesystem mount or iOS root-device compatibility."
+  ]
+}

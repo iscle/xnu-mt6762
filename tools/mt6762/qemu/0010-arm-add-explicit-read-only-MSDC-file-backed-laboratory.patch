@@ -1,0 +1,816 @@
+From 20e020a98f55679572ad7d18e1c4897b9951a1b5 Mon Sep 17 00:00:00 2001
+From: MT6762 local experiment <mt6762-build@localhost>
+Date: Sat, 24 Oct 2026 01:40:48 +0200
+Subject: [PATCH] arm: add explicit read-only MSDC file-backed laboratory
+
+AI-assisted local experiment, not intended for upstream submission. Model only inherited polled CMD8/CMD13/CMD17 state and read real raw backend sectors without storage writes. Include admission, completion, metadata, locking and file-length failure tests.
+---
+ docs/system/arm/mt6762.rst           |  31 +++
+ hw/arm/mt6762.c                      |  92 ++++++++-
+ hw/misc/meson.build                  |   2 +-
+ hw/misc/mt6762_msdc_lab.c            | 283 +++++++++++++++++++++++++++
+ include/hw/misc/mt6762_msdc_lab.h    |  33 ++++
+ tests/mt6762/test_lab_msdc.py        | 202 +++++++++++++++++++
+ tests/mt6762/test_lab_msdc_inputs.py |  64 ++++++
+ 7 files changed, 704 insertions(+), 3 deletions(-)
+ create mode 100644 hw/misc/mt6762_msdc_lab.c
+ create mode 100644 include/hw/misc/mt6762_msdc_lab.h
+ create mode 100644 tests/mt6762/test_lab_msdc.py
+ create mode 100644 tests/mt6762/test_lab_msdc_inputs.py
+
+diff --git a/docs/system/arm/mt6762.rst b/docs/system/arm/mt6762.rst
+index 8d09ee5..6cec12f 100644
+--- a/docs/system/arm/mt6762.rst
++++ b/docs/system/arm/mt6762.rst
+@@ -293,3 +293,34 @@ checks. Eight-core and single-core native build17 runs missed the default
+ READY-low transition and correctly rejected the raw pair; the explicit
+ 2000us fixture subsequently exercised successful raw-pair acquisition.
+ Neither timing establishes physical PMIC behavior.
++
++Explicit read-only MSDC file-backed fixture
++------------------------------------------
++
++``lab-msdc=on`` and a nonempty ``lab-msdc-image=/path/to/raw`` must be selected
++together. The file must already exist, be regular, and contain complete512-byte
++sectors. Its actual file length must match the raw BlockBackend length; image
++format probing, writable backends and shared writers are excluded. This is a
++synthetic inherited-state controller/card fixture with real file payloads,
++not a complete eMMC device, a stock-Linux storage implementation or a physical
++card initialization sequence.
++
++The fixture maps MSDC0 at0x11230000 and exposes fixed CFG0x89/SDC_CFG0x20000,
++RCA1 and read-only synthetic EXT_CSD with actual backing capacity, user area,
++CMDQ disabled, eight-bit bus, HS200 timing and CARD_TYPE0x56. Only CMD13,
++CMD8/SEND_EXT_CSD and CMD17 single-sector reads are accepted. Interrupts are
++polled; DMA and physical IRQ delivery are not modeled. Reset, clock, tuning,
++DMA, crypto and card data writes are rejected. Native tests must independently
++validate their inherited ownership/configuration contract before issuing reads.
++
++``lab-msdc-fault`` supplies busy/queue/crypto/stale-interrupt admission faults,
++command/data CRC or timeout, short/missing completion, stuck acknowledgement,
++wrongR1, backend error and individual EXT_CSD metadata mismatches. Read-only
++``lab-msdc-state`` exposes command, FIFO, completion and backend-attempt counts.
++Clearing a model fault does not repair a native driver's latched fault state.
++``test_lab_msdc.py`` checks actual file bytes, metadata, errors and default
++absence. ``test_lab_msdc_inputs.py`` checks regular/whole-sector file admission,
++shared-writer exclusion and unchanged source hashes. The initial rounded
++513-byte file acceptance was corrected using actual stat size plus backend
++length equality before the successful input suite. No test image or phone
++firmware is included in these source patches.
+diff --git a/hw/arm/mt6762.c b/hw/arm/mt6762.c
+index 0e46fc4..524fe05 100644
+--- a/hw/arm/mt6762.c
++++ b/hw/arm/mt6762.c
+@@ -8,8 +8,8 @@
+  * CPU, RAM, GICv3, timers, IRQ polarity registers and a UART subset are modeled
+  * by default. Explicit lab-i2c enables synthetic I2C/DMA/clock/pad fixtures;
+  * lab-display additionally provides inherited-register/PWM test fixtures.
+- * Neither models physical peripherals. UART extensions, PMIC and storage
+- * remain absent.
++ * Neither models physical peripherals. Explicit lab-power/MSDC fixtures are
++ * synthetic; storage uses a separately selected read-only raw file backend.
+  */
+ #include "qemu/osdep.h"
+ #include "qapi/error.h"
+@@ -26,6 +26,7 @@
+ #include "hw/arm/mt6762_lab_display.h"
+ #include "hw/arm/mt6762_lab_power.h"
+ #include "hw/misc/mt6762_sspm_lab.h"
++#include "hw/misc/mt6762_msdc_lab.h"
+ #include "hw/char/serial-mm.h"
+ #include "hw/intc/arm_gicv3_common.h"
+ #include "system/system.h"
+@@ -67,6 +68,10 @@ struct MT6762MachineState {
+     uint64_t lab_key_mask;
+     MT6762PowerLab *power;
+     MT6762I2CLab *lab;
++    bool lab_msdc;
++    char *lab_msdc_image;
++    unsigned lab_msdc_fault;
++    MT6762MSDCLab *msdc;
+ };
+ 
+ /*
+@@ -322,6 +327,19 @@ static void mt6762_init(MachineState *ms)
+         mt6762_lab_power_configure(s->power, s->lab_power_fault);
+         mt6762_lab_power_set_keys(s->power, s->lab_key_mask);
+     }
++    if (s->lab_msdc != !!(s->lab_msdc_image && *s->lab_msdc_image)) {
++        error_report("lab-msdc and a nonempty lab-msdc-image must be selected together");
++        exit(EXIT_FAILURE);
++    }
++    if (s->lab_msdc) {
++        Error *err = NULL;
++        s->msdc = mt6762_msdc_lab_create(OBJECT(s), sysmem, s->lab_msdc_image, &err);
++        if (!s->msdc) {
++            error_report_err(err);
++            exit(EXIT_FAILURE);
++        }
++        mt6762_msdc_lab_configure(s->msdc, s->lab_msdc_fault);
++    }
+     s->initialized = true;
+ 
+     s->bootinfo.ram_size = ms->ram_size;
+@@ -332,6 +350,69 @@ static void mt6762_init(MachineState *ms)
+     arm_load_kernel(ARM_CPU(first_cpu), ms, &s->bootinfo);
+ }
+ 
++static bool mt6762_get_lab_msdc(Object *obj, Error **errp)
++{
++    return MT6762_MACHINE(obj)->lab_msdc;
++}
++
++static void mt6762_set_lab_msdc(Object *obj, bool value, Error **errp)
++{
++    MT6762MachineState *s = MT6762_MACHINE(obj);
++    if (s->initialized) {
++        error_setg(errp, "lab-msdc must be selected before initialization");
++        return;
++    }
++    s->lab_msdc = value;
++}
++
++static char *mt6762_get_msdc_image(Object *obj, Error **errp)
++{
++    return g_strdup(MT6762_MACHINE(obj)->lab_msdc_image ?: "");
++}
++
++static void mt6762_set_msdc_image(Object *obj, const char *value, Error **errp)
++{
++    MT6762MachineState *s = MT6762_MACHINE(obj);
++    if (s->initialized) {
++        error_setg(errp, "lab-msdc-image must be selected before initialization");
++        return;
++    }
++    g_free(s->lab_msdc_image);
++    s->lab_msdc_image = g_strdup(value);
++}
++
++static const char *const mt6762_msdc_fault_names[] = {
++    "none", "busy", "queue", "crypto", "stale-irq", "command-crc",
++    "command-timeout", "data-crc", "short-data", "missing-done", "ack-stuck",
++    "backend-error", "wrong-r1", "extcsd-partition", "extcsd-queue",
++    "extcsd-bus", "extcsd-timing", "extcsd-capacity"
++};
++
++static char *mt6762_get_msdc_fault(Object *obj, Error **errp)
++{
++    return g_strdup(mt6762_msdc_fault_names[MT6762_MACHINE(obj)->lab_msdc_fault]);
++}
++
++static void mt6762_set_msdc_fault(Object *obj, const char *value, Error **errp)
++{
++    MT6762MachineState *s = MT6762_MACHINE(obj);
++    for (unsigned i = 0; i < ARRAY_SIZE(mt6762_msdc_fault_names); i++) {
++        if (!strcmp(value, mt6762_msdc_fault_names[i])) {
++            s->lab_msdc_fault = i;
++            if (s->msdc) {
++                mt6762_msdc_lab_configure(s->msdc, i);
++            }
++            return;
++        }
++    }
++    error_setg(errp, "unknown lab-msdc-fault");
++}
++
++static char *mt6762_get_msdc_state(Object *obj, Error **errp)
++{
++    return mt6762_msdc_lab_state(MT6762_MACHINE(obj)->msdc);
++}
++
+ static bool mt6762_get_lab_i2c(Object *obj, Error **errp)
+ {
+     return MT6762_MACHINE(obj)->lab_i2c;
+@@ -657,6 +738,13 @@ static void mt6762_class_init(ObjectClass *oc, const void *data)
+     mc->default_cpus = 8;
+     mc->no_floppy = 1;
+     mc->no_cdrom = 1;
++    object_class_property_add_bool(oc, "lab-msdc", mt6762_get_lab_msdc,
++                                   mt6762_set_lab_msdc);
++    object_class_property_add_str(oc, "lab-msdc-image", mt6762_get_msdc_image,
++                                  mt6762_set_msdc_image);
++    object_class_property_add_str(oc, "lab-msdc-fault", mt6762_get_msdc_fault,
++                                  mt6762_set_msdc_fault);
++    object_class_property_add_str(oc, "lab-msdc-state", mt6762_get_msdc_state, NULL);
+     object_class_property_add(oc, "lab-adc-delay-us", "uint64",
+                               mt6762_get_adc_delay, mt6762_set_adc_delay, NULL, NULL);
+     object_class_property_add_bool(oc, "lab-bif", mt6762_get_lab_bif,
+diff --git a/hw/misc/meson.build b/hw/misc/meson.build
+index c136ca8..4b37dda 100644
+--- a/hw/misc/meson.build
++++ b/hw/misc/meson.build
+@@ -1,4 +1,4 @@
+-system_ss.add(when: 'CONFIG_MT6762', if_true: files('mt6762_sspm_lab.c'))
++system_ss.add(when: 'CONFIG_MT6762', if_true: files('mt6762_sspm_lab.c', 'mt6762_msdc_lab.c'))
+ system_ss.add(when: 'CONFIG_APPLESMC', if_true: files('applesmc.c'))
+ 
+ system_ss.add(when: 'CONFIG_EDU', if_true: files('edu.c'))
+diff --git a/hw/misc/mt6762_msdc_lab.c b/hw/misc/mt6762_msdc_lab.c
+new file mode 100644
+index 0000000..24cce24
+--- /dev/null
++++ b/hw/misc/mt6762_msdc_lab.c
+@@ -0,0 +1,283 @@
++/*
++ * SPDX-License-Identifier: GPL-2.0-or-later
++ * AI-assisted local experiment; not intended for upstream submission.
++ *
++ * Opt-in inherited-state MSDC0 PIO fixture. Register offsets/command encodings
++ * follow supplied MT6765 headers and exact stock msdc_command_start/pio_read.
++ * The card is explicitly synthetic and already selected (RCA1, TRAN). Only
++ * CMD13, synthetic EXT_CSD CMD8 and CMD17 implement real read-only backing data.
++ * The 50us response and instantaneous FIFO refill are test assumptions.
++ * No card initialization, tuning, DMA, IRQ delivery, crypto or writes exist.
++ */
++#include "qemu/osdep.h"
++#include "hw/misc/mt6762_msdc_lab.h"
++#include "qemu/bswap.h"
++#include "qemu/log.h"
++#include "qemu/timer.h"
++#include "qobject/qdict.h"
++#include "system/block-backend.h"
++#include "system/reset.h"
++
++#define CMD_READY 0x100u
++#define CMD_TIMEOUT 0x200u
++#define CMD_CRC 0x400u
++#define DATA_DONE 0x1000u
++#define DATA_TIMEOUT 0x4000u
++#define DATA_CRC 0x8000u
++#define R1_TRAN_READY 0x900u
++
++struct MT6762MSDCLab {
++    MemoryRegion region;
++    BlockBackend *blk;
++    QEMUTimer *command_timer;
++    uint64_t sectors;
++    uint32_t arg, command, blocks, irq, response;
++    uint8_t data[512];
++    unsigned cursor, available, fault;
++    bool pending, reading;
++    uint64_t reads, writes, commands, cmd8, cmd13, cmd17, completed;
++    uint64_t bytes_read, backend_reads, backend_errors, rejected, ack_writes;
++};
++
++static void msdc_command_complete(void *opaque)
++{
++    MT6762MSDCLab *s = opaque;
++    s->pending = false;
++    if (s->fault == MT6762_MSDC_FAULT_COMMAND_TIMEOUT) {
++        s->irq |= CMD_TIMEOUT;
++        return;
++    }
++    if (s->fault == MT6762_MSDC_FAULT_COMMAND_CRC) {
++        s->irq |= CMD_CRC;
++        return;
++    }
++    s->response = R1_TRAN_READY;
++    s->irq |= CMD_READY;
++    if (s->fault == MT6762_MSDC_FAULT_WRONG_R1) {
++        s->response |= 1u << 22; /* R1 ILLEGAL_COMMAND. */
++        return;
++    }
++    if (s->command == 0x8d) {
++        return;
++    }
++    if (s->command == 0x02000888) {
++        /* These are fixture assumptions, not a recovered physical card. */
++        memset(s->data, 0, sizeof(s->data));
++        s->data[179] = s->fault == MT6762_MSDC_FAULT_EXTCSD_PARTITION ? 1 : 0;
++        s->data[15] = s->fault == MT6762_MSDC_FAULT_EXTCSD_QUEUE ? 1 : 0;
++        s->data[183] = s->fault == MT6762_MSDC_FAULT_EXTCSD_BUS ? 1 : 2;
++        s->data[185] = s->fault == MT6762_MSDC_FAULT_EXTCSD_TIMING ? 3 : 2;
++        s->data[192] = 8;
++        s->data[196] = 0x56; /* Synthetic HS52/DDR1.8/HS2001.8/HS4001.8. */
++        stl_le_p(s->data + 212,
++                 s->fault == MT6762_MSDC_FAULT_EXTCSD_CAPACITY ? 0 : s->sectors);
++    } else if (s->arg >= s->sectors) {
++        s->response |= 1u << 31; /* R1 OUT_OF_RANGE, no payload. */
++        return;
++    } else {
++        s->backend_reads++;
++        if (s->fault == MT6762_MSDC_FAULT_BACKEND_ERROR ||
++            blk_pread(s->blk, (uint64_t)s->arg * 512, 512, s->data, 0) < 0) {
++            s->backend_errors++;
++            s->irq |= DATA_TIMEOUT;
++            return;
++        }
++    }
++    s->reading = true;
++    s->cursor = 0;
++    s->available = s->fault == MT6762_MSDC_FAULT_SHORT_DATA ? 256 : 512;
++}
++
++static uint64_t msdc_read(void *opaque, hwaddr offset, unsigned size)
++{
++    MT6762MSDCLab *s = opaque;
++    uint32_t value;
++    s->reads++;
++    switch (offset) {
++    case 0x00: return 0x89; /* MODE, PIO, stable clock; synthetic inherited. */
++    case 0x0c:
++        return s->irq | (s->fault == MT6762_MSDC_FAULT_STALE_IRQ ? CMD_READY : 0);
++    case 0x10: return 0; /* Polling only, INTEN cannot be programmed. */
++    case 0x14: return MIN(s->available - s->cursor, 128u);
++    case 0x1c:
++        if (!s->reading || s->cursor + 4 > s->available) {
++            s->rejected++;
++            return 0;
++        }
++        value = ldl_le_p(s->data + s->cursor);
++        s->cursor += 4;
++        s->bytes_read += 4;
++        if (s->fault == MT6762_MSDC_FAULT_DATA_CRC && s->cursor == 128) {
++            s->available = s->cursor;
++            s->reading = false;
++            s->irq |= DATA_CRC;
++        } else if (s->cursor == 512) {
++            s->reading = false;
++            if (s->fault != MT6762_MSDC_FAULT_MISSING_DONE) {
++                s->irq |= DATA_DONE;
++                s->completed++;
++            }
++        }
++        return value;
++    case 0x30: return 0x20000; /* Synthetic inherited eight-bit bus. */
++    case 0x34: return s->command;
++    case 0x38: return s->arg;
++    case 0x3c:
++        return (s->pending ? 3 : s->reading ? 1 : 0) |
++               (s->fault == MT6762_MSDC_FAULT_BUSY ? 3 : 0);
++    case 0x40: return s->response;
++    case 0x50: return s->blocks;
++    case 0x9c: return 0; /* DMA inactive. */
++    case 0x204: return s->fault == MT6762_MSDC_FAULT_QUEUE ? 1 : 0;
++    case 0x23c: return s->fault == MT6762_MSDC_FAULT_QUEUE ? 3 : 0;
++    case 0x670: return s->fault == MT6762_MSDC_FAULT_CRYPTO ? 1 : 4;
++    default:
++        qemu_log_mask(LOG_UNIMP, "mt6762 lab MSDC: unsupported read %#" HWADDR_PRIx "\n", offset);
++        return 0;
++    }
++}
++
++static void msdc_write(void *opaque, hwaddr offset, uint64_t value, unsigned size)
++{
++    MT6762MSDCLab *s = opaque;
++    uint32_t bits = value;
++    s->writes++;
++    if (offset == 0x0c) {
++        s->ack_writes++;
++        if (s->fault != MT6762_MSDC_FAULT_ACK_STUCK) {
++            s->irq &= ~bits; /* W1C subset only; unrelated flags survive. */
++        }
++        return;
++    }
++    if (s->pending || s->reading || s->fault == MT6762_MSDC_FAULT_BUSY ||
++        s->fault == MT6762_MSDC_FAULT_QUEUE ||
++        s->fault == MT6762_MSDC_FAULT_CRYPTO) {
++        s->rejected++;
++        return;
++    }
++    switch (offset) {
++    case 0x38: s->arg = bits; return;
++    case 0x50: s->blocks = bits; return;
++    case 0x34:
++        /* Never accept a new command over unacknowledged completion/error. */
++        if (s->irq || s->fault == MT6762_MSDC_FAULT_STALE_IRQ ||
++            !((bits == 0x8d && s->arg == 0x10000) ||
++              (bits == 0x02000891 && s->blocks == 1) ||
++              (bits == 0x02000888 && s->blocks == 1 && s->arg == 0))) {
++            s->rejected++;
++            return;
++        }
++        s->command = bits;
++        s->response = 0;
++        s->cursor = s->available = 0;
++        s->pending = true;
++        s->commands++;
++        if (bits == 0x8d) {
++            s->cmd13++;
++        } else if (bits == 0x02000888) {
++            s->cmd8++;
++        } else {
++            s->cmd17++;
++        }
++        timer_mod(s->command_timer, qemu_clock_get_ns(QEMU_CLOCK_VIRTUAL) + 50000);
++        return;
++    default:
++        /* No reset/FIFO-clear/configuration/DMA/crypto/data writes. */
++        s->rejected++;
++        qemu_log_mask(LOG_GUEST_ERROR,
++                      "mt6762 lab MSDC: rejected write %#" HWADDR_PRIx "=%#x\n",
++                      offset, bits);
++    }
++}
++
++static const MemoryRegionOps msdc_ops = {
++    .read = msdc_read, .write = msdc_write,
++    .endianness = DEVICE_LITTLE_ENDIAN,
++    .valid = { .min_access_size = 4, .max_access_size = 4, .unaligned = false },
++    .impl = { .min_access_size = 4, .max_access_size = 4 },
++};
++
++static void msdc_reset(void *opaque)
++{
++    MT6762MSDCLab *s = opaque;
++    timer_del(s->command_timer);
++    s->arg = s->command = s->blocks = s->irq = s->response = 0;
++    s->cursor = s->available = 0;
++    s->pending = s->reading = false;
++    memset(s->data, 0, sizeof(s->data));
++    s->reads = s->writes = s->commands = s->cmd8 = s->cmd13 = s->cmd17 = 0;
++    s->completed = s->bytes_read = s->backend_reads = s->backend_errors = 0;
++    s->rejected = s->ack_writes = 0;
++}
++
++void mt6762_msdc_lab_configure(MT6762MSDCLab *s, unsigned fault)
++{
++    assert(fault < MT6762_MSDC_FAULT_COUNT);
++    s->fault = fault;
++}
++
++char *mt6762_msdc_lab_state(MT6762MSDCLab *s)
++{
++    if (!s) {
++        return g_strdup("{\"enabled\":false}");
++    }
++    return g_strdup_printf("{\"enabled\":true,\"synthetic\":true,"
++        "\"readonly\":true,\"dma_emulated\":false,\"irq_delivery\":false,"
++        "\"fault\":%u,\"sectors\":%" PRIu64 ",\"commands\":%" PRIu64
++        ",\"cmd8\":%" PRIu64 ",\"cmd13\":%" PRIu64 ",\"cmd17\":%" PRIu64
++        ",\"completed\":%" PRIu64 ",\"bytes_read\":%" PRIu64
++        ",\"backend_reads\":%" PRIu64 ",\"backend_errors\":%" PRIu64
++        ",\"rejected\":%" PRIu64 ",\"ack_writes\":%" PRIu64
++        ",\"reads\":%" PRIu64 ",\"writes\":%" PRIu64
++        ",\"arg\":%u,\"command\":%u,\"irq\":%u,\"response\":%u,"
++        "\"fifo_bytes\":%u,\"pending\":%s,\"reading\":%s}",
++        s->fault, s->sectors, s->commands, s->cmd8, s->cmd13, s->cmd17, s->completed,
++        s->bytes_read, s->backend_reads, s->backend_errors, s->rejected,
++        s->ack_writes, s->reads, s->writes, s->arg, s->command, s->irq,
++        s->response, s->available - s->cursor,
++        s->pending ? "true" : "false", s->reading ? "true" : "false");
++}
++
++MT6762MSDCLab *mt6762_msdc_lab_create(Object *owner, MemoryRegion *memory,
++                                      const char *path, Error **errp)
++{
++    struct stat st;
++    BlockBackend *blk;
++    int64_t bytes;
++    QDict *options;
++    MT6762MSDCLab *s;
++    if (!path || stat(path, &st) || !S_ISREG(st.st_mode)) {
++        error_setg(errp, "lab-msdc-image must name an existing regular file");
++        return NULL;
++    }
++    /* Raw block length may round a partial final sector up. Reject the actual
++     * host-file remainder before opening, rather than exposing padded bytes. */
++    if (st.st_size < 512 || st.st_size % 512 ||
++        st.st_size / 512 > UINT32_MAX) {
++        error_setg(errp, "lab-msdc image must contain 1..UINT32_MAX whole sectors");
++        return NULL;
++    }
++    options = qdict_new();
++    qdict_put_str(options, "driver", "raw");
++    qdict_put_str(options, "file.driver", "file");
++    qdict_put_str(options, "file.filename", path);
++    blk = blk_new_open(NULL, NULL, options, BDRV_O_NO_SHARE, errp);
++    if (!blk) {
++        return NULL;
++    }
++    bytes = blk_getlength(blk);
++    if (bytes != st.st_size || blk_is_writable(blk)) {
++        error_setg(errp, "lab-msdc requires a read-only raw image of 1..UINT32_MAX whole sectors");
++        blk_unref(blk);
++        return NULL;
++    }
++    s = g_new0(MT6762MSDCLab, 1);
++    s->blk = blk;
++    s->sectors = bytes / 512;
++    s->command_timer = timer_new_ns(QEMU_CLOCK_VIRTUAL, msdc_command_complete, s);
++    memory_region_init_io(&s->region, owner, &msdc_ops, s, "mt6762.lab-msdc", 0x10000);
++    memory_region_add_subregion(memory, 0x11230000, &s->region);
++    msdc_reset(s);
++    qemu_register_reset(msdc_reset, s);
++    return s;
++}
+diff --git a/include/hw/misc/mt6762_msdc_lab.h b/include/hw/misc/mt6762_msdc_lab.h
+new file mode 100644
+index 0000000..cecf462
+--- /dev/null
++++ b/include/hw/misc/mt6762_msdc_lab.h
+@@ -0,0 +1,33 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++#ifndef HW_MISC_MT6762_MSDC_LAB_H
++#define HW_MISC_MT6762_MSDC_LAB_H
++#include "system/memory.h"
++#include "qapi/error.h"
++
++typedef struct MT6762MSDCLab MT6762MSDCLab;
++enum {
++    MT6762_MSDC_FAULT_NONE,
++    MT6762_MSDC_FAULT_BUSY,
++    MT6762_MSDC_FAULT_QUEUE,
++    MT6762_MSDC_FAULT_CRYPTO,
++    MT6762_MSDC_FAULT_STALE_IRQ,
++    MT6762_MSDC_FAULT_COMMAND_CRC,
++    MT6762_MSDC_FAULT_COMMAND_TIMEOUT,
++    MT6762_MSDC_FAULT_DATA_CRC,
++    MT6762_MSDC_FAULT_SHORT_DATA,
++    MT6762_MSDC_FAULT_MISSING_DONE,
++    MT6762_MSDC_FAULT_ACK_STUCK,
++    MT6762_MSDC_FAULT_BACKEND_ERROR,
++    MT6762_MSDC_FAULT_WRONG_R1,
++    MT6762_MSDC_FAULT_EXTCSD_PARTITION,
++    MT6762_MSDC_FAULT_EXTCSD_QUEUE,
++    MT6762_MSDC_FAULT_EXTCSD_BUS,
++    MT6762_MSDC_FAULT_EXTCSD_TIMING,
++    MT6762_MSDC_FAULT_EXTCSD_CAPACITY,
++    MT6762_MSDC_FAULT_COUNT,
++};
++MT6762MSDCLab *mt6762_msdc_lab_create(Object *owner, MemoryRegion *memory,
++                                      const char *path, Error **errp);
++void mt6762_msdc_lab_configure(MT6762MSDCLab *s, unsigned fault);
++char *mt6762_msdc_lab_state(MT6762MSDCLab *s);
++#endif
+diff --git a/tests/mt6762/test_lab_msdc.py b/tests/mt6762/test_lab_msdc.py
+new file mode 100644
+index 0000000..9974eb0
+--- /dev/null
++++ b/tests/mt6762/test_lab_msdc.py
+@@ -0,0 +1,202 @@
++#!/usr/bin/env python3
++"""Read-only MSDC fixture tests; synthetic card, real temporary backing bytes.
++
++No physical device access. Tests require a locally built experimental QEMU.
++"""
++import argparse
++import hashlib
++import json
++from pathlib import Path
++import struct
++import subprocess
++import tempfile
++from test_lab_display import Lab
++
++BASE = 0x11230000
++
++
++class MSDCLab(Lab):
++    def __init__(self, qemu, dtb, directory, image, enabled=True):
++        directory = Path(directory)
++        self.log = (directory / "qemu.log").open("w+")
++        self.qmp_path = directory / "qmp.sock"
++        self.test_path = directory / "qtest.sock"
++        machine = "mt6762"
++        if enabled:
++            machine += f",lab-msdc=on,lab-msdc-image={image}"
++        self.process = subprocess.Popen([
++            str(qemu), "-M", machine, "-accel", "qtest", "-cpu", "cortex-a53",
++            "-m", "512M", "-smp", "1", "-dtb", str(dtb), "-display", "none",
++            "-serial", "null", "-monitor", "none",
++            "-qmp", f"unix:{self.qmp_path},server=on,wait=off",
++            "-qtest", f"unix:{self.test_path},server=on,wait=off",
++        ], stdout=self.log, stderr=self.log)
++        self.sockets = []
++        try:
++            self.qmp = self.connect(self.qmp_path)
++            self.test = self.connect(self.test_path)
++            assert "QMP" in json.loads(self.qmp.readline())
++            self.command("qmp_capabilities")
++        except BaseException:
++            self.close()
++            raise
++
++    def state(self):
++        return json.loads(self.command("qom-get", path="/machine", property="lab-msdc-state"))
++
++    def fault(self, name):
++        self.command("qom-set", path="/machine", property="lab-msdc-fault", value=name)
++
++    def r(self, reg):
++        return self.read(BASE + reg)
++
++    def w(self, reg, value):
++        self.write(BASE + reg, value)
++
++    def step(self):
++        self.access("clock_step 50000")
++
++    def issue(self, cmd, arg):
++        self.w(0x50, 1)
++        self.w(0x38, arg)
++        self.w(0x34, cmd)
++        assert self.r(0x3c) & 2
++        self.step()
++
++    def drain(self):
++        data = bytearray()
++        # Bounded independently from completion flags, as the real driver must be.
++        for _ in range(128):
++            count = self.r(0x14) & 255
++            if count == 0:
++                break
++            assert count <= 128 and count % 4 == 0
++            data += struct.pack("<I", self.r(0x1c))
++        return bytes(data)
++
++
++def main():
++    p = argparse.ArgumentParser(description=__doc__)
++    p.add_argument("--qemu", type=Path, required=True)
++    p.add_argument("--dtb", type=Path, required=True)
++    a = p.parse_args()
++    with tempfile.TemporaryDirectory(prefix="mt6762-msdc-qtest-") as td:
++        directory = Path(td)
++        image = directory / "backing.raw"
++        backing = bytes((i * 37 + i // 512) & 255 for i in range(4096))
++        image.write_bytes(backing)
++        digest = hashlib.sha256(backing).digest()
++
++        def instance(label, enabled=True):
++            path = directory / label
++            path.mkdir()
++            return MSDCLab(a.qemu.resolve(), a.dtb.resolve(), path, image, enabled)
++
++        lab = instance("positive")
++        try:
++            assert lab.r(0) == 0x89 and lab.r(0x30) == 0x20000
++            assert lab.r(0x10) == lab.r(0x3c) == lab.r(0x9c) == 0
++            assert lab.r(0x204) == lab.r(0x23c) == 0 and lab.r(0x670) == 4
++            lab.issue(0x8d, 0x10000)
++            assert lab.r(0xc) == 0x100 and lab.r(0x40) == 0x900
++            lab.w(0xc, 0x100)
++            assert lab.r(0xc) == 0
++            lab.issue(0x02000888, 0)
++            lab.w(0xc, 0x100)
++            ext = lab.drain()
++            assert len(ext) == 512 and ext[15] == 0 and ext[179] == 0
++            assert ext[183] == ext[185] == 2 and ext[192] == 8 and ext[196] == 0x56
++            assert int.from_bytes(ext[212:216], "little") == 8
++            assert lab.r(0xc) == 0x1000
++            lab.w(0xc, 0x100)  # W1C must preserve the unrelated data-done flag.
++            assert lab.r(0xc) == 0x1000
++            lab.w(0xc, 0x1000)
++            for lba in [0, 7, 3]:
++                lab.issue(0x02000891, lba)
++                assert lab.r(0xc) == 0x100 and lab.r(0x14) == 128
++                lab.w(0xc, 0x100)
++                assert lab.drain() == backing[lba * 512:(lba + 1) * 512]
++                assert lab.r(0xc) == 0x1000 and lab.r(0x3c) == 0
++                lab.w(0xc, 0x1000)
++            lab.issue(0x02000891, 8)
++            assert lab.r(0x40) & (1 << 31) and lab.r(0x14) == 0
++            lab.w(0xc, 0x100)
++            before = lab.state()
++            for reg, value in [(0, 4), (0x14, 1 << 31), (0x10, 0xffffffff),
++                               (0x670, 0), (0x98, 1), (0x18, 0x12345678)]:
++                lab.w(reg, value)
++            lab.w(0x34, 0x02002898)  # Write-single-block CMD24 must be rejected.
++            after = lab.state()
++            assert after["rejected"] == before["rejected"] + 7
++            assert after["backend_reads"] == 3 and after["readonly"]
++            assert after["completed"] == 4 and after["cmd8"] == 1
++        finally:
++            lab.close()
++
++        for fault in ["busy", "queue", "crypto", "stale-irq"]:
++            lab = instance(fault)
++            try:
++                lab.fault(fault)
++                if fault == "busy": assert lab.r(0x3c) == 3
++                if fault == "queue": assert lab.r(0x204) == 1 and lab.r(0x23c) == 3
++                if fault == "crypto": assert lab.r(0x670) == 1
++                if fault == "stale-irq": assert lab.r(0xc) == 0x100
++                assert lab.state()["commands"] == 0
++            finally:
++                lab.close()
++
++        for fault in ["command-crc", "command-timeout", "data-crc", "short-data",
++                      "missing-done", "ack-stuck", "backend-error", "wrong-r1"]:
++            lab = instance(fault)
++            try:
++                lab.fault(fault)
++                lab.issue(0x02000891, 1)
++                if fault in ("command-crc", "command-timeout"):
++                    assert lab.r(0xc) == (0x400 if fault == "command-crc" else 0x200)
++                    assert lab.r(0x14) == 0 and lab.state()["backend_reads"] == 0
++                    continue
++                if fault == "wrong-r1":
++                    assert lab.r(0x40) & (1 << 22) and lab.r(0x14) == 0
++                    continue
++                lab.w(0xc, 0x100)
++                if fault == "ack-stuck":
++                    assert lab.r(0xc) == 0x100
++                    continue
++                result = lab.drain()
++                if fault == "backend-error":
++                    assert not result and lab.r(0xc) == 0x4000
++                    assert lab.state()["backend_errors"] == 1
++                elif fault == "data-crc":
++                    assert len(result) == 128 and lab.r(0xc) == 0x8000
++                elif fault == "short-data":
++                    assert len(result) == 256 and lab.r(0xc) == 0
++                elif fault == "missing-done":
++                    assert result == backing[512:1024] and lab.r(0xc) == 0
++                assert lab.state()["completed"] == 0
++            finally:
++                lab.close()
++
++        for fault, index, expected in [("extcsd-partition", 179, 1), ("extcsd-queue", 15, 1),
++                                       ("extcsd-bus", 183, 1), ("extcsd-timing", 185, 3),
++                                       ("extcsd-capacity", 212, 0)]:
++            lab = instance(fault)
++            try:
++                lab.fault(fault)
++                lab.issue(0x02000888, 0)
++                ext = lab.drain()
++                assert len(ext) == 512 and ext[index] == expected
++                assert lab.state()["backend_reads"] == 0
++            finally:
++                lab.close()
++
++        lab = instance("absent", False)
++        try:
++            assert lab.state() == {"enabled": False}
++        finally:
++            lab.close()
++        assert hashlib.sha256(image.read_bytes()).digest() == digest
++    print("PASS: synthetic inherited MSDC PIO, real read-only sectors, EXT_CSD, faults and absence")
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/tests/mt6762/test_lab_msdc_inputs.py b/tests/mt6762/test_lab_msdc_inputs.py
+new file mode 100644
+index 0000000..f0086bf
+--- /dev/null
++++ b/tests/mt6762/test_lab_msdc_inputs.py
+@@ -0,0 +1,64 @@
++#!/usr/bin/env python3
++"""MSDC image admission and shared-writer exclusion; no write commands."""
++import argparse
++import hashlib
++import os
++from pathlib import Path
++import subprocess
++import tempfile
++from test_lab_msdc import MSDCLab
++
++
++def main():
++    p = argparse.ArgumentParser(description=__doc__)
++    p.add_argument("--qemu", required=True, type=Path)
++    p.add_argument("--dtb", required=True, type=Path)
++    p.add_argument("--qemu-io", required=True, type=Path)
++    a = p.parse_args()
++    qemu, dtb, qio = a.qemu.resolve(), a.dtb.resolve(), a.qemu_io.resolve()
++    with tempfile.TemporaryDirectory(prefix="mt6762-msdc-inputs-") as td:
++        d = Path(td)
++        empty, short, fifo, image = (d / name for name in ("empty", "short", "fifo", "data.raw"))
++        empty.touch()
++        short.write_bytes(bytes(513))
++        os.mkfifo(fifo)
++        image.write_bytes(bytes(range(256)) * 4)
++        original = hashlib.sha256(image.read_bytes()).digest()
++        negative = [
++            ("mt6762,lab-msdc=on", "selected together"),
++            (f"mt6762,lab-msdc-image={image}", "selected together"),
++            (f"mt6762,lab-msdc=on,lab-msdc-image={d / 'absent'}", "regular file"),
++            (f"mt6762,lab-msdc=on,lab-msdc-image={d}", "regular file"),
++            (f"mt6762,lab-msdc=on,lab-msdc-image={fifo}", "regular file"),
++            (f"mt6762,lab-msdc=on,lab-msdc-image={empty}", "whole sectors"),
++            (f"mt6762,lab-msdc=on,lab-msdc-image={short}", "whole sectors"),
++        ]
++        for machine, reason in negative:
++            result = subprocess.run([str(qemu), "-M", machine, "-accel", "qtest",
++                                     "-m", "512M", "-smp", "1", "-dtb", str(dtb),
++                                     "-display", "none", "-serial", "null", "-monitor", "none"],
++                                    capture_output=True, text=True, timeout=10)
++            assert result.returncode != 0 and reason in result.stderr, result.stderr
++        labdir = d / "lab"
++        labdir.mkdir()
++        lab = MSDCLab(qemu, dtb, labdir, image)
++        try:
++            # qemu-io 'info' is observational; only its open requests RW permission.
++            writer = subprocess.run([str(qio), "-f", "raw", "-c", "info", str(image)],
++                                    capture_output=True, text=True, timeout=10)
++            assert writer.returncode != 0 and "lock" in writer.stderr.lower(), writer.stderr
++            reader = subprocess.run([str(qio), "-r", "-f", "raw", "-c", "info", str(image)],
++                                    capture_output=True, text=True, timeout=10)
++            assert reader.returncode == 0, reader.stderr
++            assert lab.state()["readonly"] and lab.state()["backend_reads"] == 0
++        finally:
++            lab.close()
++        reopened = subprocess.run([str(qio), "-f", "raw", "-c", "info", str(image)],
++                                  capture_output=True, text=True, timeout=10)
++        assert reopened.returncode == 0, reopened.stderr
++        assert hashlib.sha256(image.read_bytes()).digest() == original
++    print("PASS: paired options, regular whole-sector images, read-only sharing and writer-lock exclusion")
++
++
++if __name__ == "__main__":
++    main()
+-- 
+2.55.0
+

@@ -46,6 +46,8 @@ void *mt6762_map_mmio(uint64_t pa,size_t bytes)
     static const struct {uint64_t base,size;} regions[]={
         {0x00110c00,0x1400}, /* DVFS shared SRAM; consumer requires its own verified gate. */
         {0x10000000,0x2000}, {0x10005000,0x2000}, {0x1000c000,0x2000},
+        {0x10002000,0x1000}, /* MSDC electrical pads; owned inherited state only. */
+        {0x11230000,0x10000}, {0x11cd0000,0x1000}, /* MSDC0 and trained timing macro. */
         {0x10010000,0x1000}, {0x10200000,0x1000},
         {0x10450000,0x100}, {0x10451000,8}, /* SSPM mailbox0, explicit ownership only. */
         {0x11000000,0x1000}, {0x11007000,0x1000}, {0x11016000,0x1000},

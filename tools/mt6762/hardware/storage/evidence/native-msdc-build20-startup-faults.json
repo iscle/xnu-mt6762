@@ -1,0 +1,922 @@
+{
+  "kernel_sha256": "0678f5c1522625cfa08cd96cf0e769e23e388c652886e40a69e69422324ae62a",
+  "qemu_binary_sha256": "8ae2e848f1f75ee8512de2ec363c1f04024d710aefd7bd186d545390ca1654ac",
+  "scope": "17 synthetic startup fault configurations,8nativeXNU CPUs; no physical access",
+  "cases": [
+    {
+      "fault": "busy",
+      "raw_result": "boot/native-msdc-build20/cpu8/startup-busy.json",
+      "raw_result_sha256": "1e24a5a9ba425a6c6ce847110681d3dc1f58c8b72d6e83f4bf5fcc00355cca5b",
+      "passed": true,
+      "secondary_cpus_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "native_sysctls": {
+        "mt6762_msdc_ready": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_fault": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_msdc_last_error": {
+          "value": -3,
+          "error": 0
+        },
+        "mt6762_msdc_reads": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_sectors": {
+          "value": 0,
+          "error": 0
+        }
+      },
+      "guest_open": -2,
+      "guest_reads": [],
+      "image_hash_unchanged": true,
+      "model_final": {
+        "commands": 0,
+        "cmd8": 0,
+        "cmd13": 0,
+        "cmd17": 0,
+        "completed": 0,
+        "backend_reads": 0,
+        "backend_errors": 0,
+        "bytes_read": 0,
+        "rejected": 0,
+        "writes": 0
+      }
+    },
+    {
+      "fault": "queue",
+      "raw_result": "boot/native-msdc-build20/cpu8/startup-queue.json",
+      "raw_result_sha256": "35f7db238fe677c700924fdd415546523fa10b7fb1878bf58eea24fb9f310dfb",
+      "passed": true,
+      "secondary_cpus_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "native_sysctls": {
+        "mt6762_msdc_ready": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_fault": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_msdc_last_error": {
+          "value": -3,
+          "error": 0
+        },
+        "mt6762_msdc_reads": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_sectors": {
+          "value": 0,
+          "error": 0
+        }
+      },
+      "guest_open": -2,
+      "guest_reads": [],
+      "image_hash_unchanged": true,
+      "model_final": {
+        "commands": 0,
+        "cmd8": 0,
+        "cmd13": 0,
+        "cmd17": 0,
+        "completed": 0,
+        "backend_reads": 0,
+        "backend_errors": 0,
+        "bytes_read": 0,
+        "rejected": 0,
+        "writes": 0
+      }
+    },
+    {
+      "fault": "crypto",
+      "raw_result": "boot/native-msdc-build20/cpu8/startup-crypto.json",
+      "raw_result_sha256": "3672d7487e263e40929cd14fc90b3b2a44128436ffd9834f9ef7bf86f42acabe",
+      "passed": true,
+      "secondary_cpus_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "native_sysctls": {
+        "mt6762_msdc_ready": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_fault": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_msdc_last_error": {
+          "value": -3,
+          "error": 0
+        },
+        "mt6762_msdc_reads": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_sectors": {
+          "value": 0,
+          "error": 0
+        }
+      },
+      "guest_open": -2,
+      "guest_reads": [],
+      "image_hash_unchanged": true,
+      "model_final": {
+        "commands": 0,
+        "cmd8": 0,
+        "cmd13": 0,
+        "cmd17": 0,
+        "completed": 0,
+        "backend_reads": 0,
+        "backend_errors": 0,
+        "bytes_read": 0,
+        "rejected": 0,
+        "writes": 0
+      }
+    },
+    {
+      "fault": "stale-irq",
+      "raw_result": "boot/native-msdc-build20/cpu8/startup-stale-irq.json",
+      "raw_result_sha256": "e84dab986d6082a079ddc924586897311461f35a9a4f262a4e4b9231246d7c40",
+      "passed": true,
+      "secondary_cpus_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "native_sysctls": {
+        "mt6762_msdc_ready": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_fault": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_msdc_last_error": {
+          "value": -3,
+          "error": 0
+        },
+        "mt6762_msdc_reads": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_sectors": {
+          "value": 0,
+          "error": 0
+        }
+      },
+      "guest_open": -2,
+      "guest_reads": [],
+      "image_hash_unchanged": true,
+      "model_final": {
+        "commands": 0,
+        "cmd8": 0,
+        "cmd13": 0,
+        "cmd17": 0,
+        "completed": 0,
+        "backend_reads": 0,
+        "backend_errors": 0,
+        "bytes_read": 0,
+        "rejected": 0,
+        "writes": 0
+      }
+    },
+    {
+      "fault": "command-crc",
+      "raw_result": "boot/native-msdc-build20/cpu8/startup-command-crc.json",
+      "raw_result_sha256": "a11afbf45f4f979ee6dd76370419468ed75680701df74ae0cb73b1ddefb00074",
+      "passed": true,
+      "secondary_cpus_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "native_sysctls": {
+        "mt6762_msdc_ready": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_fault": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_msdc_last_error": {
+          "value": -5,
+          "error": 0
+        },
+        "mt6762_msdc_reads": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_sectors": {
+          "value": 0,
+          "error": 0
+        }
+      },
+      "guest_open": -2,
+      "guest_reads": [],
+      "image_hash_unchanged": true,
+      "model_final": {
+        "commands": 1,
+        "cmd8": 0,
+        "cmd13": 1,
+        "cmd17": 0,
+        "completed": 0,
+        "backend_reads": 0,
+        "backend_errors": 0,
+        "bytes_read": 0,
+        "rejected": 0,
+        "writes": 2
+      }
+    },
+    {
+      "fault": "command-timeout",
+      "raw_result": "boot/native-msdc-build20/cpu8/startup-command-timeout.json",
+      "raw_result_sha256": "6855a7939f0ceb44042ea0b479f1a9a4b705913c80daef0c205a051017b966d7",
+      "passed": true,
+      "secondary_cpus_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "native_sysctls": {
+        "mt6762_msdc_ready": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_fault": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_msdc_last_error": {
+          "value": -5,
+          "error": 0
+        },
+        "mt6762_msdc_reads": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_sectors": {
+          "value": 0,
+          "error": 0
+        }
+      },
+      "guest_open": -2,
+      "guest_reads": [],
+      "image_hash_unchanged": true,
+      "model_final": {
+        "commands": 1,
+        "cmd8": 0,
+        "cmd13": 1,
+        "cmd17": 0,
+        "completed": 0,
+        "backend_reads": 0,
+        "backend_errors": 0,
+        "bytes_read": 0,
+        "rejected": 0,
+        "writes": 2
+      }
+    },
+    {
+      "fault": "data-crc",
+      "raw_result": "boot/native-msdc-build20/cpu8/startup-data-crc.json",
+      "raw_result_sha256": "986320ec015ccaa670b87ed9dc20808ebd5fbdcbdebd88d673aee8b3f593a7ef",
+      "passed": true,
+      "secondary_cpus_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "native_sysctls": {
+        "mt6762_msdc_ready": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_fault": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_msdc_last_error": {
+          "value": -6,
+          "error": 0
+        },
+        "mt6762_msdc_reads": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_sectors": {
+          "value": 0,
+          "error": 0
+        }
+      },
+      "guest_open": -2,
+      "guest_reads": [],
+      "image_hash_unchanged": true,
+      "model_final": {
+        "commands": 2,
+        "cmd8": 1,
+        "cmd13": 1,
+        "cmd17": 0,
+        "completed": 0,
+        "backend_reads": 0,
+        "backend_errors": 0,
+        "bytes_read": 128,
+        "rejected": 0,
+        "writes": 7
+      }
+    },
+    {
+      "fault": "short-data",
+      "raw_result": "boot/native-msdc-build20/cpu8/startup-short-data.json",
+      "raw_result_sha256": "8cd5e8afe8006388046ebe84c85c48d6f8ae300da7922868faeed1a0a0663b93",
+      "passed": true,
+      "secondary_cpus_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "native_sysctls": {
+        "mt6762_msdc_ready": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_fault": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_msdc_last_error": {
+          "value": -4,
+          "error": 0
+        },
+        "mt6762_msdc_reads": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_sectors": {
+          "value": 0,
+          "error": 0
+        }
+      },
+      "guest_open": -2,
+      "guest_reads": [],
+      "image_hash_unchanged": true,
+      "model_final": {
+        "commands": 2,
+        "cmd8": 1,
+        "cmd13": 1,
+        "cmd17": 0,
+        "completed": 0,
+        "backend_reads": 0,
+        "backend_errors": 0,
+        "bytes_read": 256,
+        "rejected": 0,
+        "writes": 7
+      }
+    },
+    {
+      "fault": "missing-done",
+      "raw_result": "boot/native-msdc-build20/cpu8/startup-missing-done.json",
+      "raw_result_sha256": "7a11021b33f46f7daa5151df3f150bd3794d3cd16ef23b4a627dea15f7d493c8",
+      "passed": true,
+      "secondary_cpus_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "native_sysctls": {
+        "mt6762_msdc_ready": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_fault": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_msdc_last_error": {
+          "value": -4,
+          "error": 0
+        },
+        "mt6762_msdc_reads": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_sectors": {
+          "value": 0,
+          "error": 0
+        }
+      },
+      "guest_open": -2,
+      "guest_reads": [],
+      "image_hash_unchanged": true,
+      "model_final": {
+        "commands": 2,
+        "cmd8": 1,
+        "cmd13": 1,
+        "cmd17": 0,
+        "completed": 0,
+        "backend_reads": 0,
+        "backend_errors": 0,
+        "bytes_read": 512,
+        "rejected": 0,
+        "writes": 7
+      }
+    },
+    {
+      "fault": "ack-stuck",
+      "raw_result": "boot/native-msdc-build20/cpu8/startup-ack-stuck.json",
+      "raw_result_sha256": "6a775174106a825e6287e05d15ae913bd1a07854b035d738201da1de8943d32a",
+      "passed": true,
+      "secondary_cpus_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "native_sysctls": {
+        "mt6762_msdc_ready": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_fault": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_msdc_last_error": {
+          "value": -8,
+          "error": 0
+        },
+        "mt6762_msdc_reads": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_sectors": {
+          "value": 0,
+          "error": 0
+        }
+      },
+      "guest_open": -2,
+      "guest_reads": [],
+      "image_hash_unchanged": true,
+      "model_final": {
+        "commands": 1,
+        "cmd8": 0,
+        "cmd13": 1,
+        "cmd17": 0,
+        "completed": 0,
+        "backend_reads": 0,
+        "backend_errors": 0,
+        "bytes_read": 0,
+        "rejected": 0,
+        "writes": 3
+      }
+    },
+    {
+      "fault": "backend-error",
+      "raw_result": "boot/native-msdc-build20/cpu8/startup-backend-error-corrected.json",
+      "raw_result_sha256": "7c1f8da832b235b92cd31022e65a8528d0bddd254e44136ce187d75d855f4373",
+      "passed": true,
+      "secondary_cpus_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "native_sysctls": {
+        "mt6762_msdc_ready": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_fault": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_msdc_last_error": {
+          "value": -6,
+          "error": 0
+        },
+        "mt6762_msdc_reads": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_sectors": {
+          "value": 128,
+          "error": 0
+        }
+      },
+      "guest_open": 1,
+      "guest_reads": [
+        {
+          "kind": "char",
+          "lba": 0,
+          "result": -5,
+          "fnv1a": 1388775365
+        },
+        {
+          "kind": "char",
+          "lba": 1,
+          "result": -6,
+          "fnv1a": 1388775365
+        },
+        {
+          "kind": "char",
+          "lba": 127,
+          "result": -6,
+          "fnv1a": 1388775365
+        },
+        {
+          "kind": "block",
+          "lba": 0,
+          "result": -6,
+          "fnv1a": 1388775365
+        }
+      ],
+      "image_hash_unchanged": true,
+      "model_final": {
+        "commands": 5,
+        "cmd8": 1,
+        "cmd13": 3,
+        "cmd17": 1,
+        "completed": 1,
+        "backend_reads": 1,
+        "backend_errors": 1,
+        "bytes_read": 512,
+        "rejected": 0,
+        "writes": 18
+      }
+    },
+    {
+      "fault": "wrong-r1",
+      "raw_result": "boot/native-msdc-build20/cpu8/startup-wrong-r1.json",
+      "raw_result_sha256": "f4e10e03a006008ce19a8120dc5d2114b737ac829e6f7070a3a731397943b12c",
+      "passed": true,
+      "secondary_cpus_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "native_sysctls": {
+        "mt6762_msdc_ready": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_fault": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_msdc_last_error": {
+          "value": -7,
+          "error": 0
+        },
+        "mt6762_msdc_reads": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_sectors": {
+          "value": 0,
+          "error": 0
+        }
+      },
+      "guest_open": -2,
+      "guest_reads": [],
+      "image_hash_unchanged": true,
+      "model_final": {
+        "commands": 1,
+        "cmd8": 0,
+        "cmd13": 1,
+        "cmd17": 0,
+        "completed": 0,
+        "backend_reads": 0,
+        "backend_errors": 0,
+        "bytes_read": 0,
+        "rejected": 0,
+        "writes": 3
+      }
+    },
+    {
+      "fault": "extcsd-partition",
+      "raw_result": "boot/native-msdc-build20/cpu8/startup-extcsd-partition.json",
+      "raw_result_sha256": "9da079f6d091544f8357b4f491d1c4f2bb980cd1b81d20a22b9c6f8d22027757",
+      "passed": true,
+      "secondary_cpus_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "native_sysctls": {
+        "mt6762_msdc_ready": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_fault": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_msdc_last_error": {
+          "value": -7,
+          "error": 0
+        },
+        "mt6762_msdc_reads": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_sectors": {
+          "value": 0,
+          "error": 0
+        }
+      },
+      "guest_open": -2,
+      "guest_reads": [],
+      "image_hash_unchanged": true,
+      "model_final": {
+        "commands": 3,
+        "cmd8": 1,
+        "cmd13": 2,
+        "cmd17": 0,
+        "completed": 1,
+        "backend_reads": 0,
+        "backend_errors": 0,
+        "bytes_read": 512,
+        "rejected": 0,
+        "writes": 11
+      }
+    },
+    {
+      "fault": "extcsd-queue",
+      "raw_result": "boot/native-msdc-build20/cpu8/startup-extcsd-queue.json",
+      "raw_result_sha256": "f7263688ff23ba68eb6c6cc7b63ff3293f31635b0b10c77a06dd6c3eaeb715a3",
+      "passed": true,
+      "secondary_cpus_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "native_sysctls": {
+        "mt6762_msdc_ready": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_fault": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_msdc_last_error": {
+          "value": -7,
+          "error": 0
+        },
+        "mt6762_msdc_reads": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_sectors": {
+          "value": 0,
+          "error": 0
+        }
+      },
+      "guest_open": -2,
+      "guest_reads": [],
+      "image_hash_unchanged": true,
+      "model_final": {
+        "commands": 3,
+        "cmd8": 1,
+        "cmd13": 2,
+        "cmd17": 0,
+        "completed": 1,
+        "backend_reads": 0,
+        "backend_errors": 0,
+        "bytes_read": 512,
+        "rejected": 0,
+        "writes": 11
+      }
+    },
+    {
+      "fault": "extcsd-bus",
+      "raw_result": "boot/native-msdc-build20/cpu8/startup-extcsd-bus.json",
+      "raw_result_sha256": "fefdf70982ef6653aeb9116de6b51f3ed45553e4839c2fa837fe91c21a213287",
+      "passed": true,
+      "secondary_cpus_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "native_sysctls": {
+        "mt6762_msdc_ready": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_fault": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_msdc_last_error": {
+          "value": -7,
+          "error": 0
+        },
+        "mt6762_msdc_reads": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_sectors": {
+          "value": 0,
+          "error": 0
+        }
+      },
+      "guest_open": -2,
+      "guest_reads": [],
+      "image_hash_unchanged": true,
+      "model_final": {
+        "commands": 3,
+        "cmd8": 1,
+        "cmd13": 2,
+        "cmd17": 0,
+        "completed": 1,
+        "backend_reads": 0,
+        "backend_errors": 0,
+        "bytes_read": 512,
+        "rejected": 0,
+        "writes": 11
+      }
+    },
+    {
+      "fault": "extcsd-timing",
+      "raw_result": "boot/native-msdc-build20/cpu8/startup-extcsd-timing.json",
+      "raw_result_sha256": "b7720ac9e44a5a232f7fd693cddb4d23da40a32cd35ee8dd1d0f859bed53558f",
+      "passed": true,
+      "secondary_cpus_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "native_sysctls": {
+        "mt6762_msdc_ready": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_fault": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_msdc_last_error": {
+          "value": -7,
+          "error": 0
+        },
+        "mt6762_msdc_reads": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_sectors": {
+          "value": 0,
+          "error": 0
+        }
+      },
+      "guest_open": -2,
+      "guest_reads": [],
+      "image_hash_unchanged": true,
+      "model_final": {
+        "commands": 3,
+        "cmd8": 1,
+        "cmd13": 2,
+        "cmd17": 0,
+        "completed": 1,
+        "backend_reads": 0,
+        "backend_errors": 0,
+        "bytes_read": 512,
+        "rejected": 0,
+        "writes": 11
+      }
+    },
+    {
+      "fault": "extcsd-capacity",
+      "raw_result": "boot/native-msdc-build20/cpu8/startup-extcsd-capacity.json",
+      "raw_result_sha256": "23dc32289238275652706874adfa91bd625ffb679ee1cc4554a95737cf21c27e",
+      "passed": true,
+      "secondary_cpus_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "native_sysctls": {
+        "mt6762_msdc_ready": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_fault": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_msdc_last_error": {
+          "value": -7,
+          "error": 0
+        },
+        "mt6762_msdc_reads": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_sectors": {
+          "value": 0,
+          "error": 0
+        }
+      },
+      "guest_open": -2,
+      "guest_reads": [],
+      "image_hash_unchanged": true,
+      "model_final": {
+        "commands": 3,
+        "cmd8": 1,
+        "cmd13": 2,
+        "cmd17": 0,
+        "completed": 1,
+        "backend_reads": 0,
+        "backend_errors": 0,
+        "bytes_read": 512,
+        "rejected": 0,
+        "writes": 11
+      }
+    }
+  ],
+  "retained_validator_failure": {
+    "path": "boot/native-msdc-build20/cpu8/startup-backend-error.json",
+    "sha256": "aba20e0046d4a64abb6a92fac0c21ac91ca8a57d8d5ec79c681333dbeaf672e0",
+    "reason": "Initial validator assumed every startup fault prevents admission. CMD8 synthetic metadata does not read backing sectors; backend-error admits geometry then fails firstCMD17. Corrected assertion requires allsectorreads fail withoutcopy, ready0/fault1 and exactlyonebackendattempt/error. Original retained."
+  },
+  "physical_storage_tested": false
+}

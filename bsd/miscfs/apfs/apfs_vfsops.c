@@ -21,6 +21,7 @@
 #include <sys/fcntl.h>
 #include <sys/redwood_input.h>
 #include <sys/redwood_virtio_blk.h>
+#include <sys/mt6762_msdc.h>
 #include <sys/proc.h>
 #include <kern/thread.h>
 #include <libkern/OSAtomic.h>
@@ -1120,7 +1121,7 @@ apfs_mount_common(mount_t mp, vnode_t devvp, vfs_context_t ctx, uint32_t contain
 		dev_t rdev = vnode_specrdev(devvp);
 		uint32_t cheap;
 
-		am->am_nx.cheap_requests = !redwood_ufs_dev(rdev) && !redwood_virtio_blk_dev(rdev);
+		am->am_nx.cheap_requests = !redwood_ufs_dev(rdev) && !redwood_virtio_blk_dev(rdev) && !mt6762_storage_dev(rdev);
 		if (PE_parse_boot_argn("apfs_cheap", &cheap, sizeof(cheap))) {
 			am->am_nx.cheap_requests = (cheap != 0);
 		}

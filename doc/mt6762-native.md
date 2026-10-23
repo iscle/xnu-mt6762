@@ -175,6 +175,50 @@ cell limits, USB input budget and calibrated thermal protection. The primary
 PSC5425E datasheet resolves the non-linear CV table and register semantics;
 those register definitions do not by themselves establish board calibration.
 
+## Inherited eMMC reads
+
+The MSDC0 implementation reads an already initialized, exclusively owned eMMC
+user area. It publishes `/dev/mtkemmc0` and `/dev/rmtkemmc0` only after actual
+CMD13/CMD8 responses confirm the card state, capacity, timing and bus width.
+All writes are refused. Every sector is staged privately and copied only after
+data completion and a final successful card-status check. A transport fault is
+terminal; removing an injected fault does not silently restart the controller.
+The driver does not reset, tune, switch partitions or submit DMA requests.
+
+The raw character device supports unaligned reads and EOF. Its copy to userspace
+happens outside the transport mutex so a user page fault cannot recursively
+deadlock the storage path. Block requests are bounded to 64 KiB, and APFS treats
+this transport as a disk rather than a cheap RAM-backed device. This does not
+implement partition discovery, writable APFS or installation onto the phone.
+
+`prepare.py --native-lab-msdc-image FILE` explicitly selects a synthetic
+controller backed by a real, read-only regular file. Its metadata and clock
+claim are laboratory fixtures; they do not establish physical rails, pad
+timing or clock ownership. The existing Apple root remains RAM-backed.
+See the [storage contract](../tools/mt6762/hardware/storage/README.rst)
+for evidence and physical handoff prerequisites. Native execution results
+must be recorded separately from host protocol tests.
+
+Build20 passed native reads on one and eight emulated cores. Raw sectors
+0, 1 and 127 and a block-device read matched the actual backing file. Tests
+also confirmed cross-sector unaligned reads, a partial read at EOF, empty
+reads at and beyond EOF, negative-offset read rejection and write-open
+refusal. The independent model counted 38 media reads and no rejected
+operations; the file hash stayed unchanged. These tests exercise the real
+BSD adapter and native PIO protocol against a synthetic controller, not a
+physical eMMC or an iOS root filesystem on eMMC.
+Seventeen startup fault configurations also passed on eight cores, covering
+inherited busy/queue/crypto/IRQ state, command and data failures, incomplete
+transfers, acknowledgement failure and inconsistent EXT_CSD metadata. A
+backing-file error is discovered at the first media read after card admission;
+that case faults the published transport and returns no sector data. See the
+[native startup fault evidence](../tools/mt6762/hardware/storage/evidence/native-msdc-build20-startup-faults.json).
+A later data-CRC injection allowed one valid sector first, then faulted the
+transport. Clearing the model fault did not restore native reads or copy failed
+data. Missing ownership rejected the device before any command; a capacity
+mismatch rejected it after card admission commands. Backing-file hashes stayed
+unchanged throughout these tests.
+
 ## Validation and remaining work
 
 `tools/mt6762/test-host.sh` exercises shared protocol and loader code. Build
