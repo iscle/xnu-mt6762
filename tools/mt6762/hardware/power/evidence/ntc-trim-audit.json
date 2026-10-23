@@ -1,0 +1,85 @@
+{
+  "image_sha256": "82b1919185a49f268a0f8e145a6714d6264c1f66918a90df0d763266147ead4b",
+  "preloader_sha256": "7e62da99110271864c330cffcef5237e20ca03881b933263af828561d963f674",
+  "method": "bounded static records and exact rational counterexamples; no hardware or ARM64 execution",
+  "physical_hardware_tested": false,
+  "calibrated_temperature_admitted": false,
+  "channels": [
+    {
+      "logical_index": 3,
+      "name": "BAT_TEMP",
+      "hardware_channel": 3,
+      "resolution": 12,
+      "request": "0x110e",
+      "request_shift": 3,
+      "output": "0x108e"
+    },
+    {
+      "logical_index": 14,
+      "name": "VBIF",
+      "hardware_channel": 11,
+      "resolution": 12,
+      "request": "0x110e",
+      "request_shift": 11,
+      "output": "0x109e"
+    }
+  ],
+  "preloader_records": [
+    {
+      "file_offset": "0x38040",
+      "address": "0x113a",
+      "value": "0x95d0",
+      "mask": "0xfff0",
+      "shift": 0,
+      "decoded_channel_selector": 3
+    },
+    {
+      "file_offset": "0x38048",
+      "address": "0x113c",
+      "value": "0x55",
+      "mask": "0xff",
+      "shift": 0,
+      "decoded_channel_selector": 1
+    }
+  ],
+  "preloader_caveat": "embedded configuration records, not proof of current registers or selector semantics; 113c upper compensation bits are not covered by this mask",
+  "stock_processed_formula": "((raw * resistance_ratio_numerator * 1800) / resistance_ratio_denominator) >> resolution; integer operations",
+  "ratio_math_synthetic": {
+    "nominal": {
+      "ohms_numerator": 8450,
+      "ohms_denominator": 1
+    },
+    "same_gain_zero_offset": {
+      "ohms_numerator": 8450,
+      "ohms_denominator": 1
+    },
+    "same_gain_common_offset": {
+      "ohms_numerator": 102245,
+      "ohms_denominator": 12
+    },
+    "different_gains": {
+      "ohms_numerator": 33800,
+      "ohms_denominator": 1
+    },
+    "physical_correction_nominal": {
+      "ohms_numerator": 100555,
+      "ohms_denominator": 12
+    },
+    "physical_correction_wrong_unscaled_gain": {
+      "ohms_numerator": 201955,
+      "ohms_denominator": 24
+    },
+    "physical_correction_gain_scaled": {
+      "ohms_numerator": 100555,
+      "ohms_denominator": 12
+    },
+    "raw_1400_4089": {
+      "ohms_numerator": 23660000,
+      "ohms_denominator": 2689
+    },
+    "stock_separate_mv_floor_1400_4089": {
+      "ohms_numerator": 10393500,
+      "ohms_denominator": 1181
+    }
+  }
+}

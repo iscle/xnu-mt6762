@@ -222,6 +222,20 @@ panel brightness. See the
 Compact pass/failure evidence is recorded in
 [`native-integration.json`](../tools/mt6762/evidence/native-integration.json).
 
+Build19 completed a separate 630-second single-core native GUI run without
+a panic. The first sampled home screen appeared at 470 seconds, followed by
+the status bar at 480 seconds. Apple backboardd recognized native volume-up,
+volume-down and lock button pairs after home appeared. The lock sequence
+was followed by a black framebuffer and verified PWM-off state, then a
+lock screen after native unblank. Apple requested unblank before the next
+scheduled lock-button event, so that event is not credited as the cause of
+waking. Volume events do not establish working audio: the original service
+reported an endpoint-volume error. Battery capacity remains unknown despite
+the UI battery icon. The donor automatic-unlock helper remains present,
+and this single-core result does not resolve the earlier SMP panic. See
+[`native-gui1-build19.json`](../tools/mt6762/evidence/native-gui1-build19.json)
+for the sampled timeline, hashes, native counters and limitations.
+
 The ordinary no-handoff GUI boot remains a separate regression test of the
 precompiled Apple userspace. Native peripheral test results must be reported
 separately from that GUI result. CPU/CCI SSPM DVFS, full PMIC/gauge/charging

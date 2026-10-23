@@ -1,0 +1,521 @@
+{
+  "synthetic_only": true,
+  "physical_hardware_tested": false,
+  "original_apple_userspace": true,
+  "kernel_sha256": "4827e096eadd1a4ead829274e7063a67c9009b517164732bdc7d127260c808c1",
+  "qemu_binary_sha256": "bd081f2077f2d88f69e1436712c7765bceaf496ba06081ad4499ea9e353eb84c",
+  "cpu_count": 1,
+  "duration_seconds": 630,
+  "run_completed": true,
+  "panic_observed": false,
+  "home_screen_observed": true,
+  "first_sampled_home_seconds": 470.104,
+  "last_sampled_logo_seconds": 460.058,
+  "final_visual_state": "lockscreen",
+  "frame_timeline": [
+    {
+      "sample": 46,
+      "file": "gui630-046.png",
+      "png_sha256": "860982503fbd9641439683dc421b082a9964156d6f57e72f435ddb246aa7f57b",
+      "bgra_sha256": "9edd86fe5ffb4b9c457b82cd7ceffd8128f5b5431c5eff1a3f8815d174f66b00",
+      "approximate_elapsed_seconds": 460.058,
+      "visual_observation": "Apple logo",
+      "display_model": {
+        "enabled": true,
+        "synthetic": true,
+        "framebuffer_pa": 3705421824,
+        "fault": 0,
+        "applied_level": 512,
+        "enable": 1,
+        "duty": 512,
+        "pwm_writes": 0,
+        "commits": 0,
+        "rejected_writes": 0,
+        "reads": {
+          "spm": 18,
+          "mmsys": 2,
+          "ovl": 22,
+          "rdma": 2,
+          "dsi": 16,
+          "pwm": 14
+        }
+      }
+    },
+    {
+      "sample": 47,
+      "file": "gui630-047.png",
+      "png_sha256": "8c2a904861b1a4f0345931e95c47e46183b968cbce7cab89c4bfc9f26e358420",
+      "bgra_sha256": "83df102290a072d4b0bb1603f1c7a81497388a2d173d5ebaeb74d779ea3eb75d",
+      "approximate_elapsed_seconds": 470.104,
+      "visual_observation": "Home screen, blank Weather/Calendar widgets; no status bar",
+      "display_model": {
+        "enabled": true,
+        "synthetic": true,
+        "framebuffer_pa": 3705421824,
+        "fault": 0,
+        "applied_level": 512,
+        "enable": 1,
+        "duty": 512,
+        "pwm_writes": 0,
+        "commits": 0,
+        "rejected_writes": 0,
+        "reads": {
+          "spm": 18,
+          "mmsys": 2,
+          "ovl": 22,
+          "rdma": 2,
+          "dsi": 16,
+          "pwm": 14
+        }
+      }
+    },
+    {
+      "sample": 48,
+      "file": "gui630-048.png",
+      "png_sha256": "cc5e6f3fb363ee975986e9f013003d0c74e58672d7f39e5efc4cd2d9ec52eaf7",
+      "bgra_sha256": "24abe7d3455742ef58fb0f5dd409096d3367ba84cb59aecab0c53f9e4d512653",
+      "approximate_elapsed_seconds": 480.178,
+      "visual_observation": "Home screen with status bar and battery icon showing1",
+      "display_model": {
+        "enabled": true,
+        "synthetic": true,
+        "framebuffer_pa": 3705421824,
+        "fault": 0,
+        "applied_level": 512,
+        "enable": 1,
+        "duty": 512,
+        "pwm_writes": 0,
+        "commits": 0,
+        "rejected_writes": 0,
+        "reads": {
+          "spm": 18,
+          "mmsys": 2,
+          "ovl": 22,
+          "rdma": 2,
+          "dsi": 16,
+          "pwm": 14
+        }
+      }
+    },
+    {
+      "sample": 54,
+      "file": "gui630-054.png",
+      "png_sha256": "79037a3eaf1d431ee28303837c213411418bdf6ef2ff8b946548710efc9d2e18",
+      "bgra_sha256": "ab5f7124157049228bf900068fa4bba5d17097db11098c852ac99de375d2b8ca",
+      "approximate_elapsed_seconds": 541.018,
+      "visual_observation": "Home screen before off transition",
+      "display_model": {
+        "enabled": true,
+        "synthetic": true,
+        "framebuffer_pa": 3705421824,
+        "fault": 0,
+        "applied_level": 512,
+        "enable": 1,
+        "duty": 512,
+        "pwm_writes": 0,
+        "commits": 0,
+        "rejected_writes": 0,
+        "reads": {
+          "spm": 18,
+          "mmsys": 2,
+          "ovl": 22,
+          "rdma": 2,
+          "dsi": 16,
+          "pwm": 14
+        }
+      }
+    },
+    {
+      "sample": 55,
+      "file": "gui630-055.png",
+      "png_sha256": "eefccb335673f297855cfc234e8736425a8a2bd48c03ac9161269b21f7f55d19",
+      "bgra_sha256": "0f7cfb43327ad082e6362afa8bcb4f762da9c55356e9c002f0b2697f0b6cd138",
+      "approximate_elapsed_seconds": 550.086,
+      "visual_observation": "Entire framebuffer black",
+      "display_model": {
+        "enabled": true,
+        "synthetic": true,
+        "framebuffer_pa": 3705421824,
+        "fault": 0,
+        "applied_level": 0,
+        "enable": 0,
+        "duty": 1,
+        "pwm_writes": 48,
+        "commits": 12,
+        "rejected_writes": 0,
+        "reads": {
+          "spm": 60,
+          "mmsys": 2,
+          "ovl": 22,
+          "rdma": 2,
+          "dsi": 16,
+          "pwm": 94
+        }
+      }
+    },
+    {
+      "sample": 56,
+      "file": "gui630-056.png",
+      "png_sha256": "bdb3930fdd9ad4805c229c1eae796e59ed0770fd37ee2fde82620bf5d39f0259",
+      "bgra_sha256": "a452f9af08ad04a70e98ea8291a60bd5c52246c2cfe06e6a6b395ffaf5602878",
+      "approximate_elapsed_seconds": 560.275,
+      "visual_observation": "Lockscreen after native unblank",
+      "display_model": {
+        "enabled": true,
+        "synthetic": true,
+        "framebuffer_pa": 3705421824,
+        "fault": 0,
+        "applied_level": 22,
+        "enable": 1,
+        "duty": 22,
+        "pwm_writes": 52,
+        "commits": 13,
+        "rejected_writes": 0,
+        "reads": {
+          "spm": 66,
+          "mmsys": 2,
+          "ovl": 22,
+          "rdma": 2,
+          "dsi": 16,
+          "pwm": 104
+        }
+      }
+    },
+    {
+      "sample": 58,
+      "file": "gui630-058.png",
+      "png_sha256": "fde9b874f9a665296d9bd1fd3bfad18c131bc3a66a82017e24777cc8228e9d76",
+      "bgra_sha256": "b3f0ede0cf3420214c6f5fbe872cf3e6caab0de800fbea3c46a1bb21d3353d74",
+      "approximate_elapsed_seconds": 580.981,
+      "visual_observation": "Large gray battery overlay and home indicator on black; no calibrated battery state inferred",
+      "display_model": {
+        "enabled": true,
+        "synthetic": true,
+        "framebuffer_pa": 3705421824,
+        "fault": 0,
+        "applied_level": 22,
+        "enable": 1,
+        "duty": 22,
+        "pwm_writes": 52,
+        "commits": 13,
+        "rejected_writes": 0,
+        "reads": {
+          "spm": 66,
+          "mmsys": 2,
+          "ovl": 22,
+          "rdma": 2,
+          "dsi": 16,
+          "pwm": 104
+        }
+      }
+    },
+    {
+      "sample": 59,
+      "file": "gui630-059.png",
+      "png_sha256": "469f62cfddc8e5f4ad5c2e7390d9a9c2d0eef64272c4872e0e10dcaba6aceaae",
+      "bgra_sha256": "5d946dd2203f352b15119c6383acb12218c125496211af58316105367b51c4ef",
+      "approximate_elapsed_seconds": 590.016,
+      "visual_observation": "Lockscreen after swipe",
+      "display_model": {
+        "enabled": true,
+        "synthetic": true,
+        "framebuffer_pa": 3705421824,
+        "fault": 0,
+        "applied_level": 512,
+        "enable": 1,
+        "duty": 512,
+        "pwm_writes": 100,
+        "commits": 25,
+        "rejected_writes": 0,
+        "reads": {
+          "spm": 105,
+          "mmsys": 2,
+          "ovl": 22,
+          "rdma": 2,
+          "dsi": 16,
+          "pwm": 180
+        }
+      }
+    },
+    {
+      "sample": 62,
+      "file": "gui630-062.png",
+      "png_sha256": "a51cc4472d3f678e5ed9d5283ea26e21576a64b9518dab72a1e656804639c341",
+      "bgra_sha256": "431cd24b12c8459db743a86de8b73ea2a23909b475491f2181036c74a1217ce3",
+      "approximate_elapsed_seconds": 620.13,
+      "visual_observation": "Lockscreen",
+      "display_model": {
+        "enabled": true,
+        "synthetic": true,
+        "framebuffer_pa": 3705421824,
+        "fault": 0,
+        "applied_level": 512,
+        "enable": 1,
+        "duty": 512,
+        "pwm_writes": 100,
+        "commits": 25,
+        "rejected_writes": 0,
+        "reads": {
+          "spm": 105,
+          "mmsys": 2,
+          "ovl": 22,
+          "rdma": 2,
+          "dsi": 16,
+          "pwm": 180
+        }
+      }
+    },
+    {
+      "file": "gui630.png",
+      "png_sha256": "b05b5c2e4aacb66b6b0eb1d7cf10cb580644a0e7e03da61ddb9cb789c8c26572",
+      "approximate_elapsed_seconds": 630,
+      "visual_observation": "Lockscreen, January1 time1:10; no home-screen return established after final swipe"
+    }
+  ],
+  "native_input_actions": [
+    {
+      "elapsed_seconds": 260.791,
+      "action": {
+        "at": 260,
+        "keys": 1,
+        "hold": 0.15
+      },
+      "completed": true
+    },
+    {
+      "elapsed_seconds": 277.902,
+      "action": {
+        "at": 277,
+        "from": [
+          192,
+          427
+        ],
+        "steps": 2
+      },
+      "completed": true
+    },
+    {
+      "elapsed_seconds": 291.488,
+      "action": {
+        "at": 290,
+        "from": [
+          192,
+          840
+        ],
+        "to": [
+          192,
+          256
+        ],
+        "steps": 24
+      },
+      "completed": true
+    },
+    {
+      "elapsed_seconds": 315.64,
+      "action": {
+        "at": 315,
+        "from": [
+          192,
+          427
+        ],
+        "steps": 2
+      },
+      "completed": true
+    },
+    {
+      "elapsed_seconds": 340.768,
+      "action": {
+        "at": 340,
+        "from": [
+          192,
+          427
+        ],
+        "steps": 2
+      },
+      "completed": true
+    },
+    {
+      "elapsed_seconds": 500.441,
+      "action": {
+        "at": 500,
+        "keys": 2,
+        "hold": 0.15
+      },
+      "completed": true
+    },
+    {
+      "elapsed_seconds": 520.724,
+      "action": {
+        "at": 520,
+        "keys": 4,
+        "hold": 0.15
+      },
+      "completed": true
+    },
+    {
+      "elapsed_seconds": 541.009,
+      "action": {
+        "at": 540,
+        "keys": 1,
+        "hold": 0.15
+      },
+      "completed": true
+    },
+    {
+      "elapsed_seconds": 560.272,
+      "action": {
+        "at": 560,
+        "keys": 1,
+        "hold": 0.15
+      },
+      "completed": true
+    },
+    {
+      "elapsed_seconds": 580.977,
+      "action": {
+        "at": 580,
+        "from": [
+          192,
+          840
+        ],
+        "to": [
+          192,
+          256
+        ],
+        "steps": 24
+      },
+      "completed": true
+    }
+  ],
+  "apple_button_events": [
+    "1970-01-01 01:04:23.716755+0100 backboardd[12:295] [Button] Lock page:0xC usage:0x30 downEvent:1 down",
+    "1970-01-01 01:04:23.826205+0100 backboardd[12:299] [Button] Lock page:0xC usage:0x30 downEvent:0 up",
+    "1970-01-01 01:08:26.166987+0100 backboardd[12:973] [Button] VolumeIncrement page:0xC usage:0xE9 downEvent:1 down",
+    "1970-01-01 01:08:26.466106+0100 backboardd[12:1012] [Button] VolumeIncrement page:0xC usage:0xE9 downEvent:0 up",
+    "1970-01-01 01:08:46.860187+0100 backboardd[12:973] [Button] VolumeDecrement page:0xC usage:0xEA downEvent:1 down",
+    "1970-01-01 01:08:46.994082+0100 backboardd[12:1012] [Button] VolumeDecrement page:0xC usage:0xEA downEvent:0 up",
+    "1970-01-01 01:09:07.188213+0100 backboardd[12:979] [Button] Lock page:0xC usage:0x30 downEvent:1 down",
+    "1970-01-01 01:09:07.383683+0100 backboardd[12:1012] [Button] Lock page:0xC usage:0x30 downEvent:0 up",
+    "1970-01-01 01:09:26.669981+0100 backboardd[12:1334] [Button] Lock page:0xC usage:0x30 downEvent:1 down",
+    "1970-01-01 01:09:26.822268+0100 backboardd[12:973] [Button] Lock page:0xC usage:0x30 downEvent:0 up"
+  ],
+  "native_display_power_events": [
+    "MT6762: inherited display requested on result 0 (PWM/copies only)",
+    "MT6762: inherited display requested off result 0 (PWM/copies only)",
+    "1970-01-01 01:09:22.248636+0100 backboardd[12:979] [Display] Main will unblank",
+    "MT6762: inherited display requested on result 0 (PWM/copies only)",
+    "1970-01-01 01:09:22.450946+0100 backboardd[12:1012] [Display] Main will unblank",
+    "1970-01-01 01:09:43.362031+0100 backboardd[12:1334] [Display] Main will unblank",
+    "1970-01-01 01:09:43.489400+0100 backboardd[12:1334] [Display] Main will unblank"
+  ],
+  "audio_output_error_events": [
+    "1970-01-01 01:08:19.485017+0100 SpringBoard[8:1175] [rr] Response: outputDeviceVolume<4D46BAE3-C18C-46D8-8B84-1F077BDC6904> returned with error <Error Domain=kMRMediaRemoteFrameworkErrorDomain Code=36 \"Endpoint volume control is only possible if the endpoint is picked or remote controllable.\" UserInfo={NSLocalizedDescription=Endpoint volume control is only possible if the endpoint is picked or remote controllable.}> for LOCAL-iPhone-(null) in 0.6909 seconds"
+  ],
+  "last_model_sample": {
+    "elapsed_seconds": 630.004,
+    "states": {
+      "lab-i2c-state": {
+        "enabled": true,
+        "synthetic": true,
+        "i2c0": {
+          "transactions": 62639,
+          "dma_reads": 62638,
+          "rx_bytes": 2004418,
+          "last_status": 1
+        },
+        "i2c5": {
+          "transactions": 2929,
+          "dma_reads": 0,
+          "rx_bytes": 2928,
+          "last_status": 1,
+          "psc_control": 4,
+          "psc_status": 0
+        }
+      },
+      "lab-display-state": {
+        "enabled": true,
+        "synthetic": true,
+        "framebuffer_pa": 3705421824,
+        "fault": 0,
+        "applied_level": 512,
+        "enable": 1,
+        "duty": 512,
+        "pwm_writes": 100,
+        "commits": 25,
+        "rejected_writes": 0,
+        "reads": {
+          "spm": 105,
+          "mmsys": 2,
+          "ovl": 22,
+          "rdma": 2,
+          "dsi": 16,
+          "pwm": 180
+        }
+      },
+      "lab-power-state": {
+        "enabled": true,
+        "synthetic": true,
+        "fault": 0,
+        "key_mask": 0,
+        "fsm": 0,
+        "commands": 57107,
+        "reads": 53409,
+        "writes": 3698,
+        "rejected": 0,
+        "clears": 53409,
+        "key_reads": 70138,
+        "adc_requests": [
+          585,
+          585
+        ],
+        "adc_completions": [
+          585,
+          585
+        ],
+        "thermal_enabled": false,
+        "thermal_calibration_synthetic": false,
+        "thermal_requests": [
+          0,
+          0,
+          0
+        ],
+        "thermal_completions": [
+          0,
+          0,
+          0
+        ],
+        "gauge_enabled": true,
+        "gauge_calibration_synthetic": true,
+        "gauge_control": 0,
+        "gauge_ticks": 1258,
+        "gauge_snapshots": 632,
+        "gauge_commands": 2528,
+        "bif_enabled": false,
+        "bif_config_synthetic": false,
+        "adc_delay_us": 0,
+        "bif_requests": 0,
+        "bif_completions": 0,
+        "bif_tdet_write_attempts": 0
+      }
+    }
+  },
+  "artifact_sha256": {
+    "manifest.json": "6fd87b5488b0578fe3cb986437ebfecbe46a1b4557fd206a9b60a0a376f25736",
+    "gui630.serial.log": "6013b88be0ff2a85a8663e4c99dd3d0e0d972bcdf7f737d2181eae43c8a3c2f1",
+    "gui630.models.json": "ee9b7162b9e5cc8829f707daf0a1c64a0f39ed6551b90044f965cf1f50e840a6",
+    "gui630.qmp.json": "928801912a785b60a4304b664fa0b53312a747b1d67fe4cfd23394399926e602"
+  },
+  "root_image_sha256": "a1d15481a70770f43a4c755e389b67363a121946eb1a2fb6d26e7350b3e1120a",
+  "root_rc_jobs": "# Input comes only from explicit QEMU peripheral fixtures.\n",
+  "limits": [
+    "Default donor auto-unlock shim remains; initial home is not attributed solely to synthetic touch gestures.",
+    "Apple recognizes native volume-button down/up but endpoint-volume error36 means actual audio-level change is not established.",
+    "Posthome Lock event precedes native off and black/PWM0 sample; native unblank appears in serial before the next scheduledLock event, so wake-key causality is not established.",
+    "Only one fullyoff framebuffer sample is present; continuous framebuffer-copy suppression is not independently proven.",
+    "Synthetic display MMIO/PWM does not prove real DSI, panel, scanout, audio or input hardware.",
+    "Batteryicon1 is UI output while nativeSOC remains unknown; it is not a measured batterypercentage.",
+    "Blank widget placeholders and missing services remain.",
+    "This singlecore success does not explain or resolve the earlier eightcore spinlock timeout.",
+    "Sample058 shows a large battery overlay; nativeSOC is unavailable and the Apple fallback/UI meaning is not established."
+  ]
+}
