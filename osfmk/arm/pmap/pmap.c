@@ -12354,6 +12354,29 @@ pmap_in_ppl(void)
 	return false;
 }
 
+#if defined(ARM64_BOARD_CONFIG_MT6762)
+#if XNU_MONITOR || PMAP_CS_INCLUDE_CODE_SIGNING
+#error "MT6762 pmap capability queries require a monitor-aware implementation"
+#endif
+
+bool
+pmap_has_iofilter_protected_write(void)
+{
+	/* This board has no Apple Guarded Mode register-write facility.  The
+	 * protected-write entry below deliberately panics if called anyway. */
+	return false;
+}
+
+int
+pmap_cs_configuration(void)
+{
+	/* No pmap_cs configuration subset exists on this non-monitor target.
+	 * As documented in vm/pmap.h, zero is not a security/enforcement claim.
+	 * This has the same unsupported-query meaning as upstream x86 pmap. */
+	return 0;
+}
+#endif
+
 __attribute__((__noreturn__))
 void
 pmap_iofilter_protected_write(__unused vm_address_t addr, __unused uint64_t value, __unused uint64_t width)

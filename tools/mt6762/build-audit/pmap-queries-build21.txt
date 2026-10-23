@@ -1,0 +1,16 @@
+
+BUILD/obj/DEVELOPMENT_ARM64_MT6762/mach.development.mt6762.unstripped:	file format mach-o arm64
+
+Disassembly of section __TEXT_EXEC,__text:
+
+fffffff007448ce0 <_pmap_has_iofilter_protected_write>:
+fffffff007448ce0: 2a1f03e0     	mov	w0, wzr
+fffffff007448ce4: d65f03c0     	ret
+fffffff007448ce8: d503201f     	nop
+fffffff007448cec: d503201f     	nop
+
+fffffff007448cf0 <_pmap_cs_configuration>:
+fffffff007448cf0: 2a1f03e0     	mov	w0, wzr
+fffffff007448cf4: d65f03c0     	ret
+fffffff007448cf8: d503201f     	nop
+fffffff007448cfc: d503201f     	nop

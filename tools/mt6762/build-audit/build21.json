@@ -1,0 +1,9 @@
+{
+  "artifact_ready": true,
+  "all_checks_passed": false,
+  "known_postlink_export_failures_only": true,
+  "sha256": "18a1982cf3a75a0bc95300fdf52aed6f44736f5333e60f773e94ff833c6b695b",
+  "kernel_source_sha256": "f40613a5dea06db0c9fa22fe4e0f88e4d3a6672ad96e8a46b595b162b8aa6a22",
+  "source_unchanged_during_build": true,
+  "build_log": "/home/iscle/mt6762-ios-port/evidence/builds/20261023T234332Z-1605580/make.log"
+}

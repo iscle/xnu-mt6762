@@ -226,6 +226,10 @@ reports now hash tracked and new kernel inputs before and after compilation,
 including shared protocol headers. A source change during the build rejects
 the artifact. Export/symbolset failures inherited from the reference remain
 reported separately and are not described as a fully passing build.
+The [export audit](../tools/mt6762/build-audit/README.rst) traces these failures
+to absent DriverKit generation and Apple hardware-private implementations.
+Build21 supplies two MT6762 capability queries with their actual unsupported
+semantics, leaving 129 missing exports and the full checks still failing.
 `tools/mt6762/boot/prepare.py --native-lab-i2c` opts into the controller fixture;
 `--native-lab-touch-events` separately enables synthetic AXS contacts. These
 options must not be used to construct a physical handoff. `--native-lab-display`

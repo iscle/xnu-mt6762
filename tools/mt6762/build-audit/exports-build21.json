@@ -1,0 +1,1336 @@
+{
+  "build_log_sha256": "3a19757d6eab8e32a6f87bba8f87527e5c39eb288d96e25d965fe1199dfadfe7",
+  "kernel_sha256": "18a1982cf3a75a0bc95300fdf52aed6f44736f5333e60f773e94ff833c6b695b",
+  "repaired_interleaved_diagnostics": [
+    {
+      "line": 589,
+      "original": [
+        "exported name not in import list: IODataQueueDispatchSource::SetDataServicedHandler_Invoke(IORPC, OSMetaClassBase*, int (*)(OSMe         SYMSET Private (arm64)",
+        "taClassBase*, OSAction*))"
+      ],
+      "reconstructed": "exported name not in import list: IODataQueueDispatchSource::SetDataServicedHandler_Invoke(IORPC, OSMetaClassBase*, int (*)(OSMetaClassBase*, OSAction*))"
+    }
+  ],
+  "actual_nm_names": 22588,
+  "import_names": 22588,
+  "import_missing_actual": [],
+  "import_extra": [],
+  "missing_count": 129,
+  "categories": {
+    "driverkit_generated_abi_missing": 94,
+    "apple_iommu_ppl_hardware_exports_missing_implementation": 18,
+    "apple_uat_missing_open_source_implementation": 17
+  },
+  "missing_exports": [
+    {
+      "name": "IOService::CopyName(OSString**, int (*)(OSMetaClassBase*, IORPC))",
+      "mangled": "__ZN9IOService8CopyNameEPP8OSStringPFiP15OSMetaClassBase5IORPCE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOService::StringFromReturn(int, OSString**, int (*)(OSMetaClassBase*, IORPC))",
+      "mangled": "__ZN9IOService16StringFromReturnEiPP8OSStringPFiP15OSMetaClassBase5IORPCE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOMemoryMap::_CopyState(_IOMemoryMapPrivateState*, int (*)(OSMetaClassBase*, IORPC))",
+      "mangled": "__ZN11IOMemoryMap10_CopyStateEP24_IOMemoryMapPrivateStatePFiP15OSMetaClassBase5IORPCE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IODMACommand::PrepareForDMA(unsigned long long, IOMemoryDescriptor*, unsigned long long, unsigned long long, unsigned long long*, unsigned int*, IOAddressSegment*, int (*)(OSMetaClassBase*, IORPC))",
+      "mangled": "__ZN12IODMACommand13PrepareForDMAEyP18IOMemoryDescriptoryyPyPjP16IOAddressSegmentPFiP15OSMetaClassBase5IORPCE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IODMACommand::GetPreparation(unsigned long long*, unsigned long long*, IOMemoryDescriptor**, int (*)(OSMetaClassBase*, IORPC))",
+      "mangled": "__ZN12IODMACommand14GetPreparationEPyS0_PP18IOMemoryDescriptorPFiP15OSMetaClassBase5IORPCE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IODMACommand::PerformOperation(unsigned long long, unsigned long long, unsigned long long, unsigned long long, IOMemoryDescriptor*, int (*)(OSMetaClassBase*, IORPC))",
+      "mangled": "__ZN12IODMACommand16PerformOperationEyyyyP18IOMemoryDescriptorPFiP15OSMetaClassBase5IORPCE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUserClient::AsyncCompletion(OSAction*, int, unsigned long long const*, unsigned int, int (*)(OSMetaClassBase*, IORPC))",
+      "mangled": "__ZN12IOUserClient15AsyncCompletionEP8OSActioniPKyjPFiP15OSMetaClassBase5IORPCE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUserClient::CreateMemoryDescriptorFromClient(unsigned long long, unsigned int, IOAddressSegment const*, IOMemoryDescriptor**, int (*)(OSMetaClassBase*, IORPC))",
+      "mangled": "__ZN12IOUserClient32CreateMemoryDescriptorFromClientEyjPK16IOAddressSegmentPP18IOMemoryDescriptorPFiP15OSMetaClassBase5IORPCE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IODispatchQueue::SetPort(ipc_port*, int (*)(OSMetaClassBase*, IORPC))",
+      "mangled": "__ZN15IODispatchQueue7SetPortEP8ipc_portPFiP15OSMetaClassBase5IORPCE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IODispatchSource::CheckForWork(bool, int (*)(OSMetaClassBase*, IORPC))",
+      "mangled": "__ZN16IODispatchSource12CheckForWorkEbPFiP15OSMetaClassBase5IORPCE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IODispatchSource::Cancel(void ( block_pointer)(), int (*)(OSMetaClassBase*, IORPC))",
+      "mangled": "__ZN16IODispatchSource6CancelEU13block_pointerFvvEPFiP15OSMetaClassBase5IORPCE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOMemoryDescriptor::_CopyState(_IOMDPrivateState*, int (*)(OSMetaClassBase*, IORPC))",
+      "mangled": "__ZN18IOMemoryDescriptor10_CopyStateEP17_IOMDPrivateStatePFiP15OSMetaClassBase5IORPCE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOMemoryDescriptor::CreateMapping(unsigned long long, unsigned long long, unsigned long long, unsigned long long, unsigned long long, IOMemoryMap**, int (*)(OSMetaClassBase*, IORPC))",
+      "mangled": "__ZN18IOMemoryDescriptor13CreateMappingEyyyyyPP11IOMemoryMapPFiP15OSMetaClassBase5IORPCE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOBufferMemoryDescriptor::SetLength(unsigned long long, int (*)(OSMetaClassBase*, IORPC))",
+      "mangled": "__ZN24IOBufferMemoryDescriptor9SetLengthEyPFiP15OSMetaClassBase5IORPCE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOServiceNotificationDispatchSource::SetHandler(OSAction*, int (*)(OSMetaClassBase*, IORPC))",
+      "mangled": "__ZN35IOServiceNotificationDispatchSource10SetHandlerEP8OSActionPFiP15OSMetaClassBase5IORPCE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOServiceNotificationDispatchSource::CopyNextNotification(unsigned long long*, IOService**, unsigned long long*, int (*)(OSMetaClassBase*, IORPC))",
+      "mangled": "__ZN35IOServiceNotificationDispatchSource20CopyNextNotificationEPyPP9IOServiceS0_PFiP15OSMetaClassBase5IORPCE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "OSObject::SetDispatchQueue(char const*, IODispatchQueue*, int (*)(OSMetaClassBase*, IORPC))",
+      "mangled": "__ZN8OSObject16SetDispatchQueueEPKcP15IODispatchQueuePFiP15OSMetaClassBase5IORPCE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOService::NewUserClient(unsigned int, IOUserClient**, int (*)(OSMetaClassBase*, IORPC))",
+      "mangled": "__ZN9IOService13NewUserClientEjPP12IOUserClientPFiP15OSMetaClassBase5IORPCE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOService::SetProperties(OSDictionary*, int (*)(OSMetaClassBase*, IORPC))",
+      "mangled": "__ZN9IOService13SetPropertiesEP12OSDictionaryPFiP15OSMetaClassBase5IORPCE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOService::CopyProperties(OSDictionary**, int (*)(OSMetaClassBase*, IORPC))",
+      "mangled": "__ZN9IOService14CopyPropertiesEPP12OSDictionaryPFiP15OSMetaClassBase5IORPCE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOService::SearchProperty(char const*, char const*, unsigned long long, OSObject**, int (*)(OSMetaClassBase*, IORPC))",
+      "mangled": "__ZN9IOService14SearchPropertyEPKcS1_yPP8OSObjectPFiP15OSMetaClassBase5IORPCE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOService::RegisterService(int (*)(OSMetaClassBase*, IORPC))",
+      "mangled": "__ZN9IOService15RegisterServiceEPFiP15OSMetaClassBase5IORPCE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOService::ChangePowerState(unsigned int, int (*)(OSMetaClassBase*, IORPC))",
+      "mangled": "__ZN9IOService16ChangePowerStateEjPFiP15OSMetaClassBase5IORPCE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOService::GetRegistryEntryID(unsigned long long*, int (*)(OSMetaClassBase*, IORPC))",
+      "mangled": "__ZN9IOService18GetRegistryEntryIDEPyPFiP15OSMetaClassBase5IORPCE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOService::RequireMaxBusStall(unsigned long long, int (*)(OSMetaClassBase*, IORPC))",
+      "mangled": "__ZN9IOService18RequireMaxBusStallEyPFiP15OSMetaClassBase5IORPCE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOService::CopyProviderProperties(OSArray*, OSArray**, int (*)(OSMetaClassBase*, IORPC))",
+      "mangled": "__ZN9IOService22CopyProviderPropertiesEP7OSArrayPS1_PFiP15OSMetaClassBase5IORPCE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOService::Create(IOService*, char const*, IOService**, int (*)(OSMetaClassBase*, IORPC))",
+      "mangled": "__ZN9IOService6CreateEPS_PKcPS0_PFiP15OSMetaClassBase5IORPCE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOService::SetName(char const*, int (*)(OSMetaClassBase*, IORPC))",
+      "mangled": "__ZN9IOService7SetNameEPKcPFiP15OSMetaClassBase5IORPCE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOService::Terminate(unsigned long long, int (*)(OSMetaClassBase*, IORPC))",
+      "mangled": "__ZN9IOService9TerminateEyPFiP15OSMetaClassBase5IORPCE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOService::RemoveProperty(OSString*, int (*)(OSMetaClassBase*, IORPC))",
+      "mangled": "__ZN9IOService14RemovePropertyEP8OSStringPFiP15OSMetaClassBase5IORPCE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOService::RemoveProperty_Invoke(IORPC, OSMetaClassBase*, int (*)(OSMetaClassBase*, OSString*))",
+      "mangled": "__ZN9IOService21RemoveProperty_InvokeE5IORPCP15OSMetaClassBasePFiS2_P8OSStringE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOService::GetBusyState(unsigned int*, int (*)(OSMetaClassBase*, IORPC))",
+      "mangled": "__ZN9IOService12GetBusyStateEPjPFiP15OSMetaClassBase5IORPCE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOService::AdjustBusy(int, int (*)(OSMetaClassBase*, IORPC))",
+      "mangled": "__ZN9IOService10AdjustBusyEiPFiP15OSMetaClassBase5IORPCE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOService::CopySystemStateNotificationService(IOService**, int (*)(OSMetaClassBase*, IORPC))",
+      "mangled": "__ZN9IOService34CopySystemStateNotificationServiceEPPS_PFiP15OSMetaClassBase5IORPCE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOMemoryMap::_CopyState_Invoke(IORPC, OSMetaClassBase*, int (*)(OSMetaClassBase*, _IOMemoryMapPrivateState*))",
+      "mangled": "__ZN11IOMemoryMap17_CopyState_InvokeE5IORPCP15OSMetaClassBasePFiS2_P24_IOMemoryMapPrivateStateE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUserClient::AsyncCompletion_Invoke(IORPC, OSMetaClassBase*, void (*)(OSMetaClassBase*, OSAction*, int, unsigned long long const*, unsigned int))",
+      "mangled": "__ZN12IOUserClient22AsyncCompletion_InvokeE5IORPCP15OSMetaClassBasePFvS2_P8OSActioniPKyjE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUserClient::AsyncCompletion_Invoke(IORPC, OSMetaClassBase*, void (*)(OSMetaClassBase*, OSAction*, int, unsigned long long const*, unsigned int), OSMetaClass const*)",
+      "mangled": "__ZN12IOUserClient22AsyncCompletion_InvokeE5IORPCP15OSMetaClassBasePFvS2_P8OSActioniPKyjEPK11OSMetaClass",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUserClient::_ExternalMethod_Invoke(IORPC, OSMetaClassBase*, int (*)(OSMetaClassBase*, unsigned long long, unsigned long long const*, unsigned int, OSData*, IOMemoryDescriptor*, unsigned long long*, unsigned int*, unsigned long long, OSData**, IOMemoryDescriptor*, OSAction*))",
+      "mangled": "__ZN12IOUserClient22_ExternalMethod_InvokeE5IORPCP15OSMetaClassBasePFiS2_yPKyjP6OSDataP18IOMemoryDescriptorPyPjyPS6_S8_P8OSActionE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUserClient::CopyClientMemoryForType_Invoke(IORPC, OSMetaClassBase*, int (*)(OSMetaClassBase*, unsigned long long, unsigned long long*, IOMemoryDescriptor**))",
+      "mangled": "__ZN12IOUserClient30CopyClientMemoryForType_InvokeE5IORPCP15OSMetaClassBasePFiS2_yPyPP18IOMemoryDescriptorE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUserServer::Exit_Invoke(IORPC, OSMetaClassBase*, int (*)(OSMetaClassBase*, char const*))",
+      "mangled": "__ZN12IOUserServer11Exit_InvokeE5IORPCP15OSMetaClassBasePFiS2_PKcE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUserServer::Create_Invoke(IORPC, int (*)(char const*, unsigned long long, unsigned long long, OSString*, IOUserServer**))",
+      "mangled": "__ZN12IOUserServer13Create_InvokeE5IORPCPFiPKcyyP8OSStringPPS_E",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUserServer::LoadModule_Invoke(IORPC, OSMetaClassBase*, int (*)(OSMetaClassBase*, char const*))",
+      "mangled": "__ZN12IOUserServer17LoadModule_InvokeE5IORPCP15OSMetaClassBasePFiS2_PKcE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IODispatchQueue::Create_Invoke(IORPC, int (*)(char const*, unsigned long long, unsigned long long, IODispatchQueue**))",
+      "mangled": "__ZN15IODispatchQueue13Create_InvokeE5IORPCPFiPKcyyPPS_E",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IODispatchQueue::SetPort_Invoke(IORPC, OSMetaClassBase*, int (*)(OSMetaClassBase*, ipc_port*))",
+      "mangled": "__ZN15IODispatchQueue14SetPort_InvokeE5IORPCP15OSMetaClassBasePFiS2_P8ipc_portE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IODispatchSource::Cancel_Invoke(IORPC, OSMetaClassBase*, int (*)(OSMetaClassBase*, void ( block_pointer)()))",
+      "mangled": "__ZN16IODispatchSource13Cancel_InvokeE5IORPCP15OSMetaClassBasePFiS2_U13block_pointerFvvEE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IODispatchSource::SetEnable_Invoke(IORPC, OSMetaClassBase*, int (*)(OSMetaClassBase*, bool))",
+      "mangled": "__ZN16IODispatchSource16SetEnable_InvokeE5IORPCP15OSMetaClassBasePFiS2_bE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IODispatchSource::CheckForWork_Invoke(IORPC, OSMetaClassBase*, int (*)(OSMetaClassBase*, IORPC, bool))",
+      "mangled": "__ZN16IODispatchSource19CheckForWork_InvokeE5IORPCP15OSMetaClassBasePFiS2_S0_bE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IODispatchSource::SetEnableWithCompletion_Invoke(IORPC, OSMetaClassBase*, int (*)(OSMetaClassBase*, bool, void ( block_pointer)()))",
+      "mangled": "__ZN16IODispatchSource30SetEnableWithCompletion_InvokeE5IORPCP15OSMetaClassBasePFiS2_bU13block_pointerFvvEE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IODispatchSource::SetEnable(bool, int (*)(OSMetaClassBase*, IORPC))",
+      "mangled": "__ZN16IODispatchSource9SetEnableEbPFiP15OSMetaClassBase5IORPCE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOMemoryDescriptor::_CopyState_Invoke(IORPC, OSMetaClassBase*, int (*)(OSMetaClassBase*, _IOMDPrivateState*))",
+      "mangled": "__ZN18IOMemoryDescriptor17_CopyState_InvokeE5IORPCP15OSMetaClassBasePFiS2_P17_IOMDPrivateStateE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOMemoryDescriptor::CreateMapping_Invoke(IORPC, OSMetaClassBase*, int (*)(OSMetaClassBase*, unsigned long long, unsigned long long, unsigned long long, unsigned long long, unsigned long long, IOMemoryMap**))",
+      "mangled": "__ZN18IOMemoryDescriptor20CreateMapping_InvokeE5IORPCP15OSMetaClassBasePFiS2_yyyyyPP11IOMemoryMapE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOBufferMemoryDescriptor::Create_Invoke(IORPC, int (*)(unsigned long long, unsigned long long, unsigned long long, IOBufferMemoryDescriptor**))",
+      "mangled": "__ZN24IOBufferMemoryDescriptor13Create_InvokeE5IORPCPFiyyyPPS_E",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOBufferMemoryDescriptor::SetLength_Invoke(IORPC, OSMetaClassBase*, int (*)(OSMetaClassBase*, unsigned long long))",
+      "mangled": "__ZN24IOBufferMemoryDescriptor16SetLength_InvokeE5IORPCP15OSMetaClassBasePFiS2_yE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IODataQueueDispatchSource::CopyMemory(IOMemoryDescriptor**, int (*)(OSMetaClassBase*, IORPC))",
+      "mangled": "__ZN25IODataQueueDispatchSource10CopyMemoryEPP18IOMemoryDescriptorPFiP15OSMetaClassBase5IORPCE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IODataQueueDispatchSource::Create_Invoke(IORPC, int (*)(unsigned long long, IODispatchQueue*, IODataQueueDispatchSource**))",
+      "mangled": "__ZN25IODataQueueDispatchSource13Create_InvokeE5IORPCPFiyP15IODispatchQueuePPS_E",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IODataQueueDispatchSource::CopyMemory_Invoke(IORPC, OSMetaClassBase*, int (*)(OSMetaClassBase*, IOMemoryDescriptor**))",
+      "mangled": "__ZN25IODataQueueDispatchSource17CopyMemory_InvokeE5IORPCP15OSMetaClassBasePFiS2_PP18IOMemoryDescriptorE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IODataQueueDispatchSource::DataServiced_Invoke(IORPC, OSMetaClassBase*, void (*)(OSMetaClassBase*, OSAction*))",
+      "mangled": "__ZN25IODataQueueDispatchSource19DataServiced_InvokeE5IORPCP15OSMetaClassBasePFvS2_P8OSActionE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IODataQueueDispatchSource::DataServiced_Invoke(IORPC, OSMetaClassBase*, void (*)(OSMetaClassBase*, OSAction*), OSMetaClass const*)",
+      "mangled": "__ZN25IODataQueueDispatchSource19DataServiced_InvokeE5IORPCP15OSMetaClassBasePFvS2_P8OSActionEPK11OSMetaClass",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IODataQueueDispatchSource::DataAvailable_Invoke(IORPC, OSMetaClassBase*, void (*)(OSMetaClassBase*, OSAction*))",
+      "mangled": "__ZN25IODataQueueDispatchSource20DataAvailable_InvokeE5IORPCP15OSMetaClassBasePFvS2_P8OSActionE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IODataQueueDispatchSource::DataAvailable_Invoke(IORPC, OSMetaClassBase*, void (*)(OSMetaClassBase*, OSAction*), OSMetaClass const*)",
+      "mangled": "__ZN25IODataQueueDispatchSource20DataAvailable_InvokeE5IORPCP15OSMetaClassBasePFvS2_P8OSActionEPK11OSMetaClass",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IODataQueueDispatchSource::SetDataServicedHandler(OSAction*, int (*)(OSMetaClassBase*, IORPC))",
+      "mangled": "__ZN25IODataQueueDispatchSource22SetDataServicedHandlerEP8OSActionPFiP15OSMetaClassBase5IORPCE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IODataQueueDispatchSource::SetDataAvailableHandler(OSAction*, int (*)(OSMetaClassBase*, IORPC))",
+      "mangled": "__ZN25IODataQueueDispatchSource23SetDataAvailableHandlerEP8OSActionPFiP15OSMetaClassBase5IORPCE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IODataQueueDispatchSource::SetDataServicedHandler_Invoke(IORPC, OSMetaClassBase*, int (*)(OSMetaClassBase*, OSAction*))",
+      "mangled": "__ZN25IODataQueueDispatchSource29SetDataServicedHandler_InvokeE5IORPCP15OSMetaClassBasePFiS2_P8OSActionE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IODataQueueDispatchSource::CopyDataServicedHandler_Invoke(IORPC, OSMetaClassBase*, int (*)(OSMetaClassBase*, OSAction**))",
+      "mangled": "__ZN25IODataQueueDispatchSource30CopyDataServicedHandler_InvokeE5IORPCP15OSMetaClassBasePFiS2_PP8OSActionE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IODataQueueDispatchSource::SetDataAvailableHandler_Invoke(IORPC, OSMetaClassBase*, int (*)(OSMetaClassBase*, OSAction*))",
+      "mangled": "__ZN25IODataQueueDispatchSource30SetDataAvailableHandler_InvokeE5IORPCP15OSMetaClassBasePFiS2_P8OSActionE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IODataQueueDispatchSource::CopyDataAvailableHandler_Invoke(IORPC, OSMetaClassBase*, int (*)(OSMetaClassBase*, OSAction**))",
+      "mangled": "__ZN25IODataQueueDispatchSource31CopyDataAvailableHandler_InvokeE5IORPCP15OSMetaClassBasePFiS2_PP8OSActionE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IODataQueueDispatchSource::_Dispatch(IODataQueueDispatchSource*, IORPC)",
+      "mangled": "__ZN25IODataQueueDispatchSource9_DispatchEPS_5IORPC",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOInterruptDispatchSource::Create_Invoke(IORPC, int (*)(IOService*, unsigned int, IODispatchQueue*, IOInterruptDispatchSource**))",
+      "mangled": "__ZN25IOInterruptDispatchSource13Create_InvokeE5IORPCPFiP9IOServicejP15IODispatchQueuePPS_E",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOInterruptDispatchSource::SetHandler_Invoke(IORPC, OSMetaClassBase*, int (*)(OSMetaClassBase*, OSAction*))",
+      "mangled": "__ZN25IOInterruptDispatchSource17SetHandler_InvokeE5IORPCP15OSMetaClassBasePFiS2_P8OSActionE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOInterruptDispatchSource::InterruptOccurred_Invoke(IORPC, OSMetaClassBase*, void (*)(OSMetaClassBase*, OSAction*, unsigned long long, unsigned long long))",
+      "mangled": "__ZN25IOInterruptDispatchSource24InterruptOccurred_InvokeE5IORPCP15OSMetaClassBasePFvS2_P8OSActionyyE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOInterruptDispatchSource::InterruptOccurred_Invoke(IORPC, OSMetaClassBase*, void (*)(OSMetaClassBase*, OSAction*, unsigned long long, unsigned long long), OSMetaClass const*)",
+      "mangled": "__ZN25IOInterruptDispatchSource24InterruptOccurred_InvokeE5IORPCP15OSMetaClassBasePFvS2_P8OSActionyyEPK11OSMetaClass",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "OSAction::Create_Invoke(IORPC, int (*)(OSObject*, unsigned long long, unsigned long long, unsigned long, OSAction**))",
+      "mangled": "__ZN8OSAction13Create_InvokeE5IORPCPFiP8OSObjectyymPPS_E",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "OSAction::_Dispatch(OSAction*, IORPC)",
+      "mangled": "__ZN8OSAction9_DispatchEPS_5IORPC",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "OSObject::SetDispatchQueue_Invoke(IORPC, OSMetaClassBase*, int (*)(OSMetaClassBase*, char const*, IODispatchQueue*))",
+      "mangled": "__ZN8OSObject23SetDispatchQueue_InvokeE5IORPCP15OSMetaClassBasePFiS2_PKcP15IODispatchQueueE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "OSObject::CopyDispatchQueue_Invoke(IORPC, OSMetaClassBase*, int (*)(OSMetaClassBase*, char const*, IODispatchQueue**))",
+      "mangled": "__ZN8OSObject24CopyDispatchQueue_InvokeE5IORPCP15OSMetaClassBasePFiS2_PKcPP15IODispatchQueueE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOService::Stop_Invoke(IORPC, OSMetaClassBase*, int (*)(OSMetaClassBase*, IOService*))",
+      "mangled": "__ZN9IOService11Stop_InvokeE5IORPCP15OSMetaClassBasePFiS2_PS_E",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOService::Start_Invoke(IORPC, OSMetaClassBase*, int (*)(OSMetaClassBase*, IOService*))",
+      "mangled": "__ZN9IOService12Start_InvokeE5IORPCP15OSMetaClassBasePFiS2_PS_E",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOService::Create_Invoke(IORPC, OSMetaClassBase*, int (*)(OSMetaClassBase*, IOService*, char const*, IOService**))",
+      "mangled": "__ZN9IOService13Create_InvokeE5IORPCP15OSMetaClassBasePFiS2_PS_PKcPS3_E",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOService::SetName_Invoke(IORPC, OSMetaClassBase*, int (*)(OSMetaClassBase*, char const*))",
+      "mangled": "__ZN9IOService14SetName_InvokeE5IORPCP15OSMetaClassBasePFiS2_PKcE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOService::NewUserClient_Invoke(IORPC, OSMetaClassBase*, int (*)(OSMetaClassBase*, unsigned int, IOUserClient**))",
+      "mangled": "__ZN9IOService20NewUserClient_InvokeE5IORPCP15OSMetaClassBasePFiS2_jPP12IOUserClientE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOService::SetPowerState_Invoke(IORPC, OSMetaClassBase*, int (*)(OSMetaClassBase*, unsigned int))",
+      "mangled": "__ZN9IOService20SetPowerState_InvokeE5IORPCP15OSMetaClassBasePFiS2_jE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOService::SetProperties_Invoke(IORPC, OSMetaClassBase*, int (*)(OSMetaClassBase*, OSDictionary*))",
+      "mangled": "__ZN9IOService20SetProperties_InvokeE5IORPCP15OSMetaClassBasePFiS2_P12OSDictionaryE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOService::ClientCrashed_Invoke(IORPC, OSMetaClassBase*, int (*)(OSMetaClassBase*, IOService*, unsigned long long))",
+      "mangled": "__ZN9IOService20ClientCrashed_InvokeE5IORPCP15OSMetaClassBasePFiS2_PS_yE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOService::CopyProperties_Invoke(IORPC, OSMetaClassBase*, int (*)(OSMetaClassBase*, OSDictionary**))",
+      "mangled": "__ZN9IOService21CopyProperties_InvokeE5IORPCP15OSMetaClassBasePFiS2_PP12OSDictionaryE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOService::SearchProperty_Invoke(IORPC, OSMetaClassBase*, int (*)(OSMetaClassBase*, char const*, char const*, unsigned long long, OSObject**))",
+      "mangled": "__ZN9IOService21SearchProperty_InvokeE5IORPCP15OSMetaClassBasePFiS2_PKcS4_yPP8OSObjectE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOService::RegisterService_Invoke(IORPC, OSMetaClassBase*, int (*)(OSMetaClassBase*))",
+      "mangled": "__ZN9IOService22RegisterService_InvokeE5IORPCP15OSMetaClassBasePFiS2_E",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOService::ChangePowerState_Invoke(IORPC, OSMetaClassBase*, int (*)(OSMetaClassBase*, unsigned int))",
+      "mangled": "__ZN9IOService23ChangePowerState_InvokeE5IORPCP15OSMetaClassBasePFiS2_jE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOService::GetRegistryEntryID_Invoke(IORPC, OSMetaClassBase*, int (*)(OSMetaClassBase*, unsigned long long*))",
+      "mangled": "__ZN9IOService25GetRegistryEntryID_InvokeE5IORPCP15OSMetaClassBasePFiS2_PyE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOService::CoreAnalyticsSendEvent(unsigned long long, OSString*, OSDictionary*, int (*)(OSMetaClassBase*, IORPC))",
+      "mangled": "__ZN9IOService22CoreAnalyticsSendEventEyP8OSStringP12OSDictionaryPFiP15OSMetaClassBase5IORPCE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/IOKit.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "OSObject::_Dispatch(OSObject*, IORPC)",
+      "mangled": "__ZN8OSObject9_DispatchEPS_5IORPC",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/Libkern.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOService::_Dispatch(IOService*, IORPC)",
+      "mangled": "__ZN9IOService9_DispatchEPS_5IORPC",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/Libkern.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_pmap_iommu_init",
+      "mangled": "_pmap_iommu_init",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_pmap_iommu_iovmalloc",
+      "mangled": "_pmap_iommu_iovmalloc",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_pmap_iommu_map",
+      "mangled": "_pmap_iommu_map",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_pmap_iommu_unmap",
+      "mangled": "_pmap_iommu_unmap",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_pmap_iommu_iovmfree",
+      "mangled": "_pmap_iommu_iovmfree",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_pmap_iommu_ioctl",
+      "mangled": "_pmap_iommu_ioctl",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_pmap_iommu_alloc_contiguous_pages",
+      "mangled": "_pmap_iommu_alloc_contiguous_pages",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_nvme_ppl_get_desc",
+      "mangled": "_nvme_ppl_get_desc",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_sart_get_desc",
+      "mangled": "_sart_get_desc",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_t8020dart_get_desc",
+      "mangled": "_t8020dart_get_desc",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_t8020dart_vo_tte",
+      "mangled": "_t8020dart_vo_tte",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_t6000dart_get_desc",
+      "mangled": "_t6000dart_get_desc",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_t6000dart_vo_tte",
+      "mangled": "_t6000dart_vo_tte",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_t8110dart_get_desc",
+      "mangled": "_t8110dart_get_desc",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_t8110dart_max_translation_levels",
+      "mangled": "_t8110dart_max_translation_levels",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_t8110dart_vo_tte",
+      "mangled": "_t8110dart_vo_tte",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_t8110dart_vo_tt_index",
+      "mangled": "_t8110dart_vo_tt_index",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_uat_get_desc",
+      "mangled": "_uat_get_desc",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::gMetaClass",
+      "mangled": "__ZN26IOUnifiedAddressTranslator10gMetaClassE",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::superClass",
+      "mangled": "__ZN26IOUnifiedAddressTranslator10superClassE",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::getPageTableEntry(unsigned long long)",
+      "mangled": "__ZN26IOUnifiedAddressTranslator17getPageTableEntryEy",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::setClientContextID(unsigned int, bool)",
+      "mangled": "__ZN26IOUnifiedAddressTranslator18setClientContextIDEjb",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::removeClientContextID()",
+      "mangled": "__ZN26IOUnifiedAddressTranslator21removeClientContextIDEv",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::isPageFaultExpected(unsigned long long, unsigned int)",
+      "mangled": "__ZN26IOUnifiedAddressTranslator19isPageFaultExpectedEyj",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::registerTaskForService(task*, IOService*)",
+      "mangled": "__ZN26IOUnifiedAddressTranslator22registerTaskForServiceEP4taskP9IOService",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::createMappingInAperture(unsigned int, IOMemoryDescriptor*, unsigned int, unsigned long long, unsigned long)",
+      "mangled": "__ZN26IOUnifiedAddressTranslator23createMappingInApertureEjP18IOMemoryDescriptorjym",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::getTotalPageTableMemory()",
+      "mangled": "__ZN26IOUnifiedAddressTranslator23getTotalPageTableMemoryEv",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::map(IOMemoryMap*, unsigned int)",
+      "mangled": "__ZN26IOUnifiedAddressTranslator3mapEP11IOMemoryMapj",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::doMap(IOMemoryDescriptor*, unsigned long long, unsigned long long, unsigned int)",
+      "mangled": "__ZN26IOUnifiedAddressTranslator5doMapEP18IOMemoryDescriptoryyj",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::unmap(IOMemoryMap*)",
+      "mangled": "__ZN26IOUnifiedAddressTranslator5unmapEP11IOMemoryMap",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::doUnmap(IOMemoryDescriptor*, unsigned long long, unsigned long long)",
+      "mangled": "__ZN26IOUnifiedAddressTranslator7doUnmapEP18IOMemoryDescriptoryy",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::taskDied()",
+      "mangled": "__ZN26IOUnifiedAddressTranslator8taskDiedEv",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::commitUnmaps()",
+      "mangled": "__ZN26IOUnifiedAddressTranslator12commitUnmapsEv",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::prepareFWUnmap(unsigned long long, unsigned long long)",
+      "mangled": "__ZN26IOUnifiedAddressTranslator14prepareFWUnmapEyy",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "vtable for IOUnifiedAddressTranslator",
+      "mangled": "__ZTV26IOUnifiedAddressTranslator",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "OSAction_IOUserClient_KernelCompletion::gMetaClass",
+      "mangled": "__ZN38OSAction_IOUserClient_KernelCompletion10gMetaClassE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/Private.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "OSAction_IOUserClient_KernelCompletion::superClass",
+      "mangled": "__ZN38OSAction_IOUserClient_KernelCompletion10superClassE",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/Private.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "vtable for OSAction_IOUserClient_KernelCompletion",
+      "mangled": "__ZTV38OSAction_IOUserClient_KernelCompletion",
+      "category": "driverkit_generated_abi_missing",
+      "export_files": [
+        "config/Private.exports"
+      ],
+      "present_in_kernel": false
+    }
+  ],
+  "generated_objects": [
+    {
+      "path": "BUILD/obj/DEVELOPMENT_ARM64_MT6762/iokit/DEVELOPMENT/IOBufferMemoryDescriptor.iig.cpo",
+      "sha256": "1b7feae8df1ec64582c441e78d82a079f15641e17ae3e110f85ce6c7ada39b69",
+      "bytes": 808,
+      "global_definitions": 0
+    },
+    {
+      "path": "BUILD/obj/DEVELOPMENT_ARM64_MT6762/iokit/DEVELOPMENT/IODMACommand.iig.cpo",
+      "sha256": "1b7feae8df1ec64582c441e78d82a079f15641e17ae3e110f85ce6c7ada39b69",
+      "bytes": 808,
+      "global_definitions": 0
+    },
+    {
+      "path": "BUILD/obj/DEVELOPMENT_ARM64_MT6762/iokit/DEVELOPMENT/IODataQueueDispatchSource.iig.cpo",
+      "sha256": "1b7feae8df1ec64582c441e78d82a079f15641e17ae3e110f85ce6c7ada39b69",
+      "bytes": 808,
+      "global_definitions": 0
+    },
+    {
+      "path": "BUILD/obj/DEVELOPMENT_ARM64_MT6762/iokit/DEVELOPMENT/IODispatchQueue.iig.cpo",
+      "sha256": "1b7feae8df1ec64582c441e78d82a079f15641e17ae3e110f85ce6c7ada39b69",
+      "bytes": 808,
+      "global_definitions": 0
+    },
+    {
+      "path": "BUILD/obj/DEVELOPMENT_ARM64_MT6762/iokit/DEVELOPMENT/IODispatchSource.iig.cpo",
+      "sha256": "1b7feae8df1ec64582c441e78d82a079f15641e17ae3e110f85ce6c7ada39b69",
+      "bytes": 808,
+      "global_definitions": 0
+    },
+    {
+      "path": "BUILD/obj/DEVELOPMENT_ARM64_MT6762/iokit/DEVELOPMENT/IOEventLink.iig.cpo",
+      "sha256": "1b7feae8df1ec64582c441e78d82a079f15641e17ae3e110f85ce6c7ada39b69",
+      "bytes": 808,
+      "global_definitions": 0
+    },
+    {
+      "path": "BUILD/obj/DEVELOPMENT_ARM64_MT6762/iokit/DEVELOPMENT/IOInterruptDispatchSource.iig.cpo",
+      "sha256": "1b7feae8df1ec64582c441e78d82a079f15641e17ae3e110f85ce6c7ada39b69",
+      "bytes": 808,
+      "global_definitions": 0
+    },
+    {
+      "path": "BUILD/obj/DEVELOPMENT_ARM64_MT6762/iokit/DEVELOPMENT/IOMemoryDescriptor.iig.cpo",
+      "sha256": "1b7feae8df1ec64582c441e78d82a079f15641e17ae3e110f85ce6c7ada39b69",
+      "bytes": 808,
+      "global_definitions": 0
+    },
+    {
+      "path": "BUILD/obj/DEVELOPMENT_ARM64_MT6762/iokit/DEVELOPMENT/IOMemoryMap.iig.cpo",
+      "sha256": "1b7feae8df1ec64582c441e78d82a079f15641e17ae3e110f85ce6c7ada39b69",
+      "bytes": 808,
+      "global_definitions": 0
+    },
+    {
+      "path": "BUILD/obj/DEVELOPMENT_ARM64_MT6762/iokit/DEVELOPMENT/IOService.iig.cpo",
+      "sha256": "1b7feae8df1ec64582c441e78d82a079f15641e17ae3e110f85ce6c7ada39b69",
+      "bytes": 808,
+      "global_definitions": 0
+    },
+    {
+      "path": "BUILD/obj/DEVELOPMENT_ARM64_MT6762/iokit/DEVELOPMENT/IOServiceNotificationDispatchSource.iig.cpo",
+      "sha256": "1b7feae8df1ec64582c441e78d82a079f15641e17ae3e110f85ce6c7ada39b69",
+      "bytes": 808,
+      "global_definitions": 0
+    },
+    {
+      "path": "BUILD/obj/DEVELOPMENT_ARM64_MT6762/iokit/DEVELOPMENT/IOServiceStateNotificationDispatchSource.iig.cpo",
+      "sha256": "1b7feae8df1ec64582c441e78d82a079f15641e17ae3e110f85ce6c7ada39b69",
+      "bytes": 808,
+      "global_definitions": 0
+    },
+    {
+      "path": "BUILD/obj/DEVELOPMENT_ARM64_MT6762/iokit/DEVELOPMENT/IOUserClient.iig.cpo",
+      "sha256": "1b7feae8df1ec64582c441e78d82a079f15641e17ae3e110f85ce6c7ada39b69",
+      "bytes": 808,
+      "global_definitions": 0
+    },
+    {
+      "path": "BUILD/obj/DEVELOPMENT_ARM64_MT6762/iokit/DEVELOPMENT/IOUserServer.iig.cpo",
+      "sha256": "1b7feae8df1ec64582c441e78d82a079f15641e17ae3e110f85ce6c7ada39b69",
+      "bytes": 808,
+      "global_definitions": 0
+    },
+    {
+      "path": "BUILD/obj/DEVELOPMENT_ARM64_MT6762/iokit/DEVELOPMENT/IOWorkGroup.iig.cpo",
+      "sha256": "1b7feae8df1ec64582c441e78d82a079f15641e17ae3e110f85ce6c7ada39b69",
+      "bytes": 808,
+      "global_definitions": 0
+    },
+    {
+      "path": "BUILD/obj/DEVELOPMENT_ARM64_MT6762/iokit/DEVELOPMENT/OSAction.iig.cpo",
+      "sha256": "1b7feae8df1ec64582c441e78d82a079f15641e17ae3e110f85ce6c7ada39b69",
+      "bytes": 808,
+      "global_definitions": 0
+    },
+    {
+      "path": "BUILD/obj/DEVELOPMENT_ARM64_MT6762/iokit/DEVELOPMENT/OSObject.iig.cpo",
+      "sha256": "1f3e9b0670072656b49999f1e99d77affe450b9087d863e7afa7c009e5bc82d0",
+      "bytes": 326992,
+      "global_definitions": 225
+    }
+  ],
+  "source_sha256": {
+    "config/Makefile": "ee873b440cb1fdbdc7c79d6e2b0c08a2efa47326d599fabbbbbafb19713682c9",
+    "config/Private.exports": "3e9935c5360a60c496d2b4de542d77e2f66374b4050b47c2aeabd27b43f8fb8e",
+    "config/Private.arm64.exports": "00e242d4bb226e76c5d759be06606722bcd006dba267cfc5b5e42a0b44ea9dc9",
+    "iokit/DriverKit/Makefile": "e47aa8b27a5245d755fbe84afa82aad3366b48d7b97e25eb5c21268593e0e90a",
+    "osfmk/vm/pmap.h": "2fcea83f826ed21eab303d80a902b8f81060519398f98d7c3508c1c58d185a14",
+    "osfmk/vm/pmap_cs.h": "21a8de14ff91b162030fb154e57ce714cfc0a605710015253133b93a7a3c10bf",
+    "osfmk/arm/pmap/pmap.c": "05a644b3eae389249feb0ceaf122c470d27dfe83784938b5bc121981dacd82af",
+    "osfmk/x86_64/pmap.c": "610f6011eb8fc4f461dc103cb1537e924b1589cb54ec2ed18a4712e1d4f65235",
+    "pexpert/pexpert/arm64/MT6762.h": "83a9cd78ea3804faf2f261b8672f231163aa9003942ec0faaf705c02c4302240",
+    "pexpert/pexpert/arm64/board_config.h": "fc72bbe688d86e647854f9ab8d806a5bdd7bb1d4aea3daaaa6e811f7a1bbfd8f"
+  },
+  "toolchain_files": [
+    {
+      "path": "/home/iscle/mt6762-ios-port/toolchain/hackios-build/xnu-deps/host/bin/iig",
+      "sha256": "eba76514150af1a2865d5da3a35c8eeb3bae088ba9758f770c1de029fb74c1d6"
+    },
+    {
+      "path": "/home/iscle/mt6762-ios-port/toolchain/hackios-build/xnu-deps/gen-iig-stubs.py",
+      "sha256": "113f6e12e2223a2416bc3536f517edb0b177345757a18b70a32f1d355cba656e"
+    },
+    {
+      "path": "/home/iscle/mt6762-ios-port/toolchain/hackios-build/xnu-deps/iig-impl/OSObject.iig.cpp",
+      "sha256": "bdf53bf258e6b9e45bfac904ec3610c334befaa41b5d04bd2d897bf598c3f5f8"
+    }
+  ],
+  "aggregate_shim_unsupported_bodies": 44,
+  "query_source_occurrences": {
+    "_pmap_cs_configuration": [
+      "config/Private.exports:780",
+      "osfmk/vm/pmap.h:902",
+      "osfmk/arm/pmap/pmap.c:12371",
+      "osfmk/x86_64/pmap.c:3405"
+    ],
+    "_pmap_has_iofilter_protected_write": [
+      "config/Private.exports:776",
+      "osfmk/vm/pmap.h:856",
+      "osfmk/vm/pmap.h:861",
+      "osfmk/arm/pmap/pmap.c:12363",
+      "osfmk/x86_64/pmap.c:3419"
+    ]
+  },
+  "arm_callers_in_supplied_source": [],
+  "caller_audit_scope": "rg of both exact names through source tree excluding BUILD/tools; no ARM or IOKit call sites; external binary consumers not audited",
+  "conclusion": "Required methods absent before linking; nm/import list match exactly. No exports deleted and no ABI stubs added."
+}
