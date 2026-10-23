@@ -214,14 +214,22 @@ redwood_input_init(void)
 		printf("redwood-touch: cannot create the device\n");
 	}
 	exit_call = thread_call_allocate(exit_hold_elapsed, NULL);
-	redwood_cpufreq_init();
 	redwood_virtio_input_init();
+	redwood_net_init();
+#if defined(ARM64_BOARD_CONFIG_MT6762)
+	/* All drivers below use Qualcomm/POCO-specific MMIO and power controls.
+	 * A generic boot flag must never select them on MediaTek hardware.
+	 * Native MT6762 drivers will be registered here as they are implemented.
+	 */
+	printf("MT6762: native touch, buttons, battery/charging and other board drivers unavailable; Qualcomm drivers disabled\n");
+#else
+	redwood_cpufreq_init();
 	redwood_goodix_init();
 	redwood_buttons_init();
 	redwood_battery_init();
 	redwood_ufs_init();
-	redwood_net_init();
 	redwood_adreno_init();
 	redwood_wifi_init();
 	redwood_adsp_init();
+#endif
 }

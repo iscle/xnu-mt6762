@@ -273,7 +273,15 @@ _pfz_trylock_and_enqueue:
 	mov		w11, #1			 // locked value = w11 = 1
 
 	// Try to grab the lock
+#if defined(ARM64_BOARD_CONFIG_MT6762)
+	/* A53: bounded LL/SC trylock. PFZ code must not retry backwards. */
+	ldaxr	w10, [x3]
+	cbnz	w10, 1f
+	stxr	w10, w11, [x3]
+1:	clrex
+#else
 	casa	w10, w11, [x3]	 // Atomic CAS with acquire barrier
+#endif
 	cbz		w10, Ltrylock_enqueue_success
 
 	mov		x0, #-1			// Failed
@@ -323,7 +331,14 @@ _pfz_trylock_and_dequeue:
 	mov		w10, wzr		 // unlock value = w10 = 0
 	mov		w11, #1			 // locked value = w11 = 1
 
+#if defined(ARM64_BOARD_CONFIG_MT6762)
+	ldaxr	w10, [x2]
+	cbnz	w10, 1f
+	stxr	w10, w11, [x2]
+1:	clrex
+#else
 	casa	w10, w11, [x2]	 // Atomic CAS with acquire barrier
+#endif
 	cbz		w10, Ltrylock_dequeue_success
 
 	mov		x0, #-1			// Failed

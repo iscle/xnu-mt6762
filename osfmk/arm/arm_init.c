@@ -409,6 +409,11 @@ arm_init(
 		/*
 		 * Select the advertised kernel page size.
 		 */
+#if defined(MT6762_VM_PAGE_SHIFT)
+		/* Preserve the iOS 16K VM ABI even on small-RAM A53 boards. The
+		 * existing pmap PAGE_RATIO=4 path emits four 4K hardware mappings. */
+		PAGE_SHIFT_CONST = MT6762_VM_PAGE_SHIFT;
+#else
 		if (args->memSize > 1ULL * 1024 * 1024 * 1024) {
 			/*
 			 * arm64 device with > 1GB of RAM:
@@ -423,6 +428,7 @@ arm_init(
 			 */
 			PAGE_SHIFT_CONST = ARM_PGSHIFT;
 		}
+#endif
 
 		/* 32-bit apps always see 16KB page size */
 		page_shift_user32 = PAGE_MAX_SHIFT;
@@ -557,6 +563,11 @@ arm_init(
 	kernel_startup_initialize_upto(STARTUP_SUB_KPRINTF);
 	loader_checkpoint(19);
 	kprintf("kprintf initialized\n");
+#if defined(MT6762)
+	kprintf("MT6762: VM page=%u hardware page=%u TCR_EL1=0x%llx\n",
+	    (unsigned)PAGE_SIZE, (unsigned)ARM_PGBYTES,
+	    (unsigned long long)__builtin_arm_rsr64("TCR_EL1"));
+#endif
 
 	serialmode = 0;
 	if (PE_parse_boot_argn("serial", &serialmode, sizeof(serialmode))) {

@@ -87,6 +87,14 @@
 
 
 
+#ifdef ARM64_BOARD_CONFIG_MT6762
+#include <pexpert/arm64/MT6762.h>
+#define MAX_L2_CLINE 6
+#define MAX_CPUS 8
+#define MAX_CPU_CLUSTERS 2
+#define CORE_NCTRS 8 /* KPC is disabled during bring-up. */
+#endif
+
 #ifdef ARM64_BOARD_CONFIG_BCM2837
 #include <pexpert/arm64/BCM2837.h>
 

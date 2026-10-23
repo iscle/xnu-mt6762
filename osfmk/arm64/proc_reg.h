@@ -205,7 +205,7 @@
 /* D-Cache, 160KB for Firestorm, 8-way. 64KB for Icestorm, 6-way. */
 #define MMU_CLINE   6                      /* cache line size is 1<<MMU_CLINE (64) */
 
-#elif defined (BCM2837) /* Raspberry Pi 3 */
+#elif defined (BCM2837) || defined(MT6762) /* Cortex-A53 */
 
 /* I-Cache. We don't have detailed spec so we just follow the ARM technical reference. */
 #define MMU_I_CLINE 6

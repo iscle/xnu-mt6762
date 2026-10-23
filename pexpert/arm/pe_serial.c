@@ -165,7 +165,11 @@ get_serial_functions(serial_device_t device)
 static void
 serial_poll(void)
 {
-	#if __arm64__
+	#if defined(MTK_UART)
+	/* A53 has no Apple WFE timeout register; a polled UART need not
+	 * generate an event. Do not sleep indefinitely waiting for THRE. */
+	__asm__ volatile("yield");
+	#elif __arm64__
 	__builtin_arm_wfe();
 	#endif
 }
@@ -591,6 +595,30 @@ SECURITY_READ_ONLY_LATE(static struct pe_serial_functions) pi3_uart_serial_funct
 
 /*****************************************************************************/
 
+#ifdef MTK_UART
+/* MT6577-compatible register subset, confirmed in the MT6765 BSP's
+ * 8250_mtk.c: UPIO_MEM32, regshift=2. Clock/pinmux/baud remain firmware-owned. */
+static vm_offset_t mtk_uart_base;
+#define MTK_UART_REG(n) (*(volatile uint32_t *)(mtk_uart_base + 4 * (n)))
+static void mtk_uart_init(void)
+{
+	MTK_UART_REG(3) &= ~0x80u; /* DLAB clear: registers 0/1 are data/IER. */
+	MTK_UART_REG(1) = 0;      /* polling only */
+}
+static unsigned int mtk_uart_transmit_ready(void) { return MTK_UART_REG(5) & 0x20; }
+static void mtk_uart_transmit_data(uint8_t c) { MTK_UART_REG(0) = c; }
+static unsigned int mtk_uart_receive_ready(void) { return MTK_UART_REG(5) & 1; }
+static uint8_t mtk_uart_receive_data(void) { return (uint8_t)MTK_UART_REG(0); }
+SECURITY_READ_ONLY_LATE(static struct pe_serial_functions) mtk_uart_serial_functions = {
+	.init = mtk_uart_init,
+	.transmit_ready = mtk_uart_transmit_ready,
+	.transmit_data = mtk_uart_transmit_data,
+	.receive_ready = mtk_uart_receive_ready,
+	.receive_data = mtk_uart_receive_data,
+	.device = SERIAL_MTK_UART
+};
+#endif
+
 #ifdef VMAPPLE_UART
 
 static vm_offset_t vmapple_uart0_base_vaddr = 0;
@@ -776,6 +804,18 @@ serial_init(void)
 	}
 
 	PE_parse_boot_argn("disable-uart-irq", &disable_uart_irq, sizeof(disable_uart_irq));
+
+#ifdef MTK_UART
+	if (SecureDTLookupEntry(NULL, "/arm-io/uart0", &entryP) == kSuccess &&
+	    SecureDTGetProperty(entryP, "reg", (void const **)&reg_prop, &prop_size) == kSuccess &&
+	    prop_size == 2 * sizeof(*reg_prop) && reg_prop[1] >= 0x18 &&
+	    reg_prop[0] <= UINTPTR_MAX - soc_base) {
+		mtk_uart_base = ml_io_map(soc_base + reg_prop[0], reg_prop[1]);
+		if (mtk_uart_base != 0) {
+			register_serial_functions(&mtk_uart_serial_functions);
+		}
+	}
+#endif
 
 #ifdef PI3_UART
 	if (SecureDTFindEntry("name", "gpio", &entryP) == kSuccess) {

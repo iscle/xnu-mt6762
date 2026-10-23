@@ -77,8 +77,8 @@ IOKitInitializeTime( void )
 	t.tv_sec = 30;
 	t.tv_nsec = 0;
 
-// RTC is not present on this target
-#ifndef BCM2837
+// These bring-up targets have no IORTC driver registered yet.
+#if !defined(BCM2837) && !defined(MT6762)
 	IOService::waitForService(
 		IOService::resourceMatching("IORTC"), &t );
 #endif
