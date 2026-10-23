@@ -1,0 +1,123 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Codex <codex@openai.com>
+Date: Fri, 23 Oct 2026 22:35:30 +0200
+Subject: [PATCH 2/2] arm: supply the recovered MT6762 boot-log SRAM handoff
+
+Use the raw little-endian log_store property consumed by this stock kernel, with coordinates from its embedded config. Cold SRAM deliberately has no valid prior log. Stock execution now reaches DFD initialization instead of faulting in log_store_early_init. AI-assisted local experiment.
+---
+ docs/system/arm/mt6762.rst | 30 +++++++++++++++++++++++++-----
+ hw/arm/mt6762.c            | 28 ++++++++++++++++++++++++++++
+ 2 files changed, 53 insertions(+), 5 deletions(-)
+
+diff --git a/docs/system/arm/mt6762.rst b/docs/system/arm/mt6762.rst
+index e8530e4..ed75c6a 100644
+--- a/docs/system/arm/mt6762.rst
++++ b/docs/system/arm/mt6762.rst
+@@ -24,6 +24,11 @@ Implemented resources
+ * MediaTek 13 MHz one-shot broadcast timer at 0x10017000, control/value
+   registers at offsets 0x40/0x44, SPI 194. Its programming sequence comes
+   from the supplied BSP's ``drivers/clocksource/mtk_systimer.c``.
++* A 256-byte boot-log SRAM window at 0x0010e700. If absent, the boot helper
++  supplies ``/chosen/log_store`` as a raw little-endian address/size pair,
++  matching ``dt_get_log_store()`` in this stock kernel. Cold SRAM has no
++  prior logs and keeps its zero signature; the kernel explicitly disables
++  logging on that invalid signature. No firmware log records are invented.
+ 
+ The MediaTek UART extension registers,
+ clock/reset/power controllers, PMIC, eMMC, USB, display, GPU, touch, modem,
+@@ -51,8 +56,23 @@ Observed stock-kernel boundary
+ -----------------------------
+ 
+ The supplied Linux 4.19.191 Image reaches its init kernel thread, with
+-working GICv3 and architectural timer interrupts. It then faults in
+-``log_store_early_init``. The extracted DTB lacks the bootloader's runtime
+-handoff for SRAM logging (the kernel reports SRAM address/size zero).
+-Bootloader handoff, SRAM and the remaining vendor devices need further
+-modeling. There is no userspace or full Android boot yet.
++working GICv3 and architectural timer interrupts. Without the SRAM handoff
++it faulted in ``log_store_early_init``. With that handoff it passes this
++initialization, patches CPU alternatives and initializes pinctrl. It then
++faults in ``get_dfd_base()`` from ``dfd_init()`` when reading the unmodeled
++TOPRGU/watchdog register block at 0x10007000. Further vendor register and
++peripheral models remain necessary. There is no userspace or full Android
++boot yet.
++
++SRAM handoff provenance
++----------------------
++
++The dump's embedded kernel configuration specifies
++``CONFIG_MTK_DRAM_LOG_STORE_ADDR=0x0010E700`` and size 0x100. Static
++disassembly of that same kernel's ``dt_get_log_store`` at
++0xffffff8009629084 shows a raw 8-byte copy from the ``log_store`` property
++under ``chosen`` or ``chosen@0``; there is no device-tree endian conversion.
++``log_store_early_init`` at 0xffffff8009628bf8 maps the address, checks
++signature 0xabcd1234, and returns an error when no valid old log exists.
++This is a bootloader handoff model; the source Image and extracted DTB files
++remain unchanged, and the guest DTB is edited by QEMU's boot helper.
+diff --git a/hw/arm/mt6762.c b/hw/arm/mt6762.c
+index 05b7931..5dee455 100644
+--- a/hw/arm/mt6762.c
++++ b/hw/arm/mt6762.c
+@@ -21,6 +21,7 @@
+ #include "hw/char/serial-mm.h"
+ #include "hw/intc/arm_gicv3_common.h"
+ #include "system/system.h"
++#include "system/device_tree.h"
+ #include "system/reset.h"
+ #include "system/address-spaces.h"
+ #include "qobject/qlist.h"
+@@ -36,6 +37,7 @@ OBJECT_DECLARE_SIMPLE_TYPE(MT6762MachineState, MT6762_MACHINE)
+ struct MT6762MachineState {
+     MachineState parent;
+     struct arm_boot_info bootinfo;
++    MemoryRegion log_sram;
+     MemoryRegion intpol_mmio;
+     uint32_t intpol[20];
+     MemoryRegion systimer_mmio;
+@@ -45,6 +47,28 @@ struct MT6762MachineState {
+     uint32_t systimer_value;
+ };
+ 
++/*
++ * The stock 4.19 kernel's dt_get_log_store() copies this raw, native-endian
++ * pair from /chosen; it is not an array of big-endian DT cells. The address
++ * and size also appear in its embedded CONFIG_MTK_DRAM_LOG_STORE_* values.
++ * Cold SRAM contains no prior boot logs: its zero signature tells the guest
++ * logger to disable itself rather than claiming synthetic firmware logs.
++ */
++static void mt6762_boot_handoff(const struct arm_boot_info *info, void *fdt)
++{
++    Error *err = NULL;
++    int len;
++    const uint32_t log_store[] = {
++        cpu_to_le32(0x0010e700), cpu_to_le32(0x100),
++    };
++
++    if (!qemu_fdt_getprop(fdt, "/chosen", "log_store", &len, &err)) {
++        error_free(err);
++        qemu_fdt_setprop(fdt, "/chosen", "log_store", log_store,
++                         sizeof(log_store));
++    }
++}
++
+ /*
+  * irq-mtk-sysirq.c stores one polarity bit per SPI here. QEMU device IRQ
+  * outputs already use logical assertion (not electrical pin level), so the
+@@ -158,6 +182,9 @@ static void mt6762_init(MachineState *ms)
+         exit(1);
+     }
+     memory_region_add_subregion(sysmem, MT6762_RAM_BASE, ms->ram);
++    memory_region_init_ram(&s->log_sram, NULL, "mt6762.log-sram",
++                           0x100, &error_fatal);
++    memory_region_add_subregion(sysmem, 0x0010e700, &s->log_sram);
+ 
+     for (i = 0; i < n; i++) {
+         Object *cpu = object_new(ms->cpu_type);
+@@ -226,6 +253,7 @@ static void mt6762_init(MachineState *ms)
+     s->bootinfo.loader_start = MT6762_RAM_BASE;
+     s->bootinfo.board_id = -1;
+     s->bootinfo.psci_conduit = QEMU_PSCI_CONDUIT_SMC;
++    s->bootinfo.modify_dtb = mt6762_boot_handoff;
+     arm_load_kernel(ARM_CPU(first_cpu), ms, &s->bootinfo);
+ }
+ 

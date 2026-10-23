@@ -1,0 +1,364 @@
+
+/home/iscle/mt6762-ios-port/emulator/stock.elf:	file format elf64-littleaarch64
+
+Disassembly of section .kernel:
+
+ffffff8008a20e74 <mtk_pmic_keys_probe>:
+ffffff8008a20e74: d10283ff     	sub	sp, sp, #0xa0
+ffffff8008a20e78: a9047bfd     	stp	x29, x30, [sp, #0x40]
+ffffff8008a20e7c: a9056ffc     	stp	x28, x27, [sp, #0x50]
+ffffff8008a20e80: a90667fa     	stp	x26, x25, [sp, #0x60]
+ffffff8008a20e84: a9075ff8     	stp	x24, x23, [sp, #0x70]
+ffffff8008a20e88: a90857f6     	stp	x22, x21, [sp, #0x80]
+ffffff8008a20e8c: a9094ff4     	stp	x20, x19, [sp, #0x90]
+ffffff8008a20e90: 910103fd     	add	x29, sp, #0x40
+ffffff8008a20e94: b0006ae8     	adrp	x8, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008a20e98: f9458508     	ldr	x8, [x8, #0xb08]
+ffffff8008a20e9c: aa0003fc     	mov	x28, x0
+ffffff8008a20ea0: f81f83a8     	stur	x8, [x29, #-0x8]
+ffffff8008a20ea4: 97d9f83e     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a20ea8: aa1c03f5     	mov	x21, x28
+ffffff8008a20eac: f8410ea8     	ldr	x8, [x21, #0x10]!
+ffffff8008a20eb0: b00035e0     	adrp	x0, 0xffffff80090dd000 <atkbd_unxlate_table+0x64>
+ffffff8008a20eb4: 912c4000     	add	x0, x0, #0xb10
+ffffff8008a20eb8: f9405d13     	ldr	x19, [x8, #0xb8]
+ffffff8008a20ebc: f9417ab6     	ldr	x22, [x21, #0x2f0]
+ffffff8008a20ec0: aa1503e1     	mov	x1, x21
+ffffff8008a20ec4: 94045df2     	bl	0xffffff8008b3868c <of_match_device>
+ffffff8008a20ec8: b40005a0     	cbz	x0, 0xffffff8008a20f7c <mtk_pmic_keys_probe+0x108>
+ffffff8008a20ecc: 52901802     	mov	w2, #0x80c0     // =32960
+ffffff8008a20ed0: aa0003f7     	mov	x23, x0
+ffffff8008a20ed4: 52800b01     	mov	w1, #0x58       // =88
+ffffff8008a20ed8: 72a00c02     	movk	w2, #0x60, lsl #16
+ffffff8008a20edc: aa1503e0     	mov	x0, x21
+ffffff8008a20ee0: 97f07bc7     	bl	0xffffff800863fdfc <devm_kmalloc>
+ffffff8008a20ee4: b4001340     	cbz	x0, 0xffffff8008a2114c <mtk_pmic_keys_probe+0x2d8>
+ffffff8008a20ee8: f9000415     	str	x21, [x0, #0x8]
+ffffff8008a20eec: f9400668     	ldr	x8, [x19, #0x8]
+ffffff8008a20ef0: aa0003fb     	mov	x27, x0
+ffffff8008a20ef4: f9000808     	str	x8, [x0, #0x10]
+ffffff8008a20ef8: f94062f4     	ldr	x20, [x23, #0xc0]
+ffffff8008a20efc: aa1503e0     	mov	x0, x21
+ffffff8008a20f00: 97ffd7a3     	bl	0xffffff8008a16d8c <devm_input_allocate_device>
+ffffff8008a20f04: f9000360     	str	x0, [x27]
+ffffff8008a20f08: b40011a0     	cbz	x0, 0xffffff8008a2113c <mtk_pmic_keys_probe+0x2c8>
+ffffff8008a20f0c: f00059a8     	adrp	x8, 0xffffff8009557000 <crypto_set_driver_name.suffix+0x15fb3>
+ffffff8008a20f10: f9401409     	ldr	x9, [x0, #0x28]
+ffffff8008a20f14: 91113908     	add	x8, x8, #0x44e
+ffffff8008a20f18: f9000008     	str	x8, [x0]
+ffffff8008a20f1c: b20083e8     	mov	x8, #0x1000100010001 // =281479271743489
+ffffff8008a20f20: f2800328     	movk	x8, #0x19
+ffffff8008a20f24: f9000c08     	str	x8, [x0, #0x18]
+ffffff8008a20f28: b27f0128     	orr	x8, x9, #0x2
+ffffff8008a20f2c: aa0003f3     	mov	x19, x0
+ffffff8008a20f30: f9001408     	str	x8, [x0, #0x28]
+ffffff8008a20f34: aa1603e0     	mov	x0, x22
+ffffff8008a20f38: aa1f03e1     	mov	x1, xzr
+ffffff8008a20f3c: 940456ad     	bl	0xffffff8008b369f0 <of_get_next_available_child>
+ffffff8008a20f40: b4000220     	cbz	x0, 0xffffff8008a20f84 <mtk_pmic_keys_probe+0x110>
+ffffff8008a20f44: aa0003e1     	mov	x1, x0
+ffffff8008a20f48: 2a1f03f8     	mov	w24, wzr
+ffffff8008a20f4c: aa1603e0     	mov	x0, x22
+ffffff8008a20f50: 11000718     	add	w24, w24, #0x1
+ffffff8008a20f54: 940456a7     	bl	0xffffff8008b369f0 <of_get_next_available_child>
+ffffff8008a20f58: aa0003e1     	mov	x1, x0
+ffffff8008a20f5c: b5ffff80     	cbnz	x0, 0xffffff8008a20f4c <mtk_pmic_keys_probe+0xd8>
+ffffff8008a20f60: 71000f1f     	cmp	w24, #0x3
+ffffff8008a20f64: 54000103     	b.lo	0xffffff8008a20f84 <mtk_pmic_keys_probe+0x110>
+ffffff8008a20f68: f9400760     	ldr	x0, [x27, #0x8]
+ffffff8008a20f6c: f0005781     	adrp	x1, 0xffffff8009513000 <f_midi_shortname+0x511b6>
+ffffff8008a20f70: 9138e421     	add	x1, x1, #0xe39
+ffffff8008a20f74: 2a1803e2     	mov	w2, w24
+ffffff8008a20f78: 97f05c4d     	bl	0xffffff80086380ac <_dev_err>
+ffffff8008a20f7c: 128002b9     	mov	w25, #-0x16     // =-22
+ffffff8008a20f80: 14000074     	b	0xffffff8008a21150 <mtk_pmic_keys_probe+0x2dc>
+ffffff8008a20f84: aa1603e0     	mov	x0, x22
+ffffff8008a20f88: aa1f03e1     	mov	x1, xzr
+ffffff8008a20f8c: f90003f3     	str	x19, [sp]
+ffffff8008a20f90: 9404567f     	bl	0xffffff8008b3698c <of_get_next_child>
+ffffff8008a20f94: b4000c00     	cbz	x0, 0xffffff8008a21114 <mtk_pmic_keys_probe+0x2a0>
+ffffff8008a20f98: 2a1f03f9     	mov	w25, wzr
+ffffff8008a20f9c: 91006378     	add	x24, x27, #0x18
+ffffff8008a20fa0: a900f3f4     	stp	x20, x28, [sp, #0x8]
+ffffff8008a20fa4: f90013fb     	str	x27, [sp, #0x20]
+ffffff8008a20fa8: 93407f3a     	sxtw	x26, w25
+ffffff8008a20fac: 8b1a1713     	add	x19, x24, x26, lsl #5
+ffffff8008a20fb0: f81e83a0     	stur	x0, [x29, #-0x18]
+ffffff8008a20fb4: 8b39d288     	add	x8, x20, w25, sxtw #4
+ffffff8008a20fb8: aa1303f7     	mov	x23, x19
+ffffff8008a20fbc: aa1c03e0     	mov	x0, x28
+ffffff8008a20fc0: 2a1903e1     	mov	w1, w25
+ffffff8008a20fc4: f8008ee8     	str	x8, [x23, #0x8]!
+ffffff8008a20fc8: 97f0700e     	bl	0xffffff800863d000 <platform_get_irq>
+ffffff8008a20fcc: aa1303fb     	mov	x27, x19
+ffffff8008a20fd0: b8014f60     	str	w0, [x27, #0x14]!
+ffffff8008a20fd4: 37f81060     	tbnz	w0, #0x1f, 0xffffff8008a211e0 <mtk_pmic_keys_probe+0x36c>
+ffffff8008a20fd8: 39408288     	ldrb	w8, [x20, #0x20]
+ffffff8008a20fdc: 340000e8     	cbz	w8, 0xffffff8008a20ff8 <mtk_pmic_keys_probe+0x184>
+ffffff8008a20fe0: 11000b41     	add	w1, w26, #0x2
+ffffff8008a20fe4: aa1c03e0     	mov	x0, x28
+ffffff8008a20fe8: 97f07006     	bl	0xffffff800863d000 <platform_get_irq>
+ffffff8008a20fec: 8b1a1708     	add	x8, x24, x26, lsl #5
+ffffff8008a20ff0: b9001900     	str	w0, [x8, #0x18]
+ffffff8008a20ff4: 37f80f60     	tbnz	w0, #0x1f, 0xffffff8008a211e0 <mtk_pmic_keys_probe+0x36c>
+ffffff8008a20ff8: f85e83b4     	ldur	x20, [x29, #-0x18]
+ffffff8008a20ffc: 8b1a1708     	add	x8, x24, x26, lsl #5
+ffffff8008a21000: b0005721     	adrp	x1, 0xffffff8009506000 <f_midi_shortname+0x441b6>
+ffffff8008a21004: 91004102     	add	x2, x8, #0x10
+ffffff8008a21008: 52800023     	mov	w3, #0x1        // =1
+ffffff8008a2100c: aa1403e0     	mov	x0, x20
+ffffff8008a21010: 9101bc21     	add	x1, x1, #0x6f
+ffffff8008a21014: aa1f03e4     	mov	x4, xzr
+ffffff8008a21018: aa1803fc     	mov	x28, x24
+ffffff8008a2101c: f9000fe2     	str	x2, [sp, #0x18]
+ffffff8008a21020: 94046373     	bl	0xffffff8008b39dec <of_property_read_variable_u32_array>
+ffffff8008a21024: 37f80e20     	tbnz	w0, #0x1f, 0xffffff8008a211e8 <mtk_pmic_keys_probe+0x374>
+ffffff8008a21028: f0005481     	adrp	x1, 0xffffff80094b4000 <connectivity_export_dump_thread_state.stat_nam+0x1db74>
+ffffff8008a2102c: aa1403e0     	mov	x0, x20
+ffffff8008a21030: 910f4821     	add	x1, x1, #0x3d2
+ffffff8008a21034: aa1f03e2     	mov	x2, xzr
+ffffff8008a21038: 9404542c     	bl	0xffffff8008b360e8 <of_find_property>
+ffffff8008a2103c: aa1c03f8     	mov	x24, x28
+ffffff8008a21040: b40000a0     	cbz	x0, 0xffffff8008a21054 <mtk_pmic_keys_probe+0x1e0>
+ffffff8008a21044: 8b1a1708     	add	x8, x24, x26, lsl #5
+ffffff8008a21048: 39407109     	ldrb	w9, [x8, #0x1c]
+ffffff8008a2104c: 32000129     	orr	w9, w9, #0x1
+ffffff8008a21050: 39007109     	strb	w9, [x8, #0x1c]
+ffffff8008a21054: f94013f4     	ldr	x20, [sp, #0x20]
+ffffff8008a21058: aa1f03e4     	mov	x4, xzr
+ffffff8008a2105c: 2a1f03e5     	mov	w5, wzr
+ffffff8008a21060: 2a1f03e6     	mov	w6, wzr
+ffffff8008a21064: f9000274     	str	x20, [x19]
+ffffff8008a21068: f94002e8     	ldr	x8, [x23]
+ffffff8008a2106c: f9400a80     	ldr	x0, [x20, #0x10]
+ffffff8008a21070: 29410901     	ldp	w1, w2, [x8, #0x8]
+ffffff8008a21074: 2a0203e3     	mov	w3, w2
+ffffff8008a21078: 97f0da0e     	bl	0xffffff80086578b0 <regmap_update_bits_base>
+ffffff8008a2107c: 37f80860     	tbnz	w0, #0x1f, 0xffffff8008a21188 <mtk_pmic_keys_probe+0x314>
+ffffff8008a21080: f9400680     	ldr	x0, [x20, #0x8]
+ffffff8008a21084: b9400361     	ldr	w1, [x27]
+ffffff8008a21088: 90000003     	adrp	x3, 0xffffff8008a21000 <mtk_pmic_keys_probe+0x18c>
+ffffff8008a2108c: d00059a5     	adrp	x5, 0xffffff8009557000 <crypto_set_driver_name.suffix+0x15fb3>
+ffffff8008a21090: 52840084     	mov	w4, #0x2004     // =8196
+ffffff8008a21094: aa1f03e2     	mov	x2, xzr
+ffffff8008a21098: 910ba063     	add	x3, x3, #0x2e8
+ffffff8008a2109c: 911138a5     	add	x5, x5, #0x44e
+ffffff8008a210a0: aa1303e6     	mov	x6, x19
+ffffff8008a210a4: 97dc3b6b     	bl	0xffffff800812fe50 <devm_request_threaded_irq>
+ffffff8008a210a8: 35000700     	cbnz	w0, 0xffffff8008a21188 <mtk_pmic_keys_probe+0x314>
+ffffff8008a210ac: 8b1a1708     	add	x8, x24, x26, lsl #5
+ffffff8008a210b0: b9401901     	ldr	w1, [x8, #0x18]
+ffffff8008a210b4: f94013fb     	ldr	x27, [sp, #0x20]
+ffffff8008a210b8: 7100043f     	cmp	w1, #0x1
+ffffff8008a210bc: 5400016b     	b.lt	0xffffff8008a210e8 <mtk_pmic_keys_probe+0x274>
+ffffff8008a210c0: f9400760     	ldr	x0, [x27, #0x8]
+ffffff8008a210c4: 90000003     	adrp	x3, 0xffffff8008a21000 <mtk_pmic_keys_probe+0x18c>
+ffffff8008a210c8: d00059a5     	adrp	x5, 0xffffff8009557000 <crypto_set_driver_name.suffix+0x15fb3>
+ffffff8008a210cc: 52840084     	mov	w4, #0x2004     // =8196
+ffffff8008a210d0: aa1f03e2     	mov	x2, xzr
+ffffff8008a210d4: 910ea063     	add	x3, x3, #0x3a8
+ffffff8008a210d8: 911138a5     	add	x5, x5, #0x44e
+ffffff8008a210dc: aa1303e6     	mov	x6, x19
+ffffff8008a210e0: 97dc3b5c     	bl	0xffffff800812fe50 <devm_request_threaded_irq>
+ffffff8008a210e4: 35000520     	cbnz	w0, 0xffffff8008a21188 <mtk_pmic_keys_probe+0x314>
+ffffff8008a210e8: f9400fe8     	ldr	x8, [sp, #0x18]
+ffffff8008a210ec: f9400360     	ldr	x0, [x27]
+ffffff8008a210f0: 52800021     	mov	w1, #0x1        // =1
+ffffff8008a210f4: b9400102     	ldr	w2, [x8]
+ffffff8008a210f8: 97ffd7a3     	bl	0xffffff8008a16f84 <input_set_capability>
+ffffff8008a210fc: f85e83a1     	ldur	x1, [x29, #-0x18]
+ffffff8008a21100: aa1603e0     	mov	x0, x22
+ffffff8008a21104: 11000759     	add	w25, w26, #0x1
+ffffff8008a21108: 94045621     	bl	0xffffff8008b3698c <of_get_next_child>
+ffffff8008a2110c: a940f3f4     	ldp	x20, x28, [sp, #0x8]
+ffffff8008a21110: b5fff4c0     	cbnz	x0, 0xffffff8008a20fa8 <mtk_pmic_keys_probe+0x134>
+ffffff8008a21114: f94003e0     	ldr	x0, [sp]
+ffffff8008a21118: 97ffd863     	bl	0xffffff8008a172a4 <input_register_device>
+ffffff8008a2111c: 34000420     	cbz	w0, 0xffffff8008a211a0 <mtk_pmic_keys_probe+0x32c>
+ffffff8008a21120: 2a0003f9     	mov	w25, w0
+ffffff8008a21124: d00059a1     	adrp	x1, 0xffffff8009557000 <crypto_set_driver_name.suffix+0x15fb3>
+ffffff8008a21128: 9131a821     	add	x1, x1, #0xc6a
+ffffff8008a2112c: aa1503e0     	mov	x0, x21
+ffffff8008a21130: 2a1903e2     	mov	w2, w25
+ffffff8008a21134: 97f05bde     	bl	0xffffff80086380ac <_dev_err>
+ffffff8008a21138: 14000006     	b	0xffffff8008a21150 <mtk_pmic_keys_probe+0x2dc>
+ffffff8008a2113c: d0005121     	adrp	x1, 0xffffff8009447000 <process_dbg_opt.temp+0x39f54>
+ffffff8008a21140: 9127e821     	add	x1, x1, #0x9fa
+ffffff8008a21144: aa1503e0     	mov	x0, x21
+ffffff8008a21148: 97f05bd9     	bl	0xffffff80086380ac <_dev_err>
+ffffff8008a2114c: 12800179     	mov	w25, #-0xc      // =-12
+ffffff8008a21150: 90006ae9     	adrp	x9, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008a21154: f85f83a8     	ldur	x8, [x29, #-0x8]
+ffffff8008a21158: f9458529     	ldr	x9, [x9, #0xb08]
+ffffff8008a2115c: eb08013f     	cmp	x9, x8
+ffffff8008a21160: 54000c21     	b.ne	0xffffff8008a212e4 <mtk_pmic_keys_probe+0x470>
+ffffff8008a21164: 2a1903e0     	mov	w0, w25
+ffffff8008a21168: a9494ff4     	ldp	x20, x19, [sp, #0x90]
+ffffff8008a2116c: a94857f6     	ldp	x22, x21, [sp, #0x80]
+ffffff8008a21170: a9475ff8     	ldp	x24, x23, [sp, #0x70]
+ffffff8008a21174: a94667fa     	ldp	x26, x25, [sp, #0x60]
+ffffff8008a21178: a9456ffc     	ldp	x28, x27, [sp, #0x50]
+ffffff8008a2117c: a9447bfd     	ldp	x29, x30, [sp, #0x40]
+ffffff8008a21180: 910283ff     	add	sp, sp, #0xa0
+ffffff8008a21184: d65f03c0     	ret
+ffffff8008a21188: 2a0003f9     	mov	w25, w0
+ffffff8008a2118c: f0005040     	adrp	x0, 0xffffff800942c000 <process_dbg_opt.temp+0x1ef54>
+ffffff8008a21190: 91013800     	add	x0, x0, #0x4e
+ffffff8008a21194: 2a1a03e1     	mov	w1, w26
+ffffff8008a21198: 97dc1265     	bl	0xffffff8008125b2c <printk>
+ffffff8008a2119c: 17ffffed     	b	0xffffff8008a21150 <mtk_pmic_keys_probe+0x2dc>
+ffffff8008a211a0: f9400768     	ldr	x8, [x27, #0x8]
+ffffff8008a211a4: 2944a695     	ldp	w21, w9, [x20, #0x24]
+ffffff8008a211a8: b9402e8a     	ldr	w10, [x20, #0x2c]
+ffffff8008a211ac: f0004e81     	adrp	x1, 0xffffff80093f4000 <decpair+0x2adbd0>
+ffffff8008a211b0: f9417900     	ldr	x0, [x8, #0x2f0]
+ffffff8008a211b4: 52800028     	mov	w8, #0x1        // =1
+ffffff8008a211b8: 9115c021     	add	x1, x1, #0x570
+ffffff8008a211bc: d10043a2     	sub	x2, x29, #0x10
+ffffff8008a211c0: 52800023     	mov	w3, #0x1        // =1
+ffffff8008a211c4: aa1f03e4     	mov	x4, xzr
+ffffff8008a211c8: 1ac92117     	lsl	w23, w8, w9
+ffffff8008a211cc: 1aca2116     	lsl	w22, w8, w10
+ffffff8008a211d0: 94046307     	bl	0xffffff8008b39dec <of_property_read_variable_u32_array>
+ffffff8008a211d4: 37f801c0     	tbnz	w0, #0x1f, 0xffffff8008a2120c <mtk_pmic_keys_probe+0x398>
+ffffff8008a211d8: b85f03a8     	ldur	w8, [x29, #-0x10]
+ffffff8008a211dc: 1400000e     	b	0xffffff8008a21214 <mtk_pmic_keys_probe+0x3a0>
+ffffff8008a211e0: 2a0003f9     	mov	w25, w0
+ffffff8008a211e4: 17ffffdb     	b	0xffffff8008a21150 <mtk_pmic_keys_probe+0x2dc>
+ffffff8008a211e8: f94013e8     	ldr	x8, [sp, #0x20]
+ffffff8008a211ec: 2a0003f9     	mov	w25, w0
+ffffff8008a211f0: d0005861     	adrp	x1, 0xffffff800952f000 <f_midi_longname+0xe119>
+ffffff8008a211f4: 910bd821     	add	x1, x1, #0x2f6
+ffffff8008a211f8: f9400500     	ldr	x0, [x8, #0x8]
+ffffff8008a211fc: 2a1a03e2     	mov	w2, w26
+ffffff8008a21200: 2a1903e3     	mov	w3, w25
+ffffff8008a21204: 97f05baa     	bl	0xffffff80086380ac <_dev_err>
+ffffff8008a21208: 17ffffd2     	b	0xffffff8008a21150 <mtk_pmic_keys_probe+0x2dc>
+ffffff8008a2120c: 2a1f03e8     	mov	w8, wzr
+ffffff8008a21210: b81f03bf     	stur	wzr, [x29, #-0x10]
+ffffff8008a21214: b9403289     	ldr	w9, [x20, #0x30]
+ffffff8008a21218: f9400b60     	ldr	x0, [x27, #0x10]
+ffffff8008a2121c: 5280006a     	mov	w10, #0x3       // =3
+ffffff8008a21220: 2a1503e1     	mov	w1, w21
+ffffff8008a21224: 1ac92142     	lsl	w2, w10, w9
+ffffff8008a21228: 1ac92103     	lsl	w3, w8, w9
+ffffff8008a2122c: aa1f03e4     	mov	x4, xzr
+ffffff8008a21230: 2a1f03e5     	mov	w5, wzr
+ffffff8008a21234: 2a1f03e6     	mov	w6, wzr
+ffffff8008a21238: 97f0d99e     	bl	0xffffff80086578b0 <regmap_update_bits_base>
+ffffff8008a2123c: f9400768     	ldr	x8, [x27, #0x8]
+ffffff8008a21240: 900052e1     	adrp	x1, 0xffffff800947d000 <task_index_to_char.state_char+0x17374>
+ffffff8008a21244: 910c3021     	add	x1, x1, #0x30c
+ffffff8008a21248: d10033a2     	sub	x2, x29, #0xc
+ffffff8008a2124c: f9417900     	ldr	x0, [x8, #0x2f0]
+ffffff8008a21250: 52800023     	mov	w3, #0x1        // =1
+ffffff8008a21254: aa1f03e4     	mov	x4, xzr
+ffffff8008a21258: 940462e5     	bl	0xffffff8008b39dec <of_property_read_variable_u32_array>
+ffffff8008a2125c: 37f80140     	tbnz	w0, #0x1f, 0xffffff8008a21284 <mtk_pmic_keys_probe+0x410>
+ffffff8008a21260: b85f43a8     	ldur	w8, [x29, #-0xc]
+ffffff8008a21264: 34000128     	cbz	w8, 0xffffff8008a21288 <mtk_pmic_keys_probe+0x414>
+ffffff8008a21268: 7100051f     	cmp	w8, #0x1
+ffffff8008a2126c: 54000140     	b.eq	0xffffff8008a21294 <mtk_pmic_keys_probe+0x420>
+ffffff8008a21270: 7100091f     	cmp	w8, #0x2
+ffffff8008a21274: 2a1703e3     	mov	w3, w23
+ffffff8008a21278: 2a1603f8     	mov	w24, w22
+ffffff8008a2127c: 54000100     	b.eq	0xffffff8008a2129c <mtk_pmic_keys_probe+0x428>
+ffffff8008a21280: 14000016     	b	0xffffff8008a212d8 <mtk_pmic_keys_probe+0x464>
+ffffff8008a21284: b81f43bf     	stur	wzr, [x29, #-0xc]
+ffffff8008a21288: 2a1f03e3     	mov	w3, wzr
+ffffff8008a2128c: 2a1f03f8     	mov	w24, wzr
+ffffff8008a21290: 14000003     	b	0xffffff8008a2129c <mtk_pmic_keys_probe+0x428>
+ffffff8008a21294: 2a1f03f8     	mov	w24, wzr
+ffffff8008a21298: 2a1703e3     	mov	w3, w23
+ffffff8008a2129c: f9400b60     	ldr	x0, [x27, #0x10]
+ffffff8008a212a0: 2a1503e1     	mov	w1, w21
+ffffff8008a212a4: 2a1703e2     	mov	w2, w23
+ffffff8008a212a8: aa1f03e4     	mov	x4, xzr
+ffffff8008a212ac: 2a1f03e5     	mov	w5, wzr
+ffffff8008a212b0: 2a1f03e6     	mov	w6, wzr
+ffffff8008a212b4: 97f0d97f     	bl	0xffffff80086578b0 <regmap_update_bits_base>
+ffffff8008a212b8: f9400b60     	ldr	x0, [x27, #0x10]
+ffffff8008a212bc: 2a1503e1     	mov	w1, w21
+ffffff8008a212c0: 2a1603e2     	mov	w2, w22
+ffffff8008a212c4: 2a1803e3     	mov	w3, w24
+ffffff8008a212c8: aa1f03e4     	mov	x4, xzr
+ffffff8008a212cc: 2a1f03e5     	mov	w5, wzr
+ffffff8008a212d0: 2a1f03e6     	mov	w6, wzr
+ffffff8008a212d4: 97f0d977     	bl	0xffffff80086578b0 <regmap_update_bits_base>
+ffffff8008a212d8: 2a1f03f9     	mov	w25, wzr
+ffffff8008a212dc: f900679b     	str	x27, [x28, #0xc8]
+ffffff8008a212e0: 17ffff9c     	b	0xffffff8008a21150 <mtk_pmic_keys_probe+0x2dc>
+ffffff8008a212e4: 97da50dd     	bl	0xffffff80080b5658 <__stack_chk_fail>
+
+ffffff8008a212e8 <mtk_pmic_keys_irq_handler_thread>:
+ffffff8008a212e8: d100c3ff     	sub	sp, sp, #0x30
+ffffff8008a212ec: a9017bfd     	stp	x29, x30, [sp, #0x10]
+ffffff8008a212f0: f90013f3     	str	x19, [sp, #0x20]
+ffffff8008a212f4: 910043fd     	add	x29, sp, #0x10
+ffffff8008a212f8: 90006ae8     	adrp	x8, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008a212fc: f9458508     	ldr	x8, [x8, #0xb08]
+ffffff8008a21300: aa0103f3     	mov	x19, x1
+ffffff8008a21304: f90007e8     	str	x8, [sp, #0x8]
+ffffff8008a21308: 97d9f725     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a2130c: b9401a68     	ldr	w8, [x19, #0x18]
+ffffff8008a21310: 7100011f     	cmp	w8, #0x0
+ffffff8008a21314: 5400006d     	b.le	0xffffff8008a21320 <mtk_pmic_keys_irq_handler_thread+0x38>
+ffffff8008a21318: 52800023     	mov	w3, #0x1        // =1
+ffffff8008a2131c: 1400000d     	b	0xffffff8008a21350 <mtk_pmic_keys_irq_handler_thread+0x68>
+ffffff8008a21320: a9402668     	ldp	x8, x9, [x19]
+ffffff8008a21324: 910013e2     	add	x2, sp, #0x4
+ffffff8008a21328: f9400900     	ldr	x0, [x8, #0x10]
+ffffff8008a2132c: b9400121     	ldr	w1, [x9]
+ffffff8008a21330: 97f0db5b     	bl	0xffffff800865809c <regmap_read>
+ffffff8008a21334: f9400668     	ldr	x8, [x19, #0x8]
+ffffff8008a21338: b94007e9     	ldr	w9, [sp, #0x4]
+ffffff8008a2133c: b9400508     	ldr	w8, [x8, #0x4]
+ffffff8008a21340: 6a08013f     	tst	w9, w8
+ffffff8008a21344: 0a08012a     	and	w10, w9, w8
+ffffff8008a21348: 1a9f17e3     	cset	w3, eq
+ffffff8008a2134c: b90007ea     	str	w10, [sp, #0x4]
+ffffff8008a21350: f9400268     	ldr	x8, [x19]
+ffffff8008a21354: b9401262     	ldr	w2, [x19, #0x10]
+ffffff8008a21358: 52800021     	mov	w1, #0x1        // =1
+ffffff8008a2135c: f9400100     	ldr	x0, [x8]
+ffffff8008a21360: 97ffd1f2     	bl	0xffffff8008a15b28 <input_event>
+ffffff8008a21364: f9400268     	ldr	x8, [x19]
+ffffff8008a21368: 2a1f03e1     	mov	w1, wzr
+ffffff8008a2136c: 2a1f03e2     	mov	w2, wzr
+ffffff8008a21370: 2a1f03e3     	mov	w3, wzr
+ffffff8008a21374: f9400100     	ldr	x0, [x8]
+ffffff8008a21378: 97ffd1ec     	bl	0xffffff8008a15b28 <input_event>
+ffffff8008a2137c: 90006ae9     	adrp	x9, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008a21380: f94007e8     	ldr	x8, [sp, #0x8]
+ffffff8008a21384: f9458529     	ldr	x9, [x9, #0xb08]
+ffffff8008a21388: eb08013f     	cmp	x9, x8
+ffffff8008a2138c: 540000c1     	b.ne	0xffffff8008a213a4 <mtk_pmic_keys_irq_handler_thread+0xbc>
+ffffff8008a21390: f94013f3     	ldr	x19, [sp, #0x20]
+ffffff8008a21394: a9417bfd     	ldp	x29, x30, [sp, #0x10]
+ffffff8008a21398: 52800020     	mov	w0, #0x1        // =1
+ffffff8008a2139c: 9100c3ff     	add	sp, sp, #0x30
+ffffff8008a213a0: d65f03c0     	ret
+ffffff8008a213a4: 97da50ad     	bl	0xffffff80080b5658 <__stack_chk_fail>
+
+ffffff8008a213a8 <mtk_pmic_keys_release_irq_handler_thread>:
+ffffff8008a213a8: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a213ac: f9000bf3     	str	x19, [sp, #0x10]
+ffffff8008a213b0: 910003fd     	mov	x29, sp
+ffffff8008a213b4: aa0103f3     	mov	x19, x1
+ffffff8008a213b8: 97d9f6f9     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a213bc: f9400268     	ldr	x8, [x19]
+ffffff8008a213c0: b9401262     	ldr	w2, [x19, #0x10]
+ffffff8008a213c4: 52800021     	mov	w1, #0x1        // =1
+ffffff8008a213c8: 2a1f03e3     	mov	w3, wzr
+ffffff8008a213cc: f9400100     	ldr	x0, [x8]
+ffffff8008a213d0: 97ffd1d6     	bl	0xffffff8008a15b28 <input_event>
+ffffff8008a213d4: f9400268     	ldr	x8, [x19]
+ffffff8008a213d8: 2a1f03e1     	mov	w1, wzr
+ffffff8008a213dc: 2a1f03e2     	mov	w2, wzr
+ffffff8008a213e0: 2a1f03e3     	mov	w3, wzr
+ffffff8008a213e4: f9400100     	ldr	x0, [x8]
+ffffff8008a213e8: 97ffd1d0     	bl	0xffffff8008a15b28 <input_event>
+ffffff8008a213ec: f9400bf3     	ldr	x19, [sp, #0x10]
+ffffff8008a213f0: 52800020     	mov	w0, #0x1        // =1
+ffffff8008a213f4: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a213f8: d65f03c0     	ret

@@ -1,0 +1,32 @@
+
+/home/iscle/mt6762-ios-port/emulator/stock.elf:	file format elf64-littleaarch64
+
+Disassembly of section .kernel:
+
+ffffff8008a80704 <temperature_get>:
+ffffff8008a80704: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a80708: a9014ff4     	stp	x20, x19, [sp, #0x10]
+ffffff8008a8070c: 910003fd     	mov	x29, sp
+ffffff8008a80710: aa0203f3     	mov	x19, x2
+ffffff8008a80714: aa0003f4     	mov	x20, x0
+ffffff8008a80718: 97d87a21     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a8071c: 52801f48     	mov	w8, #0xfa       // =250
+ffffff8008a80720: 52800329     	mov	w9, #0x19       // =25
+ffffff8008a80724: b9033e88     	str	w8, [x20, #0x33c]
+ffffff8008a80728: b9049689     	str	w9, [x20, #0x494]
+ffffff8008a8072c: b9015289     	str	w9, [x20, #0x150]
+ffffff8008a80730: b9000269     	str	w9, [x19]
+ffffff8008a80734: 97ffea37     	bl	0xffffff8008a7b010 <bat_get_debug_level>
+ffffff8008a80738: 71001c1f     	cmp	w0, #0x7
+ffffff8008a8073c: 540000aa     	b.ge	0xffffff8008a80750 <temperature_get+0x4c>
+ffffff8008a80740: a9414ff4     	ldp	x20, x19, [sp, #0x10]
+ffffff8008a80744: 2a1f03e0     	mov	w0, wzr
+ffffff8008a80748: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a8074c: d65f03c0     	ret
+ffffff8008a80750: b9400262     	ldr	w2, [x19]
+ffffff8008a80754: d0005200     	adrp	x0, 0xffffff80094c2000 <f_midi_shortname+0x1b6>
+ffffff8008a80758: f0005561     	adrp	x1, 0xffffff800952f000 <f_midi_longname+0xe119>
+ffffff8008a8075c: 9124a800     	add	x0, x0, #0x92a
+ffffff8008a80760: 91291821     	add	x1, x1, #0xa46
+ffffff8008a80764: 97da94f2     	bl	0xffffff8008125b2c <printk>
+ffffff8008a80768: 17fffff6     	b	0xffffff8008a80740 <temperature_get+0x3c>

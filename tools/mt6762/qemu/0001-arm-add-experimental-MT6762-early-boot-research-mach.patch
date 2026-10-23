@@ -1,0 +1,368 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Codex <codex@openai.com>
+Date: Fri, 23 Oct 2026 22:29:55 +0200
+Subject: [PATCH 1/2] arm: add experimental MT6762 early-boot research machine
+
+AI-assisted local experiment; not intended for upstream submission. Model the dump-derived CPU topology, RAM, UART subset, GICv3 and timers. Preserve explicit unsupported peripheral boundaries.
+---
+ docs/system/arm/mt6762.rst |  58 +++++++++
+ hw/arm/Kconfig             |   8 ++
+ hw/arm/meson.build         |   1 +
+ hw/arm/mt6762.c            | 257 +++++++++++++++++++++++++++++++++++++
+ 4 files changed, 324 insertions(+)
+ create mode 100644 docs/system/arm/mt6762.rst
+ create mode 100644 hw/arm/mt6762.c
+
+diff --git a/docs/system/arm/mt6762.rst b/docs/system/arm/mt6762.rst
+new file mode 100644
+index 0000000..e8530e4
+--- /dev/null
++++ b/docs/system/arm/mt6762.rst
+@@ -0,0 +1,58 @@
++MT6762 early-boot research machine
++=================================
++
++This local experimental machine is named ``mt6762``. It is not a complete
++MediaTek SoC or phone emulator. Its address map comes from the supplied
++MT6762 phone firmware, whose device tree uses the MT6765 family name.
++This code is an AI-assisted local experiment and is not intended for
++submission to upstream QEMU.
++
++Implemented resources
++---------------------
++
++* One to eight Cortex-A53 CPUs, MPIDRs 0--3 and 0x100--0x103.
++* RAM at 0x40000000, configurable with ``-m``; 512 MiB is the static DTB
++  placeholder, not an assertion of the phone's installed capacity.
++* GICv3 distributor at 0x0c000000 and redistributors at 0x0c100000.
++* Architectural timer at 13 MHz, PPIs 29/30/27/26.
++* Two 16550-compatible UART register subsets at 0x11002000 and
++  0x11003000 with 32-bit register spacing, SPIs 91/92.
++* QEMU PSCI via SMC, direct Linux Image boot into nonsecure EL1.
++* Interrupt polarity register bank at 0x10200a80. QEMU device interrupt
++  wires represent logical assertion, so connected UART/timer outputs are
++  already normalized; the bank preserves guest polarity programming.
++* MediaTek 13 MHz one-shot broadcast timer at 0x10017000, control/value
++  registers at offsets 0x40/0x44, SPI 194. Its programming sequence comes
++  from the supplied BSP's ``drivers/clocksource/mtk_systimer.c``.
++
++The MediaTek UART extension registers,
++clock/reset/power controllers, PMIC, eMMC, USB, display, GPU, touch, modem,
++TEE and boot firmware are not emulated. Unmapped accesses remain unmapped;
++they are not silently replaced with successful handshakes.
++
++Usage
++-----
++
++A device tree is mandatory. The stock extracted DTB is useful for showing
++the exact first unsupported dependency in the unmodified stock kernel::
++
++  qemu-system-aarch64 -M mt6762 -accel tcg -cpu cortex-a53 -smp 8 -m 512M \
++    -display none -monitor none -serial stdio -no-reboot \
++    -kernel Image -dtb boot.bin.dtb \
++    -append 'earlycon=uart8250,mmio32,0x11002000 keep_bootcon ignore_loglevel nokaslr maxcpus=1'
++
++``maxcpus=1`` is a debugging choice: the machine still exposes the full
++topology, while Linux initially uses one CPU. The generic device loader
++can place additional XNU segments or boot data in RAM for trampoline
++experiments. Neither an early serial message nor a successful CPU probe
++establishes that Android or iOS boots.
++
++Observed stock-kernel boundary
++-----------------------------
++
++The supplied Linux 4.19.191 Image reaches its init kernel thread, with
++working GICv3 and architectural timer interrupts. It then faults in
++``log_store_early_init``. The extracted DTB lacks the bootloader's runtime
++handoff for SRAM logging (the kernel reports SRAM address/size zero).
++Bootloader handoff, SRAM and the remaining vendor devices need further
++modeling. There is no userspace or full Android boot yet.
+diff --git a/hw/arm/Kconfig b/hw/arm/Kconfig
+index 4445f16..0d53a95 100644
+--- a/hw/arm/Kconfig
++++ b/hw/arm/Kconfig
+@@ -1,3 +1,11 @@
++config MT6762
++    bool
++    default y
++    depends on TCG && AARCH64
++    select ARM_GIC
++    select SERIAL_MM
++    select DEVICE_TREE
++
+ config ARM_VIRT
+     bool
+     default y
+diff --git a/hw/arm/meson.build b/hw/arm/meson.build
+index bcc068d..5b5a01b 100644
+--- a/hw/arm/meson.build
++++ b/hw/arm/meson.build
+@@ -1,4 +1,5 @@
+ arm_common_ss = ss.source_set()
++arm_common_ss.add(when: 'CONFIG_MT6762', if_true: files('mt6762.c'))
+ arm_common_ss.add(when: 'CONFIG_ARM_VIRT', if_true: files('virt.c'))
+ arm_common_ss.add(when: 'CONFIG_ACPI', if_true: files('virt-acpi-build.c'))
+ arm_common_ss.add(when: 'CONFIG_DIGIC', if_true: files('digic_boards.c'))
+diff --git a/hw/arm/mt6762.c b/hw/arm/mt6762.c
+new file mode 100644
+index 0000000..05b7931
+--- /dev/null
++++ b/hw/arm/mt6762.c
+@@ -0,0 +1,257 @@
++/*
++ * MT6762/MT6765 early-boot research machine.
++ *
++ * SPDX-License-Identifier: GPL-2.0-or-later
++ *
++ * This is a local experiment, not a complete phone or an upstream submission.
++ * The dump's device tree supplies the address map and MPIDR topology. Only
++ * CPU, RAM, GICv3, timers, IRQ polarity registers and a UART subset are modeled.
++ * MediaTek UART extensions, clocks, PMIC, storage and display are absent.
++ */
++#include "qemu/osdep.h"
++#include "qapi/error.h"
++#include "qemu/units.h"
++#include "qemu/error-report.h"
++#include "qemu/log.h"
++#include "qemu/timer.h"
++#include "hw/core/boards.h"
++#include "hw/core/irq.h"
++#include "hw/core/qdev-properties.h"
++#include "hw/arm/boot.h"
++#include "hw/char/serial-mm.h"
++#include "hw/intc/arm_gicv3_common.h"
++#include "system/system.h"
++#include "system/reset.h"
++#include "system/address-spaces.h"
++#include "qobject/qlist.h"
++#include "target/arm/cpu.h"
++#include "target/arm/gtimer.h"
++
++#define TYPE_MT6762_MACHINE MACHINE_TYPE_NAME("mt6762")
++OBJECT_DECLARE_SIMPLE_TYPE(MT6762MachineState, MT6762_MACHINE)
++
++#define MT6762_RAM_BASE 0x40000000ULL
++#define MT6762_SPI_COUNT 352
++
++struct MT6762MachineState {
++    MachineState parent;
++    struct arm_boot_info bootinfo;
++    MemoryRegion intpol_mmio;
++    uint32_t intpol[20];
++    MemoryRegion systimer_mmio;
++    QEMUTimer *systimer;
++    qemu_irq systimer_irq;
++    uint32_t systimer_control;
++    uint32_t systimer_value;
++};
++
++/*
++ * irq-mtk-sysirq.c stores one polarity bit per SPI here. QEMU device IRQ
++ * outputs already use logical assertion (not electrical pin level), so the
++ * connected UART and timer outputs are normalized before reaching the GIC.
++ * Preserve the polarity programming for guest read/modify/write operations.
++ */
++static uint64_t mt6762_intpol_read(void *opaque, hwaddr off, unsigned size)
++{
++    MT6762MachineState *s = opaque;
++    return s->intpol[off / 4];
++}
++
++static void mt6762_intpol_write(void *opaque, hwaddr off, uint64_t val,
++                               unsigned size)
++{
++    MT6762MachineState *s = opaque;
++    s->intpol[off / 4] = val;
++}
++
++static const MemoryRegionOps mt6762_intpol_ops = {
++    .read = mt6762_intpol_read,
++    .write = mt6762_intpol_write,
++    .endianness = DEVICE_LITTLE_ENDIAN,
++    .valid = { .min_access_size = 4, .max_access_size = 4 },
++};
++
++/* 13 MHz one-shot broadcast timer: BSP drivers/clocksource/mtk_systimer.c. */
++static void mt6762_systimer_expire(void *opaque)
++{
++    MT6762MachineState *s = opaque;
++    if ((s->systimer_control & 3) == 3) {
++        qemu_set_irq(s->systimer_irq, 1);
++    }
++}
++
++static void mt6762_systimer_update(MT6762MachineState *s)
++{
++    timer_del(s->systimer);
++    if ((s->systimer_control & 3) == 3 && s->systimer_value) {
++        int64_t ns = ((uint64_t)s->systimer_value * NANOSECONDS_PER_SECOND
++                      + 13000000 - 1) / 13000000;
++        timer_mod(s->systimer, qemu_clock_get_ns(QEMU_CLOCK_VIRTUAL) + ns);
++    }
++}
++
++static uint64_t mt6762_systimer_read(void *opaque, hwaddr off, unsigned size)
++{
++    MT6762MachineState *s = opaque;
++    switch (off) {
++    case 0x40:
++        return s->systimer_control;
++    case 0x44:
++        return s->systimer_value;
++    default:
++        qemu_log_mask(LOG_UNIMP, "mt6762 systimer read offset 0x%" HWADDR_PRIx "\n", off);
++        return 0;
++    }
++}
++
++static void mt6762_systimer_write(void *opaque, hwaddr off, uint64_t val,
++                                 unsigned size)
++{
++    MT6762MachineState *s = opaque;
++    switch (off) {
++    case 0x40:
++        if (val & 0x10) {
++            qemu_set_irq(s->systimer_irq, 0);
++        }
++        s->systimer_control = val & 3;
++        mt6762_systimer_update(s);
++        break;
++    case 0x44:
++        s->systimer_value = val;
++        mt6762_systimer_update(s);
++        break;
++    default:
++        qemu_log_mask(LOG_UNIMP, "mt6762 systimer write offset 0x%" HWADDR_PRIx "\n", off);
++        break;
++    }
++}
++
++static const MemoryRegionOps mt6762_systimer_ops = {
++    .read = mt6762_systimer_read,
++    .write = mt6762_systimer_write,
++    .endianness = DEVICE_LITTLE_ENDIAN,
++    .valid = { .min_access_size = 4, .max_access_size = 4 },
++};
++
++static void mt6762_reset(void *opaque)
++{
++    MT6762MachineState *s = opaque;
++    memset(s->intpol, 0, sizeof(s->intpol));
++    s->systimer_control = 0;
++    s->systimer_value = 0;
++    timer_del(s->systimer);
++    qemu_set_irq(s->systimer_irq, 0);
++}
++
++static void mt6762_init(MachineState *ms)
++{
++    MT6762MachineState *s = MT6762_MACHINE(ms);
++    MemoryRegion *sysmem = get_system_memory();
++    DeviceState *gic;
++    QList *redists;
++    int n = ms->smp.cpus;
++    int i;
++
++    if (!ms->dtb) {
++        error_report("mt6762 requires -dtb; use the extracted stock DTB "
++                     "or the explicitly labeled minimal research DTB");
++        exit(1);
++    }
++    memory_region_add_subregion(sysmem, MT6762_RAM_BASE, ms->ram);
++
++    for (i = 0; i < n; i++) {
++        Object *cpu = object_new(ms->cpu_type);
++        /* Two clusters of four cores, as encoded in the stock FDT. */
++        object_property_set_int(cpu, "mp-affinity",
++                                ((i / 4) << 8) | (i % 4), &error_fatal);
++        object_property_set_bool(cpu, "has_el3", false, &error_fatal);
++        object_property_set_bool(cpu, "has_el2", false, &error_fatal);
++        object_property_set_int(cpu, "cntfrq", 13000000, &error_fatal);
++        qdev_realize(DEVICE(cpu), NULL, &error_fatal);
++        object_unref(cpu);
++    }
++
++    gic = qdev_new("arm-gicv3");
++    qdev_prop_set_uint32(gic, "revision", 3);
++    qdev_prop_set_uint32(gic, "num-cpu", n);
++    qdev_prop_set_uint32(gic, "num-irq", MT6762_SPI_COUNT + 32);
++    redists = qlist_new();
++    qlist_append_int(redists, n);
++    qdev_prop_set_array(gic, "redist-region-count", redists);
++    sysbus_realize_and_unref(SYS_BUS_DEVICE(gic), &error_fatal);
++    sysbus_mmio_map(SYS_BUS_DEVICE(gic), 0, 0x0c000000);
++    sysbus_mmio_map(SYS_BUS_DEVICE(gic), 1, 0x0c100000);
++
++    for (i = 0; i < n; i++) {
++        DeviceState *cpu = DEVICE(qemu_get_cpu(i));
++        int ppi = MT6762_SPI_COUNT + i * GIC_INTERNAL;
++        static const int timers[] = {
++            [GTIMER_PHYS] = 30,
++            [GTIMER_VIRT] = 27,
++            [GTIMER_HYP] = 26,
++            [GTIMER_SEC] = 29,
++        };
++        int j;
++        for (j = 0; j < ARRAY_SIZE(timers); j++) {
++            qdev_connect_gpio_out(cpu, j, qdev_get_gpio_in(gic, ppi + timers[j]));
++        }
++        qdev_connect_gpio_out_named(cpu, "gicv3-maintenance-interrupt", 0,
++                                   qdev_get_gpio_in(gic, ppi + 25));
++        sysbus_connect_irq(SYS_BUS_DEVICE(gic), i,
++                           qdev_get_gpio_in(cpu, ARM_CPU_IRQ));
++        sysbus_connect_irq(SYS_BUS_DEVICE(gic), i + n,
++                           qdev_get_gpio_in(cpu, ARM_CPU_FIQ));
++        sysbus_connect_irq(SYS_BUS_DEVICE(gic), i + 2 * n,
++                           qdev_get_gpio_in(cpu, ARM_CPU_VIRQ));
++        sysbus_connect_irq(SYS_BUS_DEVICE(gic), i + 3 * n,
++                           qdev_get_gpio_in(cpu, ARM_CPU_VFIQ));
++    }
++
++    serial_mm_init(sysmem, 0x11002000, 2, qdev_get_gpio_in(gic, 91),
++                   26000000 / 16, serial_hd(0), DEVICE_LITTLE_ENDIAN);
++    serial_mm_init(sysmem, 0x11003000, 2, qdev_get_gpio_in(gic, 92),
++                   26000000 / 16, serial_hd(1), DEVICE_LITTLE_ENDIAN);
++
++    memory_region_init_io(&s->intpol_mmio, OBJECT(s), &mt6762_intpol_ops, s,
++                          "mt6762.intpol", sizeof(s->intpol));
++    memory_region_add_subregion(sysmem, 0x10200a80, &s->intpol_mmio);
++    s->systimer_irq = qdev_get_gpio_in(gic, 194);
++    s->systimer = timer_new_ns(QEMU_CLOCK_VIRTUAL, mt6762_systimer_expire, s);
++    memory_region_init_io(&s->systimer_mmio, OBJECT(s), &mt6762_systimer_ops, s,
++                          "mt6762.systimer", 0x1000);
++    memory_region_add_subregion(sysmem, 0x10017000, &s->systimer_mmio);
++    qemu_register_reset(mt6762_reset, s);
++
++    s->bootinfo.ram_size = ms->ram_size;
++    s->bootinfo.loader_start = MT6762_RAM_BASE;
++    s->bootinfo.board_id = -1;
++    s->bootinfo.psci_conduit = QEMU_PSCI_CONDUIT_SMC;
++    arm_load_kernel(ARM_CPU(first_cpu), ms, &s->bootinfo);
++}
++
++static void mt6762_class_init(ObjectClass *oc, const void *data)
++{
++    MachineClass *mc = MACHINE_CLASS(oc);
++    mc->desc = "MT6762 early-boot research model (incomplete peripherals)";
++    mc->init = mt6762_init;
++    mc->default_cpu_type = ARM_CPU_TYPE_NAME("cortex-a53");
++    mc->default_ram_id = "mt6762.ram";
++    mc->default_ram_size = 512 * MiB;
++    mc->max_cpus = 8;
++    mc->default_cpus = 8;
++    mc->no_floppy = 1;
++    mc->no_cdrom = 1;
++}
++
++static const TypeInfo mt6762_type = {
++    .name = TYPE_MT6762_MACHINE,
++    .parent = TYPE_MACHINE,
++    .instance_size = sizeof(MT6762MachineState),
++    .class_init = mt6762_class_init,
++};
++
++static void mt6762_register_types(void)
++{
++    type_register_static(&mt6762_type);
++}
++type_init(mt6762_register_types)

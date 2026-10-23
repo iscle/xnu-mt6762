@@ -1,0 +1,94 @@
+[
+  {
+    "offset": "0x1200a60",
+    "text": "VPROC 881250 uV"
+  },
+  {
+    "offset": "0x1200a77",
+    "text": "VSRAM_PROC 981250 uV"
+  },
+  {
+    "offset": "0x1200a93",
+    "text": "VSRAM_OTHERS 900000 uV"
+  },
+  {
+    "offset": "0x1201c67",
+    "text": "vsram_proc = 900000 uV"
+  },
+  {
+    "offset": "0x1201ca0",
+    "text": "vproc = 800000 uV"
+  },
+  {
+    "offset": "0x1201cd4",
+    "text": "vsram_others = 900000 uV"
+  },
+  {
+    "offset": "0x1298060",
+    "text": "VPROC 881250 uV"
+  },
+  {
+    "offset": "0x1298077",
+    "text": "VSRAM_PROC 981250 uV"
+  },
+  {
+    "offset": "0x1298093",
+    "text": "VSRAM_OTHERS 900000 uV"
+  },
+  {
+    "offset": "0x1299267",
+    "text": "vsram_proc = 900000 uV"
+  },
+  {
+    "offset": "0x12992a0",
+    "text": "vproc = 800000 uV"
+  },
+  {
+    "offset": "0x12992d4",
+    "text": "vsram_others = 900000 uV"
+  },
+  {
+    "offset": "0x12ea992",
+    "text": "EEM] @eem_init01():2569, get_volt(EEM_DET_L) = 0x00000042, VBOOT = 0x00000030"
+  },
+  {
+    "offset": "0x12eaa06",
+    "text": "EEM] @eem_init01():2569, get_volt(EEM_DET_L) = 0x00000042, VBOOT = 0x00000030"
+  },
+  {
+    "offset": "0x12eaa7a",
+    "text": "EEM] @eem_init01():2569, get_volt(EEM_DET_L) = 0x00000042, VBOOT = 0x00000030"
+  },
+  {
+    "offset": "0x12eaaee",
+    "text": "EEM] @eem_init01():2569, get_volt(EEM_DET_L) = 0x00000042, VBOOT = 0x00000030"
+  },
+  {
+    "offset": "0x12eab62",
+    "text": "EEM] @eem_init01():2569, get_volt(EEM_DET_L) = 0x00000042, VBOOT = 0x00000030"
+  },
+  {
+    "offset": "0x12eabd6",
+    "text": "EEM] @eem_init01():2569, get_volt(EEM_DET_L) = 0x00000042, VBOOT = 0x00000030"
+  },
+  {
+    "offset": "0x12eac4a",
+    "text": "EEM] @eem_init01():2569, get_volt(EEM_DET_L) = 0x00000042, VBOOT = 0x00000030"
+  },
+  {
+    "offset": "0x12eacbe",
+    "text": "EEM] @eem_init01():2569, get_volt(EEM_DET_L) = 0x00000042, VBOOT = 0x00000030"
+  },
+  {
+    "offset": "0x12ead32",
+    "text": "EEM] @eem_init01():2569, get_volt(EEM_DET_L) = 0x00000042, VBOOT = 0x00000030"
+  },
+  {
+    "offset": "0x12eada6",
+    "text": "EEM] @eem_init01():2569, get_volt(EEM_DET_L) = 0x00000042, VBOOT = 0x00000030"
+  },
+  {
+    "offset": "0x12eae1a",
+    "text": "EEM] @eem_init01():2569, get_volt(EEM_DET_L) = 0x00000042, VBOOT = 0x00000030"
+  }
+]

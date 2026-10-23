@@ -1,0 +1,42 @@
+[
+  {
+    "va": "0xffffff80090523e8",
+    "id": 11,
+    "name": "ifr_i2c_ap",
+    "raw": "0b000000000000006c5f410980ffffff04094f0980ffffff2833050980ffffff0b0000000000000098f1040980ffffff00000000000000000000000000000000",
+    "register_bank_va": "0xffffff8009053328",
+    "bank_raw": "900000008400000080000000"
+  },
+  {
+    "va": "0xffffff8009052a28",
+    "id": 38,
+    "name": "ifr_ap_dma",
+    "raw": "2600000000000000eddf3d0980ffffff5ccd440980ffffff3433050980ffffff120000000000000098f1040980ffffff00000000000000000000000000000000",
+    "register_bank_va": "0xffffff8009053334",
+    "bank_raw": "940000008c00000088000000"
+  },
+  {
+    "va": "0xffffff8009052d68",
+    "id": 58,
+    "name": "ifr_i2c5",
+    "raw": "3a000000000000006c63520980ffffff04094f0980ffffff4033050980ffffff120000000000000098f1040980ffffff00000000000000000000000000000000",
+    "register_bank_va": "0xffffff8009053340",
+    "bank_raw": "ac000000a8000000a4000000"
+  },
+  {
+    "va": "0xffffff8009052da8",
+    "id": 59,
+    "name": "ifr_i2c5a",
+    "raw": "3b00000000000000eb543b0980ffffff04094f0980ffffff4033050980ffffff130000000000000098f1040980ffffff00000000000000000000000000000000",
+    "register_bank_va": "0xffffff8009053340",
+    "bank_raw": "ac000000a8000000a4000000"
+  },
+  {
+    "va": "0xffffff8009052de8",
+    "id": 60,
+    "name": "ifr_i2c5_imm",
+    "raw": "3c000000000000001b75460980ffffff04094f0980ffffff4033050980ffffff140000000000000098f1040980ffffff00000000000000000000000000000000",
+    "register_bank_va": "0xffffff8009053340",
+    "bank_raw": "ac000000a8000000a4000000"
+  }
+]

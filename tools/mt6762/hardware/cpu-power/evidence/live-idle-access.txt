@@ -1,0 +1,17 @@
+[/sys/devices/system/cpu/cpu0/cpuidle/state0]
+name=rgidle
+desc=wfi
+latency=1
+residency=1
+disable=0
+usage=79105
+[/sys/devices/system/cpu/cpu0/cpuidle/state1]
+name=mcdi
+desc=mcdi
+latency=300
+residency=1500
+disable=0
+usage=62795
+ls: /proc/cpufreq: Permission denied
+ls: /proc/ppm: Permission denied
+ls: /sys/kernel/debug/regulator: No such file or directory

@@ -1,0 +1,3 @@
+# Preserve patch context markers and byte-exact captured sysfs text.
+qemu/*.patch -whitespace
+hardware/cpu-power/evidence/live-cpufreq.txt -whitespace

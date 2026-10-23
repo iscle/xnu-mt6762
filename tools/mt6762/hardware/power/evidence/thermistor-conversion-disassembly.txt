@@ -1,0 +1,165 @@
+
+/home/iscle/mt6762-ios-port/emulator/stock.elf:	file format elf64-littleaarch64
+
+Disassembly of section .kernel:
+
+ffffff8008a7bac0 <BattThermistorConverTemp>:
+ffffff8008a7bac0: a9bc7bfd     	stp	x29, x30, [sp, #-0x40]!
+ffffff8008a7bac4: a9015ff8     	stp	x24, x23, [sp, #0x10]
+ffffff8008a7bac8: a90257f6     	stp	x22, x21, [sp, #0x20]
+ffffff8008a7bacc: a9034ff4     	stp	x20, x19, [sp, #0x30]
+ffffff8008a7bad0: 910003fd     	mov	x29, sp
+ffffff8008a7bad4: 2a0103f3     	mov	w19, w1
+ffffff8008a7bad8: aa0003f4     	mov	x20, x0
+ffffff8008a7badc: 97d88d30     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a7bae0: 52905c08     	mov	w8, #0x82e0     // =33504
+ffffff8008a7bae4: f8686a88     	ldr	x8, [x20, x8]
+ffffff8008a7bae8: b9400514     	ldr	w20, [x8, #0x4]
+ffffff8008a7baec: 6b13029f     	cmp	w20, w19
+ffffff8008a7baf0: 5400026d     	b.le	0xffffff8008a7bb3c <BattThermistorConverTemp+0x7c>
+ffffff8008a7baf4: b940a509     	ldr	w9, [x8, #0xa4]
+ffffff8008a7baf8: 6b13013f     	cmp	w9, w19
+ffffff8008a7bafc: 540002ca     	b.ge	0xffffff8008a7bb54 <BattThermistorConverTemp+0x94>
+ffffff8008a7bb00: 6b13029f     	cmp	w20, w19
+ffffff8008a7bb04: 5400034d     	b.le	0xffffff8008a7bb6c <BattThermistorConverTemp+0xac>
+ffffff8008a7bb08: aa1f03e9     	mov	x9, xzr
+ffffff8008a7bb0c: 9100212a     	add	x10, x9, #0x8
+ffffff8008a7bb10: f102a15f     	cmp	x10, #0xa8
+ffffff8008a7bb14: 2a1403f5     	mov	w21, w20
+ffffff8008a7bb18: 54000320     	b.eq	0xffffff8008a7bb7c <BattThermistorConverTemp+0xbc>
+ffffff8008a7bb1c: 8b090109     	add	x9, x8, x9
+ffffff8008a7bb20: b9400d34     	ldr	w20, [x9, #0xc]
+ffffff8008a7bb24: aa0a03e9     	mov	x9, x10
+ffffff8008a7bb28: 6b13029f     	cmp	w20, w19
+ffffff8008a7bb2c: 54ffff0c     	b.gt	0xffffff8008a7bb0c <BattThermistorConverTemp+0x4c>
+ffffff8008a7bb30: 8b0a0108     	add	x8, x8, x10
+ffffff8008a7bb34: b85f8116     	ldur	w22, [x8, #-0x8]
+ffffff8008a7bb38: 1400000f     	b	0xffffff8008a7bb74 <BattThermistorConverTemp+0xb4>
+ffffff8008a7bb3c: 2a1f03f5     	mov	w21, wzr
+ffffff8008a7bb40: 2a1f03f4     	mov	w20, wzr
+ffffff8008a7bb44: 2a1f03f6     	mov	w22, wzr
+ffffff8008a7bb48: 2a1f03f7     	mov	w23, wzr
+ffffff8008a7bb4c: 128031f8     	mov	w24, #-0x190    // =-400
+ffffff8008a7bb50: 14000016     	b	0xffffff8008a7bba8 <BattThermistorConverTemp+0xe8>
+ffffff8008a7bb54: 2a1f03f5     	mov	w21, wzr
+ffffff8008a7bb58: 2a1f03f4     	mov	w20, wzr
+ffffff8008a7bb5c: 2a1f03f6     	mov	w22, wzr
+ffffff8008a7bb60: 2a1f03f7     	mov	w23, wzr
+ffffff8008a7bb64: 52804b18     	mov	w24, #0x258     // =600
+ffffff8008a7bb68: 14000010     	b	0xffffff8008a7bba8 <BattThermistorConverTemp+0xe8>
+ffffff8008a7bb6c: b9400116     	ldr	w22, [x8]
+ffffff8008a7bb70: 2a1403f5     	mov	w21, w20
+ffffff8008a7bb74: b9400117     	ldr	w23, [x8]
+ffffff8008a7bb78: 14000004     	b	0xffffff8008a7bb88 <BattThermistorConverTemp+0xc8>
+ffffff8008a7bb7c: b8696916     	ldr	w22, [x8, x9]
+ffffff8008a7bb80: 2a1f03f4     	mov	w20, wzr
+ffffff8008a7bb84: 2a1f03f7     	mov	w23, wzr
+ffffff8008a7bb88: 4b1302a9     	sub	w9, w21, w19
+ffffff8008a7bb8c: 4b140268     	sub	w8, w19, w20
+ffffff8008a7bb90: 1b097ee9     	mul	w9, w23, w9
+ffffff8008a7bb94: 1b162508     	madd	w8, w8, w22, w9
+ffffff8008a7bb98: 0b080908     	add	w8, w8, w8, lsl #2
+ffffff8008a7bb9c: 531f7908     	lsl	w8, w8, #1
+ffffff8008a7bba0: 4b1402a9     	sub	w9, w21, w20
+ffffff8008a7bba4: 1ac90d18     	sdiv	w24, w8, w9
+ffffff8008a7bba8: 97fffd1a     	bl	0xffffff8008a7b010 <bat_get_debug_level>
+ffffff8008a7bbac: 71001c1f     	cmp	w0, #0x7
+ffffff8008a7bbb0: 540000ea     	b.ge	0xffffff8008a7bbcc <BattThermistorConverTemp+0x10c>
+ffffff8008a7bbb4: 2a1803e0     	mov	w0, w24
+ffffff8008a7bbb8: a9434ff4     	ldp	x20, x19, [sp, #0x30]
+ffffff8008a7bbbc: a94257f6     	ldp	x22, x21, [sp, #0x20]
+ffffff8008a7bbc0: a9415ff8     	ldp	x24, x23, [sp, #0x10]
+ffffff8008a7bbc4: a8c47bfd     	ldp	x29, x30, [sp], #0x40
+ffffff8008a7bbc8: d65f03c0     	ret
+ffffff8008a7bbcc: b00051c0     	adrp	x0, 0xffffff80094b4000 <connectivity_export_dump_thread_state.stat_nam+0x1db74>
+ffffff8008a7bbd0: b0004fa1     	adrp	x1, 0xffffff8009470000 <task_index_to_char.state_char+0xa374>
+ffffff8008a7bbd4: 91312800     	add	x0, x0, #0xc4a
+ffffff8008a7bbd8: 911b8421     	add	x1, x1, #0x6e1
+ffffff8008a7bbdc: 2a1503e2     	mov	w2, w21
+ffffff8008a7bbe0: 2a1403e3     	mov	w3, w20
+ffffff8008a7bbe4: 2a1303e4     	mov	w4, w19
+ffffff8008a7bbe8: 2a1603e5     	mov	w5, w22
+ffffff8008a7bbec: 2a1703e6     	mov	w6, w23
+ffffff8008a7bbf0: 2a1803e7     	mov	w7, w24
+ffffff8008a7bbf4: 97daa7ce     	bl	0xffffff8008125b2c <printk>
+ffffff8008a7bbf8: 17ffffef     	b	0xffffff8008a7bbb4 <BattThermistorConverTemp+0xf4>
+
+ffffff8008a7bbfc <BattVoltToTemp>:
+ffffff8008a7bbfc: d10143ff     	sub	sp, sp, #0x50
+ffffff8008a7bc00: a9017bfd     	stp	x29, x30, [sp, #0x10]
+ffffff8008a7bc04: a9025ff8     	stp	x24, x23, [sp, #0x20]
+ffffff8008a7bc08: a90357f6     	stp	x22, x21, [sp, #0x30]
+ffffff8008a7bc0c: a9044ff4     	stp	x20, x19, [sp, #0x40]
+ffffff8008a7bc10: 910043fd     	add	x29, sp, #0x10
+ffffff8008a7bc14: d0006808     	adrp	x8, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008a7bc18: f9458508     	ldr	x8, [x8, #0xb08]
+ffffff8008a7bc1c: 52905a09     	mov	w9, #0x82d0     // =33488
+ffffff8008a7bc20: 2a0203f3     	mov	w19, w2
+ffffff8008a7bc24: 2a0103f4     	mov	w20, w1
+ffffff8008a7bc28: aa0003f6     	mov	x22, x0
+ffffff8008a7bc2c: f90007e8     	str	x8, [sp, #0x8]
+ffffff8008a7bc30: 8b090018     	add	x24, x0, x9
+ffffff8008a7bc34: 97d88cda     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a7bc38: 29405708     	ldp	w8, w21, [x24]
+ffffff8008a7bc3c: 93407e89     	sxtw	x9, w20
+ffffff8008a7bc40: 910013e1     	add	x1, sp, #0x4
+ffffff8008a7bc44: 52800120     	mov	w0, #0x9        // =9
+ffffff8008a7bc48: 9b097d17     	mul	x23, x8, x9
+ffffff8008a7bc4c: 9400003a     	bl	0xffffff8008a7bd34 <gauge_get_property>
+ffffff8008a7bc50: 3108301f     	cmn	w0, #0x20c
+ffffff8008a7bc54: 54000101     	b.ne	0xffffff8008a7bc74 <BattVoltToTemp+0x78>
+ffffff8008a7bc58: b9400708     	ldr	w8, [x24, #0x4]
+ffffff8008a7bc5c: 6b140108     	subs	w8, w8, w20
+ffffff8008a7bc60: 5a885508     	cneg	w8, w8, mi
+ffffff8008a7bc64: 7100011f     	cmp	w8, #0x0
+ffffff8008a7bc68: 1a9f1508     	csinc	w8, w8, wzr, ne
+ffffff8008a7bc6c: 9ac80af7     	udiv	x23, x23, x8
+ffffff8008a7bc70: 1400000e     	b	0xffffff8008a7bca8 <BattVoltToTemp+0xac>
+ffffff8008a7bc74: b94007e8     	ldr	w8, [sp, #0x4]
+ffffff8008a7bc78: 0b130115     	add	w21, w8, w19
+ffffff8008a7bc7c: 6b1402a8     	subs	w8, w21, w20
+ffffff8008a7bc80: 5a885508     	cneg	w8, w8, mi
+ffffff8008a7bc84: 7100011f     	cmp	w8, #0x0
+ffffff8008a7bc88: 511a92a9     	sub	w9, w21, #0x6a4
+ffffff8008a7bc8c: 1a9f1508     	csinc	w8, w8, wzr, ne
+ffffff8008a7bc90: 7114553f     	cmp	w9, #0x515
+ffffff8008a7bc94: 9ac80af7     	udiv	x23, x23, x8
+ffffff8008a7bc98: 54000083     	b.lo	0xffffff8008a7bca8 <BattVoltToTemp+0xac>
+ffffff8008a7bc9c: 97fffcdd     	bl	0xffffff8008a7b010 <bat_get_debug_level>
+ffffff8008a7bca0: 71001c1f     	cmp	w0, #0x7
+ffffff8008a7bca4: 540003ca     	b.ge	0xffffff8008a7bd1c <BattVoltToTemp+0x120>
+ffffff8008a7bca8: aa1603e0     	mov	x0, x22
+ffffff8008a7bcac: 2a1703e1     	mov	w1, w23
+ffffff8008a7bcb0: 97ffff84     	bl	0xffffff8008a7bac0 <BattThermistorConverTemp>
+ffffff8008a7bcb4: 2a0003f6     	mov	w22, w0
+ffffff8008a7bcb8: 97fffcd6     	bl	0xffffff8008a7b010 <bat_get_debug_level>
+ffffff8008a7bcbc: 71001c1f     	cmp	w0, #0x7
+ffffff8008a7bcc0: 540001aa     	b.ge	0xffffff8008a7bcf4 <BattVoltToTemp+0xf8>
+ffffff8008a7bcc4: d0006809     	adrp	x9, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008a7bcc8: f94007e8     	ldr	x8, [sp, #0x8]
+ffffff8008a7bccc: f9458529     	ldr	x9, [x9, #0xb08]
+ffffff8008a7bcd0: eb08013f     	cmp	x9, x8
+ffffff8008a7bcd4: 540002e1     	b.ne	0xffffff8008a7bd30 <BattVoltToTemp+0x134>
+ffffff8008a7bcd8: 2a1603e0     	mov	w0, w22
+ffffff8008a7bcdc: a9444ff4     	ldp	x20, x19, [sp, #0x40]
+ffffff8008a7bce0: a94357f6     	ldp	x22, x21, [sp, #0x30]
+ffffff8008a7bce4: a9425ff8     	ldp	x24, x23, [sp, #0x20]
+ffffff8008a7bce8: a9417bfd     	ldp	x29, x30, [sp, #0x10]
+ffffff8008a7bcec: 910143ff     	add	sp, sp, #0x50
+ffffff8008a7bcf0: d65f03c0     	ret
+ffffff8008a7bcf4: b9400303     	ldr	w3, [x24]
+ffffff8008a7bcf8: d0005300     	adrp	x0, 0xffffff80094dd000 <f_midi_shortname+0x1b1b6>
+ffffff8008a7bcfc: f0005221     	adrp	x1, 0xffffff80094c2000 <f_midi_shortname+0x1b6>
+ffffff8008a7bd00: 91128800     	add	x0, x0, #0x4a2
+ffffff8008a7bd04: 91201421     	add	x1, x1, #0x805
+ffffff8008a7bd08: 2a1403e2     	mov	w2, w20
+ffffff8008a7bd0c: 2a1503e4     	mov	w4, w21
+ffffff8008a7bd10: 2a1303e5     	mov	w5, w19
+ffffff8008a7bd14: 97daa786     	bl	0xffffff8008125b2c <printk>
+ffffff8008a7bd18: 17ffffeb     	b	0xffffff8008a7bcc4 <BattVoltToTemp+0xc8>
+ffffff8008a7bd1c: b94007e1     	ldr	w1, [sp, #0x4]
+ffffff8008a7bd20: f0004d00     	adrp	x0, 0xffffff800941e000 <process_dbg_opt.temp+0x10f54>
+ffffff8008a7bd24: 91302000     	add	x0, x0, #0xc08
+ffffff8008a7bd28: 97daa781     	bl	0xffffff8008125b2c <printk>
+ffffff8008a7bd2c: 17ffffdf     	b	0xffffff8008a7bca8 <BattVoltToTemp+0xac>
+ffffff8008a7bd30: 97d8e64a     	bl	0xffffff80080b5658 <__stack_chk_fail>

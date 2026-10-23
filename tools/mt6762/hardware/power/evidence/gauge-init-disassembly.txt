@@ -1,0 +1,28 @@
+
+/home/iscle/mt6762-ios-port/emulator/stock.elf:	file format elf64-littleaarch64
+
+Disassembly of section .kernel:
+
+ffffff8008a884f0 <gauge_initialized_set>:
+ffffff8008a884f0: a9bf7bfd     	stp	x29, x30, [sp, #-0x10]!
+ffffff8008a884f4: 910003fd     	mov	x29, sp
+ffffff8008a884f8: 97d85aa9     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a884fc: 2a1f03e0     	mov	w0, wzr
+ffffff8008a88500: a8c17bfd     	ldp	x29, x30, [sp], #0x10
+ffffff8008a88504: d65f03c0     	ret
+
+ffffff8008a88508 <gauge_initialized_get>:
+ffffff8008a88508: a9bf7bfd     	stp	x29, x30, [sp, #-0x10]!
+ffffff8008a8850c: 910003fd     	mov	x29, sp
+ffffff8008a88510: 97d85aa3     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a88514: 2a1f03e0     	mov	w0, wzr
+ffffff8008a88518: a8c17bfd     	ldp	x29, x30, [sp], #0x10
+ffffff8008a8851c: d65f03c0     	ret
+
+ffffff8008a88520 <bat_temp_froze_en_set>:
+ffffff8008a88520: a9bf7bfd     	stp	x29, x30, [sp, #-0x10]!
+ffffff8008a88524: 910003fd     	mov	x29, sp
+ffffff8008a88528: 97d85a9d     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a8852c: 2a1f03e0     	mov	w0, wzr
+ffffff8008a88530: a8c17bfd     	ldp	x29, x30, [sp], #0x10
+ffffff8008a88534: d65f03c0     	ret

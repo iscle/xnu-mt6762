@@ -1,0 +1,26 @@
+#include "thermistor.h"
+/* Recovered Fg_Temperature_Table at stock VA 0xffffff800987b7d8.
+ * Nominal degrees C = -40 + 5*index; resistance in ohms. */
+static const uint32_t resistance[]={195652,148171,113347,87559,68237,
+ 53650,42506,33892,27219,22021,17926,14674,12081,10000,8315,6948,
+ 5834,4917,4161,3535,3014};
+int mt6357_ntc_temperature(uint32_t adc_mv,uint32_t pullup_mv,
+                          uint32_t pullup_ohms,int *out_deci_c)
+{
+    uint64_t r;
+    unsigned i;
+    if (!out_deci_c || !adc_mv || adc_mv>=pullup_mv || !pullup_ohms)
+        return -1;
+    r=(uint64_t)adc_mv*pullup_ohms/(pullup_mv-adc_mv);
+    if (r>resistance[0] || r<resistance[20]) return -1;
+    for(i=1;i<21;i++) {
+        if(r>=resistance[i]) {
+            int cold=-400+50*(int)(i-1),warm=cold+50;
+            int64_t numerator=(int64_t)(r-resistance[i])*cold+
+                (int64_t)(resistance[i-1]-r)*warm;
+            *out_deci_c=(int)(numerator/(resistance[i-1]-resistance[i]));
+            return 0;
+        }
+    }
+    return -1;
+}

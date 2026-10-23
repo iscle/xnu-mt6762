@@ -1,0 +1,310 @@
+{
+  "source": "expdb.bin",
+  "sha256": "6675a9ae0eead546971136c2244be082a137f8b0b17ee5b5d5bc0ba98fce5f86",
+  "records": [
+    {
+      "offset": "0x12008cd",
+      "text": "[PMIC]MT6357 CHIP Code = 0x5730"
+    },
+    {
+      "offset": "0x1204e1d",
+      "text": "[pmic_init] MT6357 CHIP Code = 0x5730"
+    },
+    {
+      "offset": "0x120a946",
+      "text": "[psc5425e_config_interface] Reg[1]=0xfc"
+    },
+    {
+      "offset": "0x120a96f",
+      "text": "[psc5425e_config_interface] write Reg[1]=0xf8"
+    },
+    {
+      "offset": "0x120a9d4",
+      "text": "[psc5425e_config_interface] Reg[2]=0x90"
+    },
+    {
+      "offset": "0x120a9fd",
+      "text": "[psc5425e_config_interface] write Reg[2]=0x90"
+    },
+    {
+      "offset": "0x120aa62",
+      "text": "[psc5425e_config_interface] Reg[4]=0x76"
+    },
+    {
+      "offset": "0x120aa8b",
+      "text": "[psc5425e_config_interface] write Reg[4]=0x46"
+    },
+    {
+      "offset": "0x120aaf0",
+      "text": "[psc5425e_config_interface] Reg[5]=0x24"
+    },
+    {
+      "offset": "0x120ab19",
+      "text": "[psc5425e_config_interface] write Reg[5]=0x24"
+    },
+    {
+      "offset": "0x120aca8",
+      "text": "[psc5425e_config_interface] Reg[1]=0xf8"
+    },
+    {
+      "offset": "0x120acd1",
+      "text": "[psc5425e_config_interface] write Reg[1]=0xfc"
+    },
+    {
+      "offset": "0x120b30e",
+      "text": "[psc5425e_config_interface] Reg[1]=0xfc"
+    },
+    {
+      "offset": "0x120b337",
+      "text": "[psc5425e_config_interface] write Reg[1]=0xf8"
+    },
+    {
+      "offset": "0x120b473",
+      "text": "[psc5425e_config_interface] Reg[1]=0xf8"
+    },
+    {
+      "offset": "0x120b49c",
+      "text": "[psc5425e_config_interface] write Reg[1]=0xfc"
+    },
+    {
+      "offset": "0x120cffc",
+      "text": "[psc5425e_config_interface] Reg[1]=0xfc"
+    },
+    {
+      "offset": "0x120d025",
+      "text": "[psc5425e_config_interface] write Reg[1]=0xfc"
+    },
+    {
+      "offset": "0x120d17a",
+      "text": "[psc5425e_config_interface] Reg[1]=0xfc"
+    },
+    {
+      "offset": "0x120d1a3",
+      "text": "[psc5425e_config_interface] write Reg[1]=0xf8"
+    },
+    {
+      "offset": "0x123a5c5",
+      "text": "input: mtk-kpd as /devices/platform/10010000.kp/input/input0"
+    },
+    {
+      "offset": "0x123a655",
+      "text": "input: mtk-pmic-keys as /devices/platform/1000d000.pwrap/1000d000.pwrap:main_pmic/mtk-pmic-keys/input/input1"
+    },
+    {
+      "offset": "0x123e699",
+      "text": "psc5425e_parse_dt: no charger name"
+    },
+    {
+      "offset": "0x123e6dd",
+      "text": "psc5425e_parse_dt: no alias name"
+    },
+    {
+      "offset": "0x123e721",
+      "text": "[psc5425e_read_interface] Reg[3]=0xf0"
+    },
+    {
+      "offset": "0x123e7ad",
+      "text": "[psc5425e_hw_component_detect] exist=1, Reg[0x03]=0xf0"
+    },
+    {
+      "offset": "0x123e851",
+      "text": "[psc5425e_config_interface] write Reg[1]=0xf8 from 0xf8"
+    },
+    {
+      "offset": "0x123e8a9",
+      "text": "[psc5425e_config_interface] write Reg[2]=0x90 from 0x90"
+    },
+    {
+      "offset": "0x123e901",
+      "text": "[psc5425e_config_interface] write Reg[4]=0x76 from 0x46"
+    },
+    {
+      "offset": "0x123e959",
+      "text": "[psc5425e_config_interface] write Reg[5]=0x24 from 0x24"
+    },
+    {
+      "offset": "0x123efcd",
+      "text": "[eta6947_hw_component_detect] exist=0, Reg[0x03]=0xf0"
+    },
+    {
+      "offset": "0x123f05d",
+      "text": "eta6947: probe of 5-0063 failed with error -1"
+    },
+    {
+      "offset": "0x123f17d",
+      "text": "mt6357_charger_type_probe: starts"
+    },
+    {
+      "offset": "0x12500b5",
+      "text": "mt6357_charger_type_probe: starts"
+    },
+    {
+      "offset": "0x1250155",
+      "text": "mt6357_charger_type_probe register psy success"
+    },
+    {
+      "offset": "0x12501a9",
+      "text": "mt6357_charger_type_probe: bc12_active:1"
+    },
+    {
+      "offset": "0x12501f9",
+      "text": "mt6357_charger_type_probe: done"
+    },
+    {
+      "offset": "0x12660f5",
+      "text": "[psc5425e_config_interface] write Reg[1]=0xf8 from 0xf8"
+    },
+    {
+      "offset": "0x1297ecd",
+      "text": "[PMIC]MT6357 CHIP Code = 0x5730"
+    },
+    {
+      "offset": "0x129c41d",
+      "text": "[pmic_init] MT6357 CHIP Code = 0x5730"
+    },
+    {
+      "offset": "0x12a1f62",
+      "text": "[psc5425e_config_interface] Reg[1]=0xfc"
+    },
+    {
+      "offset": "0x12a1f8b",
+      "text": "[psc5425e_config_interface] write Reg[1]=0xf8"
+    },
+    {
+      "offset": "0x12a1ff0",
+      "text": "[psc5425e_config_interface] Reg[2]=0x90"
+    },
+    {
+      "offset": "0x12a2019",
+      "text": "[psc5425e_config_interface] write Reg[2]=0x90"
+    },
+    {
+      "offset": "0x12a207e",
+      "text": "[psc5425e_config_interface] Reg[4]=0x76"
+    },
+    {
+      "offset": "0x12a20a7",
+      "text": "[psc5425e_config_interface] write Reg[4]=0x46"
+    },
+    {
+      "offset": "0x12a210c",
+      "text": "[psc5425e_config_interface] Reg[5]=0x24"
+    },
+    {
+      "offset": "0x12a2135",
+      "text": "[psc5425e_config_interface] write Reg[5]=0x24"
+    },
+    {
+      "offset": "0x12a22c4",
+      "text": "[psc5425e_config_interface] Reg[1]=0xf8"
+    },
+    {
+      "offset": "0x12a22ed",
+      "text": "[psc5425e_config_interface] write Reg[1]=0xfc"
+    },
+    {
+      "offset": "0x12a28c6",
+      "text": "[psc5425e_config_interface] Reg[1]=0xfc"
+    },
+    {
+      "offset": "0x12a28ef",
+      "text": "[psc5425e_config_interface] write Reg[1]=0xf8"
+    },
+    {
+      "offset": "0x12a2a2b",
+      "text": "[psc5425e_config_interface] Reg[1]=0xf8"
+    },
+    {
+      "offset": "0x12a2a54",
+      "text": "[psc5425e_config_interface] write Reg[1]=0xfc"
+    },
+    {
+      "offset": "0x12a436b",
+      "text": "[psc5425e_config_interface] Reg[1]=0xfc"
+    },
+    {
+      "offset": "0x12a4394",
+      "text": "[psc5425e_config_interface] write Reg[1]=0xfc"
+    },
+    {
+      "offset": "0x12a44e9",
+      "text": "[psc5425e_config_interface] Reg[1]=0xfc"
+    },
+    {
+      "offset": "0x12a4512",
+      "text": "[psc5425e_config_interface] write Reg[1]=0xf8"
+    },
+    {
+      "offset": "0x12d1a65",
+      "text": "input: mtk-kpd as /devices/platform/10010000.kp/input/input0"
+    },
+    {
+      "offset": "0x12d1af5",
+      "text": "input: mtk-pmic-keys as /devices/platform/1000d000.pwrap/1000d000.pwrap:main_pmic/mtk-pmic-keys/input/input1"
+    },
+    {
+      "offset": "0x12d5b39",
+      "text": "psc5425e_parse_dt: no charger name"
+    },
+    {
+      "offset": "0x12d5b7d",
+      "text": "psc5425e_parse_dt: no alias name"
+    },
+    {
+      "offset": "0x12d5bc1",
+      "text": "[psc5425e_read_interface] Reg[3]=0xf0"
+    },
+    {
+      "offset": "0x12d5c4d",
+      "text": "[psc5425e_hw_component_detect] exist=1, Reg[0x03]=0xf0"
+    },
+    {
+      "offset": "0x12d5cf1",
+      "text": "[psc5425e_config_interface] write Reg[1]=0xf8 from 0xf8"
+    },
+    {
+      "offset": "0x12d5d49",
+      "text": "[psc5425e_config_interface] write Reg[2]=0x90 from 0x90"
+    },
+    {
+      "offset": "0x12d5da1",
+      "text": "[psc5425e_config_interface] write Reg[4]=0x76 from 0x46"
+    },
+    {
+      "offset": "0x12d5df9",
+      "text": "[psc5425e_config_interface] write Reg[5]=0x24 from 0x24"
+    },
+    {
+      "offset": "0x12d646d",
+      "text": "[eta6947_hw_component_detect] exist=0, Reg[0x03]=0xf0"
+    },
+    {
+      "offset": "0x12d64fd",
+      "text": "eta6947: probe of 5-0063 failed with error -1"
+    },
+    {
+      "offset": "0x12d661d",
+      "text": "mt6357_charger_type_probe: starts"
+    },
+    {
+      "offset": "0x12e7501",
+      "text": "mt6357_charger_type_probe: starts"
+    },
+    {
+      "offset": "0x12e75a1",
+      "text": "mt6357_charger_type_probe register psy success"
+    },
+    {
+      "offset": "0x12e75f5",
+      "text": "mt6357_charger_type_probe: bc12_active:1"
+    },
+    {
+      "offset": "0x12e7645",
+      "text": "mt6357_charger_type_probe: done"
+    },
+    {
+      "offset": "0x12fda7d",
+      "text": "[psc5425e_config_interface] write Reg[1]=0xf8 from 0xf8"
+    }
+  ]
+}

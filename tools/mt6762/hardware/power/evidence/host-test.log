@@ -1,0 +1,2 @@
+PASS: recovered I2C transactions, disable trace, errors, WACS2, and key decoding
+PASS: nominal recovered NTC table, divider, interpolation and fault rejection

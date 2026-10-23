@@ -1,0 +1,338 @@
+[
+  {
+    "offset": "0x1226fd5",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12297a9",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12297f1",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x1250ba9",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x1250d09",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x1250d51",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x1250e01",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x1250eb1",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x1250f61",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x1251011",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12510c1",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x1251171",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x1251221",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12512d1",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x1251381",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x1251431",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12514e1",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x1251591",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x1251641",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12516f5",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12517a9",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12518ad",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12518f5",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12519a5",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x1251a55",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x1251b05",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x1251bb5",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x1251c65",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x1251d15",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x1251dc5",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x1251e75",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x1251f25",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x1251fd5",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x1252085",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x1252135",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12521e5",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x1252299",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x125234d",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x1253291",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12532d9",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x1253321",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x1253369",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12be3d1",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12c0ba5",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12c0bed",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12e7f4d",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12e80ad",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12e80f5",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12e81a5",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12e8255",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12e8305",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12e83b5",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12e8465",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12e8515",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12e85c5",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12e8675",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12e8725",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12e87d5",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12e8885",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12e8935",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12e89e5",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12e8a99",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12e8b4d",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12e8cf9",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12e8d41",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12e8df1",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12e8ea1",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12e8f51",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12e9001",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12e90b1",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12e9161",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12e9211",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12e92c1",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12e9371",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12e9421",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12e94d1",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12e9581",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12e9631",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12e96e5",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12e9799",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12ea71d",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12ea765",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12ea7ad",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  },
+  {
+    "offset": "0x12ea7f5",
+    "text": "[Power/cpufreq] 4,0,1,0,833,833,833,833"
+  }
+]

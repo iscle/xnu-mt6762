@@ -1,0 +1,1895 @@
+
+/home/iscle/mt6762-ios-port/emulator/stock.elf:	file format elf64-littleaarch64
+
+Disassembly of section .kernel:
+
+ffffff8008a760e8 <psc5425e_read_interface>:
+ffffff8008a760e8: d10143ff     	sub	sp, sp, #0x50
+ffffff8008a760ec: a9017bfd     	stp	x29, x30, [sp, #0x10]
+ffffff8008a760f0: f90013f7     	str	x23, [sp, #0x20]
+ffffff8008a760f4: a90357f6     	stp	x22, x21, [sp, #0x30]
+ffffff8008a760f8: a9044ff4     	stp	x20, x19, [sp, #0x40]
+ffffff8008a760fc: 910043fd     	add	x29, sp, #0x10
+ffffff8008a76100: f0006828     	adrp	x8, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008a76104: f9458508     	ldr	x8, [x8, #0xb08]
+ffffff8008a76108: 2a0303f4     	mov	w20, w3
+ffffff8008a7610c: 2a0203f5     	mov	w21, w2
+ffffff8008a76110: aa0103f6     	mov	x22, x1
+ffffff8008a76114: 2a0003f7     	mov	w23, w0
+ffffff8008a76118: f90007e8     	str	x8, [sp, #0x8]
+ffffff8008a7611c: 97d8a3a0     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a76120: 910013e1     	add	x1, sp, #0x4
+ffffff8008a76124: 2a1703e0     	mov	w0, w23
+ffffff8008a76128: 390013ff     	strb	wzr, [sp, #0x4]
+ffffff8008a7612c: 94000107     	bl	0xffffff8008a76548 <psc5425e_read_byte>
+ffffff8008a76130: 394013e3     	ldrb	w3, [sp, #0x4]
+ffffff8008a76134: 12001ee2     	and	w2, w23, #0xff
+ffffff8008a76138: 90005277     	adrp	x23, 0xffffff80094c2000 <f_midi_shortname+0x1b6>
+ffffff8008a7613c: 2a0003f3     	mov	w19, w0
+ffffff8008a76140: d0004da0     	adrp	x0, 0xffffff800942c000 <process_dbg_opt.temp+0x1ef54>
+ffffff8008a76144: 911dfaf7     	add	x23, x23, #0x77e
+ffffff8008a76148: 91207c00     	add	x0, x0, #0x81f
+ffffff8008a7614c: aa1703e1     	mov	x1, x23
+ffffff8008a76150: 97dabe77     	bl	0xffffff8008125b2c <printk>
+ffffff8008a76154: 394013e8     	ldrb	w8, [sp, #0x4]
+ffffff8008a76158: 12001ea9     	and	w9, w21, #0xff
+ffffff8008a7615c: 1ad42129     	lsl	w9, w9, w20
+ffffff8008a76160: b0004b80     	adrp	x0, 0xffffff80093e7000 <decpair+0x2a0bd0>
+ffffff8008a76164: 0a080128     	and	w8, w9, w8
+ffffff8008a76168: 1ad42502     	lsr	w2, w8, w20
+ffffff8008a7616c: 91065800     	add	x0, x0, #0x196
+ffffff8008a76170: aa1703e1     	mov	x1, x23
+ffffff8008a76174: 390013e8     	strb	w8, [sp, #0x4]
+ffffff8008a76178: 390002c2     	strb	w2, [x22]
+ffffff8008a7617c: 97dabe6c     	bl	0xffffff8008125b2c <printk>
+ffffff8008a76180: f0006829     	adrp	x9, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008a76184: f94007e8     	ldr	x8, [sp, #0x8]
+ffffff8008a76188: f9458529     	ldr	x9, [x9, #0xb08]
+ffffff8008a7618c: eb08013f     	cmp	x9, x8
+ffffff8008a76190: 54000101     	b.ne	0xffffff8008a761b0 <psc5425e_read_interface+0xc8>
+ffffff8008a76194: 2a1303e0     	mov	w0, w19
+ffffff8008a76198: a9444ff4     	ldp	x20, x19, [sp, #0x40]
+ffffff8008a7619c: a94357f6     	ldp	x22, x21, [sp, #0x30]
+ffffff8008a761a0: f94013f7     	ldr	x23, [sp, #0x20]
+ffffff8008a761a4: a9417bfd     	ldp	x29, x30, [sp, #0x10]
+ffffff8008a761a8: 910143ff     	add	sp, sp, #0x50
+ffffff8008a761ac: d65f03c0     	ret
+ffffff8008a761b0: 97d8fd2a     	bl	0xffffff80080b5658 <__stack_chk_fail>
+
+ffffff8008a761b4 <psc5425e_config_interface>:
+ffffff8008a761b4: d10143ff     	sub	sp, sp, #0x50
+ffffff8008a761b8: a9017bfd     	stp	x29, x30, [sp, #0x10]
+ffffff8008a761bc: a9025ff8     	stp	x24, x23, [sp, #0x20]
+ffffff8008a761c0: a90357f6     	stp	x22, x21, [sp, #0x30]
+ffffff8008a761c4: a9044ff4     	stp	x20, x19, [sp, #0x40]
+ffffff8008a761c8: 910043fd     	add	x29, sp, #0x10
+ffffff8008a761cc: f0006828     	adrp	x8, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008a761d0: f9458508     	ldr	x8, [x8, #0xb08]
+ffffff8008a761d4: 2a0303f3     	mov	w19, w3
+ffffff8008a761d8: 2a0203f4     	mov	w20, w2
+ffffff8008a761dc: 2a0103f5     	mov	w21, w1
+ffffff8008a761e0: 2a0003f6     	mov	w22, w0
+ffffff8008a761e4: f90007e8     	str	x8, [sp, #0x8]
+ffffff8008a761e8: 97d8a36d     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a761ec: 90007037     	adrp	x23, 0xffffff800987a000 <event_vb2_v4l2_buf_queue+0x50>
+ffffff8008a761f0: 911722f7     	add	x23, x23, #0x5c8
+ffffff8008a761f4: aa1703e0     	mov	x0, x23
+ffffff8008a761f8: 390013ff     	strb	wzr, [sp, #0x4]
+ffffff8008a761fc: 9412e106     	bl	0xffffff8008f2e614 <mutex_lock>
+ffffff8008a76200: 910013e1     	add	x1, sp, #0x4
+ffffff8008a76204: 2a1603e0     	mov	w0, w22
+ffffff8008a76208: 940000d0     	bl	0xffffff8008a76548 <psc5425e_read_byte>
+ffffff8008a7620c: 394013f8     	ldrb	w24, [sp, #0x4]
+ffffff8008a76210: 12001e88     	and	w8, w20, #0xff
+ffffff8008a76214: 12001ea9     	and	w9, w21, #0xff
+ffffff8008a76218: 1ad32108     	lsl	w8, w8, w19
+ffffff8008a7621c: 0a280308     	bic	w8, w24, w8
+ffffff8008a76220: 1ad32129     	lsl	w9, w9, w19
+ffffff8008a76224: 2a090101     	orr	w1, w8, w9
+ffffff8008a76228: 2a1603e0     	mov	w0, w22
+ffffff8008a7622c: 390013e1     	strb	w1, [sp, #0x4]
+ffffff8008a76230: 940000ff     	bl	0xffffff8008a7662c <psc5425e_write_byte>
+ffffff8008a76234: 2a0003f3     	mov	w19, w0
+ffffff8008a76238: aa1703e0     	mov	x0, x23
+ffffff8008a7623c: 9412e112     	bl	0xffffff8008f2e684 <mutex_unlock>
+ffffff8008a76240: 394013e3     	ldrb	w3, [sp, #0x4]
+ffffff8008a76244: f0004ee0     	adrp	x0, 0xffffff8009455000 <ptychar+0x803a>
+ffffff8008a76248: d0005101     	adrp	x1, 0xffffff8009498000 <connectivity_export_dump_thread_state.stat_nam+0x1b74>
+ffffff8008a7624c: 12001ec2     	and	w2, w22, #0xff
+ffffff8008a76250: 912c2400     	add	x0, x0, #0xb09
+ffffff8008a76254: 913f3c21     	add	x1, x1, #0xfcf
+ffffff8008a76258: 2a1803e4     	mov	w4, w24
+ffffff8008a7625c: 97dabe34     	bl	0xffffff8008125b2c <printk>
+ffffff8008a76260: f0006829     	adrp	x9, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008a76264: f94007e8     	ldr	x8, [sp, #0x8]
+ffffff8008a76268: f9458529     	ldr	x9, [x9, #0xb08]
+ffffff8008a7626c: eb08013f     	cmp	x9, x8
+ffffff8008a76270: 54000101     	b.ne	0xffffff8008a76290 <psc5425e_config_interface+0xdc>
+ffffff8008a76274: 2a1303e0     	mov	w0, w19
+ffffff8008a76278: a9444ff4     	ldp	x20, x19, [sp, #0x40]
+ffffff8008a7627c: a94357f6     	ldp	x22, x21, [sp, #0x30]
+ffffff8008a76280: a9425ff8     	ldp	x24, x23, [sp, #0x20]
+ffffff8008a76284: a9417bfd     	ldp	x29, x30, [sp, #0x10]
+ffffff8008a76288: 910143ff     	add	sp, sp, #0x50
+ffffff8008a7628c: d65f03c0     	ret
+ffffff8008a76290: 97d8fcf2     	bl	0xffffff80080b5658 <__stack_chk_fail>
+
+ffffff8008a76294 <_wake_up_fan5405_otg>:
+ffffff8008a76294: a9bf7bfd     	stp	x29, x30, [sp, #-0x10]!
+ffffff8008a76298: 910003fd     	mov	x29, sp
+ffffff8008a7629c: 97d8a340     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a762a0: f0008c60     	adrp	x0, 0xffffff8009c05000 <video_devices+0x678>
+ffffff8008a762a4: 90007028     	adrp	x8, 0xffffff800987a000 <event_vb2_v4l2_buf_queue+0x50>
+ffffff8008a762a8: 52800029     	mov	w9, #0x1        // =1
+ffffff8008a762ac: 910a4000     	add	x0, x0, #0x290
+ffffff8008a762b0: 52800061     	mov	w1, #0x3        // =3
+ffffff8008a762b4: 52800022     	mov	w2, #0x1        // =1
+ffffff8008a762b8: aa1f03e3     	mov	x3, xzr
+ffffff8008a762bc: b9057909     	str	w9, [x8, #0x578]
+ffffff8008a762c0: 97da55f7     	bl	0xffffff800810ba9c <__wake_up>
+ffffff8008a762c4: a8c17bfd     	ldp	x29, x30, [sp], #0x10
+ffffff8008a762c8: d65f03c0     	ret
+
+ffffff8008a762cc <otg_rst_timer_func>:
+ffffff8008a762cc: a9bf7bfd     	stp	x29, x30, [sp, #-0x10]!
+ffffff8008a762d0: 910003fd     	mov	x29, sp
+ffffff8008a762d4: 97d8a332     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a762d8: f0008c60     	adrp	x0, 0xffffff8009c05000 <video_devices+0x678>
+ffffff8008a762dc: 90007028     	adrp	x8, 0xffffff800987a000 <event_vb2_v4l2_buf_queue+0x50>
+ffffff8008a762e0: 52800029     	mov	w9, #0x1        // =1
+ffffff8008a762e4: 910a4000     	add	x0, x0, #0x290
+ffffff8008a762e8: 52800061     	mov	w1, #0x3        // =3
+ffffff8008a762ec: 52800022     	mov	w2, #0x1        // =1
+ffffff8008a762f0: aa1f03e3     	mov	x3, xzr
+ffffff8008a762f4: b9057909     	str	w9, [x8, #0x578]
+ffffff8008a762f8: 97da55e9     	bl	0xffffff800810ba9c <__wake_up>
+ffffff8008a762fc: 2a1f03e0     	mov	w0, wzr
+ffffff8008a76300: a8c17bfd     	ldp	x29, x30, [sp], #0x10
+ffffff8008a76304: d65f03c0     	ret
+
+ffffff8008a76308 <fan5405_otg_init_timer>:
+ffffff8008a76308: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a7630c: f9000bf3     	str	x19, [sp, #0x10]
+ffffff8008a76310: 910003fd     	mov	x29, sp
+ffffff8008a76314: 97d8a322     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a76318: f0008c73     	adrp	x19, 0xffffff8009c05000 <video_devices+0x678>
+ffffff8008a7631c: 910aa273     	add	x19, x19, #0x2a8
+ffffff8008a76320: 52800021     	mov	w1, #0x1        // =1
+ffffff8008a76324: 52800022     	mov	w2, #0x1        // =1
+ffffff8008a76328: aa1303e0     	mov	x0, x19
+ffffff8008a7632c: 97db4d1e     	bl	0xffffff80081497a4 <hrtimer_init>
+ffffff8008a76330: d29c8001     	mov	x1, #0xe400     // =58368
+ffffff8008a76334: 90000008     	adrp	x8, 0xffffff8008a76000 <syscon_reboot_mode_probe+0xec>
+ffffff8008a76338: f2aa8161     	movk	x1, #0x540b, lsl #16
+ffffff8008a7633c: 910b3108     	add	x8, x8, #0x2cc
+ffffff8008a76340: f2c00041     	movk	x1, #0x2, lsl #32
+ffffff8008a76344: 52800023     	mov	w3, #0x1        // =1
+ffffff8008a76348: aa1303e0     	mov	x0, x19
+ffffff8008a7634c: aa1f03e2     	mov	x2, xzr
+ffffff8008a76350: f9001668     	str	x8, [x19, #0x28]
+ffffff8008a76354: 97db4ad3     	bl	0xffffff8008148ea0 <hrtimer_start_range_ns>
+ffffff8008a76358: f9400bf3     	ldr	x19, [sp, #0x10]
+ffffff8008a7635c: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a76360: d65f03c0     	ret
+
+ffffff8008a76364 <fan5405_otg_start_timer>:
+ffffff8008a76364: a9bf7bfd     	stp	x29, x30, [sp, #-0x10]!
+ffffff8008a76368: 910003fd     	mov	x29, sp
+ffffff8008a7636c: 97d8a30c     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a76370: d00054e0     	adrp	x0, 0xffffff8009514000 <f_midi_shortname+0x521b6>
+ffffff8008a76374: 91118800     	add	x0, x0, #0x462
+ffffff8008a76378: 97dabded     	bl	0xffffff8008125b2c <printk>
+ffffff8008a7637c: d29c8001     	mov	x1, #0xe400     // =58368
+ffffff8008a76380: f0008c60     	adrp	x0, 0xffffff8009c05000 <video_devices+0x678>
+ffffff8008a76384: f2aa8161     	movk	x1, #0x540b, lsl #16
+ffffff8008a76388: 910aa000     	add	x0, x0, #0x2a8
+ffffff8008a7638c: f2c00041     	movk	x1, #0x2, lsl #32
+ffffff8008a76390: 52800023     	mov	w3, #0x1        // =1
+ffffff8008a76394: aa1f03e2     	mov	x2, xzr
+ffffff8008a76398: 97db4ac2     	bl	0xffffff8008148ea0 <hrtimer_start_range_ns>
+ffffff8008a7639c: a8c17bfd     	ldp	x29, x30, [sp], #0x10
+ffffff8008a763a0: d65f03c0     	ret
+
+ffffff8008a763a4 <fan5405_otg_routine_thread>:
+ffffff8008a763a4: d10203ff     	sub	sp, sp, #0x80
+ffffff8008a763a8: a9037bfd     	stp	x29, x30, [sp, #0x30]
+ffffff8008a763ac: f90023f9     	str	x25, [sp, #0x40]
+ffffff8008a763b0: a9055ff8     	stp	x24, x23, [sp, #0x50]
+ffffff8008a763b4: a90657f6     	stp	x22, x21, [sp, #0x60]
+ffffff8008a763b8: a9074ff4     	stp	x20, x19, [sp, #0x70]
+ffffff8008a763bc: 9100c3fd     	add	x29, sp, #0x30
+ffffff8008a763c0: 97d8a2f7     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a763c4: 90004aa0     	adrp	x0, 0xffffff80093ca000 <decpair+0x283bd0>
+ffffff8008a763c8: 913a1000     	add	x0, x0, #0xe84
+ffffff8008a763cc: 97dabdd8     	bl	0xffffff8008125b2c <printk>
+ffffff8008a763d0: f0005333     	adrp	x19, 0xffffff80094dd000 <f_midi_shortname+0x1b1b6>
+ffffff8008a763d4: d0004db4     	adrp	x20, 0xffffff800942c000 <process_dbg_opt.temp+0x1ef54>
+ffffff8008a763d8: d00054f5     	adrp	x21, 0xffffff8009514000 <f_midi_shortname+0x521b6>
+ffffff8008a763dc: f0008c76     	adrp	x22, 0xffffff8009c05000 <video_devices+0x678>
+ffffff8008a763e0: f0008c77     	adrp	x23, 0xffffff8009c05000 <video_devices+0x678>
+ffffff8008a763e4: 9110b673     	add	x19, x19, #0x42d
+ffffff8008a763e8: 90007038     	adrp	x24, 0xffffff800987a000 <event_vb2_v4l2_buf_queue+0x50>
+ffffff8008a763ec: f0008c79     	adrp	x25, 0xffffff8009c05000 <video_devices+0x678>
+ffffff8008a763f0: 911fb294     	add	x20, x20, #0x7ec
+ffffff8008a763f4: 91118ab5     	add	x21, x21, #0x462
+ffffff8008a763f8: 910aa2d6     	add	x22, x22, #0x2a8
+ffffff8008a763fc: 910a42f7     	add	x23, x23, #0x290
+ffffff8008a76400: aa1303e0     	mov	x0, x19
+ffffff8008a76404: 97dabdca     	bl	0xffffff8008125b2c <printk>
+ffffff8008a76408: b9457b08     	ldr	w8, [x24, #0x578]
+ffffff8008a7640c: 7100051f     	cmp	w8, #0x1
+ffffff8008a76410: 54000200     	b.eq	0xffffff8008a76450 <fan5405_otg_routine_thread+0xac>
+ffffff8008a76414: 910023e0     	add	x0, sp, #0x8
+ffffff8008a76418: 2a1f03e1     	mov	w1, wzr
+ffffff8008a7641c: 97da5703     	bl	0xffffff800810c028 <init_wait_entry>
+ffffff8008a76420: 910023e1     	add	x1, sp, #0x8
+ffffff8008a76424: 52800042     	mov	w2, #0x2        // =2
+ffffff8008a76428: aa1703e0     	mov	x0, x23
+ffffff8008a7642c: 97da5710     	bl	0xffffff800810c06c <prepare_to_wait_event>
+ffffff8008a76430: b9457b08     	ldr	w8, [x24, #0x578]
+ffffff8008a76434: 7100051f     	cmp	w8, #0x1
+ffffff8008a76438: 54000060     	b.eq	0xffffff8008a76444 <fan5405_otg_routine_thread+0xa0>
+ffffff8008a7643c: 9412dc69     	bl	0xffffff8008f2d5e0 <schedule>
+ffffff8008a76440: 17fffff8     	b	0xffffff8008a76420 <fan5405_otg_routine_thread+0x7c>
+ffffff8008a76444: 910023e1     	add	x1, sp, #0x8
+ffffff8008a76448: aa1703e0     	mov	x0, x23
+ffffff8008a7644c: 97da57ae     	bl	0xffffff800810c304 <finish_wait>
+ffffff8008a76450: b9428b28     	ldr	w8, [x25, #0x288]
+ffffff8008a76454: b9057b1f     	str	wzr, [x24, #0x578]
+ffffff8008a76458: 7100051f     	cmp	w8, #0x1
+ffffff8008a7645c: 54fffd21     	b.ne	0xffffff8008a76400 <fan5405_otg_routine_thread+0x5c>
+ffffff8008a76460: aa1403e0     	mov	x0, x20
+ffffff8008a76464: 97dabdb2     	bl	0xffffff8008125b2c <printk>
+ffffff8008a76468: 97ffff03     	bl	0xffffff8008a76074 <fan5405_set_tmr_rst>
+ffffff8008a7646c: aa1503e0     	mov	x0, x21
+ffffff8008a76470: 97dabdaf     	bl	0xffffff8008125b2c <printk>
+ffffff8008a76474: d29c8001     	mov	x1, #0xe400     // =58368
+ffffff8008a76478: f2aa8161     	movk	x1, #0x540b, lsl #16
+ffffff8008a7647c: f2c00041     	movk	x1, #0x2, lsl #32
+ffffff8008a76480: 52800023     	mov	w3, #0x1        // =1
+ffffff8008a76484: aa1603e0     	mov	x0, x22
+ffffff8008a76488: aa1f03e2     	mov	x2, xzr
+ffffff8008a7648c: 97db4a85     	bl	0xffffff8008148ea0 <hrtimer_start_range_ns>
+ffffff8008a76490: 17ffffdc     	b	0xffffff8008a76400 <fan5405_otg_routine_thread+0x5c>
+
+ffffff8008a76494 <charging_value_to_parameter>:
+ffffff8008a76494: a9bd7bfd     	stp	x29, x30, [sp, #-0x30]!
+ffffff8008a76498: f9000bf5     	str	x21, [sp, #0x10]
+ffffff8008a7649c: a9024ff4     	stp	x20, x19, [sp, #0x20]
+ffffff8008a764a0: 910003fd     	mov	x29, sp
+ffffff8008a764a4: 2a0203f4     	mov	w20, w2
+ffffff8008a764a8: 2a0103f5     	mov	w21, w1
+ffffff8008a764ac: aa0003f3     	mov	x19, x0
+ffffff8008a764b0: 97d8a2bb     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a764b4: 6b15029f     	cmp	w20, w21
+ffffff8008a764b8: 540000e2     	b.hs	0xffffff8008a764d4 <charging_value_to_parameter+0x40>
+ffffff8008a764bc: 8b344a73     	add	x19, x19, w20, uxtw #2
+ffffff8008a764c0: b9400260     	ldr	w0, [x19]
+ffffff8008a764c4: a9424ff4     	ldp	x20, x19, [sp, #0x20]
+ffffff8008a764c8: f9400bf5     	ldr	x21, [sp, #0x10]
+ffffff8008a764cc: a8c37bfd     	ldp	x29, x30, [sp], #0x30
+ffffff8008a764d0: d65f03c0     	ret
+ffffff8008a764d4: 90004f60     	adrp	x0, 0xffffff8009462000 <ptychar+0x1503a>
+ffffff8008a764d8: 9136a400     	add	x0, x0, #0xda9
+ffffff8008a764dc: 97dabd94     	bl	0xffffff8008125b2c <printk>
+ffffff8008a764e0: 17fffff8     	b	0xffffff8008a764c0 <charging_value_to_parameter+0x2c>
+
+ffffff8008a764e4 <charging_parameter_to_value>:
+ffffff8008a764e4: a9bd7bfd     	stp	x29, x30, [sp, #-0x30]!
+ffffff8008a764e8: f9000bf5     	str	x21, [sp, #0x10]
+ffffff8008a764ec: a9024ff4     	stp	x20, x19, [sp, #0x20]
+ffffff8008a764f0: 910003fd     	mov	x29, sp
+ffffff8008a764f4: 2a0203f3     	mov	w19, w2
+ffffff8008a764f8: 2a0103f5     	mov	w21, w1
+ffffff8008a764fc: aa0003f4     	mov	x20, x0
+ffffff8008a76500: 97d8a2a7     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a76504: 34000135     	cbz	w21, 0xffffff8008a76528 <charging_parameter_to_value+0x44>
+ffffff8008a76508: aa1f03e0     	mov	x0, xzr
+ffffff8008a7650c: 2a1503e8     	mov	w8, w21
+ffffff8008a76510: b8607a89     	ldr	w9, [x20, x0, lsl #2]
+ffffff8008a76514: 6b13013f     	cmp	w9, w19
+ffffff8008a76518: 54000100     	b.eq	0xffffff8008a76538 <charging_parameter_to_value+0x54>
+ffffff8008a7651c: 91000400     	add	x0, x0, #0x1
+ffffff8008a76520: eb00011f     	cmp	x8, x0
+ffffff8008a76524: 54ffff61     	b.ne	0xffffff8008a76510 <charging_parameter_to_value+0x2c>
+ffffff8008a76528: d00054e0     	adrp	x0, 0xffffff8009514000 <f_midi_shortname+0x521b6>
+ffffff8008a7652c: 9111ec00     	add	x0, x0, #0x47b
+ffffff8008a76530: 97dabd7f     	bl	0xffffff8008125b2c <printk>
+ffffff8008a76534: 2a1f03e0     	mov	w0, wzr
+ffffff8008a76538: a9424ff4     	ldp	x20, x19, [sp, #0x20]
+ffffff8008a7653c: f9400bf5     	ldr	x21, [sp, #0x10]
+ffffff8008a76540: a8c37bfd     	ldp	x29, x30, [sp], #0x30
+ffffff8008a76544: d65f03c0     	ret
+
+ffffff8008a76548 <psc5425e_read_byte>:
+ffffff8008a76548: d10143ff     	sub	sp, sp, #0x50
+ffffff8008a7654c: a9037bfd     	stp	x29, x30, [sp, #0x30]
+ffffff8008a76550: a9044ff4     	stp	x20, x19, [sp, #0x40]
+ffffff8008a76554: 9100c3fd     	add	x29, sp, #0x30
+ffffff8008a76558: f0006828     	adrp	x8, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008a7655c: f9458508     	ldr	x8, [x8, #0xb08]
+ffffff8008a76560: aa0103f3     	mov	x19, x1
+ffffff8008a76564: 2a0003f4     	mov	w20, w0
+ffffff8008a76568: f81f83a8     	stur	x8, [x29, #-0x8]
+ffffff8008a7656c: 97d8a28c     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a76570: 90007020     	adrp	x0, 0xffffff800987a000 <event_vb2_v4l2_buf_queue+0x50>
+ffffff8008a76574: 9116a000     	add	x0, x0, #0x5a8
+ffffff8008a76578: 390013f4     	strb	w20, [sp, #0x4]
+ffffff8008a7657c: 9412e026     	bl	0xffffff8008f2e614 <mutex_lock>
+ffffff8008a76580: f0008c74     	adrp	x20, 0xffffff8009c05000 <video_devices+0x678>
+ffffff8008a76584: f9418288     	ldr	x8, [x20, #0x300]
+ffffff8008a76588: 52a00029     	mov	w9, #0x10000    // =65536
+ffffff8008a7658c: 910013eb     	add	x11, sp, #0x4
+ffffff8008a76590: 910023e1     	add	x1, sp, #0x8
+ffffff8008a76594: 7940050a     	ldrh	w10, [x8, #0x2]
+ffffff8008a76598: b800a3e9     	stur	w9, [sp, #0xa]
+ffffff8008a7659c: f9000beb     	str	x11, [sp, #0x10]
+ffffff8008a765a0: 52800042     	mov	w2, #0x2        // =2
+ffffff8008a765a4: 790013ea     	strh	w10, [sp, #0x8]
+ffffff8008a765a8: 79400509     	ldrh	w9, [x8, #0x2]
+ffffff8008a765ac: 320083ea     	mov	w10, #0x10001   // =65537
+ffffff8008a765b0: b801a3ea     	stur	w10, [sp, #0x1a]
+ffffff8008a765b4: f90013f3     	str	x19, [sp, #0x20]
+ffffff8008a765b8: 790033e9     	strh	w9, [sp, #0x18]
+ffffff8008a765bc: f9400d00     	ldr	x0, [x8, #0x18]
+ffffff8008a765c0: 97ff0362     	bl	0xffffff8008a37348 <i2c_transfer>
+ffffff8008a765c4: 2a0003f3     	mov	w19, w0
+ffffff8008a765c8: 3100181f     	cmn	w0, #0x6
+ffffff8008a765cc: 54000200     	b.eq	0xffffff8008a7660c <psc5425e_read_byte+0xc4>
+ffffff8008a765d0: 90007020     	adrp	x0, 0xffffff800987a000 <event_vb2_v4l2_buf_queue+0x50>
+ffffff8008a765d4: 9116a000     	add	x0, x0, #0x5a8
+ffffff8008a765d8: 9412e02b     	bl	0xffffff8008f2e684 <mutex_unlock>
+ffffff8008a765dc: f0006829     	adrp	x9, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008a765e0: f85f83a8     	ldur	x8, [x29, #-0x8]
+ffffff8008a765e4: f9458529     	ldr	x9, [x9, #0xb08]
+ffffff8008a765e8: 71000a7f     	cmp	w19, #0x2
+ffffff8008a765ec: 5280002a     	mov	w10, #0x1       // =1
+ffffff8008a765f0: 5a8a0540     	cneg	w0, w10, ne
+ffffff8008a765f4: eb08013f     	cmp	x9, x8
+ffffff8008a765f8: 54000181     	b.ne	0xffffff8008a76628 <psc5425e_read_byte+0xe0>
+ffffff8008a765fc: a9444ff4     	ldp	x20, x19, [sp, #0x40]
+ffffff8008a76600: a9437bfd     	ldp	x29, x30, [sp, #0x30]
+ffffff8008a76604: 910143ff     	add	sp, sp, #0x50
+ffffff8008a76608: d65f03c0     	ret
+ffffff8008a7660c: f9418288     	ldr	x8, [x20, #0x300]
+ffffff8008a76610: d0004be0     	adrp	x0, 0xffffff80093f4000 <decpair+0x2adbd0>
+ffffff8008a76614: 913efc00     	add	x0, x0, #0xfbf
+ffffff8008a76618: f9400d08     	ldr	x8, [x8, #0x18]
+ffffff8008a7661c: 91109101     	add	x1, x8, #0x424
+ffffff8008a76620: 97dabd43     	bl	0xffffff8008125b2c <printk>
+ffffff8008a76624: 17ffffeb     	b	0xffffff8008a765d0 <psc5425e_read_byte+0x88>
+ffffff8008a76628: 97d8fc0c     	bl	0xffffff80080b5658 <__stack_chk_fail>
+
+ffffff8008a7662c <psc5425e_write_byte>:
+ffffff8008a7662c: d10143ff     	sub	sp, sp, #0x50
+ffffff8008a76630: a9027bfd     	stp	x29, x30, [sp, #0x20]
+ffffff8008a76634: f9001bf5     	str	x21, [sp, #0x30]
+ffffff8008a76638: a9044ff4     	stp	x20, x19, [sp, #0x40]
+ffffff8008a7663c: 910083fd     	add	x29, sp, #0x20
+ffffff8008a76640: f0006828     	adrp	x8, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008a76644: f9458508     	ldr	x8, [x8, #0xb08]
+ffffff8008a76648: 2a0103f3     	mov	w19, w1
+ffffff8008a7664c: 2a0003f4     	mov	w20, w0
+ffffff8008a76650: f81f83a8     	stur	x8, [x29, #-0x8]
+ffffff8008a76654: 97d8a252     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a76658: 90007020     	adrp	x0, 0xffffff800987a000 <event_vb2_v4l2_buf_queue+0x50>
+ffffff8008a7665c: 9116a000     	add	x0, x0, #0x5a8
+ffffff8008a76660: 9412dfed     	bl	0xffffff8008f2e614 <mutex_lock>
+ffffff8008a76664: f0008c75     	adrp	x21, 0xffffff8009c05000 <video_devices+0x678>
+ffffff8008a76668: f94182a8     	ldr	x8, [x21, #0x300]
+ffffff8008a7666c: 390043f4     	strb	w20, [sp, #0x10]
+ffffff8008a76670: 390047f3     	strb	w19, [sp, #0x11]
+ffffff8008a76674: 52a0004a     	mov	w10, #0x20000   // =131072
+ffffff8008a76678: 79400509     	ldrh	w9, [x8, #0x2]
+ffffff8008a7667c: 910043eb     	add	x11, sp, #0x10
+ffffff8008a76680: b80023ea     	stur	w10, [sp, #0x2]
+ffffff8008a76684: f90007eb     	str	x11, [sp, #0x8]
+ffffff8008a76688: 790003e9     	strh	w9, [sp]
+ffffff8008a7668c: f9400d00     	ldr	x0, [x8, #0x18]
+ffffff8008a76690: 910003e1     	mov	x1, sp
+ffffff8008a76694: 52800022     	mov	w2, #0x1        // =1
+ffffff8008a76698: 97ff032c     	bl	0xffffff8008a37348 <i2c_transfer>
+ffffff8008a7669c: 2a0003f3     	mov	w19, w0
+ffffff8008a766a0: 3100181f     	cmn	w0, #0x6
+ffffff8008a766a4: 54000200     	b.eq	0xffffff8008a766e4 <psc5425e_write_byte+0xb8>
+ffffff8008a766a8: 90007020     	adrp	x0, 0xffffff800987a000 <event_vb2_v4l2_buf_queue+0x50>
+ffffff8008a766ac: 9116a000     	add	x0, x0, #0x5a8
+ffffff8008a766b0: 9412dff5     	bl	0xffffff8008f2e684 <mutex_unlock>
+ffffff8008a766b4: f0006829     	adrp	x9, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008a766b8: f85f83a8     	ldur	x8, [x29, #-0x8]
+ffffff8008a766bc: f9458529     	ldr	x9, [x9, #0xb08]
+ffffff8008a766c0: 7100067f     	cmp	w19, #0x1
+ffffff8008a766c4: 5a9f0260     	csinv	w0, w19, wzr, eq
+ffffff8008a766c8: eb08013f     	cmp	x9, x8
+ffffff8008a766cc: 540001a1     	b.ne	0xffffff8008a76700 <psc5425e_write_byte+0xd4>
+ffffff8008a766d0: a9444ff4     	ldp	x20, x19, [sp, #0x40]
+ffffff8008a766d4: f9401bf5     	ldr	x21, [sp, #0x30]
+ffffff8008a766d8: a9427bfd     	ldp	x29, x30, [sp, #0x20]
+ffffff8008a766dc: 910143ff     	add	sp, sp, #0x50
+ffffff8008a766e0: d65f03c0     	ret
+ffffff8008a766e4: f94182a8     	ldr	x8, [x21, #0x300]
+ffffff8008a766e8: d0004be0     	adrp	x0, 0xffffff80093f4000 <decpair+0x2adbd0>
+ffffff8008a766ec: 913efc00     	add	x0, x0, #0xfbf
+ffffff8008a766f0: f9400d08     	ldr	x8, [x8, #0x18]
+ffffff8008a766f4: 91109101     	add	x1, x8, #0x424
+ffffff8008a766f8: 97dabd0d     	bl	0xffffff8008125b2c <printk>
+ffffff8008a766fc: 17ffffeb     	b	0xffffff8008a766a8 <psc5425e_write_byte+0x7c>
+ffffff8008a76700: 97d8fbd6     	bl	0xffffff80080b5658 <__stack_chk_fail>
+
+ffffff8008a76704 <psc5425e_reg_config_interface>:
+ffffff8008a76704: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a76708: a9014ff4     	stp	x20, x19, [sp, #0x10]
+ffffff8008a7670c: 910003fd     	mov	x29, sp
+ffffff8008a76710: 2a0103f3     	mov	w19, w1
+ffffff8008a76714: 2a0003f4     	mov	w20, w0
+ffffff8008a76718: 97d8a221     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a7671c: 2a1403e0     	mov	w0, w20
+ffffff8008a76720: 2a1303e1     	mov	w1, w19
+ffffff8008a76724: 97ffffc2     	bl	0xffffff8008a7662c <psc5425e_write_byte>
+ffffff8008a76728: a9414ff4     	ldp	x20, x19, [sp, #0x10]
+ffffff8008a7672c: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a76730: d65f03c0     	ret
+
+ffffff8008a76734 <psc5425e_set_en_hiz>:
+ffffff8008a76734: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a76738: f9000bf3     	str	x19, [sp, #0x10]
+ffffff8008a7673c: 910003fd     	mov	x29, sp
+ffffff8008a76740: 2a0003f3     	mov	w19, w0
+ffffff8008a76744: 97d8a216     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a76748: 52800022     	mov	w2, #0x1        // =1
+ffffff8008a7674c: 528000e3     	mov	w3, #0x7        // =7
+ffffff8008a76750: 2a1f03e0     	mov	w0, wzr
+ffffff8008a76754: 2a1303e1     	mov	w1, w19
+ffffff8008a76758: 97fffe97     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a7675c: f9400bf3     	ldr	x19, [sp, #0x10]
+ffffff8008a76760: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a76764: d65f03c0     	ret
+
+ffffff8008a76768 <psc5425e_set_iinlim>:
+ffffff8008a76768: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a7676c: f9000bf3     	str	x19, [sp, #0x10]
+ffffff8008a76770: 910003fd     	mov	x29, sp
+ffffff8008a76774: 2a0003f3     	mov	w19, w0
+ffffff8008a76778: 97d8a209     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a7677c: 528003e2     	mov	w2, #0x1f       // =31
+ffffff8008a76780: 2a1f03e0     	mov	w0, wzr
+ffffff8008a76784: 2a1303e1     	mov	w1, w19
+ffffff8008a76788: 2a1f03e3     	mov	w3, wzr
+ffffff8008a7678c: 97fffe8a     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a76790: f9400bf3     	ldr	x19, [sp, #0x10]
+ffffff8008a76794: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a76798: d65f03c0     	ret
+
+ffffff8008a7679c <psc5425e_set_stat_ctrl>:
+ffffff8008a7679c: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a767a0: f9000bf3     	str	x19, [sp, #0x10]
+ffffff8008a767a4: 910003fd     	mov	x29, sp
+ffffff8008a767a8: 2a0003f3     	mov	w19, w0
+ffffff8008a767ac: 97d8a1fc     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a767b0: 52800062     	mov	w2, #0x3        // =3
+ffffff8008a767b4: 528000a3     	mov	w3, #0x5        // =5
+ffffff8008a767b8: 2a1f03e0     	mov	w0, wzr
+ffffff8008a767bc: 2a1303e1     	mov	w1, w19
+ffffff8008a767c0: 97fffe7d     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a767c4: f9400bf3     	ldr	x19, [sp, #0x10]
+ffffff8008a767c8: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a767cc: d65f03c0     	ret
+
+ffffff8008a767d0 <psc5425e_set_reg_rst>:
+ffffff8008a767d0: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a767d4: f9000bf3     	str	x19, [sp, #0x10]
+ffffff8008a767d8: 910003fd     	mov	x29, sp
+ffffff8008a767dc: 2a0003f3     	mov	w19, w0
+ffffff8008a767e0: 97d8a1ef     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a767e4: 52800160     	mov	w0, #0xb        // =11
+ffffff8008a767e8: 52800022     	mov	w2, #0x1        // =1
+ffffff8008a767ec: 528000e3     	mov	w3, #0x7        // =7
+ffffff8008a767f0: 2a1303e1     	mov	w1, w19
+ffffff8008a767f4: 97fffe70     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a767f8: f9400bf3     	ldr	x19, [sp, #0x10]
+ffffff8008a767fc: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a76800: d65f03c0     	ret
+
+ffffff8008a76804 <psc5425e_set_pfm>:
+ffffff8008a76804: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a76808: f9000bf3     	str	x19, [sp, #0x10]
+ffffff8008a7680c: 910003fd     	mov	x29, sp
+ffffff8008a76810: 2a0003f3     	mov	w19, w0
+ffffff8008a76814: 97d8a1e2     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a76818: 52800020     	mov	w0, #0x1        // =1
+ffffff8008a7681c: 52800022     	mov	w2, #0x1        // =1
+ffffff8008a76820: 528000e3     	mov	w3, #0x7        // =7
+ffffff8008a76824: 2a1303e1     	mov	w1, w19
+ffffff8008a76828: 97fffe63     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a7682c: f9400bf3     	ldr	x19, [sp, #0x10]
+ffffff8008a76830: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a76834: d65f03c0     	ret
+
+ffffff8008a76838 <psc5425e_set_wdt_rst>:
+ffffff8008a76838: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a7683c: f9000bf3     	str	x19, [sp, #0x10]
+ffffff8008a76840: 910003fd     	mov	x29, sp
+ffffff8008a76844: 2a0003f3     	mov	w19, w0
+ffffff8008a76848: 97d8a1d5     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a7684c: 52800020     	mov	w0, #0x1        // =1
+ffffff8008a76850: 52800022     	mov	w2, #0x1        // =1
+ffffff8008a76854: 528000c3     	mov	w3, #0x6        // =6
+ffffff8008a76858: 2a1303e1     	mov	w1, w19
+ffffff8008a7685c: 97fffe56     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a76860: f9400bf3     	ldr	x19, [sp, #0x10]
+ffffff8008a76864: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a76868: d65f03c0     	ret
+
+ffffff8008a7686c <psc5425e_set_otg_config>:
+ffffff8008a7686c: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a76870: f9000bf3     	str	x19, [sp, #0x10]
+ffffff8008a76874: 910003fd     	mov	x29, sp
+ffffff8008a76878: 2a0003f3     	mov	w19, w0
+ffffff8008a7687c: 97d8a1c8     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a76880: 52800020     	mov	w0, #0x1        // =1
+ffffff8008a76884: 52800022     	mov	w2, #0x1        // =1
+ffffff8008a76888: 528000a3     	mov	w3, #0x5        // =5
+ffffff8008a7688c: 2a1303e1     	mov	w1, w19
+ffffff8008a76890: 97fffe49     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a76894: f9400bf3     	ldr	x19, [sp, #0x10]
+ffffff8008a76898: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a7689c: d65f03c0     	ret
+
+ffffff8008a768a0 <psc5425e_get_otg_config>:
+ffffff8008a768a0: d10083ff     	sub	sp, sp, #0x20
+ffffff8008a768a4: a9017bfd     	stp	x29, x30, [sp, #0x10]
+ffffff8008a768a8: 910043fd     	add	x29, sp, #0x10
+ffffff8008a768ac: f0006828     	adrp	x8, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008a768b0: f9458508     	ldr	x8, [x8, #0xb08]
+ffffff8008a768b4: f90007e8     	str	x8, [sp, #0x8]
+ffffff8008a768b8: 97d8a1b9     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a768bc: 910013e1     	add	x1, sp, #0x4
+ffffff8008a768c0: 52800020     	mov	w0, #0x1        // =1
+ffffff8008a768c4: 52800022     	mov	w2, #0x1        // =1
+ffffff8008a768c8: 528000a3     	mov	w3, #0x5        // =5
+ffffff8008a768cc: 390013ff     	strb	wzr, [sp, #0x4]
+ffffff8008a768d0: 97fffe06     	bl	0xffffff8008a760e8 <psc5425e_read_interface>
+ffffff8008a768d4: f0006829     	adrp	x9, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008a768d8: 394013e0     	ldrb	w0, [sp, #0x4]
+ffffff8008a768dc: f94007e8     	ldr	x8, [sp, #0x8]
+ffffff8008a768e0: f9458529     	ldr	x9, [x9, #0xb08]
+ffffff8008a768e4: eb08013f     	cmp	x9, x8
+ffffff8008a768e8: 54000081     	b.ne	0xffffff8008a768f8 <psc5425e_get_otg_config+0x58>
+ffffff8008a768ec: a9417bfd     	ldp	x29, x30, [sp, #0x10]
+ffffff8008a768f0: 910083ff     	add	sp, sp, #0x20
+ffffff8008a768f4: d65f03c0     	ret
+ffffff8008a768f8: 97d8fb58     	bl	0xffffff80080b5658 <__stack_chk_fail>
+
+ffffff8008a768fc <psc5425e_set_chg_config>:
+ffffff8008a768fc: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a76900: f9000bf3     	str	x19, [sp, #0x10]
+ffffff8008a76904: 910003fd     	mov	x29, sp
+ffffff8008a76908: 2a0003f3     	mov	w19, w0
+ffffff8008a7690c: 97d8a1a4     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a76910: 52800020     	mov	w0, #0x1        // =1
+ffffff8008a76914: 52800022     	mov	w2, #0x1        // =1
+ffffff8008a76918: 52800083     	mov	w3, #0x4        // =4
+ffffff8008a7691c: 2a1303e1     	mov	w1, w19
+ffffff8008a76920: 97fffe25     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a76924: f9400bf3     	ldr	x19, [sp, #0x10]
+ffffff8008a76928: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a7692c: d65f03c0     	ret
+
+ffffff8008a76930 <psc5425e_set_sys_min>:
+ffffff8008a76930: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a76934: f9000bf3     	str	x19, [sp, #0x10]
+ffffff8008a76938: 910003fd     	mov	x29, sp
+ffffff8008a7693c: 2a0003f3     	mov	w19, w0
+ffffff8008a76940: 97d8a197     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a76944: 52800020     	mov	w0, #0x1        // =1
+ffffff8008a76948: 528000e2     	mov	w2, #0x7        // =7
+ffffff8008a7694c: 52800023     	mov	w3, #0x1        // =1
+ffffff8008a76950: 2a1303e1     	mov	w1, w19
+ffffff8008a76954: 97fffe18     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a76958: f9400bf3     	ldr	x19, [sp, #0x10]
+ffffff8008a7695c: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a76960: d65f03c0     	ret
+
+ffffff8008a76964 <psc5425e_set_batlowv>:
+ffffff8008a76964: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a76968: f9000bf3     	str	x19, [sp, #0x10]
+ffffff8008a7696c: 910003fd     	mov	x29, sp
+ffffff8008a76970: 2a0003f3     	mov	w19, w0
+ffffff8008a76974: 97d8a18a     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a76978: 52800020     	mov	w0, #0x1        // =1
+ffffff8008a7697c: 52800022     	mov	w2, #0x1        // =1
+ffffff8008a76980: 2a1303e1     	mov	w1, w19
+ffffff8008a76984: 2a1f03e3     	mov	w3, wzr
+ffffff8008a76988: 97fffe0b     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a7698c: f9400bf3     	ldr	x19, [sp, #0x10]
+ffffff8008a76990: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a76994: d65f03c0     	ret
+
+ffffff8008a76998 <psc5425e_get_ce>:
+ffffff8008a76998: d10083ff     	sub	sp, sp, #0x20
+ffffff8008a7699c: a9017bfd     	stp	x29, x30, [sp, #0x10]
+ffffff8008a769a0: 910043fd     	add	x29, sp, #0x10
+ffffff8008a769a4: f0006828     	adrp	x8, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008a769a8: f9458508     	ldr	x8, [x8, #0xb08]
+ffffff8008a769ac: f90007e8     	str	x8, [sp, #0x8]
+ffffff8008a769b0: 97d8a17b     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a769b4: 910013e1     	add	x1, sp, #0x4
+ffffff8008a769b8: 52800020     	mov	w0, #0x1        // =1
+ffffff8008a769bc: 52800022     	mov	w2, #0x1        // =1
+ffffff8008a769c0: 52800043     	mov	w3, #0x2        // =2
+ffffff8008a769c4: b90007ff     	str	wzr, [sp, #0x4]
+ffffff8008a769c8: 97fffdfb     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a769cc: f0006829     	adrp	x9, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008a769d0: b94007e0     	ldr	w0, [sp, #0x4]
+ffffff8008a769d4: f94007e8     	ldr	x8, [sp, #0x8]
+ffffff8008a769d8: f9458529     	ldr	x9, [x9, #0xb08]
+ffffff8008a769dc: eb08013f     	cmp	x9, x8
+ffffff8008a769e0: 54000081     	b.ne	0xffffff8008a769f0 <psc5425e_get_ce+0x58>
+ffffff8008a769e4: a9417bfd     	ldp	x29, x30, [sp, #0x10]
+ffffff8008a769e8: 910083ff     	add	sp, sp, #0x20
+ffffff8008a769ec: d65f03c0     	ret
+ffffff8008a769f0: 97d8fb1a     	bl	0xffffff80080b5658 <__stack_chk_fail>
+
+ffffff8008a769f4 <psc5425e_set_rdson>:
+ffffff8008a769f4: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a769f8: f9000bf3     	str	x19, [sp, #0x10]
+ffffff8008a769fc: 910003fd     	mov	x29, sp
+ffffff8008a76a00: 2a0003f3     	mov	w19, w0
+ffffff8008a76a04: 97d8a166     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a76a08: 52800040     	mov	w0, #0x2        // =2
+ffffff8008a76a0c: 52800022     	mov	w2, #0x1        // =1
+ffffff8008a76a10: 528000c3     	mov	w3, #0x6        // =6
+ffffff8008a76a14: 2a1303e1     	mov	w1, w19
+ffffff8008a76a18: 97fffde7     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a76a1c: f9400bf3     	ldr	x19, [sp, #0x10]
+ffffff8008a76a20: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a76a24: d65f03c0     	ret
+
+ffffff8008a76a28 <psc5425e_set_boost_lim>:
+ffffff8008a76a28: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a76a2c: f9000bf3     	str	x19, [sp, #0x10]
+ffffff8008a76a30: 910003fd     	mov	x29, sp
+ffffff8008a76a34: 2a0003f3     	mov	w19, w0
+ffffff8008a76a38: 97d8a159     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a76a3c: 52800040     	mov	w0, #0x2        // =2
+ffffff8008a76a40: 52800022     	mov	w2, #0x1        // =1
+ffffff8008a76a44: 528000e3     	mov	w3, #0x7        // =7
+ffffff8008a76a48: 2a1303e1     	mov	w1, w19
+ffffff8008a76a4c: 97fffdda     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a76a50: f9400bf3     	ldr	x19, [sp, #0x10]
+ffffff8008a76a54: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a76a58: d65f03c0     	ret
+
+ffffff8008a76a5c <psc5425e_set_ichg>:
+ffffff8008a76a5c: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a76a60: f9000bf3     	str	x19, [sp, #0x10]
+ffffff8008a76a64: 910003fd     	mov	x29, sp
+ffffff8008a76a68: 2a0003f3     	mov	w19, w0
+ffffff8008a76a6c: 97d8a14c     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a76a70: 52800040     	mov	w0, #0x2        // =2
+ffffff8008a76a74: 528007e2     	mov	w2, #0x3f       // =63
+ffffff8008a76a78: 2a1303e1     	mov	w1, w19
+ffffff8008a76a7c: 2a1f03e3     	mov	w3, wzr
+ffffff8008a76a80: 97fffdcd     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a76a84: f9400bf3     	ldr	x19, [sp, #0x10]
+ffffff8008a76a88: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a76a8c: d65f03c0     	ret
+
+ffffff8008a76a90 <psc5425e_set_iprechg>:
+ffffff8008a76a90: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a76a94: f9000bf3     	str	x19, [sp, #0x10]
+ffffff8008a76a98: 910003fd     	mov	x29, sp
+ffffff8008a76a9c: 2a0003f3     	mov	w19, w0
+ffffff8008a76aa0: 97d8a13f     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a76aa4: 52800060     	mov	w0, #0x3        // =3
+ffffff8008a76aa8: 528001e2     	mov	w2, #0xf        // =15
+ffffff8008a76aac: 52800083     	mov	w3, #0x4        // =4
+ffffff8008a76ab0: 2a1303e1     	mov	w1, w19
+ffffff8008a76ab4: 97fffdc0     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a76ab8: f9400bf3     	ldr	x19, [sp, #0x10]
+ffffff8008a76abc: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a76ac0: d65f03c0     	ret
+
+ffffff8008a76ac4 <psc5425e_set_iterm>:
+ffffff8008a76ac4: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a76ac8: f9000bf3     	str	x19, [sp, #0x10]
+ffffff8008a76acc: 910003fd     	mov	x29, sp
+ffffff8008a76ad0: 2a0003f3     	mov	w19, w0
+ffffff8008a76ad4: 97d8a132     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a76ad8: 52800060     	mov	w0, #0x3        // =3
+ffffff8008a76adc: 528001e2     	mov	w2, #0xf        // =15
+ffffff8008a76ae0: 2a1303e1     	mov	w1, w19
+ffffff8008a76ae4: 2a1f03e3     	mov	w3, wzr
+ffffff8008a76ae8: 97fffdb3     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a76aec: f9400bf3     	ldr	x19, [sp, #0x10]
+ffffff8008a76af0: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a76af4: d65f03c0     	ret
+
+ffffff8008a76af8 <psc5425e_set_vreg>:
+ffffff8008a76af8: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a76afc: f9000bf3     	str	x19, [sp, #0x10]
+ffffff8008a76b00: 910003fd     	mov	x29, sp
+ffffff8008a76b04: 2a0003f3     	mov	w19, w0
+ffffff8008a76b08: 97d8a125     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a76b0c: 52800080     	mov	w0, #0x4        // =4
+ffffff8008a76b10: 528003e2     	mov	w2, #0x1f       // =31
+ffffff8008a76b14: 52800063     	mov	w3, #0x3        // =3
+ffffff8008a76b18: 2a1303e1     	mov	w1, w19
+ffffff8008a76b1c: 97fffda6     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a76b20: f9400bf3     	ldr	x19, [sp, #0x10]
+ffffff8008a76b24: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a76b28: d65f03c0     	ret
+
+ffffff8008a76b2c <psc5425e_set_topoff_timer>:
+ffffff8008a76b2c: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a76b30: f9000bf3     	str	x19, [sp, #0x10]
+ffffff8008a76b34: 910003fd     	mov	x29, sp
+ffffff8008a76b38: 2a0003f3     	mov	w19, w0
+ffffff8008a76b3c: 97d8a118     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a76b40: 52800080     	mov	w0, #0x4        // =4
+ffffff8008a76b44: 52800062     	mov	w2, #0x3        // =3
+ffffff8008a76b48: 52800023     	mov	w3, #0x1        // =1
+ffffff8008a76b4c: 2a1303e1     	mov	w1, w19
+ffffff8008a76b50: 97fffd99     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a76b54: f9400bf3     	ldr	x19, [sp, #0x10]
+ffffff8008a76b58: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a76b5c: d65f03c0     	ret
+
+ffffff8008a76b60 <psc5425e_set_vrechg>:
+ffffff8008a76b60: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a76b64: f9000bf3     	str	x19, [sp, #0x10]
+ffffff8008a76b68: 910003fd     	mov	x29, sp
+ffffff8008a76b6c: 2a0003f3     	mov	w19, w0
+ffffff8008a76b70: 97d8a10b     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a76b74: 52800080     	mov	w0, #0x4        // =4
+ffffff8008a76b78: 52800022     	mov	w2, #0x1        // =1
+ffffff8008a76b7c: 2a1303e1     	mov	w1, w19
+ffffff8008a76b80: 2a1f03e3     	mov	w3, wzr
+ffffff8008a76b84: 97fffd8c     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a76b88: f9400bf3     	ldr	x19, [sp, #0x10]
+ffffff8008a76b8c: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a76b90: d65f03c0     	ret
+
+ffffff8008a76b94 <psc5425e_set_en_term>:
+ffffff8008a76b94: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a76b98: f9000bf3     	str	x19, [sp, #0x10]
+ffffff8008a76b9c: 910003fd     	mov	x29, sp
+ffffff8008a76ba0: 2a0003f3     	mov	w19, w0
+ffffff8008a76ba4: 97d8a0fe     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a76ba8: 528000a0     	mov	w0, #0x5        // =5
+ffffff8008a76bac: 52800022     	mov	w2, #0x1        // =1
+ffffff8008a76bb0: 528000e3     	mov	w3, #0x7        // =7
+ffffff8008a76bb4: 2a1303e1     	mov	w1, w19
+ffffff8008a76bb8: 97fffd7f     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a76bbc: f9400bf3     	ldr	x19, [sp, #0x10]
+ffffff8008a76bc0: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a76bc4: d65f03c0     	ret
+
+ffffff8008a76bc8 <psc5425e_set_watchdog>:
+ffffff8008a76bc8: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a76bcc: f9000bf3     	str	x19, [sp, #0x10]
+ffffff8008a76bd0: 910003fd     	mov	x29, sp
+ffffff8008a76bd4: 2a0003f3     	mov	w19, w0
+ffffff8008a76bd8: 97d8a0f1     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a76bdc: 528000a0     	mov	w0, #0x5        // =5
+ffffff8008a76be0: 52800062     	mov	w2, #0x3        // =3
+ffffff8008a76be4: 52800083     	mov	w3, #0x4        // =4
+ffffff8008a76be8: 2a1303e1     	mov	w1, w19
+ffffff8008a76bec: 97fffd72     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a76bf0: f9400bf3     	ldr	x19, [sp, #0x10]
+ffffff8008a76bf4: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a76bf8: d65f03c0     	ret
+
+ffffff8008a76bfc <psc5425e_set_en_timer>:
+ffffff8008a76bfc: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a76c00: f9000bf3     	str	x19, [sp, #0x10]
+ffffff8008a76c04: 910003fd     	mov	x29, sp
+ffffff8008a76c08: 2a0003f3     	mov	w19, w0
+ffffff8008a76c0c: 97d8a0e4     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a76c10: 528000a0     	mov	w0, #0x5        // =5
+ffffff8008a76c14: 52800022     	mov	w2, #0x1        // =1
+ffffff8008a76c18: 52800063     	mov	w3, #0x3        // =3
+ffffff8008a76c1c: 2a1303e1     	mov	w1, w19
+ffffff8008a76c20: 97fffd65     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a76c24: f9400bf3     	ldr	x19, [sp, #0x10]
+ffffff8008a76c28: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a76c2c: d65f03c0     	ret
+
+ffffff8008a76c30 <psc5425e_set_chg_timer>:
+ffffff8008a76c30: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a76c34: f9000bf3     	str	x19, [sp, #0x10]
+ffffff8008a76c38: 910003fd     	mov	x29, sp
+ffffff8008a76c3c: 2a0003f3     	mov	w19, w0
+ffffff8008a76c40: 97d8a0d7     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a76c44: 528000a0     	mov	w0, #0x5        // =5
+ffffff8008a76c48: 52800022     	mov	w2, #0x1        // =1
+ffffff8008a76c4c: 52800043     	mov	w3, #0x2        // =2
+ffffff8008a76c50: 2a1303e1     	mov	w1, w19
+ffffff8008a76c54: 97fffd58     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a76c58: f9400bf3     	ldr	x19, [sp, #0x10]
+ffffff8008a76c5c: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a76c60: d65f03c0     	ret
+
+ffffff8008a76c64 <psc5425e_set_treg>:
+ffffff8008a76c64: a9bf7bfd     	stp	x29, x30, [sp, #-0x10]!
+ffffff8008a76c68: 910003fd     	mov	x29, sp
+ffffff8008a76c6c: 97d8a0cc     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a76c70: a8c17bfd     	ldp	x29, x30, [sp], #0x10
+ffffff8008a76c74: d65f03c0     	ret
+
+ffffff8008a76c78 <psc5425e_set_vindpm>:
+ffffff8008a76c78: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a76c7c: f9000bf3     	str	x19, [sp, #0x10]
+ffffff8008a76c80: 910003fd     	mov	x29, sp
+ffffff8008a76c84: 2a0003f3     	mov	w19, w0
+ffffff8008a76c88: 97d8a0c5     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a76c8c: 528000c0     	mov	w0, #0x6        // =6
+ffffff8008a76c90: 528001e2     	mov	w2, #0xf        // =15
+ffffff8008a76c94: 2a1303e1     	mov	w1, w19
+ffffff8008a76c98: 2a1f03e3     	mov	w3, wzr
+ffffff8008a76c9c: 97fffd46     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a76ca0: f9400bf3     	ldr	x19, [sp, #0x10]
+ffffff8008a76ca4: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a76ca8: d65f03c0     	ret
+
+ffffff8008a76cac <psc5425e_set_ovp>:
+ffffff8008a76cac: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a76cb0: f9000bf3     	str	x19, [sp, #0x10]
+ffffff8008a76cb4: 910003fd     	mov	x29, sp
+ffffff8008a76cb8: 2a0003f3     	mov	w19, w0
+ffffff8008a76cbc: 97d8a0b8     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a76cc0: 528000c0     	mov	w0, #0x6        // =6
+ffffff8008a76cc4: 52800062     	mov	w2, #0x3        // =3
+ffffff8008a76cc8: 528000c3     	mov	w3, #0x6        // =6
+ffffff8008a76ccc: 2a1303e1     	mov	w1, w19
+ffffff8008a76cd0: 97fffd39     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a76cd4: f9400bf3     	ldr	x19, [sp, #0x10]
+ffffff8008a76cd8: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a76cdc: d65f03c0     	ret
+
+ffffff8008a76ce0 <psc5425e_set_boostv>:
+ffffff8008a76ce0: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a76ce4: f9000bf3     	str	x19, [sp, #0x10]
+ffffff8008a76ce8: 910003fd     	mov	x29, sp
+ffffff8008a76cec: 2a0003f3     	mov	w19, w0
+ffffff8008a76cf0: 97d8a0ab     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a76cf4: 528000c0     	mov	w0, #0x6        // =6
+ffffff8008a76cf8: 52800062     	mov	w2, #0x3        // =3
+ffffff8008a76cfc: 52800083     	mov	w3, #0x4        // =4
+ffffff8008a76d00: 2a1303e1     	mov	w1, w19
+ffffff8008a76d04: 97fffd2c     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a76d08: f9400bf3     	ldr	x19, [sp, #0x10]
+ffffff8008a76d0c: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a76d10: d65f03c0     	ret
+
+ffffff8008a76d14 <psc5425e_set_tmr2x_en>:
+ffffff8008a76d14: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a76d18: f9000bf3     	str	x19, [sp, #0x10]
+ffffff8008a76d1c: 910003fd     	mov	x29, sp
+ffffff8008a76d20: 2a0003f3     	mov	w19, w0
+ffffff8008a76d24: 97d8a09e     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a76d28: 528000e0     	mov	w0, #0x7        // =7
+ffffff8008a76d2c: 52800022     	mov	w2, #0x1        // =1
+ffffff8008a76d30: 528000c3     	mov	w3, #0x6        // =6
+ffffff8008a76d34: 2a1303e1     	mov	w1, w19
+ffffff8008a76d38: 97fffd1f     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a76d3c: f9400bf3     	ldr	x19, [sp, #0x10]
+ffffff8008a76d40: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a76d44: d65f03c0     	ret
+
+ffffff8008a76d48 <psc5425e_set_batfet_disable>:
+ffffff8008a76d48: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a76d4c: f9000bf3     	str	x19, [sp, #0x10]
+ffffff8008a76d50: 910003fd     	mov	x29, sp
+ffffff8008a76d54: 2a0003f3     	mov	w19, w0
+ffffff8008a76d58: 97d8a091     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a76d5c: 528000e0     	mov	w0, #0x7        // =7
+ffffff8008a76d60: 52800022     	mov	w2, #0x1        // =1
+ffffff8008a76d64: 528000a3     	mov	w3, #0x5        // =5
+ffffff8008a76d68: 2a1303e1     	mov	w1, w19
+ffffff8008a76d6c: 97fffd12     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a76d70: f9400bf3     	ldr	x19, [sp, #0x10]
+ffffff8008a76d74: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a76d78: d65f03c0     	ret
+
+ffffff8008a76d7c <psc5425e_set_batfet_delay>:
+ffffff8008a76d7c: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a76d80: f9000bf3     	str	x19, [sp, #0x10]
+ffffff8008a76d84: 910003fd     	mov	x29, sp
+ffffff8008a76d88: 2a0003f3     	mov	w19, w0
+ffffff8008a76d8c: 97d8a084     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a76d90: 528000e0     	mov	w0, #0x7        // =7
+ffffff8008a76d94: 52800022     	mov	w2, #0x1        // =1
+ffffff8008a76d98: 52800063     	mov	w3, #0x3        // =3
+ffffff8008a76d9c: 2a1303e1     	mov	w1, w19
+ffffff8008a76da0: 97fffd05     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a76da4: f9400bf3     	ldr	x19, [sp, #0x10]
+ffffff8008a76da8: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a76dac: d65f03c0     	ret
+
+ffffff8008a76db0 <psc5425e_set_batfet_reset_enable>:
+ffffff8008a76db0: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a76db4: f9000bf3     	str	x19, [sp, #0x10]
+ffffff8008a76db8: 910003fd     	mov	x29, sp
+ffffff8008a76dbc: 2a0003f3     	mov	w19, w0
+ffffff8008a76dc0: 97d8a077     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a76dc4: 528000e0     	mov	w0, #0x7        // =7
+ffffff8008a76dc8: 52800022     	mov	w2, #0x1        // =1
+ffffff8008a76dcc: 52800043     	mov	w3, #0x2        // =2
+ffffff8008a76dd0: 2a1303e1     	mov	w1, w19
+ffffff8008a76dd4: 97fffcf8     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a76dd8: f9400bf3     	ldr	x19, [sp, #0x10]
+ffffff8008a76ddc: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a76de0: d65f03c0     	ret
+
+ffffff8008a76de4 <psc5425e_get_system_status>:
+ffffff8008a76de4: d10083ff     	sub	sp, sp, #0x20
+ffffff8008a76de8: a9017bfd     	stp	x29, x30, [sp, #0x10]
+ffffff8008a76dec: 910043fd     	add	x29, sp, #0x10
+ffffff8008a76df0: f0006828     	adrp	x8, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008a76df4: f9458508     	ldr	x8, [x8, #0xb08]
+ffffff8008a76df8: f90007e8     	str	x8, [sp, #0x8]
+ffffff8008a76dfc: 97d8a068     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a76e00: 910013e1     	add	x1, sp, #0x4
+ffffff8008a76e04: 52800100     	mov	w0, #0x8        // =8
+ffffff8008a76e08: 52801fe2     	mov	w2, #0xff       // =255
+ffffff8008a76e0c: 2a1f03e3     	mov	w3, wzr
+ffffff8008a76e10: 390013ff     	strb	wzr, [sp, #0x4]
+ffffff8008a76e14: 97fffcb5     	bl	0xffffff8008a760e8 <psc5425e_read_interface>
+ffffff8008a76e18: f0006829     	adrp	x9, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008a76e1c: 394013e0     	ldrb	w0, [sp, #0x4]
+ffffff8008a76e20: f94007e8     	ldr	x8, [sp, #0x8]
+ffffff8008a76e24: f9458529     	ldr	x9, [x9, #0xb08]
+ffffff8008a76e28: eb08013f     	cmp	x9, x8
+ffffff8008a76e2c: 54000081     	b.ne	0xffffff8008a76e3c <psc5425e_get_system_status+0x58>
+ffffff8008a76e30: a9417bfd     	ldp	x29, x30, [sp, #0x10]
+ffffff8008a76e34: 910083ff     	add	sp, sp, #0x20
+ffffff8008a76e38: d65f03c0     	ret
+ffffff8008a76e3c: 97d8fa07     	bl	0xffffff80080b5658 <__stack_chk_fail>
+
+ffffff8008a76e40 <psc5425e_get_vbus_stat>:
+ffffff8008a76e40: d10083ff     	sub	sp, sp, #0x20
+ffffff8008a76e44: a9017bfd     	stp	x29, x30, [sp, #0x10]
+ffffff8008a76e48: 910043fd     	add	x29, sp, #0x10
+ffffff8008a76e4c: f0006828     	adrp	x8, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008a76e50: f9458508     	ldr	x8, [x8, #0xb08]
+ffffff8008a76e54: f90007e8     	str	x8, [sp, #0x8]
+ffffff8008a76e58: 97d8a051     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a76e5c: 910013e1     	add	x1, sp, #0x4
+ffffff8008a76e60: 52800100     	mov	w0, #0x8        // =8
+ffffff8008a76e64: 528000e2     	mov	w2, #0x7        // =7
+ffffff8008a76e68: 528000a3     	mov	w3, #0x5        // =5
+ffffff8008a76e6c: 390013ff     	strb	wzr, [sp, #0x4]
+ffffff8008a76e70: 97fffc9e     	bl	0xffffff8008a760e8 <psc5425e_read_interface>
+ffffff8008a76e74: f0006829     	adrp	x9, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008a76e78: 394013e0     	ldrb	w0, [sp, #0x4]
+ffffff8008a76e7c: f94007e8     	ldr	x8, [sp, #0x8]
+ffffff8008a76e80: f9458529     	ldr	x9, [x9, #0xb08]
+ffffff8008a76e84: eb08013f     	cmp	x9, x8
+ffffff8008a76e88: 54000081     	b.ne	0xffffff8008a76e98 <psc5425e_get_vbus_stat+0x58>
+ffffff8008a76e8c: a9417bfd     	ldp	x29, x30, [sp, #0x10]
+ffffff8008a76e90: 910083ff     	add	sp, sp, #0x20
+ffffff8008a76e94: d65f03c0     	ret
+ffffff8008a76e98: 97d8f9f0     	bl	0xffffff80080b5658 <__stack_chk_fail>
+
+ffffff8008a76e9c <psc5425e_get_vsys_stat>:
+ffffff8008a76e9c: d10083ff     	sub	sp, sp, #0x20
+ffffff8008a76ea0: a9017bfd     	stp	x29, x30, [sp, #0x10]
+ffffff8008a76ea4: 910043fd     	add	x29, sp, #0x10
+ffffff8008a76ea8: f0006828     	adrp	x8, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008a76eac: f9458508     	ldr	x8, [x8, #0xb08]
+ffffff8008a76eb0: f90007e8     	str	x8, [sp, #0x8]
+ffffff8008a76eb4: 97d8a03a     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a76eb8: 910013e1     	add	x1, sp, #0x4
+ffffff8008a76ebc: 52800100     	mov	w0, #0x8        // =8
+ffffff8008a76ec0: 52800022     	mov	w2, #0x1        // =1
+ffffff8008a76ec4: 2a1f03e3     	mov	w3, wzr
+ffffff8008a76ec8: 390013ff     	strb	wzr, [sp, #0x4]
+ffffff8008a76ecc: 97fffc87     	bl	0xffffff8008a760e8 <psc5425e_read_interface>
+ffffff8008a76ed0: f0006829     	adrp	x9, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008a76ed4: 394013e0     	ldrb	w0, [sp, #0x4]
+ffffff8008a76ed8: f94007e8     	ldr	x8, [sp, #0x8]
+ffffff8008a76edc: f9458529     	ldr	x9, [x9, #0xb08]
+ffffff8008a76ee0: eb08013f     	cmp	x9, x8
+ffffff8008a76ee4: 54000081     	b.ne	0xffffff8008a76ef4 <psc5425e_get_vsys_stat+0x58>
+ffffff8008a76ee8: a9417bfd     	ldp	x29, x30, [sp, #0x10]
+ffffff8008a76eec: 910083ff     	add	sp, sp, #0x20
+ffffff8008a76ef0: d65f03c0     	ret
+ffffff8008a76ef4: 97d8f9d9     	bl	0xffffff80080b5658 <__stack_chk_fail>
+
+ffffff8008a76ef8 <psc5425e_get_pg_stat>:
+ffffff8008a76ef8: d10083ff     	sub	sp, sp, #0x20
+ffffff8008a76efc: a9017bfd     	stp	x29, x30, [sp, #0x10]
+ffffff8008a76f00: 910043fd     	add	x29, sp, #0x10
+ffffff8008a76f04: f0006828     	adrp	x8, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008a76f08: f9458508     	ldr	x8, [x8, #0xb08]
+ffffff8008a76f0c: f90007e8     	str	x8, [sp, #0x8]
+ffffff8008a76f10: 97d8a023     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a76f14: 910013e1     	add	x1, sp, #0x4
+ffffff8008a76f18: 52800100     	mov	w0, #0x8        // =8
+ffffff8008a76f1c: 52800022     	mov	w2, #0x1        // =1
+ffffff8008a76f20: 52800043     	mov	w3, #0x2        // =2
+ffffff8008a76f24: 390013ff     	strb	wzr, [sp, #0x4]
+ffffff8008a76f28: 97fffc70     	bl	0xffffff8008a760e8 <psc5425e_read_interface>
+ffffff8008a76f2c: f0006829     	adrp	x9, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008a76f30: 394013e0     	ldrb	w0, [sp, #0x4]
+ffffff8008a76f34: f94007e8     	ldr	x8, [sp, #0x8]
+ffffff8008a76f38: f9458529     	ldr	x9, [x9, #0xb08]
+ffffff8008a76f3c: eb08013f     	cmp	x9, x8
+ffffff8008a76f40: 54000081     	b.ne	0xffffff8008a76f50 <psc5425e_get_pg_stat+0x58>
+ffffff8008a76f44: a9417bfd     	ldp	x29, x30, [sp, #0x10]
+ffffff8008a76f48: 910083ff     	add	sp, sp, #0x20
+ffffff8008a76f4c: d65f03c0     	ret
+ffffff8008a76f50: 97d8f9c2     	bl	0xffffff80080b5658 <__stack_chk_fail>
+
+ffffff8008a76f54 <psc5425e_set_int_mask>:
+ffffff8008a76f54: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a76f58: f9000bf3     	str	x19, [sp, #0x10]
+ffffff8008a76f5c: 910003fd     	mov	x29, sp
+ffffff8008a76f60: 2a0003f3     	mov	w19, w0
+ffffff8008a76f64: 97d8a00e     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a76f68: 52800140     	mov	w0, #0xa        // =10
+ffffff8008a76f6c: 52800062     	mov	w2, #0x3        // =3
+ffffff8008a76f70: 2a1303e1     	mov	w1, w19
+ffffff8008a76f74: 2a1f03e3     	mov	w3, wzr
+ffffff8008a76f78: 97fffc8f     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a76f7c: f9400bf3     	ldr	x19, [sp, #0x10]
+ffffff8008a76f80: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a76f84: d65f03c0     	ret
+
+ffffff8008a76f88 <psc5415e_get_charging_status>:
+ffffff8008a76f88: d10103ff     	sub	sp, sp, #0x40
+ffffff8008a76f8c: a9017bfd     	stp	x29, x30, [sp, #0x10]
+ffffff8008a76f90: a90257f6     	stp	x22, x21, [sp, #0x20]
+ffffff8008a76f94: a9034ff4     	stp	x20, x19, [sp, #0x30]
+ffffff8008a76f98: 910043fd     	add	x29, sp, #0x10
+ffffff8008a76f9c: f0006828     	adrp	x8, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008a76fa0: f9458508     	ldr	x8, [x8, #0xb08]
+ffffff8008a76fa4: f90007e8     	str	x8, [sp, #0x8]
+ffffff8008a76fa8: 97d89ffd     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a76fac: 910003e1     	mov	x1, sp
+ffffff8008a76fb0: 52800062     	mov	w2, #0x3        // =3
+ffffff8008a76fb4: 52800083     	mov	w3, #0x4        // =4
+ffffff8008a76fb8: 2a1f03e0     	mov	w0, wzr
+ffffff8008a76fbc: 390003ff     	strb	wzr, [sp]
+ffffff8008a76fc0: 52800075     	mov	w21, #0x3       // =3
+ffffff8008a76fc4: 52800093     	mov	w19, #0x4       // =4
+ffffff8008a76fc8: 97fffc48     	bl	0xffffff8008a760e8 <psc5425e_read_interface>
+ffffff8008a76fcc: 910013e1     	add	x1, sp, #0x4
+ffffff8008a76fd0: 52800020     	mov	w0, #0x1        // =1
+ffffff8008a76fd4: 52800022     	mov	w2, #0x1        // =1
+ffffff8008a76fd8: 52800043     	mov	w3, #0x2        // =2
+ffffff8008a76fdc: b90007ff     	str	wzr, [sp, #0x4]
+ffffff8008a76fe0: 97fffc75     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a76fe4: b94007f6     	ldr	w22, [sp, #0x4]
+ffffff8008a76fe8: 394003f4     	ldrb	w20, [sp]
+ffffff8008a76fec: 90004aa0     	adrp	x0, 0xffffff80093ca000 <decpair+0x283bd0>
+ffffff8008a76ff0: 913a9800     	add	x0, x0, #0xea6
+ffffff8008a76ff4: 710002df     	cmp	w22, #0x0
+ffffff8008a76ff8: 1a9f07e2     	cset	w2, ne
+ffffff8008a76ffc: 2a1403e1     	mov	w1, w20
+ffffff8008a77000: 97dabacb     	bl	0xffffff8008125b2c <printk>
+ffffff8008a77004: 71000a9f     	cmp	w20, #0x2
+ffffff8008a77008: 540000c3     	b.lo	0xffffff8008a77020 <psc5415e_get_charging_status+0x98>
+ffffff8008a7700c: 54000120     	b.eq	0xffffff8008a77030 <psc5415e_get_charging_status+0xa8>
+ffffff8008a77010: 71000e9f     	cmp	w20, #0x3
+ffffff8008a77014: 540000c1     	b.ne	0xffffff8008a7702c <psc5415e_get_charging_status+0xa4>
+ffffff8008a77018: 52800053     	mov	w19, #0x2       // =2
+ffffff8008a7701c: 14000005     	b	0xffffff8008a77030 <psc5415e_get_charging_status+0xa8>
+ffffff8008a77020: 710002df     	cmp	w22, #0x0
+ffffff8008a77024: 1a9f16b3     	csinc	w19, w21, wzr, ne
+ffffff8008a77028: 14000002     	b	0xffffff8008a77030 <psc5415e_get_charging_status+0xa8>
+ffffff8008a7702c: 12800793     	mov	w19, #-0x3d     // =-61
+ffffff8008a77030: d0006829     	adrp	x9, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008a77034: f94007e8     	ldr	x8, [sp, #0x8]
+ffffff8008a77038: f9458529     	ldr	x9, [x9, #0xb08]
+ffffff8008a7703c: eb08013f     	cmp	x9, x8
+ffffff8008a77040: 540000e1     	b.ne	0xffffff8008a7705c <psc5415e_get_charging_status+0xd4>
+ffffff8008a77044: 2a1303e0     	mov	w0, w19
+ffffff8008a77048: a9434ff4     	ldp	x20, x19, [sp, #0x30]
+ffffff8008a7704c: a94257f6     	ldp	x22, x21, [sp, #0x20]
+ffffff8008a77050: a9417bfd     	ldp	x29, x30, [sp, #0x10]
+ffffff8008a77054: 910103ff     	add	sp, sp, #0x40
+ffffff8008a77058: d65f03c0     	ret
+ffffff8008a7705c: 97d8f97f     	bl	0xffffff80080b5658 <__stack_chk_fail>
+
+ffffff8008a77060 <psc5425e_set_opa_mode>:
+ffffff8008a77060: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a77064: f9000bf3     	str	x19, [sp, #0x10]
+ffffff8008a77068: 910003fd     	mov	x29, sp
+ffffff8008a7706c: 2a0003f3     	mov	w19, w0
+ffffff8008a77070: 97d89fcb     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a77074: f0005160     	adrp	x0, 0xffffff80094a6000 <connectivity_export_dump_thread_state.stat_nam+0xfb74>
+ffffff8008a77078: 91336400     	add	x0, x0, #0xcd9
+ffffff8008a7707c: 2a1303e1     	mov	w1, w19
+ffffff8008a77080: 97dabaab     	bl	0xffffff8008125b2c <printk>
+ffffff8008a77084: 52800020     	mov	w0, #0x1        // =1
+ffffff8008a77088: 52800022     	mov	w2, #0x1        // =1
+ffffff8008a7708c: 2a1303e1     	mov	w1, w19
+ffffff8008a77090: 2a1f03e3     	mov	w3, wzr
+ffffff8008a77094: 97fffc48     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a77098: f9400bf3     	ldr	x19, [sp, #0x10]
+ffffff8008a7709c: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a770a0: d65f03c0     	ret
+
+ffffff8008a770a4 <psc5425e_set_otg_pl>:
+ffffff8008a770a4: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a770a8: f9000bf3     	str	x19, [sp, #0x10]
+ffffff8008a770ac: 910003fd     	mov	x29, sp
+ffffff8008a770b0: 2a0003f3     	mov	w19, w0
+ffffff8008a770b4: 97d89fba     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a770b8: d0004a20     	adrp	x0, 0xffffff80093bd000 <decpair+0x276bd0>
+ffffff8008a770bc: 9136c000     	add	x0, x0, #0xdb0
+ffffff8008a770c0: 2a1303e1     	mov	w1, w19
+ffffff8008a770c4: 97daba9a     	bl	0xffffff8008125b2c <printk>
+ffffff8008a770c8: 52800040     	mov	w0, #0x2        // =2
+ffffff8008a770cc: 52800022     	mov	w2, #0x1        // =1
+ffffff8008a770d0: 52800023     	mov	w3, #0x1        // =1
+ffffff8008a770d4: 2a1303e1     	mov	w1, w19
+ffffff8008a770d8: 97fffc37     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a770dc: f9400bf3     	ldr	x19, [sp, #0x10]
+ffffff8008a770e0: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a770e4: d65f03c0     	ret
+
+ffffff8008a770e8 <psc5425e_set_otg_en>:
+ffffff8008a770e8: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a770ec: f9000bf3     	str	x19, [sp, #0x10]
+ffffff8008a770f0: 910003fd     	mov	x29, sp
+ffffff8008a770f4: 2a0003f3     	mov	w19, w0
+ffffff8008a770f8: 97d89fa9     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a770fc: d0004b00     	adrp	x0, 0xffffff80093d9000 <decpair+0x292bd0>
+ffffff8008a77100: 910f6c00     	add	x0, x0, #0x3db
+ffffff8008a77104: 2a1303e1     	mov	w1, w19
+ffffff8008a77108: 97daba89     	bl	0xffffff8008125b2c <printk>
+ffffff8008a7710c: 52800040     	mov	w0, #0x2        // =2
+ffffff8008a77110: 52800022     	mov	w2, #0x1        // =1
+ffffff8008a77114: 2a1303e1     	mov	w1, w19
+ffffff8008a77118: 2a1f03e3     	mov	w3, wzr
+ffffff8008a7711c: 97fffc26     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a77120: f9400bf3     	ldr	x19, [sp, #0x10]
+ffffff8008a77124: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a77128: d65f03c0     	ret
+
+ffffff8008a7712c <psc5425e_driver_probe>:
+ffffff8008a7712c: d10243ff     	sub	sp, sp, #0x90
+ffffff8008a77130: a9057bfd     	stp	x29, x30, [sp, #0x50]
+ffffff8008a77134: f90033f7     	str	x23, [sp, #0x60]
+ffffff8008a77138: a90757f6     	stp	x22, x21, [sp, #0x70]
+ffffff8008a7713c: a9084ff4     	stp	x20, x19, [sp, #0x80]
+ffffff8008a77140: 910143fd     	add	x29, sp, #0x50
+ffffff8008a77144: d0006828     	adrp	x8, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008a77148: f9458508     	ldr	x8, [x8, #0xb08]
+ffffff8008a7714c: aa0003f3     	mov	x19, x0
+ffffff8008a77150: f81f83a8     	stur	x8, [x29, #-0x8]
+ffffff8008a77154: 97d89f92     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a77158: b0004e40     	adrp	x0, 0xffffff8009440000 <process_dbg_opt.temp+0x32f54>
+ffffff8008a7715c: b0004da1     	adrp	x1, 0xffffff800942c000 <process_dbg_opt.temp+0x1ef54>
+ffffff8008a77160: 913f1400     	add	x0, x0, #0xfc5
+ffffff8008a77164: 9120c821     	add	x1, x1, #0x832
+ffffff8008a77168: a9037fff     	stp	xzr, xzr, [sp, #0x30]
+ffffff8008a7716c: a9027fff     	stp	xzr, xzr, [sp, #0x20]
+ffffff8008a77170: a9017fff     	stp	xzr, xzr, [sp, #0x10]
+ffffff8008a77174: a9007fff     	stp	xzr, xzr, [sp]
+ffffff8008a77178: 97daba6d     	bl	0xffffff8008125b2c <printk>
+ffffff8008a7717c: 91008275     	add	x21, x19, #0x20
+ffffff8008a77180: 52901802     	mov	w2, #0x80c0     // =32960
+ffffff8008a77184: 52801901     	mov	w1, #0xc8       // =200
+ffffff8008a77188: 72a00c02     	movk	w2, #0x60, lsl #16
+ffffff8008a7718c: aa1503e0     	mov	x0, x21
+ffffff8008a77190: 97ef231b     	bl	0xffffff800863fdfc <devm_kmalloc>
+ffffff8008a77194: b50001c0     	cbnz	x0, 0xffffff8008a771cc <psc5425e_driver_probe+0xa0>
+ffffff8008a77198: 12800175     	mov	w21, #-0xc      // =-12
+ffffff8008a7719c: d0006829     	adrp	x9, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008a771a0: f85f83a8     	ldur	x8, [x29, #-0x8]
+ffffff8008a771a4: f9458529     	ldr	x9, [x9, #0xb08]
+ffffff8008a771a8: eb08013f     	cmp	x9, x8
+ffffff8008a771ac: 54001e01     	b.ne	0xffffff8008a7756c <psc5425e_driver_probe+0x440>
+ffffff8008a771b0: 2a1503e0     	mov	w0, w21
+ffffff8008a771b4: a9484ff4     	ldp	x20, x19, [sp, #0x80]
+ffffff8008a771b8: a94757f6     	ldp	x22, x21, [sp, #0x70]
+ffffff8008a771bc: f94033f7     	ldr	x23, [sp, #0x60]
+ffffff8008a771c0: a9457bfd     	ldp	x29, x30, [sp, #0x50]
+ffffff8008a771c4: 910243ff     	add	sp, sp, #0x90
+ffffff8008a771c8: d65f03c0     	ret
+ffffff8008a771cc: d0008c68     	adrp	x8, 0xffffff8009c05000 <video_devices+0x678>
+ffffff8008a771d0: f9018113     	str	x19, [x8, #0x300]
+ffffff8008a771d4: f9000815     	str	x21, [x0, #0x10]
+ffffff8008a771d8: f9418a77     	ldr	x23, [x19, #0x310]
+ffffff8008a771dc: aa0003f4     	mov	x20, x0
+ffffff8008a771e0: d00056a0     	adrp	x0, 0xffffff800954d000 <crypto_set_driver_name.suffix+0xbfb3>
+ffffff8008a771e4: b0004fc1     	adrp	x1, 0xffffff8009470000 <task_index_to_char.state_char+0xa374>
+ffffff8008a771e8: 910bbc00     	add	x0, x0, #0x2ef
+ffffff8008a771ec: 911a1821     	add	x1, x1, #0x686
+ffffff8008a771f0: 97daba4f     	bl	0xffffff8008125b2c <printk>
+ffffff8008a771f4: b5000117     	cbnz	x23, 0xffffff8008a77214 <psc5425e_driver_probe+0xe8>
+ffffff8008a771f8: f0005460     	adrp	x0, 0xffffff8009506000 <f_midi_shortname+0x441b6>
+ffffff8008a771fc: b0004fc1     	adrp	x1, 0xffffff8009470000 <task_index_to_char.state_char+0xa374>
+ffffff8008a77200: 91232400     	add	x0, x0, #0x8c9
+ffffff8008a77204: 911a1821     	add	x1, x1, #0x686
+ffffff8008a77208: 97daba49     	bl	0xffffff8008125b2c <printk>
+ffffff8008a7720c: 12800255     	mov	w21, #-0x13     // =-19
+ffffff8008a77210: 17ffffe3     	b	0xffffff8008a7719c <psc5425e_driver_probe+0x70>
+ffffff8008a77214: 91006296     	add	x22, x20, #0x18
+ffffff8008a77218: b0005101     	adrp	x1, 0xffffff8009498000 <connectivity_export_dump_thread_state.stat_nam+0x1b74>
+ffffff8008a7721c: 913fa421     	add	x1, x1, #0xfe9
+ffffff8008a77220: aa1703e0     	mov	x0, x23
+ffffff8008a77224: aa1603e2     	mov	x2, x22
+ffffff8008a77228: 94030b76     	bl	0xffffff8008b3a000 <of_property_read_string>
+ffffff8008a7722c: 36f80120     	tbz	w0, #0x1f, 0xffffff8008a77250 <psc5425e_driver_probe+0x124>
+ffffff8008a77230: f0005388     	adrp	x8, 0xffffff80094ea000 <f_midi_shortname+0x281b6>
+ffffff8008a77234: b0005700     	adrp	x0, 0xffffff8009558000 <crypto_set_driver_name.suffix+0x16fb3>
+ffffff8008a77238: b0004fc1     	adrp	x1, 0xffffff8009470000 <task_index_to_char.state_char+0xa374>
+ffffff8008a7723c: 91231908     	add	x8, x8, #0x8c6
+ffffff8008a77240: 910c8400     	add	x0, x0, #0x321
+ffffff8008a77244: 911a1821     	add	x1, x1, #0x686
+ffffff8008a77248: f90002c8     	str	x8, [x22]
+ffffff8008a7724c: 97daba38     	bl	0xffffff8008125b2c <printk>
+ffffff8008a77250: 91002296     	add	x22, x20, #0x8
+ffffff8008a77254: 90004b81     	adrp	x1, 0xffffff80093e7000 <decpair+0x2a0bd0>
+ffffff8008a77258: 91069421     	add	x1, x1, #0x1a5
+ffffff8008a7725c: aa1703e0     	mov	x0, x23
+ffffff8008a77260: aa1603e2     	mov	x2, x22
+ffffff8008a77264: 94030b67     	bl	0xffffff8008b3a000 <of_property_read_string>
+ffffff8008a77268: 36f80120     	tbz	w0, #0x1f, 0xffffff8008a7728c <psc5425e_driver_probe+0x160>
+ffffff8008a7726c: b0005628     	adrp	x8, 0xffffff800953c000 <f_midi_longname+0x1b119>
+ffffff8008a77270: f0005160     	adrp	x0, 0xffffff80094a6000 <connectivity_export_dump_thread_state.stat_nam+0xfb74>
+ffffff8008a77274: b0004fc1     	adrp	x1, 0xffffff8009470000 <task_index_to_char.state_char+0xa374>
+ffffff8008a77278: 91333108     	add	x8, x8, #0xccc
+ffffff8008a7727c: 9133f800     	add	x0, x0, #0xcfe
+ffffff8008a77280: 911a1821     	add	x1, x1, #0x686
+ffffff8008a77284: f90002c8     	str	x8, [x22]
+ffffff8008a77288: 97daba29     	bl	0xffffff8008125b2c <printk>
+ffffff8008a7728c: d10033a1     	sub	x1, x29, #0xc
+ffffff8008a77290: 52800060     	mov	w0, #0x3        // =3
+ffffff8008a77294: 52801fe2     	mov	w2, #0xff       // =255
+ffffff8008a77298: 2a1f03e3     	mov	w3, wzr
+ffffff8008a7729c: 381f43bf     	sturb	wzr, [x29, #-0xc]
+ffffff8008a772a0: 97fffb92     	bl	0xffffff8008a760e8 <psc5425e_read_interface>
+ffffff8008a772a4: 385f43a3     	ldurb	w3, [x29, #-0xc]
+ffffff8008a772a8: 900055c0     	adrp	x0, 0xffffff800952f000 <f_midi_longname+0xe119>
+ffffff8008a772ac: f0005461     	adrp	x1, 0xffffff8009506000 <f_midi_shortname+0x441b6>
+ffffff8008a772b0: f0007017     	adrp	x23, 0xffffff800987a000 <event_vb2_v4l2_buf_queue+0x50>
+ffffff8008a772b4: 7103bc7f     	cmp	w3, #0xef
+ffffff8008a772b8: 1a9f97e2     	cset	w2, hi
+ffffff8008a772bc: 9124ec00     	add	x0, x0, #0x93b
+ffffff8008a772c0: 91236421     	add	x1, x1, #0x8d9
+ffffff8008a772c4: b905a2e2     	str	w2, [x23, #0x5a0]
+ffffff8008a772c8: 97daba19     	bl	0xffffff8008125b2c <printk>
+ffffff8008a772cc: b945a2e8     	ldr	w8, [x23, #0x5a0]
+ffffff8008a772d0: 35000108     	cbnz	w8, 0xffffff8008a772f0 <psc5425e_driver_probe+0x1c4>
+ffffff8008a772d4: b0004fc0     	adrp	x0, 0xffffff8009470000 <task_index_to_char.state_char+0xa374>
+ffffff8008a772d8: b0004da1     	adrp	x1, 0xffffff800942c000 <process_dbg_opt.temp+0x1ef54>
+ffffff8008a772dc: 91190c00     	add	x0, x0, #0x643
+ffffff8008a772e0: 9120c821     	add	x1, x1, #0x832
+ffffff8008a772e4: 97daba12     	bl	0xffffff8008125b2c <printk>
+ffffff8008a772e8: 12800015     	mov	w21, #-0x1      // =-1
+ffffff8008a772ec: 17ffffac     	b	0xffffff8008a7719c <psc5425e_driver_probe+0x70>
+ffffff8008a772f0: b0005100     	adrp	x0, 0xffffff8009498000 <connectivity_export_dump_thread_state.stat_nam+0x1b74>
+ffffff8008a772f4: b0004da1     	adrp	x1, 0xffffff800942c000 <process_dbg_opt.temp+0x1ef54>
+ffffff8008a772f8: 91028800     	add	x0, x0, #0xa2
+ffffff8008a772fc: 9120c821     	add	x1, x1, #0x832
+ffffff8008a77300: 5280cd42     	mov	w2, #0x66a      // =1642
+ffffff8008a77304: 97daba0a     	bl	0xffffff8008125b2c <printk>
+ffffff8008a77308: 52800020     	mov	w0, #0x1        // =1
+ffffff8008a7730c: 52801f01     	mov	w1, #0xf8       // =248
+ffffff8008a77310: 52801fe2     	mov	w2, #0xff       // =255
+ffffff8008a77314: 2a1f03e3     	mov	w3, wzr
+ffffff8008a77318: 97fffba7     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a7731c: 52800040     	mov	w0, #0x2        // =2
+ffffff8008a77320: 52800481     	mov	w1, #0x24       // =36
+ffffff8008a77324: 528007e2     	mov	w2, #0x3f       // =63
+ffffff8008a77328: 52800043     	mov	w3, #0x2        // =2
+ffffff8008a7732c: 97fffba2     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a77330: 52800080     	mov	w0, #0x4        // =4
+ffffff8008a77334: 52800ec1     	mov	w1, #0x76       // =118
+ffffff8008a77338: 52801fe2     	mov	w2, #0xff       // =255
+ffffff8008a7733c: 2a1f03e3     	mov	w3, wzr
+ffffff8008a77340: 97fffb9d     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a77344: 528000a0     	mov	w0, #0x5        // =5
+ffffff8008a77348: 52800481     	mov	w1, #0x24       // =36
+ffffff8008a7734c: 52801fe2     	mov	w2, #0xff       // =255
+ffffff8008a77350: 2a1f03e3     	mov	w3, wzr
+ffffff8008a77354: 97fffb98     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a77358: f0004a80     	adrp	x0, 0xffffff80093ca000 <decpair+0x283bd0>
+ffffff8008a7735c: b00051e1     	adrp	x1, 0xffffff80094b4000 <connectivity_export_dump_thread_state.stat_nam+0x1db74>
+ffffff8008a77360: 913bb800     	add	x0, x0, #0xeee
+ffffff8008a77364: 912f6021     	add	x1, x1, #0xbd8
+ffffff8008a77368: 97dab9f1     	bl	0xffffff8008125b2c <printk>
+ffffff8008a7736c: f9400e80     	ldr	x0, [x20, #0x18]
+ffffff8008a77370: f0007003     	adrp	x3, 0xffffff800987a000 <event_vb2_v4l2_buf_queue+0x50>
+ffffff8008a77374: 912b8063     	add	x3, x3, #0xae0
+ffffff8008a77378: aa1503e1     	mov	x1, x21
+ffffff8008a7737c: aa1403e2     	mov	x2, x20
+ffffff8008a77380: aa1603e4     	mov	x4, x22
+ffffff8008a77384: 94006884     	bl	0xffffff8008a91594 <charger_device_register>
+ffffff8008a77388: f9000280     	str	x0, [x20]
+ffffff8008a7738c: b4000780     	cbz	x0, 0xffffff8008a7747c <psc5425e_driver_probe+0x350>
+ffffff8008a77390: b13ffc1f     	cmn	x0, #0xfff
+ffffff8008a77394: 54000742     	b.hs	0xffffff8008a7747c <psc5425e_driver_probe+0x350>
+ffffff8008a77398: b0004da0     	adrp	x0, 0xffffff800942c000 <process_dbg_opt.temp+0x1ef54>
+ffffff8008a7739c: b0004da1     	adrp	x1, 0xffffff800942c000 <process_dbg_opt.temp+0x1ef54>
+ffffff8008a773a0: 91212000     	add	x0, x0, #0x848
+ffffff8008a773a4: 9120c821     	add	x1, x1, #0x832
+ffffff8008a773a8: 5280cf02     	mov	w2, #0x678      // =1656
+ffffff8008a773ac: 97dab9e0     	bl	0xffffff8008125b2c <printk>
+ffffff8008a773b0: d0008c60     	adrp	x0, 0xffffff8009c05000 <video_devices+0x678>
+ffffff8008a773b4: f0005681     	adrp	x1, 0xffffff800954a000 <crypto_set_driver_name.suffix+0x8fb3>
+ffffff8008a773b8: d0008c62     	adrp	x2, 0xffffff8009c05000 <video_devices+0x678>
+ffffff8008a773bc: 910a4000     	add	x0, x0, #0x290
+ffffff8008a773c0: 91047421     	add	x1, x1, #0x11d
+ffffff8008a773c4: 910c2442     	add	x2, x2, #0x309
+ffffff8008a773c8: 97da514c     	bl	0xffffff800810b8f8 <__init_waitqueue_head>
+ffffff8008a773cc: f0ffffe0     	adrp	x0, 0xffffff8008a76000 <syscon_reboot_mode_probe+0xec>
+ffffff8008a773d0: 900052c3     	adrp	x3, 0xffffff80094cf000 <f_midi_shortname+0xd1b6>
+ffffff8008a773d4: 910e9000     	add	x0, x0, #0x3a4
+ffffff8008a773d8: 91285863     	add	x3, x3, #0xa16
+ffffff8008a773dc: 12800002     	mov	w2, #-0x1       // =-1
+ffffff8008a773e0: aa1f03e1     	mov	x1, xzr
+ffffff8008a773e4: 97d992e1     	bl	0xffffff80080dbf68 <kthread_create_on_node>
+ffffff8008a773e8: b140041f     	cmn	x0, #0x1, lsl #12 // =0x1000
+ffffff8008a773ec: 54000048     	b.hi	0xffffff8008a773f4 <psc5425e_driver_probe+0x2c8>
+ffffff8008a773f0: 97d9d10a     	bl	0xffffff80080eb818 <wake_up_process>
+ffffff8008a773f4: d0008c75     	adrp	x21, 0xffffff8009c05000 <video_devices+0x678>
+ffffff8008a773f8: 910aa2b5     	add	x21, x21, #0x2a8
+ffffff8008a773fc: 52800021     	mov	w1, #0x1        // =1
+ffffff8008a77400: 52800022     	mov	w2, #0x1        // =1
+ffffff8008a77404: aa1503e0     	mov	x0, x21
+ffffff8008a77408: 97db48e7     	bl	0xffffff80081497a4 <hrtimer_init>
+ffffff8008a7740c: d29c8001     	mov	x1, #0xe400     // =58368
+ffffff8008a77410: f0ffffe8     	adrp	x8, 0xffffff8008a76000 <syscon_reboot_mode_probe+0xec>
+ffffff8008a77414: f2aa8161     	movk	x1, #0x540b, lsl #16
+ffffff8008a77418: 910b3108     	add	x8, x8, #0x2cc
+ffffff8008a7741c: f2c00041     	movk	x1, #0x2, lsl #32
+ffffff8008a77420: 52800023     	mov	w3, #0x1        // =1
+ffffff8008a77424: aa1503e0     	mov	x0, x21
+ffffff8008a77428: aa1f03e2     	mov	x2, xzr
+ffffff8008a7742c: f90016a8     	str	x8, [x21, #0x28]
+ffffff8008a77430: 97db469c     	bl	0xffffff8008148ea0 <hrtimer_start_range_ns>
+ffffff8008a77434: f9400a80     	ldr	x0, [x20, #0x10]
+ffffff8008a77438: d00033e1     	adrp	x1, 0xffffff80090f5000 <syscon_reboot_mode_of_match+0xc8>
+ffffff8008a7743c: 91132021     	add	x1, x1, #0x4c8
+ffffff8008a77440: 910003e2     	mov	x2, sp
+ffffff8008a77444: f90003e0     	str	x0, [sp]
+ffffff8008a77448: f9000bf4     	str	x20, [sp, #0x10]
+ffffff8008a7744c: 97ea41a2     	bl	0xffffff8008507ad4 <devm_regulator_register>
+ffffff8008a77450: b13ffc1f     	cmn	x0, #0xfff
+ffffff8008a77454: f9001a80     	str	x0, [x20, #0x30]
+ffffff8008a77458: 54000203     	b.lo	0xffffff8008a77498 <psc5425e_driver_probe+0x36c>
+ffffff8008a7745c: aa0003f5     	mov	x21, x0
+ffffff8008a77460: b0004fc0     	adrp	x0, 0xffffff8009470000 <task_index_to_char.state_char+0xa374>
+ffffff8008a77464: b0004da1     	adrp	x1, 0xffffff800942c000 <process_dbg_opt.temp+0x1ef54>
+ffffff8008a77468: 91197000     	add	x0, x0, #0x65c
+ffffff8008a7746c: 9120c821     	add	x1, x1, #0x832
+ffffff8008a77470: 2a1503e2     	mov	w2, w21
+ffffff8008a77474: 97dab9ae     	bl	0xffffff8008125b2c <printk>
+ffffff8008a77478: 17ffff49     	b	0xffffff8008a7719c <psc5425e_driver_probe+0x70>
+ffffff8008a7747c: b0004cc0     	adrp	x0, 0xffffff8009410000 <process_dbg_opt.temp+0x2f54>
+ffffff8008a77480: b0004da1     	adrp	x1, 0xffffff800942c000 <process_dbg_opt.temp+0x1ef54>
+ffffff8008a77484: 9139dc00     	add	x0, x0, #0xe77
+ffffff8008a77488: 9120c821     	add	x1, x1, #0x832
+ffffff8008a7748c: 97dab9a8     	bl	0xffffff8008125b2c <printk>
+ffffff8008a77490: b9400295     	ldr	w21, [x20]
+ffffff8008a77494: 17ffff42     	b	0xffffff8008a7719c <psc5425e_driver_probe+0x70>
+ffffff8008a77498: b0005628     	adrp	x8, 0xffffff800953c000 <f_midi_longname+0x1b119>
+ffffff8008a7749c: 91333108     	add	x8, x8, #0xccc
+ffffff8008a774a0: aa1403e1     	mov	x1, x20
+ffffff8008a774a4: f0007009     	adrp	x9, 0xffffff800987a000 <event_vb2_v4l2_buf_queue+0x50>
+ffffff8008a774a8: 91330129     	add	x9, x9, #0xcc0
+ffffff8008a774ac: 5280006a     	mov	w10, #0x3       // =3
+ffffff8008a774b0: f8038c28     	str	x8, [x1, #0x38]!
+ffffff8008a774b4: 90000008     	adrp	x8, 0xffffff8008a77000 <psc5415e_get_charging_status+0x78>
+ffffff8008a774b8: 9115c108     	add	x8, x8, #0x570
+ffffff8008a774bc: a905aa89     	stp	x9, x10, [x20, #0x58]
+ffffff8008a774c0: f0007009     	adrp	x9, 0xffffff800987a000 <event_vb2_v4l2_buf_queue+0x50>
+ffffff8008a774c4: 91333129     	add	x9, x9, #0xccc
+ffffff8008a774c8: f9003688     	str	x8, [x20, #0x68]
+ffffff8008a774cc: 52800088     	mov	w8, #0x4        // =4
+ffffff8008a774d0: b900429f     	str	wzr, [x20, #0x40]
+ffffff8008a774d4: a904a289     	stp	x9, x8, [x20, #0x48]
+ffffff8008a774d8: f9005694     	str	x20, [x20, #0xa8]
+ffffff8008a774dc: f9418a68     	ldr	x8, [x19, #0x310]
+ffffff8008a774e0: 52800049     	mov	w9, #0x2        // =2
+ffffff8008a774e4: f8098e88     	str	x8, [x20, #0x98]!
+ffffff8008a774e8: f8578280     	ldur	x0, [x20, #-0x88]
+ffffff8008a774ec: f0007008     	adrp	x8, 0xffffff800987a000 <event_vb2_v4l2_buf_queue+0x50>
+ffffff8008a774f0: 91338108     	add	x8, x8, #0xce0
+ffffff8008a774f4: aa1403e2     	mov	x2, x20
+ffffff8008a774f8: a901a688     	stp	x8, x9, [x20, #0x18]
+ffffff8008a774fc: 940093c2     	bl	0xffffff8008a9c404 <power_supply_register>
+ffffff8008a77500: b140041f     	cmn	x0, #0x1, lsl #12 // =0x1000
+ffffff8008a77504: f9001680     	str	x0, [x20, #0x28]
+ffffff8008a77508: 540000a9     	b.ls	0xffffff8008a7751c <psc5425e_driver_probe+0x3f0>
+ffffff8008a7750c: aa0003e1     	mov	x1, x0
+ffffff8008a77510: f0004d20     	adrp	x0, 0xffffff800941e000 <process_dbg_opt.temp+0x10f54>
+ffffff8008a77514: 912c5c00     	add	x0, x0, #0xb17
+ffffff8008a77518: 14000012     	b	0xffffff8008a77560 <psc5425e_driver_probe+0x434>
+ffffff8008a7751c: d0008c74     	adrp	x20, 0xffffff8009c05000 <video_devices+0x678>
+ffffff8008a77520: aa1f03f3     	mov	x19, xzr
+ffffff8008a77524: 910bc294     	add	x20, x20, #0x2f0
+ffffff8008a77528: 8b130281     	add	x1, x20, x19
+ffffff8008a7752c: 2a1303e0     	mov	w0, w19
+ffffff8008a77530: 97fffc06     	bl	0xffffff8008a76548 <psc5425e_read_byte>
+ffffff8008a77534: 34000080     	cbz	w0, 0xffffff8008a77544 <psc5425e_driver_probe+0x418>
+ffffff8008a77538: 91000673     	add	x19, x19, #0x1
+ffffff8008a7753c: f1003a7f     	cmp	x19, #0xe
+ffffff8008a77540: 54ffff41     	b.ne	0xffffff8008a77528 <psc5425e_driver_probe+0x3fc>
+ffffff8008a77544: f0007000     	adrp	x0, 0xffffff800987a000 <event_vb2_v4l2_buf_queue+0x50>
+ffffff8008a77548: 9133c000     	add	x0, x0, #0xcf0
+ffffff8008a7754c: 97efbd7f     	bl	0xffffff8008666b48 <hw_module_info_add>
+ffffff8008a77550: f0004a80     	adrp	x0, 0xffffff80093ca000 <decpair+0x283bd0>
+ffffff8008a77554: b0004da1     	adrp	x1, 0xffffff800942c000 <process_dbg_opt.temp+0x1ef54>
+ffffff8008a77558: 913b8800     	add	x0, x0, #0xee2
+ffffff8008a7755c: 9120c821     	add	x1, x1, #0x832
+ffffff8008a77560: 97dab973     	bl	0xffffff8008125b2c <printk>
+ffffff8008a77564: 2a1f03f5     	mov	w21, wzr
+ffffff8008a77568: 17ffff0d     	b	0xffffff8008a7719c <psc5425e_driver_probe+0x70>
+ffffff8008a7756c: 97d8f83b     	bl	0xffffff80080b5658 <__stack_chk_fail>
+
+ffffff8008a77570 <psc5425e_chg_get_property>:
+ffffff8008a77570: d10103ff     	sub	sp, sp, #0x40
+ffffff8008a77574: a9017bfd     	stp	x29, x30, [sp, #0x10]
+ffffff8008a77578: f90013f5     	str	x21, [sp, #0x20]
+ffffff8008a7757c: a9034ff4     	stp	x20, x19, [sp, #0x30]
+ffffff8008a77580: 910043fd     	add	x29, sp, #0x10
+ffffff8008a77584: d0006828     	adrp	x8, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008a77588: f9458508     	ldr	x8, [x8, #0xb08]
+ffffff8008a7758c: aa0203f3     	mov	x19, x2
+ffffff8008a77590: 2a0103f5     	mov	w21, w1
+ffffff8008a77594: aa0003f4     	mov	x20, x0
+ffffff8008a77598: f90007e8     	str	x8, [sp, #0x8]
+ffffff8008a7759c: 97d89e80     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a775a0: aa1403e0     	mov	x0, x20
+ffffff8008a775a4: 9400956f     	bl	0xffffff8008a9cb60 <power_supply_get_drvdata>
+ffffff8008a775a8: 2a1f03f4     	mov	w20, wzr
+ffffff8008a775ac: 71003ebf     	cmp	w21, #0xf
+ffffff8008a775b0: 390013ff     	strb	wzr, [sp, #0x4]
+ffffff8008a775b4: b900027f     	str	wzr, [x19]
+ffffff8008a775b8: 5400012d     	b.le	0xffffff8008a775dc <psc5425e_chg_get_property+0x6c>
+ffffff8008a775bc: 710042bf     	cmp	w21, #0x10
+ffffff8008a775c0: 54000220     	b.eq	0xffffff8008a77604 <psc5425e_chg_get_property+0x94>
+ffffff8008a775c4: 7100eebf     	cmp	w21, #0x3b
+ffffff8008a775c8: 54000360     	b.eq	0xffffff8008a77634 <psc5425e_chg_get_property+0xc4>
+ffffff8008a775cc: 7100eabf     	cmp	w21, #0x3a
+ffffff8008a775d0: 54000301     	b.ne	0xffffff8008a77630 <psc5425e_chg_get_property+0xc0>
+ffffff8008a775d4: b9404008     	ldr	w8, [x0, #0x40]
+ffffff8008a775d8: 14000010     	b	0xffffff8008a77618 <psc5425e_chg_get_property+0xa8>
+ffffff8008a775dc: 710012bf     	cmp	w21, #0x4
+ffffff8008a775e0: 540002a0     	b.eq	0xffffff8008a77634 <psc5425e_chg_get_property+0xc4>
+ffffff8008a775e4: 710022bf     	cmp	w21, #0x8
+ffffff8008a775e8: 54000221     	b.ne	0xffffff8008a7762c <psc5425e_chg_get_property+0xbc>
+ffffff8008a775ec: b9404008     	ldr	w8, [x0, #0x40]
+ffffff8008a775f0: 7100111f     	cmp	w8, #0x4
+ffffff8008a775f4: 54000181     	b.ne	0xffffff8008a77624 <psc5425e_chg_get_property+0xb4>
+ffffff8008a775f8: 52896808     	mov	w8, #0x4b40     // =19264
+ffffff8008a775fc: 72a00988     	movk	w8, #0x4c, lsl #16
+ffffff8008a77600: 14000006     	b	0xffffff8008a77618 <psc5425e_chg_get_property+0xa8>
+ffffff8008a77604: b9404008     	ldr	w8, [x0, #0x40]
+ffffff8008a77608: 7100111f     	cmp	w8, #0x4
+ffffff8008a7760c: 540000c1     	b.ne	0xffffff8008a77624 <psc5425e_chg_get_property+0xb4>
+ffffff8008a77610: 52942408     	mov	w8, #0xa120     // =41248
+ffffff8008a77614: 72a000e8     	movk	w8, #0x7, lsl #16
+ffffff8008a77618: 2a1f03f4     	mov	w20, wzr
+ffffff8008a7761c: b9000268     	str	w8, [x19]
+ffffff8008a77620: 14000005     	b	0xffffff8008a77634 <psc5425e_chg_get_property+0xc4>
+ffffff8008a77624: 2a1f03f4     	mov	w20, wzr
+ffffff8008a77628: 14000003     	b	0xffffff8008a77634 <psc5425e_chg_get_property+0xc4>
+ffffff8008a7762c: 340001b5     	cbz	w21, 0xffffff8008a77660 <psc5425e_chg_get_property+0xf0>
+ffffff8008a77630: 12800794     	mov	w20, #-0x3d     // =-61
+ffffff8008a77634: d0006829     	adrp	x9, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008a77638: f94007e8     	ldr	x8, [sp, #0x8]
+ffffff8008a7763c: f9458529     	ldr	x9, [x9, #0xb08]
+ffffff8008a77640: eb08013f     	cmp	x9, x8
+ffffff8008a77644: 54000441     	b.ne	0xffffff8008a776cc <psc5425e_chg_get_property+0x15c>
+ffffff8008a77648: 2a1403e0     	mov	w0, w20
+ffffff8008a7764c: a9434ff4     	ldp	x20, x19, [sp, #0x30]
+ffffff8008a77650: f94013f5     	ldr	x21, [sp, #0x20]
+ffffff8008a77654: a9417bfd     	ldp	x29, x30, [sp, #0x10]
+ffffff8008a77658: 910103ff     	add	sp, sp, #0x40
+ffffff8008a7765c: d65f03c0     	ret
+ffffff8008a77660: 910013e1     	add	x1, sp, #0x4
+ffffff8008a77664: 52800062     	mov	w2, #0x3        // =3
+ffffff8008a77668: 52800083     	mov	w3, #0x4        // =4
+ffffff8008a7766c: 2a1f03e0     	mov	w0, wzr
+ffffff8008a77670: 97fffa9e     	bl	0xffffff8008a760e8 <psc5425e_read_interface>
+ffffff8008a77674: 394013f5     	ldrb	w21, [sp, #0x4]
+ffffff8008a77678: 2a0003f4     	mov	w20, w0
+ffffff8008a7767c: 900055c0     	adrp	x0, 0xffffff800952f000 <f_midi_longname+0xe119>
+ffffff8008a77680: 9125e400     	add	x0, x0, #0x979
+ffffff8008a77684: 2a1503e1     	mov	w1, w21
+ffffff8008a77688: 97dab929     	bl	0xffffff8008125b2c <printk>
+ffffff8008a7768c: 71000ebf     	cmp	w21, #0x3
+ffffff8008a77690: 54000128     	b.hi	0xffffff8008a776b4 <psc5425e_chg_get_property+0x144>
+ffffff8008a77694: d00033e8     	adrp	x8, 0xffffff80090f5000 <syscon_reboot_mode_of_match+0xc8>
+ffffff8008a77698: 91032108     	add	x8, x8, #0xc8
+ffffff8008a7769c: 10000089     	adr	x9, 0xffffff8008a776ac <psc5425e_chg_get_property+0x13c>
+ffffff8008a776a0: 3875690a     	ldrb	w10, [x8, x21]
+ffffff8008a776a4: 8b0a0929     	add	x9, x9, x10, lsl #2
+ffffff8008a776a8: d61f0120     	br	x9
+ffffff8008a776ac: 52800068     	mov	w8, #0x3        // =3
+ffffff8008a776b0: 17ffffdb     	b	0xffffff8008a7761c <psc5425e_chg_get_property+0xac>
+ffffff8008a776b4: b900027f     	str	wzr, [x19]
+ffffff8008a776b8: 17ffffdf     	b	0xffffff8008a77634 <psc5425e_chg_get_property+0xc4>
+ffffff8008a776bc: 52800028     	mov	w8, #0x1        // =1
+ffffff8008a776c0: 17ffffd7     	b	0xffffff8008a7761c <psc5425e_chg_get_property+0xac>
+ffffff8008a776c4: 52800088     	mov	w8, #0x4        // =4
+ffffff8008a776c8: 17ffffd5     	b	0xffffff8008a7761c <psc5425e_chg_get_property+0xac>
+ffffff8008a776cc: 97d8f7e3     	bl	0xffffff80080b5658 <__stack_chk_fail>
+
+ffffff8008a776d0 <psc5425e_dump_register>:
+ffffff8008a776d0: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a776d4: a9014ff4     	stp	x20, x19, [sp, #0x10]
+ffffff8008a776d8: 910003fd     	mov	x29, sp
+ffffff8008a776dc: 97d89e30     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a776e0: d0008c74     	adrp	x20, 0xffffff8009c05000 <video_devices+0x678>
+ffffff8008a776e4: aa1f03f3     	mov	x19, xzr
+ffffff8008a776e8: 910bc294     	add	x20, x20, #0x2f0
+ffffff8008a776ec: 8b130281     	add	x1, x20, x19
+ffffff8008a776f0: 2a1303e0     	mov	w0, w19
+ffffff8008a776f4: 97fffb95     	bl	0xffffff8008a76548 <psc5425e_read_byte>
+ffffff8008a776f8: 340000c0     	cbz	w0, 0xffffff8008a77710 <psc5425e_dump_register+0x40>
+ffffff8008a776fc: 91000673     	add	x19, x19, #0x1
+ffffff8008a77700: f1003a7f     	cmp	x19, #0xe
+ffffff8008a77704: 54ffff41     	b.ne	0xffffff8008a776ec <psc5425e_dump_register+0x1c>
+ffffff8008a77708: 2a1f03e0     	mov	w0, wzr
+ffffff8008a7770c: 14000002     	b	0xffffff8008a77714 <psc5425e_dump_register+0x44>
+ffffff8008a77710: 52800020     	mov	w0, #0x1        // =1
+ffffff8008a77714: a9414ff4     	ldp	x20, x19, [sp, #0x10]
+ffffff8008a77718: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a7771c: d65f03c0     	ret
+
+ffffff8008a77720 <psc5425e_enable_charging>:
+ffffff8008a77720: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a77724: f9000bf3     	str	x19, [sp, #0x10]
+ffffff8008a77728: 910003fd     	mov	x29, sp
+ffffff8008a7772c: 2a0103f3     	mov	w19, w1
+ffffff8008a77730: 97d89e1b     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a77734: f0004d20     	adrp	x0, 0xffffff800941e000 <process_dbg_opt.temp+0x10f54>
+ffffff8008a77738: 12000261     	and	w1, w19, #0x1
+ffffff8008a7773c: 912cbc00     	add	x0, x0, #0xb2f
+ffffff8008a77740: 97dab8fb     	bl	0xffffff8008125b2c <printk>
+ffffff8008a77744: 52800020     	mov	w0, #0x1        // =1
+ffffff8008a77748: 36000133     	tbz	w19, #0x0, 0xffffff8008a7776c <psc5425e_enable_charging+0x4c>
+ffffff8008a7774c: 52800022     	mov	w2, #0x1        // =1
+ffffff8008a77750: 52800043     	mov	w3, #0x2        // =2
+ffffff8008a77754: 2a1f03e1     	mov	w1, wzr
+ffffff8008a77758: 97fffa97     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a7775c: f9400bf3     	ldr	x19, [sp, #0x10]
+ffffff8008a77760: 2a1f03e0     	mov	w0, wzr
+ffffff8008a77764: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a77768: d65f03c0     	ret
+ffffff8008a7776c: 52800021     	mov	w1, #0x1        // =1
+ffffff8008a77770: 52800022     	mov	w2, #0x1        // =1
+ffffff8008a77774: 52800043     	mov	w3, #0x2        // =2
+ffffff8008a77778: 97fffa8f     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a7777c: f0004d20     	adrp	x0, 0xffffff800941e000 <process_dbg_opt.temp+0x10f54>
+ffffff8008a77780: 912d2c00     	add	x0, x0, #0xb4b
+ffffff8008a77784: 97dab8ea     	bl	0xffffff8008125b2c <printk>
+ffffff8008a77788: 17fffff5     	b	0xffffff8008a7775c <psc5425e_enable_charging+0x3c>
+
+ffffff8008a7778c <psc5425e_get_current>:
+ffffff8008a7778c: a9bf7bfd     	stp	x29, x30, [sp, #-0x10]!
+ffffff8008a77790: 910003fd     	mov	x29, sp
+ffffff8008a77794: 97d89e02     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a77798: 2a1f03e0     	mov	w0, wzr
+ffffff8008a7779c: a8c17bfd     	ldp	x29, x30, [sp], #0x10
+ffffff8008a777a0: d65f03c0     	ret
+
+ffffff8008a777a4 <psc5425e_set_current>:
+ffffff8008a777a4: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a777a8: a9014ff4     	stp	x20, x19, [sp, #0x10]
+ffffff8008a777ac: 910003fd     	mov	x29, sp
+ffffff8008a777b0: 2a0103f3     	mov	w19, w1
+ffffff8008a777b4: 97d89dfa     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a777b8: 52805028     	mov	w8, #0x281      // =641
+ffffff8008a777bc: 72a00148     	movk	w8, #0xa, lsl #16
+ffffff8008a777c0: 6b08027f     	cmp	w19, w8
+ffffff8008a777c4: 54000062     	b.hs	0xffffff8008a777d0 <psc5425e_set_current+0x2c>
+ffffff8008a777c8: 2a1f03f4     	mov	w20, wzr
+ffffff8008a777cc: 14000024     	b	0xffffff8008a7785c <psc5425e_set_current+0xb8>
+ffffff8008a777d0: 529fca28     	mov	w8, #0xfe51     // =65105
+ffffff8008a777d4: 72a00168     	movk	w8, #0xb, lsl #16
+ffffff8008a777d8: 6b08027f     	cmp	w19, w8
+ffffff8008a777dc: 54000062     	b.hs	0xffffff8008a777e8 <psc5425e_set_current+0x44>
+ffffff8008a777e0: 52800034     	mov	w20, #0x1       // =1
+ffffff8008a777e4: 1400001e     	b	0xffffff8008a7785c <psc5425e_set_current+0xb8>
+ffffff8008a777e8: 529fb828     	mov	w8, #0xfdc1     // =64961
+ffffff8008a777ec: 72a001e8     	movk	w8, #0xf, lsl #16
+ffffff8008a777f0: 6b08027f     	cmp	w19, w8
+ffffff8008a777f4: 54000062     	b.hs	0xffffff8008a77800 <psc5425e_set_current+0x5c>
+ffffff8008a777f8: 52800054     	mov	w20, #0x2       // =2
+ffffff8008a777fc: 14000018     	b	0xffffff8008a7785c <psc5425e_set_current+0xb8>
+ffffff8008a77800: 52802c28     	mov	w8, #0x161      // =353
+ffffff8008a77804: 72a00248     	movk	w8, #0x12, lsl #16
+ffffff8008a77808: 6b08027f     	cmp	w19, w8
+ffffff8008a7780c: 54000062     	b.hs	0xffffff8008a77818 <psc5425e_set_current+0x74>
+ffffff8008a77810: 52800074     	mov	w20, #0x3       // =3
+ffffff8008a77814: 14000012     	b	0xffffff8008a7785c <psc5425e_set_current+0xb8>
+ffffff8008a77818: 52801a28     	mov	w8, #0xd1       // =209
+ffffff8008a7781c: 72a002c8     	movk	w8, #0x16, lsl #16
+ffffff8008a77820: 6b08027f     	cmp	w19, w8
+ffffff8008a77824: 54000062     	b.hs	0xffffff8008a77830 <psc5425e_set_current+0x8c>
+ffffff8008a77828: 52800094     	mov	w20, #0x4       // =4
+ffffff8008a7782c: 1400000c     	b	0xffffff8008a7785c <psc5425e_set_current+0xb8>
+ffffff8008a77830: 52808e28     	mov	w8, #0x471      // =1137
+ffffff8008a77834: 72a00308     	movk	w8, #0x18, lsl #16
+ffffff8008a77838: 6b08027f     	cmp	w19, w8
+ffffff8008a7783c: 54000062     	b.hs	0xffffff8008a77848 <psc5425e_set_current+0xa4>
+ffffff8008a77840: 528000b4     	mov	w20, #0x5       // =5
+ffffff8008a77844: 14000006     	b	0xffffff8008a7785c <psc5425e_set_current+0xb8>
+ffffff8008a77848: 52807c28     	mov	w8, #0x3e1      // =993
+ffffff8008a7784c: 72a00388     	movk	w8, #0x1c, lsl #16
+ffffff8008a77850: 6b08027f     	cmp	w19, w8
+ffffff8008a77854: 528000c8     	mov	w8, #0x6        // =6
+ffffff8008a77858: 1a883514     	cinc	w20, w8, hs
+ffffff8008a7785c: 52800080     	mov	w0, #0x4        // =4
+ffffff8008a77860: 528000e2     	mov	w2, #0x7        // =7
+ffffff8008a77864: 52800083     	mov	w3, #0x4        // =4
+ffffff8008a77868: 2a1403e1     	mov	w1, w20
+ffffff8008a7786c: 97fffa52     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a77870: 900052c0     	adrp	x0, 0xffffff80094cf000 <f_midi_shortname+0xd1b6>
+ffffff8008a77874: 9128a400     	add	x0, x0, #0xa29
+ffffff8008a77878: 2a1303e1     	mov	w1, w19
+ffffff8008a7787c: 2a1403e2     	mov	w2, w20
+ffffff8008a77880: 97dab8ab     	bl	0xffffff8008125b2c <printk>
+ffffff8008a77884: a9414ff4     	ldp	x20, x19, [sp, #0x10]
+ffffff8008a77888: 52800020     	mov	w0, #0x1        // =1
+ffffff8008a7788c: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a77890: d65f03c0     	ret
+
+ffffff8008a77894 <psc5425e_set_cv_voltage>:
+ffffff8008a77894: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a77898: f9000bf3     	str	x19, [sp, #0x10]
+ffffff8008a7789c: 910003fd     	mov	x29, sp
+ffffff8008a778a0: 2a0103f3     	mov	w19, w1
+ffffff8008a778a4: 97d89dbe     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a778a8: 5291f428     	mov	w8, #0x8fa1     // =36769
+ffffff8008a778ac: 72a007c8     	movk	w8, #0x3e, lsl #16
+ffffff8008a778b0: 6b08027f     	cmp	w19, w8
+ffffff8008a778b4: 54000062     	b.hs	0xffffff8008a778c0 <psc5425e_set_cv_voltage+0x2c>
+ffffff8008a778b8: 2a1f03f3     	mov	w19, wzr
+ffffff8008a778bc: 1400000c     	b	0xffffff8008a778ec <psc5425e_set_cv_voltage+0x58>
+ffffff8008a778c0: 5282c828     	mov	w8, #0x1641     // =5697
+ffffff8008a778c4: 72a00808     	movk	w8, #0x40, lsl #16
+ffffff8008a778c8: 6b08027f     	cmp	w19, w8
+ffffff8008a778cc: 54000062     	b.hs	0xffffff8008a778d8 <psc5425e_set_cv_voltage+0x44>
+ffffff8008a778d0: 52800053     	mov	w19, #0x2       // =2
+ffffff8008a778d4: 14000006     	b	0xffffff8008a778ec <psc5425e_set_cv_voltage+0x58>
+ffffff8008a778d8: 528c0628     	mov	w8, #0x6031     // =24625
+ffffff8008a778dc: 72a00848     	movk	w8, #0x42, lsl #16
+ffffff8008a778e0: 6b08027f     	cmp	w19, w8
+ffffff8008a778e4: 52800588     	mov	w8, #0x2c       // =44
+ffffff8008a778e8: 1a883513     	cinc	w19, w8, hs
+ffffff8008a778ec: 52800040     	mov	w0, #0x2        // =2
+ffffff8008a778f0: 528007e2     	mov	w2, #0x3f       // =63
+ffffff8008a778f4: 52800043     	mov	w3, #0x2        // =2
+ffffff8008a778f8: 2a1303e1     	mov	w1, w19
+ffffff8008a778fc: 97fffa2e     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a77900: b0005700     	adrp	x0, 0xffffff8009558000 <crypto_set_driver_name.suffix+0x16fb3>
+ffffff8008a77904: 12003e61     	and	w1, w19, #0xffff
+ffffff8008a77908: 910cd800     	add	x0, x0, #0x336
+ffffff8008a7790c: 97dab888     	bl	0xffffff8008125b2c <printk>
+ffffff8008a77910: f9400bf3     	ldr	x19, [sp, #0x10]
+ffffff8008a77914: 52800020     	mov	w0, #0x1        // =1
+ffffff8008a77918: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a7791c: d65f03c0     	ret
+
+ffffff8008a77920 <psc5425e_get_input_current>:
+ffffff8008a77920: a9bf7bfd     	stp	x29, x30, [sp, #-0x10]!
+ffffff8008a77924: 910003fd     	mov	x29, sp
+ffffff8008a77928: 97d89d9d     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a7792c: 2a1f03e0     	mov	w0, wzr
+ffffff8008a77930: a8c17bfd     	ldp	x29, x30, [sp], #0x10
+ffffff8008a77934: d65f03c0     	ret
+
+ffffff8008a77938 <psc5425e_set_input_current>:
+ffffff8008a77938: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a7793c: f9000bf3     	str	x19, [sp, #0x10]
+ffffff8008a77940: 910003fd     	mov	x29, sp
+ffffff8008a77944: 2a0103f3     	mov	w19, w1
+ffffff8008a77948: 97d89d95     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a7794c: 52986a28     	mov	w8, #0xc351     // =50001
+ffffff8008a77950: 6b08027f     	cmp	w19, w8
+ffffff8008a77954: 52800068     	mov	w8, #0x3        // =3
+ffffff8008a77958: 1a9f2513     	csinc	w19, w8, wzr, hs
+ffffff8008a7795c: 52800020     	mov	w0, #0x1        // =1
+ffffff8008a77960: 52800062     	mov	w2, #0x3        // =3
+ffffff8008a77964: 528000c3     	mov	w3, #0x6        // =6
+ffffff8008a77968: 2a1303e1     	mov	w1, w19
+ffffff8008a7796c: 97fffa12     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a77970: b0005620     	adrp	x0, 0xffffff800953c000 <f_midi_longname+0x1b119>
+ffffff8008a77974: 91335400     	add	x0, x0, #0xcd5
+ffffff8008a77978: 2a1303e1     	mov	w1, w19
+ffffff8008a7797c: 97dab86c     	bl	0xffffff8008125b2c <printk>
+ffffff8008a77980: f9400bf3     	ldr	x19, [sp, #0x10]
+ffffff8008a77984: 52800020     	mov	w0, #0x1        // =1
+ffffff8008a77988: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a7798c: d65f03c0     	ret
+
+ffffff8008a77990 <psc5425e_reset_watch_dog_timer>:
+ffffff8008a77990: d10083ff     	sub	sp, sp, #0x20
+ffffff8008a77994: a9017bfd     	stp	x29, x30, [sp, #0x10]
+ffffff8008a77998: 910043fd     	add	x29, sp, #0x10
+ffffff8008a7799c: d0006828     	adrp	x8, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008a779a0: f9458508     	ldr	x8, [x8, #0xb08]
+ffffff8008a779a4: f90007e8     	str	x8, [sp, #0x8]
+ffffff8008a779a8: 97d89d7d     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a779ac: 900050a0     	adrp	x0, 0xffffff800948b000 <trunc_msg+0xa7ea>
+ffffff8008a779b0: 910d8c00     	add	x0, x0, #0x363
+ffffff8008a779b4: 97dab85e     	bl	0xffffff8008125b2c <printk>
+ffffff8008a779b8: 910013e1     	add	x1, sp, #0x4
+ffffff8008a779bc: 52800062     	mov	w2, #0x3        // =3
+ffffff8008a779c0: 52800083     	mov	w3, #0x4        // =4
+ffffff8008a779c4: 2a1f03e0     	mov	w0, wzr
+ffffff8008a779c8: 97fff9c8     	bl	0xffffff8008a760e8 <psc5425e_read_interface>
+ffffff8008a779cc: 394013e1     	ldrb	w1, [sp, #0x4]
+ffffff8008a779d0: 52800062     	mov	w2, #0x3        // =3
+ffffff8008a779d4: 52800083     	mov	w3, #0x4        // =4
+ffffff8008a779d8: 2a1f03e0     	mov	w0, wzr
+ffffff8008a779dc: 97fff9f6     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a779e0: d0006829     	adrp	x9, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008a779e4: f94007e8     	ldr	x8, [sp, #0x8]
+ffffff8008a779e8: f9458529     	ldr	x9, [x9, #0xb08]
+ffffff8008a779ec: eb08013f     	cmp	x9, x8
+ffffff8008a779f0: 540000a1     	b.ne	0xffffff8008a77a04 <psc5425e_reset_watch_dog_timer+0x74>
+ffffff8008a779f4: a9417bfd     	ldp	x29, x30, [sp, #0x10]
+ffffff8008a779f8: 52800020     	mov	w0, #0x1        // =1
+ffffff8008a779fc: 910083ff     	add	sp, sp, #0x20
+ffffff8008a77a00: d65f03c0     	ret
+ffffff8008a77a04: 97d8f715     	bl	0xffffff80080b5658 <__stack_chk_fail>
+
+ffffff8008a77a08 <psc5425e_do_event>:
+ffffff8008a77a08: d10183ff     	sub	sp, sp, #0x60
+ffffff8008a77a0c: a9027bfd     	stp	x29, x30, [sp, #0x20]
+ffffff8008a77a10: a9035ff8     	stp	x24, x23, [sp, #0x30]
+ffffff8008a77a14: a90457f6     	stp	x22, x21, [sp, #0x40]
+ffffff8008a77a18: a9054ff4     	stp	x20, x19, [sp, #0x50]
+ffffff8008a77a1c: 910083fd     	add	x29, sp, #0x20
+ffffff8008a77a20: d0006828     	adrp	x8, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008a77a24: f9458508     	ldr	x8, [x8, #0xb08]
+ffffff8008a77a28: 2a0103f3     	mov	w19, w1
+ffffff8008a77a2c: aa0003f4     	mov	x20, x0
+ffffff8008a77a30: f81f83a8     	stur	x8, [x29, #-0x8]
+ffffff8008a77a34: 97d89d5a     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a77a38: f9407a97     	ldr	x23, [x20, #0xf0]
+ffffff8008a77a3c: f94062e0     	ldr	x0, [x23, #0xc0]
+ffffff8008a77a40: b40003e0     	cbz	x0, 0xffffff8008a77abc <psc5425e_do_event+0xb4>
+ffffff8008a77a44: 71000a7f     	cmp	w19, #0x2
+ffffff8008a77a48: 54000368     	b.hi	0xffffff8008a77ab4 <psc5425e_do_event+0xac>
+ffffff8008a77a4c: f0007018     	adrp	x24, 0xffffff800987a000 <event_vb2_v4l2_buf_queue+0x50>
+ffffff8008a77a50: 900055d5     	adrp	x21, 0xffffff800952f000 <f_midi_longname+0xe119>
+ffffff8008a77a54: b0004db6     	adrp	x22, 0xffffff800942c000 <process_dbg_opt.temp+0x1ef54>
+ffffff8008a77a58: aa1f03f3     	mov	x19, xzr
+ffffff8008a77a5c: 910003f4     	mov	x20, sp
+ffffff8008a77a60: 91330318     	add	x24, x24, #0xcc0
+ffffff8008a77a64: 91256ab5     	add	x21, x21, #0x95a
+ffffff8008a77a68: 912172d6     	add	x22, x22, #0x85c
+ffffff8008a77a6c: a900ffff     	stp	xzr, xzr, [sp, #0x8]
+ffffff8008a77a70: f90003ff     	str	xzr, [sp]
+ffffff8008a77a74: b8737b01     	ldr	w1, [x24, x19, lsl #2]
+ffffff8008a77a78: aa1403e2     	mov	x2, x20
+ffffff8008a77a7c: 97fffebd     	bl	0xffffff8008a77570 <psc5425e_chg_get_property>
+ffffff8008a77a80: 36f800e0     	tbz	w0, #0x1f, 0xffffff8008a77a9c <psc5425e_do_event+0x94>
+ffffff8008a77a84: 2a0003e3     	mov	w3, w0
+ffffff8008a77a88: f9400ae0     	ldr	x0, [x23, #0x10]
+ffffff8008a77a8c: aa1503e1     	mov	x1, x21
+ffffff8008a77a90: aa1603e2     	mov	x2, x22
+ffffff8008a77a94: 2a1303e4     	mov	w4, w19
+ffffff8008a77a98: 97ef01cd     	bl	0xffffff80086381cc <_dev_notice>
+ffffff8008a77a9c: f94062e0     	ldr	x0, [x23, #0xc0]
+ffffff8008a77aa0: 91000673     	add	x19, x19, #0x1
+ffffff8008a77aa4: f1000e7f     	cmp	x19, #0x3
+ffffff8008a77aa8: 91002294     	add	x20, x20, #0x8
+ffffff8008a77aac: 54fffe41     	b.ne	0xffffff8008a77a74 <psc5425e_do_event+0x6c>
+ffffff8008a77ab0: 94008fbf     	bl	0xffffff8008a9b9ac <power_supply_changed>
+ffffff8008a77ab4: 2a1f03e0     	mov	w0, wzr
+ffffff8008a77ab8: 14000008     	b	0xffffff8008a77ad8 <psc5425e_do_event+0xd0>
+ffffff8008a77abc: f9400ae0     	ldr	x0, [x23, #0x10]
+ffffff8008a77ac0: f0004e01     	adrp	x1, 0xffffff800943a000 <process_dbg_opt.temp+0x2cf54>
+ffffff8008a77ac4: d0005322     	adrp	x2, 0xffffff80094dd000 <f_midi_shortname+0x1b1b6>
+ffffff8008a77ac8: 910a7821     	add	x1, x1, #0x29e
+ffffff8008a77acc: 91114842     	add	x2, x2, #0x452
+ffffff8008a77ad0: 97ef01bf     	bl	0xffffff80086381cc <_dev_notice>
+ffffff8008a77ad4: 12800240     	mov	w0, #-0x13      // =-19
+ffffff8008a77ad8: d0006829     	adrp	x9, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008a77adc: f85f83a8     	ldur	x8, [x29, #-0x8]
+ffffff8008a77ae0: f9458529     	ldr	x9, [x9, #0xb08]
+ffffff8008a77ae4: eb08013f     	cmp	x9, x8
+ffffff8008a77ae8: 540000e1     	b.ne	0xffffff8008a77b04 <psc5425e_do_event+0xfc>
+ffffff8008a77aec: a9454ff4     	ldp	x20, x19, [sp, #0x50]
+ffffff8008a77af0: a94457f6     	ldp	x22, x21, [sp, #0x40]
+ffffff8008a77af4: a9435ff8     	ldp	x24, x23, [sp, #0x30]
+ffffff8008a77af8: a9427bfd     	ldp	x29, x30, [sp, #0x20]
+ffffff8008a77afc: 910183ff     	add	sp, sp, #0x60
+ffffff8008a77b00: d65f03c0     	ret
+ffffff8008a77b04: 97d8f6d5     	bl	0xffffff80080b5658 <__stack_chk_fail>
+
+ffffff8008a77b08 <psc5425e_set_vindpm_voltage>:
+ffffff8008a77b08: a9bf7bfd     	stp	x29, x30, [sp, #-0x10]!
+ffffff8008a77b0c: 910003fd     	mov	x29, sp
+ffffff8008a77b10: 97d89d23     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a77b14: 2a1f03e0     	mov	w0, wzr
+ffffff8008a77b18: a8c17bfd     	ldp	x29, x30, [sp], #0x10
+ffffff8008a77b1c: d65f03c0     	ret
+
+ffffff8008a77b20 <psc5425e_enable_otg>:
+ffffff8008a77b20: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a77b24: f9000bf3     	str	x19, [sp, #0x10]
+ffffff8008a77b28: 910003fd     	mov	x29, sp
+ffffff8008a77b2c: 2a0103f3     	mov	w19, w1
+ffffff8008a77b30: 97d89d1b     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a77b34: 900053a0     	adrp	x0, 0xffffff80094eb000 <f_midi_shortname+0x291b6>
+ffffff8008a77b38: 900052c1     	adrp	x1, 0xffffff80094cf000 <f_midi_shortname+0xd1b6>
+ffffff8008a77b3c: 12000262     	and	w2, w19, #0x1
+ffffff8008a77b40: 91352000     	add	x0, x0, #0xd48
+ffffff8008a77b44: 91297021     	add	x1, x1, #0xa5c
+ffffff8008a77b48: 97dab7f9     	bl	0xffffff8008125b2c <printk>
+ffffff8008a77b4c: 52800020     	mov	w0, #0x1        // =1
+ffffff8008a77b50: 37000173     	tbnz	w19, #0x0, 0xffffff8008a77b7c <psc5425e_enable_otg+0x5c>
+ffffff8008a77b54: 52800022     	mov	w2, #0x1        // =1
+ffffff8008a77b58: 2a1f03e1     	mov	w1, wzr
+ffffff8008a77b5c: 2a1f03e3     	mov	w3, wzr
+ffffff8008a77b60: 97fff995     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a77b64: d0008c68     	adrp	x8, 0xffffff8009c05000 <video_devices+0x678>
+ffffff8008a77b68: b902891f     	str	wzr, [x8, #0x288]
+ffffff8008a77b6c: f9400bf3     	ldr	x19, [sp, #0x10]
+ffffff8008a77b70: 2a1f03e0     	mov	w0, wzr
+ffffff8008a77b74: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a77b78: d65f03c0     	ret
+ffffff8008a77b7c: 52800021     	mov	w1, #0x1        // =1
+ffffff8008a77b80: 52800022     	mov	w2, #0x1        // =1
+ffffff8008a77b84: 2a1f03e3     	mov	w3, wzr
+ffffff8008a77b88: 52800033     	mov	w19, #0x1       // =1
+ffffff8008a77b8c: 97fff98a     	bl	0xffffff8008a761b4 <psc5425e_config_interface>
+ffffff8008a77b90: b00054e0     	adrp	x0, 0xffffff8009514000 <f_midi_shortname+0x521b6>
+ffffff8008a77b94: d0008c68     	adrp	x8, 0xffffff8009c05000 <video_devices+0x678>
+ffffff8008a77b98: 91118800     	add	x0, x0, #0x462
+ffffff8008a77b9c: b9028913     	str	w19, [x8, #0x288]
+ffffff8008a77ba0: 97dab7e3     	bl	0xffffff8008125b2c <printk>
+ffffff8008a77ba4: d29c8001     	mov	x1, #0xe400     // =58368
+ffffff8008a77ba8: d0008c60     	adrp	x0, 0xffffff8009c05000 <video_devices+0x678>
+ffffff8008a77bac: f2aa8161     	movk	x1, #0x540b, lsl #16
+ffffff8008a77bb0: 910aa000     	add	x0, x0, #0x2a8
+ffffff8008a77bb4: f2c00041     	movk	x1, #0x2, lsl #32
+ffffff8008a77bb8: 52800023     	mov	w3, #0x1        // =1
+ffffff8008a77bbc: aa1f03e2     	mov	x2, xzr
+ffffff8008a77bc0: 97db44b8     	bl	0xffffff8008148ea0 <hrtimer_start_range_ns>
+ffffff8008a77bc4: 17ffffea     	b	0xffffff8008a77b6c <psc5425e_enable_otg+0x4c>
+
+ffffff8008a77bc8 <psc5425e_set_boost_current_limit>:
+ffffff8008a77bc8: a9bf7bfd     	stp	x29, x30, [sp, #-0x10]!
+ffffff8008a77bcc: 910003fd     	mov	x29, sp
+ffffff8008a77bd0: 97d89cf3     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a77bd4: 2a1f03e0     	mov	w0, wzr
+ffffff8008a77bd8: a8c17bfd     	ldp	x29, x30, [sp], #0x10
+ffffff8008a77bdc: d65f03c0     	ret
+
+ffffff8008a77be0 <psc5425e_get_charging_status>:
+ffffff8008a77be0: d100c3ff     	sub	sp, sp, #0x30
+ffffff8008a77be4: a9017bfd     	stp	x29, x30, [sp, #0x10]
+ffffff8008a77be8: f90013f3     	str	x19, [sp, #0x20]
+ffffff8008a77bec: 910043fd     	add	x29, sp, #0x10
+ffffff8008a77bf0: d0006828     	adrp	x8, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008a77bf4: f9458508     	ldr	x8, [x8, #0xb08]
+ffffff8008a77bf8: aa0103f3     	mov	x19, x1
+ffffff8008a77bfc: f90007e8     	str	x8, [sp, #0x8]
+ffffff8008a77c00: 97d89ce7     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a77c04: 910013e1     	add	x1, sp, #0x4
+ffffff8008a77c08: 52800062     	mov	w2, #0x3        // =3
+ffffff8008a77c0c: 52800083     	mov	w3, #0x4        // =4
+ffffff8008a77c10: 2a1f03e0     	mov	w0, wzr
+ffffff8008a77c14: 97fff935     	bl	0xffffff8008a760e8 <psc5425e_read_interface>
+ffffff8008a77c18: 394013e8     	ldrb	w8, [sp, #0x4]
+ffffff8008a77c1c: d0006829     	adrp	x9, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008a77c20: f9458529     	ldr	x9, [x9, #0xb08]
+ffffff8008a77c24: 7100091f     	cmp	w8, #0x2
+ffffff8008a77c28: 1a9f17e8     	cset	w8, eq
+ffffff8008a77c2c: 39000268     	strb	w8, [x19]
+ffffff8008a77c30: f94007e8     	ldr	x8, [sp, #0x8]
+ffffff8008a77c34: eb08013f     	cmp	x9, x8
+ffffff8008a77c38: 540000c1     	b.ne	0xffffff8008a77c50 <psc5425e_get_charging_status+0x70>
+ffffff8008a77c3c: f94013f3     	ldr	x19, [sp, #0x20]
+ffffff8008a77c40: a9417bfd     	ldp	x29, x30, [sp, #0x10]
+ffffff8008a77c44: 52800020     	mov	w0, #0x1        // =1
+ffffff8008a77c48: 9100c3ff     	add	sp, sp, #0x30
+ffffff8008a77c4c: d65f03c0     	ret
+ffffff8008a77c50: 97d8f682     	bl	0xffffff80080b5658 <__stack_chk_fail>

@@ -1,0 +1,44 @@
+
+/home/iscle/mt6762-ios-port/emulator/stock.elf:	file format elf64-littleaarch64
+
+Disassembly of section .kernel:
+
+ffffff8008a875fc <battery_temperature_adc_get>:
+ffffff8008a875fc: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008a87600: a9014ff4     	stp	x20, x19, [sp, #0x10]
+ffffff8008a87604: 910003fd     	mov	x29, sp
+ffffff8008a87608: aa0203f3     	mov	x19, x2
+ffffff8008a8760c: aa0003f4     	mov	x20, x0
+ffffff8008a87610: 97d85e63     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a87614: f940de80     	ldr	x0, [x20, #0x1b8]
+ffffff8008a87618: b140041f     	cmn	x0, #0x1, lsl #12 // =0x1000
+ffffff8008a8761c: 540000c9     	b.ls	0xffffff8008a87634 <battery_temperature_adc_get+0x38>
+ffffff8008a87620: 97ffce7c     	bl	0xffffff8008a7b010 <bat_get_debug_level>
+ffffff8008a87624: 71000c1f     	cmp	w0, #0x3
+ffffff8008a87628: 540001ca     	b.ge	0xffffff8008a87660 <battery_temperature_adc_get+0x64>
+ffffff8008a8762c: 12804173     	mov	w19, #-0x20c    // =-524
+ffffff8008a87630: 14000008     	b	0xffffff8008a87650 <battery_temperature_adc_get+0x54>
+ffffff8008a87634: aa1303e1     	mov	x1, x19
+ffffff8008a87638: 94038b33     	bl	0xffffff8008b6a304 <iio_read_channel_processed>
+ffffff8008a8763c: 2a0003f3     	mov	w19, w0
+ffffff8008a87640: 36f80080     	tbz	w0, #0x1f, 0xffffff8008a87650 <battery_temperature_adc_get+0x54>
+ffffff8008a87644: 97ffce73     	bl	0xffffff8008a7b010 <bat_get_debug_level>
+ffffff8008a87648: 71000c1f     	cmp	w0, #0x3
+ffffff8008a8764c: 5400016a     	b.ge	0xffffff8008a87678 <battery_temperature_adc_get+0x7c>
+ffffff8008a87650: 2a1303e0     	mov	w0, w19
+ffffff8008a87654: a9414ff4     	ldp	x20, x19, [sp, #0x10]
+ffffff8008a87658: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008a8765c: d65f03c0     	ret
+ffffff8008a87660: f00049a0     	adrp	x0, 0xffffff80093be000 <decpair+0x277bd0>
+ffffff8008a87664: b00055a1     	adrp	x1, 0xffffff800953c000 <f_midi_longname+0x1b119>
+ffffff8008a87668: 91027000     	add	x0, x0, #0x9c
+ffffff8008a8766c: 913dc021     	add	x1, x1, #0xf70
+ffffff8008a87670: 97da792f     	bl	0xffffff8008125b2c <printk>
+ffffff8008a87674: 17ffffee     	b	0xffffff8008a8762c <battery_temperature_adc_get+0x30>
+ffffff8008a87678: d0004b60     	adrp	x0, 0xffffff80093f5000 <decpair+0x2aebd0>
+ffffff8008a8767c: b00055a1     	adrp	x1, 0xffffff800953c000 <f_midi_longname+0x1b119>
+ffffff8008a87680: 910d0c00     	add	x0, x0, #0x343
+ffffff8008a87684: 913dc021     	add	x1, x1, #0xf70
+ffffff8008a87688: 2a1303e2     	mov	w2, w19
+ffffff8008a8768c: 97da7928     	bl	0xffffff8008125b2c <printk>
+ffffff8008a87690: 17fffff0     	b	0xffffff8008a87650 <battery_temperature_adc_get+0x54>
