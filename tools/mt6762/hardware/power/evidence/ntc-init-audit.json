@@ -1,0 +1,285 @@
+{
+  "image_sha256": "82b1919185a49f268a0f8e145a6714d6264c1f66918a90df0d763266147ead4b",
+  "preloader_sha256": "7e62da99110271864c330cffcef5237e20ca03881b933263af828561d963f674",
+  "stock_elf_sha256": "643474799f7c300f2d3c7f5130f697ee359929f13db0750f4dd7b9d648af14fc",
+  "calibrated_temperature_admitted": false,
+  "physical_device_access": false,
+  "gfh": {
+    "offset": "0x800",
+    "load_address": "0x200f10",
+    "content_offset": "0xf0",
+    "entry": "0x201000",
+    "va_minus_file_offset": "0x200710"
+  },
+  "preloader_functions": [
+    {
+      "name": "pmic_config_interface",
+      "start": "0x22470c",
+      "end": "0x22475a",
+      "file_offset": "0x23ffc",
+      "sha256": "f6d5bee35398984a74cea370e52c56a6b69f22b7ee8c7a1d4818b14d3bb0847b"
+    },
+    {
+      "name": "pmic_init",
+      "start": "0x224d58",
+      "end": "0x224dc2",
+      "file_offset": "0x24648",
+      "sha256": "9109ea8b78ca004dc795479878de568a37fce9922a9211b771272ca353186bd5"
+    },
+    {
+      "name": "pmic_init_setting",
+      "start": "0x224f80",
+      "end": "0x22500e",
+      "file_offset": "0x24870",
+      "sha256": "0fcf0960c88d878282950d59aa00feeadca857d43b12e334c575a143340b41ef"
+    },
+    {
+      "name": "pmic_init_callsite",
+      "start": "0x223c62",
+      "end": "0x223c66",
+      "file_offset": "0x23552",
+      "sha256": "cec60d3baa435b8ffb6bb6b0818edfe7150c4f3d6a7d36613ed3505edb6e1d77"
+    },
+    {
+      "name": "pmic_init_setting_callsite",
+      "start": "0x223dcc",
+      "end": "0x223dd0",
+      "file_offset": "0x236bc",
+      "sha256": "96a47a37499004652717d25994d5a2d4f15d9bb092feca2dcec6e0c10a4bca2f"
+    }
+  ],
+  "stock_functions": [
+    {
+      "name": "mt635x_auxadc_probe",
+      "start": "0xffffff8008b6af28",
+      "end": "0xffffff8008b6b314",
+      "sha256": "53149a7e8eefd5aa7341e067bda8dda9ddacd47c18a9804624b572298a3eeb56",
+      "range_method": "next distinct original symbol"
+    },
+    {
+      "name": "auxadc_reset",
+      "start": "0xffffff8008b6aea4",
+      "end": "0xffffff8008b6af28",
+      "sha256": "a2b10145221bfd43407c20468b90973067460a11abb6572739983d66cb8dcea5",
+      "range_method": "next distinct original symbol"
+    },
+    {
+      "name": "mt6359_efuse_probe",
+      "start": "0xffffff8008b8880c",
+      "end": "0xffffff8008b88994",
+      "sha256": "678778af0fbab46c5426042154cbaad3a29fa9d87f4138905d0d83e70acf2f46",
+      "range_method": "next distinct original symbol"
+    },
+    {
+      "name": "mt6359_efuse_read",
+      "start": "0xffffff8008b88994",
+      "end": "0xffffff8008b88c44",
+      "sha256": "e5746254433bcb8f3198a3ca473ba8edbce2c8a8214314ffba66cfccaf933978",
+      "range_method": "next distinct original symbol"
+    }
+  ],
+  "disabled_efuse_copy": {
+    "load_instruction": "0x224d72",
+    "print_call": "0x224d74",
+    "literal_file_offset": "0x246c0",
+    "string_file_offset": "0x2f449",
+    "text": "No EFUSE SW Load"
+  },
+  "initialization_table": {
+    "file_offset": "0x37f00",
+    "record_count": 131,
+    "record_size": 8,
+    "auxadc_related_records": [
+      {
+        "file_offset": "0x37fe8",
+        "address": "0x1008",
+        "value": "0x1",
+        "mask": "0xf",
+        "shift": 0
+      },
+      {
+        "file_offset": "0x37ff0",
+        "address": "0x1120",
+        "value": "0x0",
+        "mask": "0x8000",
+        "shift": 0
+      },
+      {
+        "file_offset": "0x37ff8",
+        "address": "0x1126",
+        "value": "0x340",
+        "mask": "0xffc0",
+        "shift": 0
+      },
+      {
+        "file_offset": "0x38000",
+        "address": "0x1128",
+        "value": "0x8083",
+        "mask": "0x8fff",
+        "shift": 0
+      },
+      {
+        "file_offset": "0x38008",
+        "address": "0x112a",
+        "value": "0x30",
+        "mask": "0x3ff",
+        "shift": 0
+      },
+      {
+        "file_offset": "0x38010",
+        "address": "0x112e",
+        "value": "0x4000",
+        "mask": "0x4000",
+        "shift": 0
+      },
+      {
+        "file_offset": "0x38018",
+        "address": "0x1130",
+        "value": "0xb",
+        "mask": "0x3ff",
+        "shift": 0
+      },
+      {
+        "file_offset": "0x38020",
+        "address": "0x1132",
+        "value": "0x30",
+        "mask": "0x3ff",
+        "shift": 0
+      },
+      {
+        "file_offset": "0x38028",
+        "address": "0x1134",
+        "value": "0xb",
+        "mask": "0x3ff",
+        "shift": 0
+      },
+      {
+        "file_offset": "0x38030",
+        "address": "0x1136",
+        "value": "0x6000",
+        "mask": "0x7000",
+        "shift": 0
+      },
+      {
+        "file_offset": "0x38038",
+        "address": "0x1138",
+        "value": "0x60",
+        "mask": "0x70",
+        "shift": 0
+      },
+      {
+        "file_offset": "0x38040",
+        "address": "0x113a",
+        "value": "0x95d0",
+        "mask": "0xfff0",
+        "shift": 0
+      },
+      {
+        "file_offset": "0x38048",
+        "address": "0x113c",
+        "value": "0x55",
+        "mask": "0xff",
+        "shift": 0
+      },
+      {
+        "file_offset": "0x38050",
+        "address": "0x1148",
+        "value": "0x4000",
+        "mask": "0x4000",
+        "shift": 0
+      },
+      {
+        "file_offset": "0x38058",
+        "address": "0x114c",
+        "value": "0x100",
+        "mask": "0x103",
+        "shift": 0
+      },
+      {
+        "file_offset": "0x38060",
+        "address": "0x1208",
+        "value": "0x8040",
+        "mask": "0x83ff",
+        "shift": 0
+      },
+      {
+        "file_offset": "0x38068",
+        "address": "0x120c",
+        "value": "0x4",
+        "mask": "0x4",
+        "shift": 0
+      },
+      {
+        "file_offset": "0x38070",
+        "address": "0x1210",
+        "value": "0x1",
+        "mask": "0x1",
+        "shift": 0
+      }
+    ],
+    "coefficient_writes_found": false,
+    "write_results_verified_by_loop": false
+  },
+  "stock_reset_table": [
+    {
+      "address": "0xf90",
+      "mask": "0x9",
+      "value": "0x9"
+    },
+    {
+      "address": "0xf90",
+      "mask": "0x9",
+      "value": "0x0"
+    },
+    {
+      "address": "0x110e",
+      "mask": "0x80",
+      "value": "0x80"
+    },
+    {
+      "address": "0x111a",
+      "mask": "0x400",
+      "value": "0x400"
+    }
+  ],
+  "limitations": [
+    "Static control flow is not a record of a successful physical boot.",
+    "No proof of hardware shadow autoload, trim bank mapping, compensation polarity, or calibrated channel transfer.",
+    "The selected routines do not establish absence of every possible unrelated firmware writer."
+  ],
+  "reference_bsp": {
+    "sources": [
+      {
+        "path": "vendor/mediatek/proprietary/bootable/bootloader/preloader/platform/common/inc/gfh.h",
+        "sha256": "8aaad435cc391e6ad57c2646c7a396652dddb3fccedbf9b1ebf460cf7e809711"
+      },
+      {
+        "path": "vendor/mediatek/proprietary/bootable/bootloader/preloader/platform/mt6765/src/drivers/pmic.c",
+        "sha256": "3a50cec3eeb41e2e6fca7df180e70cfca32ead353da0108b3238739659b4248f"
+      },
+      {
+        "path": "vendor/mediatek/proprietary/bootable/bootloader/preloader/platform/mt6765/src/drivers/pmic_efuse.c",
+        "sha256": "4a9d2ea5332c19ffd48be9cf724214069a548ea996fbd6765fdbaeebb5ed433d"
+      },
+      {
+        "path": "vendor/mediatek/proprietary/bootable/bootloader/preloader/platform/mt6765/src/drivers/pmic_initial_setting.c",
+        "sha256": "fcb2fe943ba1e4a768bbf851638a4ccbe893d9f65a79e7751675fd152dc90946"
+      },
+      {
+        "path": "kernel-4.14/drivers/iio/adc/mt635x-auxadc.c",
+        "sha256": "90d918ee3a8191e392604827a81bab9189da2ec5370ef783289391ebd16d7a42"
+      },
+      {
+        "path": "kernel-4.14/drivers/misc/mediatek/pmic/mt6357/v1/pmic_auxadc.c",
+        "sha256": "a2d48cc25c34ddd56113aaf5b400dcdbb140d72f75fd00999e064f2e1318c32e"
+      },
+      {
+        "path": "kernel-4.14/include/linux/mfd/mt6357/registers.h",
+        "sha256": "6933e2382bde5f9487cc633b9e6167a4a93675a8f08eb8fae01315db0a0e8bbe"
+      }
+    ],
+    "setting_record_count": 131,
+    "initial_table_exactly_matches_artifact": true,
+    "scope": "Table byte match corroborates this table only, not identity of every driver path."
+  }
+}
