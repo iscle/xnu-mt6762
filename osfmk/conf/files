@@ -361,3 +361,6 @@ osfmk/corecrypto/ccsha256_ltc_di.c	standard
 
 osfmk/prng/prng_random.c	standard
 osfmk/prng/entropy.c   standard
+osfmk/minicrypto/mc_digests.c	standard
+osfmk/minicrypto/mc_provider.c	standard
+osfmk/minicrypto/mc_aes.c	standard
