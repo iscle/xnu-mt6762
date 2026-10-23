@@ -1,0 +1,921 @@
+From afcfb434f2ead1165e6a23ca9828c3cd414b1f21 Mon Sep 17 00:00:00 2001
+From: MT6762 local experiment <mt6762-build@localhost>
+Date: Fri, 23 Oct 2026 23:14:20 +0200
+Subject: [PATCH] arm: add opt-in MT6762 I2C DMA laboratory fixtures
+
+AI-assisted local research code, not intended for upstream submission. Model recovered controller registers with explicitly synthetic peripherals, fault injection and bounded QTest coverage.
+---
+ docs/system/arm/mt6762.rst      |  69 +++++
+ hw/arm/meson.build              |   2 +-
+ hw/arm/mt6762.c                 |  84 +++++-
+ hw/arm/mt6762_lab_i2c.c         | 460 ++++++++++++++++++++++++++++++++
+ include/hw/arm/mt6762_lab_i2c.h |  12 +
+ tests/mt6762/test_lab_i2c.py    | 192 +++++++++++++
+ 6 files changed, 816 insertions(+), 3 deletions(-)
+ create mode 100644 hw/arm/mt6762_lab_i2c.c
+ create mode 100644 include/hw/arm/mt6762_lab_i2c.h
+ create mode 100755 tests/mt6762/test_lab_i2c.py
+
+diff --git a/docs/system/arm/mt6762.rst b/docs/system/arm/mt6762.rst
+index ed75c6a..cb9a0df 100644
+--- a/docs/system/arm/mt6762.rst
++++ b/docs/system/arm/mt6762.rst
+@@ -76,3 +76,72 @@ under ``chosen`` or ``chosen@0``; there is no device-tree endian conversion.
+ signature 0xabcd1234, and returns an error when no valid old log exists.
+ This is a bootloader handoff model; the source Image and extracted DTB files
+ remain unchanged, and the guest DTB is edited by QEMU's boot helper.
++
++Opt-in native-driver I2C laboratory
++----------------------------------
++
++``-M mt6762,lab-i2c=on`` adds synthetic fixtures for testing native driver
++control flow. With the property omitted, these MMIO regions and devices
++remain absent. This does not change the documented stock-kernel boundary.
++The fixtures implement the recovered register interface, not physical phone
++behavior or proof of native hardware compatibility:
++
++* I2C0 at 0x11007000 / APDMA at 0x11000080 / SPI84; I2C5 at 0x11016000 /
++  APDMA at 0x11000580 / SPI130. Controller accesses are 16-bit, DMA accesses
++  32-bit. Single reads/writes and write/repeated-START/read are supported.
++* FIFO capacity is eight bytes. DMA accepts at most 4096 bytes per direction,
++  checks 33-bit addresses and requires the entire buffer to be guest RAM.
++  Shared TX/RX buffers are supported. Invalid mappings/lengths fail without
++  publishing receive bytes. There is no IOMMU or cache-coherency simulation.
++* Peripheral interrupt status is W1C, routed to the real GIC model; masking
++  controls assertion. A transfer completes after a fixed synthetic 100us,
++  unrelated to SCL programming. Timing/divider register values are retained
++  for driver readback; this is not electrical/timing validation.
++* ``infracfg_ao`` at 0x10001000 implements active-high-disable I2C AP gate
++  bank0/bit11 and APDMA gate bank1/bit18, their SET/CLR/status registers.
++  Both begin disabled. ``topckgen`` at 0x10000000 exposes I2C mux bits2:0 and
++  gate7 at offset0xa0, SET0xa4/CLR0xa8. Parent0 is the 26MHz fixture; other
++  parents stall transfers because their PLLs are not modeled. Losing a
++  required clock during a transfer leaves it incomplete.
++* The read-only GPIO fixture at 0x10005000 exposes mode1 for pins82/83 and
++  pins48/49, at mode offsets0x3a0 and0x360. No electrical pin state or GPIO
++  write/power sequencing is modeled.
++* Synthetic AXS at bus0/address0x3b returns bytes00,07 to write0x0c/read2.
++  A direct32-byte read returns a zero-contact frame by default. Explicit
++  ``lab-touch-sequence=on`` cycles16 down/move frames (ID0, coordinates
++  100..115/200..215) then48 zero-contact release frames. These are test
++  vectors, not captured touches. The cadence is driven by read count.
++* Synthetic PSC5425E at bus5/address0x6a has identity0xf0, status0x10 and
++  control0. Seven byte registers support bounded repeated-START reads;
++  registers other than identity accept test writes. Setting control bit2 clears
++  status bits5:4 in the deterministic disable fixture. No battery or charging
++  physics is inferred. A lab-only scratch peripheral at address0x50 on
++  both buses provides a256-byte modulo-indexed memory for boundary tests.
++
++The QOM properties ``lab-touch-sequence`` and ``lab-i2c-fault`` can be changed
++through ``qom-set`` on ``/machine``. Faults are ``none``, ``nack``, ``dma``
++(simultaneous COMPLETE+DMAERR) or ``stall`` (START and DMA ENABLE remain set).
++Changing a fault back to ``none`` does not resume an already-stalled transfer.
++Controller soft reset cancels work but does not reset DMA ENABLE; APDMA reset
++is separate. This intentionally exercises callers' bounded waits and pinned
++DMA failure state. ``lab-i2c`` itself is immutable after initialization.
++
++Run the independent, bounded QTest MMIO checks::
++
++  python3 tests/mt6762/test_lab_i2c.py --qemu build/qemu-system-aarch64 \
++    --dtb /path/to/extracted/boot.bin.dtb
++
++The tests cover default absence, clock gating, FIFO/repeated START, GIC/W1C,
++PSC fixture access, FIFO overflow, DMA length/range boundaries, buffers above
++4GiB, canaries, synthetic contact/release frames, injected errors, stalled
++DMA recovery and mid-transfer clock loss. Passing them establishes internal
++model behavior only. Native XNU execution is a separate integration test;
++physical-device validation remains separate from both.
++
++Read-only QOM property ``lab-i2c-state`` returns JSON counters for each bus:
++START transactions, successful DMA reads, successful receive bytes and last
++terminal status. This lets a native guest integration probe distinguish a
++worker's startup message from actual completed DMA, and record failure
++injection separately. These counters describe only the synthetic model.
++The bus5 counter record also exposes the synthetic PSC control/status bytes,
++so integration evidence can establish CE-bit readback after a guest write.
+diff --git a/hw/arm/meson.build b/hw/arm/meson.build
+index 5b5a01b..92ce5dd 100644
+--- a/hw/arm/meson.build
++++ b/hw/arm/meson.build
+@@ -1,5 +1,5 @@
+ arm_common_ss = ss.source_set()
+-arm_common_ss.add(when: 'CONFIG_MT6762', if_true: files('mt6762.c'))
++arm_common_ss.add(when: 'CONFIG_MT6762', if_true: files('mt6762.c', 'mt6762_lab_i2c.c'))
+ arm_common_ss.add(when: 'CONFIG_ARM_VIRT', if_true: files('virt.c'))
+ arm_common_ss.add(when: 'CONFIG_ACPI', if_true: files('virt-acpi-build.c'))
+ arm_common_ss.add(when: 'CONFIG_DIGIC', if_true: files('digic_boards.c'))
+diff --git a/hw/arm/mt6762.c b/hw/arm/mt6762.c
+index 5dee455..35322ce 100644
+--- a/hw/arm/mt6762.c
++++ b/hw/arm/mt6762.c
+@@ -5,8 +5,10 @@
+  *
+  * This is a local experiment, not a complete phone or an upstream submission.
+  * The dump's device tree supplies the address map and MPIDR topology. Only
+- * CPU, RAM, GICv3, timers, IRQ polarity registers and a UART subset are modeled.
+- * MediaTek UART extensions, clocks, PMIC, storage and display are absent.
++ * CPU, RAM, GICv3, timers, IRQ polarity registers and a UART subset are modeled
++ * by default. Explicit lab-i2c enables synthetic I2C/DMA/clock/pad fixtures;
++ * it does not model the physical peripherals. UART extensions, PMIC, storage
++ * and display remain absent.
+  */
+ #include "qemu/osdep.h"
+ #include "qapi/error.h"
+@@ -18,6 +20,7 @@
+ #include "hw/core/irq.h"
+ #include "hw/core/qdev-properties.h"
+ #include "hw/arm/boot.h"
++#include "hw/arm/mt6762_lab_i2c.h"
+ #include "hw/char/serial-mm.h"
+ #include "hw/intc/arm_gicv3_common.h"
+ #include "system/system.h"
+@@ -45,6 +48,9 @@ struct MT6762MachineState {
+     qemu_irq systimer_irq;
+     uint32_t systimer_control;
+     uint32_t systimer_value;
++    bool lab_i2c, lab_touch, initialized;
++    unsigned lab_fault;
++    MT6762I2CLab *lab;
+ };
+ 
+ /*
+@@ -249,6 +255,14 @@ static void mt6762_init(MachineState *ms)
+     memory_region_add_subregion(sysmem, 0x10017000, &s->systimer_mmio);
+     qemu_register_reset(mt6762_reset, s);
+ 
++    if (s->lab_i2c) {
++        s->lab = mt6762_lab_i2c_create(OBJECT(s), sysmem, ms->ram_size,
++                                      qdev_get_gpio_in(gic, 84),
++                                      qdev_get_gpio_in(gic, 130));
++        mt6762_lab_i2c_configure(s->lab, s->lab_fault, s->lab_touch);
++    }
++    s->initialized = true;
++
+     s->bootinfo.ram_size = ms->ram_size;
+     s->bootinfo.loader_start = MT6762_RAM_BASE;
+     s->bootinfo.board_id = -1;
+@@ -257,6 +271,63 @@ static void mt6762_init(MachineState *ms)
+     arm_load_kernel(ARM_CPU(first_cpu), ms, &s->bootinfo);
+ }
+ 
++static bool mt6762_get_lab_i2c(Object *obj, Error **errp)
++{
++    return MT6762_MACHINE(obj)->lab_i2c;
++}
++
++static void mt6762_set_lab_i2c(Object *obj, bool value, Error **errp)
++{
++    MT6762MachineState *s = MT6762_MACHINE(obj);
++    if (s->initialized) {
++        error_setg(errp, "lab-i2c must be selected before machine initialization");
++        return;
++    }
++    s->lab_i2c = value;
++}
++
++static bool mt6762_get_lab_touch(Object *obj, Error **errp)
++{
++    return MT6762_MACHINE(obj)->lab_touch;
++}
++
++static void mt6762_set_lab_touch(Object *obj, bool value, Error **errp)
++{
++    MT6762MachineState *s = MT6762_MACHINE(obj);
++    s->lab_touch = value;
++    if (s->lab) {
++        mt6762_lab_i2c_configure(s->lab, s->lab_fault, s->lab_touch);
++    }
++}
++
++static const char *const mt6762_fault_names[] = { "none", "nack", "dma", "stall" };
++
++static char *mt6762_get_lab_state(Object *obj, Error **errp)
++{
++    return mt6762_lab_i2c_state(MT6762_MACHINE(obj)->lab);
++}
++
++static char *mt6762_get_lab_fault(Object *obj, Error **errp)
++{
++    return g_strdup(mt6762_fault_names[MT6762_MACHINE(obj)->lab_fault]);
++}
++
++static void mt6762_set_lab_fault(Object *obj, const char *value, Error **errp)
++{
++    MT6762MachineState *s = MT6762_MACHINE(obj);
++    unsigned i;
++    for (i = 0; i < ARRAY_SIZE(mt6762_fault_names); i++) {
++        if (!strcmp(value, mt6762_fault_names[i])) {
++            s->lab_fault = i;
++            if (s->lab) {
++                mt6762_lab_i2c_configure(s->lab, s->lab_fault, s->lab_touch);
++            }
++            return;
++        }
++    }
++    error_setg(errp, "lab-i2c-fault must be none, nack, dma or stall");
++}
++
+ static void mt6762_class_init(ObjectClass *oc, const void *data)
+ {
+     MachineClass *mc = MACHINE_CLASS(oc);
+@@ -269,6 +340,15 @@ static void mt6762_class_init(ObjectClass *oc, const void *data)
+     mc->default_cpus = 8;
+     mc->no_floppy = 1;
+     mc->no_cdrom = 1;
++    object_class_property_add_bool(oc, "lab-i2c", mt6762_get_lab_i2c,
++                                   mt6762_set_lab_i2c);
++    object_class_property_set_description(oc, "lab-i2c",
++        "Opt-in synthetic I2C/APDMA/gate/pad test fixtures, not physical devices");
++    object_class_property_add_bool(oc, "lab-touch-sequence", mt6762_get_lab_touch,
++                                   mt6762_set_lab_touch);
++    object_class_property_add_str(oc, "lab-i2c-fault", mt6762_get_lab_fault,
++                                  mt6762_set_lab_fault);
++    object_class_property_add_str(oc, "lab-i2c-state", mt6762_get_lab_state, NULL);
+ }
+ 
+ static const TypeInfo mt6762_type = {
+diff --git a/hw/arm/mt6762_lab_i2c.c b/hw/arm/mt6762_lab_i2c.c
+new file mode 100644
+index 0000000..30f7cec
+--- /dev/null
++++ b/hw/arm/mt6762_lab_i2c.c
+@@ -0,0 +1,460 @@
++/*
++ * SPDX-License-Identifier: GPL-2.0-or-later
++ * AI-assisted local experiment; not intended for upstream submission.
++ *
++ * MT6765 v2 register offsets, interrupt bits and gate locations come from
++ * the supplied BSP i2c-mtk.{c,h}, clk-mt6765.c and the dumped device tree.
++ * Test peripheral contents, transfer latency and fault injection are synthetic.
++ * This is not an electrical bus, IOMMU, coherency or physical-device model.
++ */
++#include "qemu/osdep.h"
++#include "qemu/log.h"
++#include "qemu/timer.h"
++#include "qapi/error.h"
++#include "hw/arm/mt6762_lab_i2c.h"
++#include "system/address-spaces.h"
++#include "system/reset.h"
++
++enum { DATA = 0, ADDR = 4, MASK = 8, STATUS = 12, CONTROL = 16,
++       LENGTH = 20, TRANSACTIONS = 24, START = 36, FIFO_CLEAR = 56,
++       AUX_LENGTH = 68, SOFTRESET = 80, FIFO_STAT = 244 };
++enum { DMA_FLAG = 0, DMA_ENABLE = 8, DMA_RESET = 12, DMA_STOP = 16,
++       DMA_CON = 24, DMA_TX = 28, DMA_RX = 32, DMA_TX_LEN = 36,
++       DMA_RX_LEN = 40, DMA_TX_HIGH = 84, DMA_RX_HIGH = 88 };
++enum { COMPLETE = 1, ACKERR = 2, DMAERR = 64, BUSERR = 256 };
++#define REG(s, n) ((s)->reg[(n) / 4])
++#define DMA(s, n) ((s)->dma[(n) / 4])
++#define RAM_BASE UINT64_C(0x40000000)
++#define MAX_TRANSFER 4096
++
++typedef struct MT6762I2CBus {
++    MT6762I2CLab *lab;
++    MemoryRegion mmio, dma_mmio;
++    qemu_irq irq;
++    QEMUTimer *timer;
++    unsigned number, fault, tx_count, rx_count, rx_pos, frames;
++    uint64_t transactions, dma_reads, rx_bytes;
++    unsigned last_status;
++    bool overflow;
++    uint16_t reg[1024];
++    uint32_t dma[32];
++    uint8_t fifo[8], psc[7], scratch[256];
++} MT6762I2CBus;
++
++struct MT6762I2CLab {
++    MemoryRegion infra_mmio, top_mmio, gpio_mmio;
++    MT6762I2CBus bus[2];
++    uint64_t ram_size;
++    uint32_t gates[2], mux;
++    unsigned fault;
++    bool touch;
++};
++
++static void lab_irq(MT6762I2CBus *s)
++{
++    qemu_set_irq(s->irq, (REG(s, MASK) & REG(s, STATUS)) != 0);
++}
++
++static void lab_finish(MT6762I2CBus *s, unsigned status)
++{
++    s->last_status = status;
++    REG(s, START) = 0;
++    if (REG(s, CONTROL) & 4) {
++        DMA(s, DMA_ENABLE) = 0;
++        DMA(s, DMA_FLAG) = 1;
++    }
++    REG(s, STATUS) |= status;
++    lab_irq(s);
++}
++
++static bool lab_dma_range(MT6762I2CBus *s, uint64_t addr, size_t size)
++{
++    /* No MMIO DMA targets, integer wrapping or unsupported high address bits. */
++    return addr < (UINT64_C(1) << 33) && addr >= RAM_BASE &&
++           size <= MAX_TRANSFER && addr - RAM_BASE < s->lab->ram_size &&
++           size <= s->lab->ram_size - (addr - RAM_BASE);
++}
++
++static unsigned lab_endpoint(MT6762I2CBus *s, unsigned address,
++                             const uint8_t *tx, size_t nt,
++                             uint8_t *rx, size_t nr)
++{
++    size_t i;
++    memset(rx, 0, nr);
++    if (s->number == 0 && address == 0x3b) {
++        if (nt == 1 && tx[0] == 0x0c && nr == 2) {
++            rx[0] = 0; rx[1] = 7; /* Explicit test version, big endian. */
++            return 0;
++        }
++        if (nt || nr != 32) {
++            return ACKERR;
++        }
++        unsigned frame = s->frames++ % 64;
++        if (s->lab->touch) {
++            /* 8-ms polling: down, held/moved, then an explicit zero frame. */
++            if (frame < 16) {
++                unsigned x = 100 + frame, y = 200 + frame;
++                rx[1] = 1;
++                rx[2] = (frame ? 0x80 : 0) | (x >> 8);
++                rx[3] = x;
++                rx[4] = y >> 8; /* contact ID zero */
++                rx[5] = y;
++                rx[6] = 63;
++                rx[7] = 0x90;
++            }
++        }
++        return 0;
++    }
++    if (s->number == 5 && address == 0x6a) {
++        if (nt == 1 && nr && tx[0] < sizeof(s->psc) &&
++            nr <= sizeof(s->psc) - tx[0]) {
++            memcpy(rx, s->psc + tx[0], nr);
++            return 0;
++        }
++        if (nt == 2 && !nr && tx[0] < sizeof(s->psc) && tx[0] != 3) {
++            s->psc[tx[0]] = tx[1];
++            if (tx[0] == 1 && (tx[1] & 4)) {
++                /* Deterministic disable-only fixture transition, not battery physics. */
++                s->psc[0] &= ~0x30;
++            }
++            return 0;
++        }
++        return ACKERR;
++    }
++    /* Lab-only scratch peripheral for FIFO/DMA boundary tests, not a phone part. */
++    if (address == 0x50) {
++        unsigned index = nt ? tx[0] : 0;
++        for (i = 1; i < nt; i++) {
++            s->scratch[(index + i - 1) & 255] = tx[i];
++        }
++        for (i = 0; i < nr; i++) {
++            rx[i] = s->scratch[(index + i) & 255];
++        }
++        return 0;
++    }
++    return ACKERR;
++}
++
++static void lab_complete(void *opaque)
++{
++    MT6762I2CBus *s = opaque;
++    uint8_t tx[MAX_TRANSFER], rx[MAX_TRANSFER];
++    unsigned n = REG(s, TRANSACTIONS), length = REG(s, LENGTH);
++    unsigned control = REG(s, CONTROL), status;
++    bool dma = control & 4, read = REG(s, ADDR) & 1;
++    size_t nt = read ? 0 : length, nr = read ? length : 0;
++    uint64_t ta = DMA(s, DMA_TX) | (uint64_t)DMA(s, DMA_TX_HIGH) << 32;
++    uint64_t ra = DMA(s, DMA_RX) | (uint64_t)DMA(s, DMA_RX_HIGH) << 32;
++
++    /* Losing a prerequisite while active cannot complete a DMA transaction. */
++    if ((s->lab->gates[0] & BIT(11)) || (s->lab->mux & 0x87) ||
++        (dma && (s->lab->gates[1] & BIT(18)))) {
++        return;
++    }
++
++    if (n == 2 && !read && (control & 0x12) == 0x12) {
++        nr = REG(s, AUX_LENGTH);
++    } else if (n != 1) {
++        lab_finish(s, BUSERR);
++        return;
++    }
++    if (!length || nt > MAX_TRANSFER || nr > MAX_TRANSFER ||
++        (n == 2 && !nr) || s->overflow) {
++        lab_finish(s, BUSERR);
++        return;
++    }
++    if (s->fault == 1) {
++        lab_finish(s, ACKERR);
++        return;
++    }
++    if (s->fault == 2) {
++        /* Simultaneous completion/error deliberately tests error precedence. */
++        lab_finish(s, COMPLETE | DMAERR);
++        return;
++    }
++    if (dma) {
++        if (!(DMA(s, DMA_ENABLE) & 1) || DMA(s, DMA_TX_LEN) != nt ||
++            DMA(s, DMA_RX_LEN) != nr || DMA(s, DMA_CON) != (nt ? 0 : 1) ||
++            (nt && !lab_dma_range(s, ta, nt)) ||
++            (nr && !lab_dma_range(s, ra, nr))) {
++            lab_finish(s, DMAERR);
++            return;
++        }
++        if (nt && address_space_read(&address_space_memory, ta,
++                MEMTXATTRS_UNSPECIFIED, tx, nt) != MEMTX_OK) {
++            lab_finish(s, DMAERR);
++            return;
++        }
++    } else {
++        if (nt > 8 || nr > 8 || s->tx_count != nt) {
++            lab_finish(s, BUSERR);
++            return;
++        }
++        memcpy(tx, s->fifo, nt);
++    }
++    status = lab_endpoint(s, REG(s, ADDR) >> 1, tx, nt, rx, nr);
++    if (!status && nr) {
++        if (dma) {
++            if (address_space_write(&address_space_memory, ra,
++                    MEMTXATTRS_UNSPECIFIED, rx, nr) != MEMTX_OK) {
++                status = DMAERR;
++            }
++        } else {
++            memcpy(s->fifo, rx, nr);
++            s->rx_count = nr;
++            s->rx_pos = 0;
++        }
++    }
++    if (!status) {
++        s->rx_bytes += nr;
++        s->dma_reads += dma && nr;
++    }
++    lab_finish(s, status ? status : COMPLETE);
++}
++
++static uint64_t lab_i2c_read(void *opaque, hwaddr off, unsigned size)
++{
++    MT6762I2CBus *s = opaque;
++    if (off & 3) {
++        return 0;
++    }
++    if (off == DATA) {
++        return s->rx_pos < s->rx_count ? s->fifo[s->rx_pos++] : 0;
++    }
++    if (off == FIFO_STAT) {
++        return (s->rx_count - s->rx_pos) << 4;
++    }
++    return REG(s, off);
++}
++
++static void lab_i2c_write(void *opaque, hwaddr off, uint64_t val, unsigned size)
++{
++    MT6762I2CBus *s = opaque;
++    MT6762I2CLab *l = s->lab;
++    if (off & 3) {
++        return;
++    }
++    switch (off) {
++    case DATA:
++        if (s->tx_count < sizeof(s->fifo)) {
++            s->fifo[s->tx_count++] = val;
++        } else {
++            s->overflow = true;
++        }
++        break;
++    case STATUS:
++        REG(s, STATUS) &= ~val;
++        lab_irq(s);
++        break;
++    case MASK:
++        REG(s, MASK) = val & 0x1ff;
++        lab_irq(s);
++        break;
++    case FIFO_CLEAR:
++        s->tx_count = s->rx_count = s->rx_pos = 0;
++        s->overflow = false;
++        break;
++    case SOFTRESET:
++        if (val & 1) {
++            timer_del(s->timer);
++            memset(s->reg, 0, sizeof(s->reg));
++            s->tx_count = s->rx_count = s->rx_pos = 0;
++            s->overflow = false;
++            lab_irq(s);
++        }
++        break;
++    case START:
++        if (!(val & 1) || (REG(s, START) & 1)) {
++            break;
++        }
++        REG(s, START) = 1;
++        s->transactions++;
++        s->fault = l->fault;
++        /* Missing/unsupported clocks stall, rather than pretending success. */
++        if ((l->gates[0] & BIT(11)) || (l->mux & 0x87) ||
++            ((REG(s, CONTROL) & 4) && (l->gates[1] & BIT(18))) ||
++            s->fault == 3) {
++            break;
++        }
++        /* Fixed lab latency: explicitly not an SCL timing/electrical model. */
++        timer_mod(s->timer, qemu_clock_get_ns(QEMU_CLOCK_VIRTUAL) + 100000);
++        break;
++    default:
++        REG(s, off) = val;
++        break;
++    }
++}
++
++static const MemoryRegionOps lab_i2c_ops = {
++    .read = lab_i2c_read, .write = lab_i2c_write,
++    .endianness = DEVICE_LITTLE_ENDIAN,
++    .valid = { .min_access_size = 2, .max_access_size = 2 },
++    .impl = { .min_access_size = 2, .max_access_size = 2 },
++};
++
++static uint64_t lab_dma_read(void *opaque, hwaddr off, unsigned size)
++{
++    MT6762I2CBus *s = opaque;
++    return DMA(s, off);
++}
++
++static void lab_dma_write(void *opaque, hwaddr off, uint64_t val, unsigned size)
++{
++    MT6762I2CBus *s = opaque;
++    if (off == DMA_RESET && (val & 1)) {
++        timer_del(s->timer);
++        memset(s->dma, 0, sizeof(s->dma));
++    } else if (off == DMA_STOP && (val & 1)) {
++        timer_del(s->timer);
++        lab_finish(s, DMAERR);
++    } else if (off == DMA_FLAG) {
++        DMA(s, off) = val ? DMA(s, off) & ~val : 0;
++    } else {
++        DMA(s, off) = val;
++    }
++}
++
++static const MemoryRegionOps lab_dma_ops = {
++    .read = lab_dma_read, .write = lab_dma_write,
++    .endianness = DEVICE_LITTLE_ENDIAN,
++    .valid = { .min_access_size = 4, .max_access_size = 4 },
++};
++
++static uint64_t lab_infra_read(void *opaque, hwaddr off, unsigned size)
++{
++    MT6762I2CLab *s = opaque;
++    return off == 0x90 ? s->gates[0] : off == 0x94 ? s->gates[1] : 0;
++}
++
++static void lab_infra_write(void *opaque, hwaddr off, uint64_t val, unsigned size)
++{
++    MT6762I2CLab *s = opaque;
++    switch (off) {
++    case 0x80: s->gates[0] |= val; break;
++    case 0x84: s->gates[0] &= ~val; break;
++    case 0x88: s->gates[1] |= val; break;
++    case 0x8c: s->gates[1] &= ~val; break;
++    default: qemu_log_mask(LOG_UNIMP, "mt6762 lab infracfg write %#" HWADDR_PRIx "\n", off);
++    }
++}
++
++static uint64_t lab_top_read(void *opaque, hwaddr off, unsigned size)
++{
++    MT6762I2CLab *s = opaque;
++    return off == 0xa0 ? s->mux : 0;
++}
++
++static void lab_top_write(void *opaque, hwaddr off, uint64_t val, unsigned size)
++{
++    MT6762I2CLab *s = opaque;
++    switch (off) {
++    case 0xa0: s->mux = val; break;
++    case 0xa4: s->mux |= val; break;
++    case 0xa8: s->mux &= ~val; break;
++    case 4: break; /* Lab update commits immediately; PLLs are not modeled. */
++    default: qemu_log_mask(LOG_UNIMP, "mt6762 lab topckgen write %#" HWADDR_PRIx "\n", off);
++    }
++}
++
++static uint64_t lab_gpio_read(void *opaque, hwaddr off, unsigned size)
++{
++    return off == 0x3a0 ? 0x1100 : off == 0x360 ? 0x11 : 0;
++}
++
++static void lab_gpio_write(void *opaque, hwaddr off, uint64_t val, unsigned size)
++{
++    qemu_log_mask(LOG_GUEST_ERROR, "mt6762 lab GPIO fixture is read-only: %#" HWADDR_PRIx "\n", off);
++}
++
++#define LAB_OPS(name) static const MemoryRegionOps lab_##name##_ops = { \
++    .read = lab_##name##_read, .write = lab_##name##_write, \
++    .endianness = DEVICE_LITTLE_ENDIAN, \
++    .valid = { .min_access_size = 4, .max_access_size = 4 }, \
++}
++LAB_OPS(infra);
++LAB_OPS(top);
++LAB_OPS(gpio);
++
++static void lab_reset(void *opaque)
++{
++    MT6762I2CLab *s = opaque;
++    unsigned i, j;
++    s->gates[0] = BIT(11);
++    s->gates[1] = BIT(18);
++    s->mux = 0;
++    for (i = 0; i < 2; i++) {
++        MT6762I2CBus *b = &s->bus[i];
++        timer_del(b->timer);
++        memset(b->reg, 0, sizeof(b->reg));
++        memset(b->dma, 0, sizeof(b->dma));
++        memset(b->psc, 0, sizeof(b->psc));
++        b->psc[0] = 0x10; b->psc[3] = 0xf0;
++        b->tx_count = b->rx_count = b->rx_pos = b->frames = 0;
++        b->transactions = b->dma_reads = b->rx_bytes = 0;
++        b->last_status = 0;
++        b->overflow = false;
++        for (j = 0; j < sizeof(b->scratch); j++) {
++            b->scratch[j] = j;
++        }
++        lab_irq(b);
++    }
++}
++
++void mt6762_lab_i2c_configure(MT6762I2CLab *s, unsigned fault, bool touch)
++{
++    if (touch != s->touch) {
++        s->bus[0].frames = 0;
++    }
++    s->fault = fault;
++    s->touch = touch;
++}
++
++char *mt6762_lab_i2c_state(MT6762I2CLab *s)
++{
++    if (!s) {
++        return g_strdup("{\"enabled\":false}");
++    }
++    return g_strdup_printf("{\"enabled\":true,\"synthetic\":true,"
++        "\"i2c0\":{\"transactions\":%" PRIu64 ",\"dma_reads\":%" PRIu64
++        ",\"rx_bytes\":%" PRIu64 ",\"last_status\":%u},"
++        "\"i2c5\":{\"transactions\":%" PRIu64 ",\"dma_reads\":%" PRIu64
++        ",\"rx_bytes\":%" PRIu64 ",\"last_status\":%u,\"psc_control\":%u,\"psc_status\":%u}}",
++        s->bus[0].transactions, s->bus[0].dma_reads, s->bus[0].rx_bytes, s->bus[0].last_status,
++        s->bus[1].transactions, s->bus[1].dma_reads, s->bus[1].rx_bytes, s->bus[1].last_status,
++        s->bus[1].psc[1], s->bus[1].psc[0]);
++}
++
++MT6762I2CLab *mt6762_lab_i2c_create(Object *owner, MemoryRegion *memory,
++                                  uint64_t ram_size, qemu_irq irq0, qemu_irq irq5)
++{
++    MT6762I2CLab *s = g_new0(MT6762I2CLab, 1);
++    static const hwaddr base[] = { 0x11007000, 0x11016000 };
++    static const hwaddr dma[] = { 0x11000080, 0x11000580 };
++    unsigned i;
++    s->ram_size = ram_size;
++    for (i = 0; i < 2; i++) {
++        MT6762I2CBus *b = &s->bus[i];
++        b->lab = s;
++        b->number = i ? 5 : 0;
++        b->irq = i ? irq5 : irq0;
++        b->timer = timer_new_ns(QEMU_CLOCK_VIRTUAL, lab_complete, b);
++        memory_region_init_io(&b->mmio, owner, &lab_i2c_ops, b,
++                              i ? "mt6762.lab-i2c5" : "mt6762.lab-i2c0", 0x1000);
++        memory_region_add_subregion(memory, base[i], &b->mmio);
++        memory_region_init_io(&b->dma_mmio, owner, &lab_dma_ops, b,
++                              i ? "mt6762.lab-apdma5" : "mt6762.lab-apdma0", 0x80);
++        memory_region_add_subregion(memory, dma[i], &b->dma_mmio);
++    }
++    memory_region_init_io(&s->infra_mmio, owner, &lab_infra_ops, s,
++                          "mt6762.lab-infracfg", 0x1000);
++    memory_region_add_subregion(memory, 0x10001000, &s->infra_mmio);
++    memory_region_init_io(&s->top_mmio, owner, &lab_top_ops, s,
++                          "mt6762.lab-topckgen", 0x1000);
++    memory_region_add_subregion(memory, 0x10000000, &s->top_mmio);
++    memory_region_init_io(&s->gpio_mmio, owner, &lab_gpio_ops, s,
++                          "mt6762.lab-gpio-fixture", 0x1000);
++    memory_region_add_subregion(memory, 0x10005000, &s->gpio_mmio);
++    lab_reset(s);
++    qemu_register_reset(lab_reset, s);
++    return s;
++}
+diff --git a/include/hw/arm/mt6762_lab_i2c.h b/include/hw/arm/mt6762_lab_i2c.h
+new file mode 100644
+index 0000000..11c3269
+--- /dev/null
++++ b/include/hw/arm/mt6762_lab_i2c.h
+@@ -0,0 +1,12 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++#ifndef HW_ARM_MT6762_LAB_I2C_H
++#define HW_ARM_MT6762_LAB_I2C_H
++#include "system/memory.h"
++#include "hw/core/irq.h"
++typedef struct MT6762I2CLab MT6762I2CLab;
++MT6762I2CLab *mt6762_lab_i2c_create(Object *owner, MemoryRegion *memory,
++                                  uint64_t ram_size, qemu_irq irq0,
++                                  qemu_irq irq5);
++void mt6762_lab_i2c_configure(MT6762I2CLab *s, unsigned fault, bool touch);
++char *mt6762_lab_i2c_state(MT6762I2CLab *s);
++#endif
+diff --git a/tests/mt6762/test_lab_i2c.py b/tests/mt6762/test_lab_i2c.py
+new file mode 100755
+index 0000000..eef44ed
+--- /dev/null
++++ b/tests/mt6762/test_lab_i2c.py
+@@ -0,0 +1,192 @@
++#!/usr/bin/env python3
++"""Local QTest checks for opt-in synthetic MT6762 I2C fixtures, not phone proof."""
++import argparse
++import json
++from pathlib import Path
++import socket
++import subprocess
++import tempfile
++import time
++
++
++class VM:
++    def __init__(self, binary, dtb, enabled):
++        self.tmp = tempfile.TemporaryDirectory(prefix='mt6762-i2c-')
++        self.path = Path(self.tmp.name)
++        self.log = (self.path / 'qemu.log').open('w+')
++        self.proc = subprocess.Popen([str(binary), '-M', 'mt6762' + (',lab-i2c=on' if enabled else ''),
++            '-accel', 'qtest', '-smp', '1', '-m', '4096M', '-dtb', str(dtb),
++            '-display', 'none', '-monitor', 'none', '-serial', 'null',
++            '-qtest', f'unix:{self.path}/test,server=on,wait=off',
++            '-qtest-log', '/dev/null', '-qmp', f'unix:{self.path}/qmp,server=on,wait=off'],
++            stdout=self.log, stderr=subprocess.STDOUT)
++        for _ in range(200):
++            if self.proc.poll() is not None:
++                self.log.seek(0)
++                raise RuntimeError(self.log.read())
++            if (self.path / 'test').exists() and (self.path / 'qmp').exists():
++                break
++            time.sleep(.01)
++        self.qtest = socket.socket(socket.AF_UNIX); self.qtest.settimeout(5)
++        self.qtest.connect(str(self.path / 'test')); self.qt = self.qtest.makefile('rwb', buffering=0)
++        self.qmp = socket.socket(socket.AF_UNIX); self.qmp.settimeout(5)
++        self.qmp.connect(str(self.path / 'qmp')); self.qm = self.qmp.makefile('rwb', buffering=0)
++        json.loads(self.qm.readline()); self.command('qmp_capabilities')
++
++    def close(self):
++        try:
++            self.command('quit')
++        finally:
++            self.proc.wait(timeout=5)
++            self.qt.close(); self.qm.close(); self.qtest.close(); self.qmp.close()
++            self.log.close(); self.tmp.cleanup()
++
++    def command(self, cmd, **args):
++        self.qm.write(json.dumps({'execute': cmd, 'arguments': args}).encode() + b'\n')
++        while True:
++            r = json.loads(self.qm.readline())
++            if 'error' in r: raise RuntimeError(r)
++            if 'return' in r: return r['return']
++
++    def qtcmd(self, cmd):
++        self.qt.write(cmd.encode() + b'\n')
++        r = self.qt.readline().decode().strip()
++        assert r.startswith('OK'), (cmd, r)
++        return r[2:].strip()
++
++    def read(self, address, size=4):
++        return int(self.qtcmd(f'read{ {2:"w",4:"l"}[size]} {address:#x}'), 0)
++
++    def write(self, address, value, size=4):
++        self.qtcmd(f'write{ {2:"w",4:"l"}[size]} {address:#x} {value:#x}')
++
++    def put(self, address, data):
++        self.qtcmd(f'write {address:#x} {len(data)} 0x{data.hex()}')
++
++    def get(self, address, size):
++        return bytes.fromhex(self.qtcmd(f'read {address:#x} {size}')[2:])
++
++    def step(self):
++        self.qtcmd('clock_step 200000')
++
++    def fault(self, value):
++        self.command('qom-set', path='/machine', property='lab-i2c-fault', value=value)
++
++
++class Bus:
++    def __init__(self, vm, number):
++        self.vm = vm
++        self.base, self.dma = ((0x11007000, 0x11000080) if number == 0 else (0x11016000, 0x11000580))
++
++    def r(self, offset): return self.vm.read(self.base + offset, 2)
++    def w(self, offset, value): self.vm.write(self.base + offset, value, 2)
++    def d(self, offset): return self.vm.read(self.dma + offset)
++    def dw(self, offset, value): self.vm.write(self.dma + offset, value)
++    def reset(self): self.w(0x50, 1); self.dw(12, 1)
++
++    def begin(self, address, tx=b'', rx=0, dma=False, buffer=0x40010000, rx_length=None):
++        self.w(8, 0); self.w(12, 0x1ff); self.w(56, 1)
++        self.w(8, 0x12f)
++        self.w(16, 0x28 | (0x12 if tx and rx else 0) | (0x304 if dma else 0))
++        self.w(4, (address << 1) | (not tx))
++        self.w(20, len(tx) if tx else rx); self.w(68, rx if tx and rx else 0)
++        self.w(24, 2 if tx and rx else 1)
++        if dma:
++            if tx: self.vm.put(buffer, tx)
++            for off, val in [(0,0),(24,0 if tx else 1),(28,buffer & 0xffffffff if tx else 0),
++                    (84,buffer >> 32 if tx else 0),(32,buffer & 0xffffffff if rx else 0),
++                    (88,buffer >> 32 if rx else 0),(36,len(tx)),(40,rx if rx_length is None else rx_length)]:
++                self.dw(off,val)
++            self.dw(8,1)
++        else:
++            for byte in tx: self.w(0,byte)
++        self.w(64,1); self.w(36,1)
++
++    def run(self, address, tx=b'', rx=0, dma=False, buffer=0x40010000, **kw):
++        self.begin(address,tx,rx,dma,buffer,**kw); self.vm.step()
++        status=self.r(12)
++        data=(self.vm.get(buffer,rx) if dma else bytes(self.r(0) for _ in range(rx))) if status == 1 else b''
++        return status,data
++
++
++def main():
++    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--qemu',type=Path,required=True);p.add_argument('--dtb',type=Path,required=True);a=p.parse_args()
++    results=[]
++    vm=VM(a.qemu.resolve(),a.dtb.resolve(),False)
++    try:
++        tree=vm.command('human-monitor-command',**{'command-line':'info mtree'})
++        assert 'mt6762.lab-' not in tree
++        assert json.loads(vm.command('qom-get',path='/machine',property='lab-i2c-state'))=={'enabled':False}
++        results.append('default machine has no synthetic peripheral mappings')
++    finally: vm.close()
++    vm=VM(a.qemu.resolve(),a.dtb.resolve(),True)
++    try:
++        b=Bus(vm,0);c=Bus(vm,5)
++        assert vm.read(0x10001090)&(1<<11) and vm.read(0x10001094)&(1<<18)
++        assert vm.read(0x100053a0)==0x1100 and vm.read(0x10005360)==0x11
++        b.begin(0x3b,b'\x0c',2);vm.step();assert b.r(36)==1 and b.r(12)==0
++        b.reset();vm.write(0x10001084,1<<11);vm.write(0x1000108c,1<<18)
++        assert b.run(0x3b,b'\x0c',2)==(1,b'\x00\x07')
++        # Controller IRQ reaches SPI84 (architectural INTID116); W1C deasserts.
++        assert vm.read(0x0c00020c)&(1<<20)
++        b.w(12,0x1ff);assert not vm.read(0x0c00020c)&(1<<20)
++        results.append('clock gates, verified pad fixtures, FIFO repeated START, IRQ/W1C')
++        assert c.run(0x6a,b'\x03',1)==(1,b'\xf0')
++        assert c.run(0x6a,b'\x00',1)==(1,b'\x10')
++        assert c.run(0x6a,b'\x01\x04')==(1,b'')
++        assert c.run(0x6a,b'\x01',1)==(1,b'\x04')
++        assert c.run(0x6a,b'\x00',1)==(1,b'\x00')
++        assert c.run(0x55,rx=1)[0]==2
++        results.append('synthetic PSC identity/status/control and unknown-address NACK')
++        assert b.run(0x50,rx=8)==(1,bytes(range(8)))
++        assert b.run(0x50,rx=9)[0]==256
++        assert b.run(0x50,bytes(range(9)))[0]==256
++        results.append('8-byte FIFO boundary and overflow rejection')
++        for n in (9,32,4096):
++            addr=0x40010000;vm.put(addr-4,b'\xa5'*(n+8))
++            assert b.run(0x50,rx=n,dma=True)==(1,bytes(i&255 for i in range(n)))
++            assert vm.get(addr-4,4)==b'\xa5'*4 and vm.get(addr+n,4)==b'\xa5'*4
++            assert b.d(8)==0 and b.r(36)==0
++        assert b.run(0x50,rx=4097,dma=True)[0]==256
++        assert b.run(0x50,b'\x20',32,True)==(1,bytes(range(32,64)))
++        assert b.run(0x50,rx=32,dma=True,buffer=0x100010000)==(1,bytes(range(32)))
++        for addr in (0x200000000,0x11007000,0x13ffffff0):
++            assert b.run(0x50,rx=32,dma=True,buffer=addr)[0]==64
++        assert b.run(0x50,rx=32,dma=True,rx_length=31)[0]==64
++        results.append('DMA lengths9/32/4096, shared TX/RX, 33-bit addresses, canaries, rejected ranges/lengths')
++        assert b.run(0x3b,rx=32,dma=True)==(1,bytes(32))
++        vm.command('qom-set',path='/machine',property='lab-touch-sequence',value=True)
++        first=b.run(0x3b,rx=32,dma=True)[1];assert first[:8]==bytes([0,1,0,100,0,200,63,0x90])
++        assert b.run(0x3b,rx=32,dma=True)[1][2]==0x80
++        for _ in range(14):b.run(0x3b,rx=32,dma=True)
++        assert b.run(0x3b,rx=32,dma=True)==(1,bytes(32))
++        results.append('opt-in synthetic AXS down/move/release packets')
++        for fault,status in [('nack',2),('dma',65)]:
++            vm.fault(fault);vm.put(0x40010000,b'\xcc'*32)
++            assert b.run(0x3b,rx=32,dma=True)[0]==status
++            assert vm.get(0x40010000,32)==b'\xcc'*32
++        vm.fault('stall');b.begin(0x3b,rx=32,dma=True);vm.step()
++        assert b.r(36)==1 and b.d(8)==1 and b.r(12)==0
++        vm.fault('none');vm.step();assert b.r(36)==1 and b.d(8)==1
++        b.w(0x50,1);assert b.d(8)==1
++        b.dw(12,1);assert b.d(8)==0
++        assert b.run(0x50,rx=1)==(1,b'\0')
++        results.append('fault injection, completion/error precedence, stalled DMA, separate reset recovery')
++        b.begin(0x3b,rx=32,dma=True)
++        vm.write(0x10001088,1<<18);vm.step()
++        assert b.r(36)==1 and b.d(8)==1 and b.r(12)==0
++        b.reset();vm.write(0x1000108c,1<<18)
++        vm.write(0x10001088,1<<18)
++        assert b.run(0x50,rx=1)==(1,b'\0')
++        b.begin(0x3b,rx=32,dma=True);vm.step();assert b.r(36)==1 and b.d(8)==1
++        b.reset();vm.write(0x1000108c,1<<18);vm.write(0x100000a0,1)
++        b.begin(0x50,rx=1);vm.step();assert b.r(36)==1 and b.r(12)==0
++        results.append('DMA clock dependency, mid-transfer gate loss, unsupported parent stall')
++        state=json.loads(vm.command('qom-get',path='/machine',property='lab-i2c-state'))
++        assert state['synthetic'] and state['i2c0']['dma_reads']>=20 and state['i2c5']['transactions']==6
++        assert state['i2c5']['psc_control']==4 and state['i2c5']['psc_status']==0
++        results.append('read-only QOM transaction counters for independent guest-driver integration evidence')
++    finally:vm.close()
++    print(json.dumps({'status':'passed','physical_hardware_tested':False,'checks':results},indent=2))
++
++if __name__=='__main__':main()
+-- 
+2.55.0
+

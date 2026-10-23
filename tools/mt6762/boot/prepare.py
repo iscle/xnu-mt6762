@@ -178,9 +178,52 @@ def load_identity(path):
     return result
 
 
-def make_adt(seed, ramdisks=(), framebuffer=False, identity=None):
+def make_adt(seed, ramdisks=(), framebuffer=False, identity=None, native_lab_i2c=False, cpus=1, native_lab_display=None, native_lab_sspm=False, native_lab_power=False):
+    if not 1 <= cpus <= 8:
+        raise ValueError('MT6762 laboratory topology supports1..8 CPUs')
     if len(seed) != 64:
         raise ValueError('Random seed must be64 bytes')
+    chosen_children = [node('memory-map', [('RAMDisk' + (str(i) if i else ''), u64(*disk))
+                            for i, disk in enumerate(ramdisks)])]
+    if native_lab_sspm and not native_lab_i2c:
+        raise ValueError('Native SSPM fixture requires native I2C platform contract')
+    if native_lab_power and not native_lab_i2c:
+        raise ValueError('Native power fixture requires native I2C platform contract')
+    if native_lab_display and (not native_lab_i2c or not framebuffer):
+        raise ValueError('Native display fixture requires I2C fixtures and framebuffer')
+    if native_lab_i2c:
+        # These assertions describe explicitly selected QEMU fixtures only.
+        # They must never be reused as a physical-phone loader handoff.
+        fixture = {
+            'version': 1, 'native-io': 1, 'lab-fixture': 1,
+            'i2c0-verified': 1, 'i2c5-verified': 1, 'dma-direct': 1,
+            'i2c-parent-index': 0, 'i2c-parent-hz': 26000000,
+            'i2c-pads-verified': 1, 'i2c0-hz': 100000, 'i2c5-hz': 100000,
+            'touch-verified': 1, 'touch-bus': 0, 'touch-address': 0x3b,
+            'touch-max-x': 384, 'touch-max-y': 854, 'charger-verified': 1,
+            'charger-control-owned': 1,
+        }
+        if native_lab_sspm:
+            fixture['sspm-mailbox-owned'] = 1
+        if native_lab_power:
+            fixture.update({'pwrap-verified': 1, 'adc-verified': 1, 'keypad-verified': 1})
+        fixture_props = [(k, u32(v)) for k, v in fixture.items()]
+        if native_lab_display:
+            fb = native_lab_display
+            if fb['addr'] & (PAGE - 1) or fb['size'] != 0x144000 or fb['addr'] + fb['size'] > 0x100000000:
+                raise ValueError('Native display fixture requires aligned 0x144000-byte RAM below4GiB')
+            fixture_props += [(k, u32(v)) for k, v in {
+                'display-verified': 1, 'display-reserved': 1, 'display-dma-physical': 1,
+                'display-pipeline-verified': 1, 'fb-width': 384, 'fb-height': 854,
+                'fb-stride': 1536, 'fb-format': 1, 'fb-ovl-layer': 0,
+                'brightness-verified': 1, 'brightness-pins-verified': 1,
+                'brightness-parent-verified': 1,
+            }.items()]
+            fixture_props += [(k, u64(v)) for k, v in {
+                'fb-phys': fb['addr'], 'fb-size': fb['size'],
+                'fb-reserved-base': fb['addr'], 'fb-reserved-size': fb['size'],
+            }.items()]
+        chosen_children.append(node('mt6762-handoff', fixture_props))
     chosen = node('chosen', [
         ('random-seed', seed), ('dram-base', u64(PHYS)), ('dram-size', u64(MEMORY)),
         ('debug-enabled', u32(1)), ('psci-method', cstr('smc')),
@@ -193,15 +236,22 @@ def make_adt(seed, ramdisks=(), framebuffer=False, identity=None):
         ('mac-address-bluetooth0', bytes.fromhex('02005e676202')),
         ('nvram-bank-size', u32(8192)), ('nvram-bank-count', u32(1)),
         ('nvram-current-bank', u32(0)), ('nvram-proxy-data', nvram()),
-    ], [node('memory-map', [('RAMDisk' + (str(i) if i else ''), u64(*disk))
-                            for i, disk in enumerate(ramdisks)])])
-    cpu = node('cpu0', [('device_type', cstr('cpu')), ('compatible', cstr('arm,cortex-a53')),
-        ('state', cstr('running')), ('reg', u32(0)), ('cpu-id', u32(0)),
-        ('cluster-id', u32(0)), ('cluster-type', u32(0)), ('die-cluster-id', u32(0)),
-        ('cluster-core-id', u32(0)), ('l2-cache-id', u32(0)),
-        ('timebase-frequency', u64(13000000)), ('fixed-frequency', u64(13000000)),
-        ('clock-frequency', u64(1800000000)), ('bus-frequency', u64(100000000)),
-        ('memory-frequency', u64(100000000)), ('peripheral-frequency', u64(26000000))])
+    ], chosen_children)
+    cpu_nodes = []
+    for index in range(cpus):
+        cluster, core = divmod(index, 4)
+        cpu_nodes.append(node(f'cpu{index}', [
+            ('device_type', cstr('cpu')), ('compatible', cstr('arm,cortex-a53')),
+            ('state', cstr('running' if index == 0 else 'stopped')),
+            ('reg', u32((cluster << 8) | core)), ('cpu-id', u32(index)),
+            ('cluster-id', u32(cluster)), ('cluster-type', u32(0)),
+            ('die-cluster-id', u32(cluster)), ('cluster-core-id', u32(core)),
+            ('l2-cache-id', u32(cluster)),
+            ('timebase-frequency', u64(13000000)), ('fixed-frequency', u64(13000000)),
+            # Advertised nominal maximum, not a measurement of the TCG CPU.
+            ('clock-frequency', u64(2001000000 if cluster == 0 else 1500000000)),
+            ('bus-frequency', u64(100000000)), ('memory-frequency', u64(100000000)),
+            ('peripheral-frequency', u64(26000000))]))
     gic = node('gic', [('device_type', cstr('interrupt-controller')),
         ('compatible', cstr('arm,gic-v3')), ('reg', u64(0, 0x40000, 0x100000, 0x200000)),
         ('virtual-timer-intid', u32(27)), ('redistributor-stride', u32(0x20000))])
@@ -222,7 +272,7 @@ def make_adt(seed, ramdisks=(), framebuffer=False, identity=None):
         root_props['compatible'] += cstr('mediatek,mt6762')
         product = [node('product', identity['product'])]
     return node('device-tree', list(root_props.items()),
-        [chosen, node('defaults'), node('options'), node('cpus', children=[cpu]), io] + product)
+        [chosen, node('defaults'), node('options'), node('cpus', children=cpu_nodes), io] + product)
 
 
 def boot_args(adt_pa, adt_len, top, cmdline, framebuffer_pa=None):
@@ -304,13 +354,38 @@ def main():
     p.add_argument('--ramdisk', type=Path, action='append', default=[],
                    help='Raw filesystem or mockfs executable; repeat for md0, md1, ...')
     p.add_argument('--memory-mib', type=int, default=512,
-                   help='Emulated RAM only; actual phone RAM remains unknown (default512MiB)')
+                   help='Emulated RAM only, independent of phone reservations (default512MiB)')
+    p.add_argument('--cpus', type=int, choices=range(1, 9), default=1,
+                   help='Emulated A53 cores with MT6762 Aff1/Aff0 topology (default1)')
     p.add_argument('--framebuffer', action='store_true',
                    help='Synthetic384x854 BGRA backing RAM, not a MediaTek display-controller model')
+    p.add_argument('--native-lab-i2c', action='store_true',
+                   help='Opt-in native driver handoff for QEMU I2C/APDMA fixtures; never a phone handoff')
+    p.add_argument('--native-lab-sspm', action='store_true',
+                   help='With --native-lab-i2c, synthetic SSPM PLATFORM liveness; no DVFS')
+    p.add_argument('--native-lab-power', action='store_true',
+                   help='With --native-lab-i2c, synthetic PWRAP, ADC and keypad; no physical charging')
+    p.add_argument('--native-lab-display', action='store_true',
+                   help='With --native-lab-i2c and --framebuffer, synthetic inherited OVL/PWM fixtures')
+    p.add_argument('--native-lab-touch-events', action='store_true',
+                   help='With --native-lab-i2c, generate explicitly synthetic down/move/release packets')
     p.add_argument('--identity-header', type=Path,
                    help='Generated donor identity.h containing root/product literal arrays')
-    p.add_argument('--cmdline', default='debug=0x14e serial=3 cpus=1 keepsyms=1 -v -enable_kprintf_spam')
+    p.add_argument('--cmdline', default='debug=0x14e serial=3 keepsyms=1 -v -enable_kprintf_spam')
     a = p.parse_args()
+    cpu_args = [v for v in shlex.split(a.cmdline) if v.startswith('cpus=')]
+    if cpu_args and cpu_args != [f'cpus={a.cpus}']:
+        raise ValueError('Boot cpus= must match --cpus exactly')
+    if not cpu_args:
+        a.cmdline += f' cpus={a.cpus}'
+    if a.native_lab_sspm and not a.native_lab_i2c:
+        raise ValueError('--native-lab-sspm requires --native-lab-i2c')
+    if a.native_lab_power and not a.native_lab_i2c:
+        raise ValueError('--native-lab-power requires --native-lab-i2c')
+    if a.native_lab_display and not (a.native_lab_i2c and a.framebuffer):
+        raise ValueError('--native-lab-display requires --native-lab-i2c and --framebuffer')
+    if a.native_lab_touch_events and not a.native_lab_i2c:
+        raise ValueError('--native-lab-touch-events requires --native-lab-i2c')
     if not 256 <= a.memory_mib <= 4096 or a.memory_mib % 32:
         raise ValueError('Emulated RAM must be256..4096MiB in32MiB multiples')
     MEMORY = a.memory_mib * 1024 * 1024
@@ -365,7 +440,8 @@ def main():
         blobs.append((framebuffer, bytes(size)))
         cursor += size
     identity = load_identity(a.identity_header) if a.identity_header else None
-    adt = make_adt(os.urandom(64), ramdisk_pairs, a.framebuffer, identity)
+    adt = make_adt(os.urandom(64), ramdisk_pairs, a.framebuffer, identity, a.native_lab_i2c, a.cpus,
+                   framebuffer if a.native_lab_display else None, a.native_lab_sspm, a.native_lab_power)
     adt_pa = skip_linux_dtb(cursor, align(len(adt)) + PAGE)
     ba_pa = align(adt_pa + len(adt))
     top = ba_pa + PAGE
@@ -407,7 +483,18 @@ def main():
     subprocess.run([str(a.objcopy), '-O', 'binary', '-j', '.text', str(elf), str(image)], check=True)
     if image.stat().st_size > 0x10000:
         raise ValueError('Trampoline exceeded reserved size')
-    command = [str(a.qemu.resolve()), '-M', 'mt6762', '-accel', 'tcg', '-cpu', 'cortex-a53', '-smp', '1',
+    machine = 'mt6762'
+    if a.native_lab_i2c:
+        machine += ',lab-i2c=on'
+    if a.native_lab_sspm:
+        machine += ',lab-sspm=on'
+    if a.native_lab_power:
+        machine += ',lab-power=on'
+    if a.native_lab_display:
+        machine += f',lab-display=on,lab-display-fb={framebuffer["addr"]:#x}'
+    if a.native_lab_touch_events:
+        machine += ',lab-touch-sequence=on'
+    command = [str(a.qemu.resolve()), '-M', machine, '-accel', 'tcg', '-cpu', 'cortex-a53', '-smp', str(a.cpus),
                '-m', f'{a.memory_mib}M', '-display', 'none', '-monitor', 'none', '-serial', 'stdio', '-no-reboot',
                '-kernel', str(image), '-dtb', str(a.linux_dtb.resolve())]
     for r in regions:
@@ -418,9 +505,10 @@ def main():
     (out / 'run.sh').chmod(0o755)
     manifest = dict(kernel=str(a.kernel.resolve()), kernel_sha256=hashlib.sha256(raw).hexdigest(),
                     entry_va=hex(m['entry']), entry_pa=hex(entry_pa), virt_base=hex(VIRT), phys_base=hex(PHYS),
-                    ram_size=MEMORY, vm_page_size=PAGE, hardware_page_size=4096,
+                    ram_size=MEMORY, vm_page_size=PAGE, hardware_page_size=4096, cpu_count=a.cpus,
                     boot_args_pa=hex(ba_pa), adt_pa=hex(adt_pa), top_of_kernel_data=hex(top),
                     chained_rebases=nfix, ramdisk=ramdisk_info, framebuffer=framebuffer,
+                    native_lab_power=a.native_lab_power, native_lab_sspm=a.native_lab_sspm, native_lab_i2c=a.native_lab_i2c, native_lab_display=a.native_lab_display, native_lab_touch_events=a.native_lab_touch_events,
                     identity_header_sha256=hashlib.sha256(a.identity_header.read_bytes()).hexdigest() if a.identity_header else None,
                     regions=regions, reserved=reserved, command=command,
                     limits=['QEMU bring-up only; not a phone boot image.',

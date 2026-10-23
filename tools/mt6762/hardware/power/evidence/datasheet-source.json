@@ -1,0 +1,22 @@
+{
+  "url": "https://www.prisemi.com/pdf/1ldccdxp/PSC5425E.pdf",
+  "manufacturer": "Prisemi",
+  "document": "PSC5425E",
+  "revision": "06.5",
+  "pages": 32,
+  "retrieved_utc": "2026-10-23",
+  "sha256": "b646cd4ebe263f8d54657f2aa53906c46e7543d4607dff63f3dfcccba928e562",
+  "bytes": 967192,
+  "register_pages": [
+    25,
+    26,
+    27,
+    28
+  ],
+  "control_pages": [
+    17,
+    18,
+    19
+  ],
+  "visual_check": "Page27 current/termination register table viewed from local primary PDF after web screenshot fetch failed."
+}

@@ -1,0 +1,1461 @@
+{
+  "format": 1,
+  "physical_hardware_tested": false,
+  "native_goal_complete": false,
+  "tests": [
+    {
+      "synthetic_model_only": true,
+      "physical_hardware_tested": false,
+      "kernel_sha256": "77ef453327ccfe64fa044280ec8bd7d9a12f17efa3f5de34a28ada93ee604c5f",
+      "qemu_binary_sha256": "26f2a00e6521a9ebd8ce5bb96a0acd324047561c46e6d2528189ba697df5f9ae",
+      "synthetic_framebuffer_untouched": true,
+      "native_display_accepted": true,
+      "display_startup_fault": "none",
+      "native_brightness_accepted": true,
+      "synthetic_display_state": {
+        "enabled": true,
+        "synthetic": true,
+        "framebuffer_pa": 1143783424,
+        "fault": 0,
+        "applied_level": 512,
+        "enable": 1,
+        "duty": 512,
+        "pwm_writes": 0,
+        "commits": 0,
+        "rejected_writes": 0,
+        "reads": {
+          "spm": 15,
+          "mmsys": 2,
+          "ovl": 22,
+          "rdma": 2,
+          "dsi": 16,
+          "pwm": 10
+        }
+      },
+      "native_i2c0_ready": true,
+      "native_i2c5_ready": true,
+      "touch_version_accepted": true,
+      "touch_dma_reads": 546,
+      "charger_bus_transactions": 34,
+      "synthetic_psc_control": 4,
+      "synthetic_psc_status": 0,
+      "dma_fault_injected": false,
+      "touch_worker_stopped_on_error": false,
+      "kernel_panic_observed": false,
+      "queue_mode": "cycle",
+      "queue_observer_ready": true,
+      "queue_downs": 8,
+      "queue_moves": 120,
+      "queue_ups": 8,
+      "queue_matching_releases": 8,
+      "queue_matching_release_after_error": false,
+      "queue_held_at_end": 0,
+      "local_evidence": "boot/native-display-build7/queue/accepted.json"
+    },
+    {
+      "synthetic_model_only": true,
+      "physical_hardware_tested": false,
+      "kernel_sha256": "17c62ebe34cbaea27c9c596e95a1c26cf2d43ab4740eb95877364e292d0700b8",
+      "qemu_binary_sha256": "d76d44bb3b6d5f86d3ef0a2ddfb846510122a03f1f33637f3133e36f52ac96df",
+      "synthetic_framebuffer_untouched": true,
+      "native_display_accepted": false,
+      "display_startup_fault": "none",
+      "native_brightness_accepted": false,
+      "synthetic_display_state": null,
+      "sspm_startup_fault": "none",
+      "key_mode": "cycle",
+      "buttons_down": [
+        1,
+        2,
+        3
+      ],
+      "buttons_matching_up": [
+        1,
+        2,
+        3
+      ],
+      "buttons_held_at_end": [],
+      "native_power_accepted": true,
+      "synthetic_power_state": {
+        "enabled": true,
+        "synthetic": true,
+        "fault": 0,
+        "key_mask": 0,
+        "fsm": 0,
+        "commands": 300,
+        "reads": 290,
+        "writes": 10,
+        "rejected": 0,
+        "clears": 290,
+        "key_reads": 538,
+        "adc_requests": [
+          5,
+          5
+        ],
+        "adc_completions": [
+          5,
+          5
+        ]
+      },
+      "native_sysctls": {
+        "mt6762_pmic_id": {
+          "value": 22320,
+          "error": 0
+        },
+        "mt6762_power_valid": {
+          "value": 71,
+          "error": 0
+        },
+        "mt6762_power_errors": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_battery_adc_mv": {
+          "value": 4400,
+          "error": 0
+        },
+        "mt6762_ntc_adc_mv": {
+          "value": 615,
+          "error": 0
+        },
+        "mt6762_adc_voltage_samples": {
+          "value": 4,
+          "error": 0
+        },
+        "mt6762_adc_ntc_samples": {
+          "value": 4,
+          "error": 0
+        },
+        "mt6762_charger_control_safe": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_charger_state": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_sspm_alive": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_sspm_fault": {
+          "value": 0,
+          "error": 0
+        }
+      },
+      "native_sspm_alive": true,
+      "synthetic_sspm_state": {
+        "enabled": true,
+        "synthetic": true,
+        "dvfs_emulated": false,
+        "fault": 0,
+        "in_irq": 0,
+        "out_irq": 0,
+        "last_command": 57005,
+        "requests": 1,
+        "responses": 1,
+        "ack_clears": 1,
+        "reads": 8,
+        "data_writes": 3,
+        "control_writes": 2,
+        "rejected_commands": 0,
+        "rejected_writes": 0
+      },
+      "native_i2c0_ready": true,
+      "native_i2c5_ready": true,
+      "touch_version_accepted": true,
+      "touch_dma_reads": 467,
+      "charger_bus_transactions": 29,
+      "synthetic_psc_control": 4,
+      "synthetic_psc_status": 0,
+      "dma_fault_injected": false,
+      "touch_worker_stopped_on_error": false,
+      "kernel_panic_observed": false,
+      "queue_mode": "cycle",
+      "expected_cpu_count": 8,
+      "secondary_cpus_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "queue_observer_ready": true,
+      "queue_downs": 7,
+      "queue_moves": 105,
+      "queue_ups": 7,
+      "queue_matching_releases": 7,
+      "queue_matching_release_after_error": false,
+      "queue_held_at_end": 0,
+      "local_evidence": "boot/native-power-build8/queue/keys.json"
+    },
+    {
+      "synthetic_model_only": true,
+      "physical_hardware_tested": false,
+      "kernel_sha256": "17c62ebe34cbaea27c9c596e95a1c26cf2d43ab4740eb95877364e292d0700b8",
+      "qemu_binary_sha256": "d76d44bb3b6d5f86d3ef0a2ddfb846510122a03f1f33637f3133e36f52ac96df",
+      "synthetic_framebuffer_untouched": true,
+      "native_display_accepted": false,
+      "display_startup_fault": "none",
+      "native_brightness_accepted": false,
+      "synthetic_display_state": null,
+      "sspm_startup_fault": "none",
+      "key_mode": "power-fault",
+      "buttons_down": [
+        1
+      ],
+      "buttons_matching_up": [
+        1
+      ],
+      "buttons_held_at_end": [],
+      "native_power_accepted": true,
+      "synthetic_power_state": {
+        "enabled": true,
+        "synthetic": true,
+        "fault": 1,
+        "key_mask": 1,
+        "fsm": 2,
+        "commands": 23,
+        "reads": 20,
+        "writes": 2,
+        "rejected": 0,
+        "clears": 20,
+        "key_reads": 364,
+        "adc_requests": [
+          1,
+          1
+        ],
+        "adc_completions": [
+          1,
+          1
+        ]
+      },
+      "native_sysctls": {
+        "mt6762_pmic_id": {
+          "value": 22320,
+          "error": 0
+        },
+        "mt6762_power_valid": {
+          "value": 64,
+          "error": 0
+        },
+        "mt6762_power_errors": {
+          "value": 6,
+          "error": 0
+        },
+        "mt6762_battery_adc_mv": {
+          "value": -1,
+          "error": 0
+        },
+        "mt6762_ntc_adc_mv": {
+          "value": -1,
+          "error": 0
+        },
+        "mt6762_adc_voltage_samples": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_adc_ntc_samples": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_charger_control_safe": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_charger_state": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_sspm_alive": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_sspm_fault": {
+          "value": 0,
+          "error": 0
+        }
+      },
+      "native_sspm_alive": true,
+      "synthetic_sspm_state": {
+        "enabled": true,
+        "synthetic": true,
+        "dvfs_emulated": false,
+        "fault": 0,
+        "in_irq": 0,
+        "out_irq": 0,
+        "last_command": 57005,
+        "requests": 1,
+        "responses": 1,
+        "ack_clears": 1,
+        "reads": 8,
+        "data_writes": 3,
+        "control_writes": 2,
+        "rejected_commands": 0,
+        "rejected_writes": 0
+      },
+      "native_i2c0_ready": true,
+      "native_i2c5_ready": true,
+      "touch_version_accepted": true,
+      "touch_dma_reads": 323,
+      "charger_bus_transactions": 24,
+      "synthetic_psc_control": 4,
+      "synthetic_psc_status": 0,
+      "dma_fault_injected": false,
+      "touch_worker_stopped_on_error": false,
+      "kernel_panic_observed": false,
+      "queue_mode": "cycle",
+      "expected_cpu_count": 8,
+      "secondary_cpus_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "queue_observer_ready": true,
+      "queue_downs": 5,
+      "queue_moves": 75,
+      "queue_ups": 5,
+      "queue_matching_releases": 5,
+      "queue_matching_release_after_error": false,
+      "queue_held_at_end": 0,
+      "local_evidence": "boot/native-power-build8/queue/power-fault.json"
+    },
+    {
+      "synthetic_model_only": true,
+      "physical_hardware_tested": false,
+      "kernel_sha256": "17c62ebe34cbaea27c9c596e95a1c26cf2d43ab4740eb95877364e292d0700b8",
+      "qemu_binary_sha256": "d76d44bb3b6d5f86d3ef0a2ddfb846510122a03f1f33637f3133e36f52ac96df",
+      "synthetic_framebuffer_untouched": true,
+      "native_display_accepted": false,
+      "display_startup_fault": "none",
+      "native_brightness_accepted": false,
+      "synthetic_display_state": null,
+      "sspm_startup_fault": "none",
+      "key_mode": "keypad-fault",
+      "buttons_down": [
+        2,
+        3
+      ],
+      "buttons_matching_up": [
+        2,
+        3
+      ],
+      "buttons_held_at_end": [],
+      "native_power_accepted": true,
+      "synthetic_power_state": {
+        "enabled": true,
+        "synthetic": true,
+        "fault": 6,
+        "key_mask": 6,
+        "fsm": 0,
+        "commands": 223,
+        "reads": 215,
+        "writes": 8,
+        "rejected": 0,
+        "clears": 215,
+        "key_reads": 396,
+        "adc_requests": [
+          4,
+          4
+        ],
+        "adc_completions": [
+          4,
+          4
+        ]
+      },
+      "native_sysctls": {
+        "mt6762_pmic_id": {
+          "value": 22320,
+          "error": 0
+        },
+        "mt6762_power_valid": {
+          "value": 71,
+          "error": 0
+        },
+        "mt6762_power_errors": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_battery_adc_mv": {
+          "value": 4400,
+          "error": 0
+        },
+        "mt6762_ntc_adc_mv": {
+          "value": 615,
+          "error": 0
+        },
+        "mt6762_adc_voltage_samples": {
+          "value": 3,
+          "error": 0
+        },
+        "mt6762_adc_ntc_samples": {
+          "value": 3,
+          "error": 0
+        },
+        "mt6762_charger_control_safe": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_charger_state": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_sspm_alive": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_sspm_fault": {
+          "value": 0,
+          "error": 0
+        }
+      },
+      "native_sspm_alive": true,
+      "synthetic_sspm_state": {
+        "enabled": true,
+        "synthetic": true,
+        "dvfs_emulated": false,
+        "fault": 0,
+        "in_irq": 0,
+        "out_irq": 0,
+        "last_command": 57005,
+        "requests": 1,
+        "responses": 1,
+        "ack_clears": 1,
+        "reads": 8,
+        "data_writes": 3,
+        "control_writes": 2,
+        "rejected_commands": 0,
+        "rejected_writes": 0
+      },
+      "native_i2c0_ready": true,
+      "native_i2c5_ready": true,
+      "touch_version_accepted": true,
+      "touch_dma_reads": 346,
+      "charger_bus_transactions": 24,
+      "synthetic_psc_control": 4,
+      "synthetic_psc_status": 0,
+      "dma_fault_injected": false,
+      "touch_worker_stopped_on_error": false,
+      "kernel_panic_observed": false,
+      "queue_mode": "cycle",
+      "expected_cpu_count": 8,
+      "secondary_cpus_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "queue_observer_ready": true,
+      "queue_downs": 5,
+      "queue_moves": 75,
+      "queue_ups": 5,
+      "queue_matching_releases": 5,
+      "queue_matching_release_after_error": false,
+      "queue_held_at_end": 0,
+      "local_evidence": "boot/native-power-build8/queue/keypad-fault.json"
+    },
+    {
+      "synthetic_only": true,
+      "physical_hardware_tested": false,
+      "kernel_sha256": "17c62ebe34cbaea27c9c596e95a1c26cf2d43ab4740eb95877364e292d0700b8",
+      "qemu_sha256": "d76d44bb3b6d5f86d3ef0a2ddfb846510122a03f1f33637f3133e36f52ac96df",
+      "cpu_count": 8,
+      "secondary_cpus_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "exact_queue_match": true,
+      "kernel_panic": false,
+      "i2c": {
+        "enabled": true,
+        "synthetic": true,
+        "i2c0": {
+          "transactions": 30,
+          "dma_reads": 29,
+          "rx_bytes": 930,
+          "last_status": 1
+        },
+        "i2c5": {
+          "transactions": 9,
+          "dma_reads": 0,
+          "rx_bytes": 8,
+          "last_status": 1,
+          "psc_control": 4,
+          "psc_status": 0
+        }
+      },
+      "event_count": 15,
+      "local_evidence": "boot/native-power-build8/queue/five-contacts.json"
+    },
+    {
+      "synthetic_model_only": true,
+      "physical_hardware_tested": false,
+      "kernel_sha256": "17c62ebe34cbaea27c9c596e95a1c26cf2d43ab4740eb95877364e292d0700b8",
+      "qemu_binary_sha256": "d76d44bb3b6d5f86d3ef0a2ddfb846510122a03f1f33637f3133e36f52ac96df",
+      "synthetic_framebuffer_untouched": true,
+      "native_display_accepted": false,
+      "display_startup_fault": "none",
+      "native_brightness_accepted": false,
+      "synthetic_display_state": null,
+      "sspm_startup_fault": "timeout",
+      "key_mode": "none",
+      "buttons_down": [],
+      "buttons_matching_up": [],
+      "buttons_held_at_end": [],
+      "native_power_accepted": true,
+      "synthetic_power_state": {
+        "enabled": true,
+        "synthetic": true,
+        "fault": 0,
+        "key_mask": 0,
+        "fsm": 0,
+        "commands": 120,
+        "reads": 116,
+        "writes": 4,
+        "rejected": 0,
+        "clears": 116,
+        "key_reads": 214,
+        "adc_requests": [
+          2,
+          2
+        ],
+        "adc_completions": [
+          2,
+          2
+        ]
+      },
+      "native_sysctls": {
+        "mt6762_pmic_id": {
+          "value": 22320,
+          "error": 0
+        },
+        "mt6762_power_valid": {
+          "value": 71,
+          "error": 0
+        },
+        "mt6762_power_errors": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_battery_adc_mv": {
+          "value": 4400,
+          "error": 0
+        },
+        "mt6762_ntc_adc_mv": {
+          "value": 615,
+          "error": 0
+        },
+        "mt6762_adc_voltage_samples": {
+          "value": 2,
+          "error": 0
+        },
+        "mt6762_adc_ntc_samples": {
+          "value": 2,
+          "error": 0
+        },
+        "mt6762_charger_control_safe": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_charger_state": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_sspm_alive": {
+          "value": -1,
+          "error": 0
+        },
+        "mt6762_sspm_fault": {
+          "value": 1,
+          "error": 0
+        }
+      },
+      "native_sspm_alive": false,
+      "synthetic_sspm_state": {
+        "enabled": true,
+        "synthetic": true,
+        "dvfs_emulated": false,
+        "fault": 1,
+        "in_irq": 1,
+        "out_irq": 0,
+        "last_command": 57005,
+        "requests": 1,
+        "responses": 0,
+        "ack_clears": 0,
+        "reads": 10004,
+        "data_writes": 3,
+        "control_writes": 1,
+        "rejected_commands": 0,
+        "rejected_writes": 0
+      },
+      "native_i2c0_ready": true,
+      "native_i2c5_ready": true,
+      "touch_version_accepted": true,
+      "touch_dma_reads": 190,
+      "charger_bus_transactions": 14,
+      "synthetic_psc_control": 4,
+      "synthetic_psc_status": 0,
+      "dma_fault_injected": false,
+      "touch_worker_stopped_on_error": false,
+      "kernel_panic_observed": false,
+      "queue_mode": "cycle",
+      "expected_cpu_count": 8,
+      "secondary_cpus_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "queue_observer_ready": true,
+      "queue_downs": 1,
+      "queue_moves": 15,
+      "queue_ups": 1,
+      "queue_matching_releases": 1,
+      "queue_matching_release_after_error": false,
+      "queue_held_at_end": 0,
+      "local_evidence": "boot/native-power-build8/queue/sspm-timeout.json"
+    },
+    {
+      "synthetic_model_only": true,
+      "physical_hardware_tested": false,
+      "kernel_sha256": "17c62ebe34cbaea27c9c596e95a1c26cf2d43ab4740eb95877364e292d0700b8",
+      "qemu_binary_sha256": "d76d44bb3b6d5f86d3ef0a2ddfb846510122a03f1f33637f3133e36f52ac96df",
+      "synthetic_framebuffer_untouched": true,
+      "native_display_accepted": false,
+      "display_startup_fault": "none",
+      "native_brightness_accepted": false,
+      "synthetic_display_state": null,
+      "sspm_startup_fault": "ack-stuck",
+      "key_mode": "none",
+      "buttons_down": [],
+      "buttons_matching_up": [],
+      "buttons_held_at_end": [],
+      "native_power_accepted": true,
+      "synthetic_power_state": {
+        "enabled": true,
+        "synthetic": true,
+        "fault": 0,
+        "key_mask": 0,
+        "fsm": 0,
+        "commands": 123,
+        "reads": 119,
+        "writes": 4,
+        "rejected": 0,
+        "clears": 119,
+        "key_reads": 220,
+        "adc_requests": [
+          2,
+          2
+        ],
+        "adc_completions": [
+          2,
+          2
+        ]
+      },
+      "native_sysctls": {
+        "mt6762_pmic_id": {
+          "value": 22320,
+          "error": 0
+        },
+        "mt6762_power_valid": {
+          "value": 71,
+          "error": 0
+        },
+        "mt6762_power_errors": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_battery_adc_mv": {
+          "value": 4400,
+          "error": 0
+        },
+        "mt6762_ntc_adc_mv": {
+          "value": 615,
+          "error": 0
+        },
+        "mt6762_adc_voltage_samples": {
+          "value": 2,
+          "error": 0
+        },
+        "mt6762_adc_ntc_samples": {
+          "value": 2,
+          "error": 0
+        },
+        "mt6762_charger_control_safe": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_charger_state": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_sspm_alive": {
+          "value": -1,
+          "error": 0
+        },
+        "mt6762_sspm_fault": {
+          "value": 1,
+          "error": 0
+        }
+      },
+      "native_sspm_alive": false,
+      "synthetic_sspm_state": {
+        "enabled": true,
+        "synthetic": true,
+        "dvfs_emulated": false,
+        "fault": 2,
+        "in_irq": 0,
+        "out_irq": 1,
+        "last_command": 57005,
+        "requests": 1,
+        "responses": 1,
+        "ack_clears": 1,
+        "reads": 8,
+        "data_writes": 3,
+        "control_writes": 2,
+        "rejected_commands": 0,
+        "rejected_writes": 0
+      },
+      "native_i2c0_ready": true,
+      "native_i2c5_ready": true,
+      "touch_version_accepted": true,
+      "touch_dma_reads": 190,
+      "charger_bus_transactions": 14,
+      "synthetic_psc_control": 4,
+      "synthetic_psc_status": 0,
+      "dma_fault_injected": false,
+      "touch_worker_stopped_on_error": false,
+      "kernel_panic_observed": false,
+      "queue_mode": "cycle",
+      "expected_cpu_count": 8,
+      "secondary_cpus_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "queue_observer_ready": true,
+      "queue_downs": 3,
+      "queue_moves": 45,
+      "queue_ups": 3,
+      "queue_matching_releases": 3,
+      "queue_matching_release_after_error": false,
+      "queue_held_at_end": 0,
+      "local_evidence": "boot/native-power-build8/queue/sspm-ack-stuck.json"
+    },
+    {
+      "synthetic_model_only": true,
+      "physical_hardware_tested": false,
+      "kernel_sha256": "17c62ebe34cbaea27c9c596e95a1c26cf2d43ab4740eb95877364e292d0700b8",
+      "qemu_binary_sha256": "d76d44bb3b6d5f86d3ef0a2ddfb846510122a03f1f33637f3133e36f52ac96df",
+      "synthetic_framebuffer_untouched": true,
+      "native_display_accepted": false,
+      "display_startup_fault": "none",
+      "native_brightness_accepted": false,
+      "synthetic_display_state": null,
+      "sspm_startup_fault": "input-stuck",
+      "key_mode": "none",
+      "buttons_down": [],
+      "buttons_matching_up": [],
+      "buttons_held_at_end": [],
+      "native_power_accepted": true,
+      "synthetic_power_state": {
+        "enabled": true,
+        "synthetic": true,
+        "fault": 0,
+        "key_mask": 0,
+        "fsm": 0,
+        "commands": 104,
+        "reads": 100,
+        "writes": 4,
+        "rejected": 0,
+        "clears": 100,
+        "key_reads": 182,
+        "adc_requests": [
+          2,
+          2
+        ],
+        "adc_completions": [
+          2,
+          2
+        ]
+      },
+      "native_sysctls": {
+        "mt6762_pmic_id": {
+          "value": 22320,
+          "error": 0
+        },
+        "mt6762_power_valid": {
+          "value": 71,
+          "error": 0
+        },
+        "mt6762_power_errors": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_battery_adc_mv": {
+          "value": 4400,
+          "error": 0
+        },
+        "mt6762_ntc_adc_mv": {
+          "value": 615,
+          "error": 0
+        },
+        "mt6762_adc_voltage_samples": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_adc_ntc_samples": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_charger_control_safe": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_charger_state": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_sspm_alive": {
+          "value": -1,
+          "error": 0
+        },
+        "mt6762_sspm_fault": {
+          "value": 1,
+          "error": 0
+        }
+      },
+      "native_sspm_alive": false,
+      "synthetic_sspm_state": {
+        "enabled": true,
+        "synthetic": true,
+        "dvfs_emulated": false,
+        "fault": 3,
+        "in_irq": 1,
+        "out_irq": 1,
+        "last_command": 57005,
+        "requests": 1,
+        "responses": 1,
+        "ack_clears": 0,
+        "reads": 7,
+        "data_writes": 3,
+        "control_writes": 1,
+        "rejected_commands": 0,
+        "rejected_writes": 0
+      },
+      "native_i2c0_ready": true,
+      "native_i2c5_ready": true,
+      "touch_version_accepted": true,
+      "touch_dma_reads": 156,
+      "charger_bus_transactions": 14,
+      "synthetic_psc_control": 4,
+      "synthetic_psc_status": 0,
+      "dma_fault_injected": false,
+      "touch_worker_stopped_on_error": false,
+      "kernel_panic_observed": false,
+      "queue_mode": "cycle",
+      "expected_cpu_count": 8,
+      "secondary_cpus_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "queue_observer_ready": true,
+      "queue_downs": 2,
+      "queue_moves": 30,
+      "queue_ups": 2,
+      "queue_matching_releases": 2,
+      "queue_matching_release_after_error": false,
+      "queue_held_at_end": 0,
+      "local_evidence": "boot/native-power-build8/queue/sspm-input-stuck.json"
+    },
+    {
+      "synthetic_model_only": true,
+      "physical_hardware_tested": false,
+      "kernel_sha256": "17c62ebe34cbaea27c9c596e95a1c26cf2d43ab4740eb95877364e292d0700b8",
+      "qemu_binary_sha256": "d76d44bb3b6d5f86d3ef0a2ddfb846510122a03f1f33637f3133e36f52ac96df",
+      "synthetic_framebuffer_untouched": true,
+      "native_display_accepted": false,
+      "display_startup_fault": "none",
+      "native_brightness_accepted": false,
+      "synthetic_display_state": null,
+      "sspm_startup_fault": "stale-ack",
+      "key_mode": "none",
+      "buttons_down": [],
+      "buttons_matching_up": [],
+      "buttons_held_at_end": [],
+      "native_power_accepted": true,
+      "synthetic_power_state": {
+        "enabled": true,
+        "synthetic": true,
+        "fault": 0,
+        "key_mask": 0,
+        "fsm": 0,
+        "commands": 111,
+        "reads": 107,
+        "writes": 4,
+        "rejected": 0,
+        "clears": 107,
+        "key_reads": 196,
+        "adc_requests": [
+          2,
+          2
+        ],
+        "adc_completions": [
+          2,
+          2
+        ]
+      },
+      "native_sysctls": {
+        "mt6762_pmic_id": {
+          "value": 22320,
+          "error": 0
+        },
+        "mt6762_power_valid": {
+          "value": 71,
+          "error": 0
+        },
+        "mt6762_power_errors": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_battery_adc_mv": {
+          "value": 4400,
+          "error": 0
+        },
+        "mt6762_ntc_adc_mv": {
+          "value": 615,
+          "error": 0
+        },
+        "mt6762_adc_voltage_samples": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_adc_ntc_samples": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_charger_control_safe": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_charger_state": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_sspm_alive": {
+          "value": -1,
+          "error": 0
+        },
+        "mt6762_sspm_fault": {
+          "value": 1,
+          "error": 0
+        }
+      },
+      "native_sspm_alive": false,
+      "synthetic_sspm_state": {
+        "enabled": true,
+        "synthetic": true,
+        "dvfs_emulated": false,
+        "fault": 4,
+        "in_irq": 0,
+        "out_irq": 1,
+        "last_command": 0,
+        "requests": 0,
+        "responses": 0,
+        "ack_clears": 0,
+        "reads": 2,
+        "data_writes": 0,
+        "control_writes": 0,
+        "rejected_commands": 0,
+        "rejected_writes": 0
+      },
+      "native_i2c0_ready": true,
+      "native_i2c5_ready": true,
+      "touch_version_accepted": true,
+      "touch_dma_reads": 169,
+      "charger_bus_transactions": 14,
+      "synthetic_psc_control": 4,
+      "synthetic_psc_status": 0,
+      "dma_fault_injected": false,
+      "touch_worker_stopped_on_error": false,
+      "kernel_panic_observed": false,
+      "queue_mode": "cycle",
+      "expected_cpu_count": 8,
+      "secondary_cpus_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "queue_observer_ready": true,
+      "queue_downs": 2,
+      "queue_moves": 30,
+      "queue_ups": 2,
+      "queue_matching_releases": 2,
+      "queue_matching_release_after_error": false,
+      "queue_held_at_end": 0,
+      "local_evidence": "boot/native-power-build8/queue/sspm-stale-ack.json"
+    },
+    {
+      "synthetic_model_only": true,
+      "physical_hardware_tested": false,
+      "kernel_sha256": "17c62ebe34cbaea27c9c596e95a1c26cf2d43ab4740eb95877364e292d0700b8",
+      "qemu_binary_sha256": "d76d44bb3b6d5f86d3ef0a2ddfb846510122a03f1f33637f3133e36f52ac96df",
+      "synthetic_framebuffer_untouched": true,
+      "native_display_accepted": false,
+      "display_startup_fault": "none",
+      "native_brightness_accepted": false,
+      "synthetic_display_state": null,
+      "sspm_startup_fault": "stale-input",
+      "key_mode": "none",
+      "buttons_down": [],
+      "buttons_matching_up": [],
+      "buttons_held_at_end": [],
+      "native_power_accepted": true,
+      "synthetic_power_state": {
+        "enabled": true,
+        "synthetic": true,
+        "fault": 0,
+        "key_mask": 0,
+        "fsm": 0,
+        "commands": 117,
+        "reads": 113,
+        "writes": 4,
+        "rejected": 0,
+        "clears": 113,
+        "key_reads": 208,
+        "adc_requests": [
+          2,
+          2
+        ],
+        "adc_completions": [
+          2,
+          2
+        ]
+      },
+      "native_sysctls": {
+        "mt6762_pmic_id": {
+          "value": 22320,
+          "error": 0
+        },
+        "mt6762_power_valid": {
+          "value": 71,
+          "error": 0
+        },
+        "mt6762_power_errors": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_battery_adc_mv": {
+          "value": 4400,
+          "error": 0
+        },
+        "mt6762_ntc_adc_mv": {
+          "value": 615,
+          "error": 0
+        },
+        "mt6762_adc_voltage_samples": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_adc_ntc_samples": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_charger_control_safe": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_charger_state": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_sspm_alive": {
+          "value": -1,
+          "error": 0
+        },
+        "mt6762_sspm_fault": {
+          "value": 1,
+          "error": 0
+        }
+      },
+      "native_sspm_alive": false,
+      "synthetic_sspm_state": {
+        "enabled": true,
+        "synthetic": true,
+        "dvfs_emulated": false,
+        "fault": 5,
+        "in_irq": 1,
+        "out_irq": 0,
+        "last_command": 0,
+        "requests": 0,
+        "responses": 0,
+        "ack_clears": 0,
+        "reads": 2,
+        "data_writes": 0,
+        "control_writes": 0,
+        "rejected_commands": 0,
+        "rejected_writes": 0
+      },
+      "native_i2c0_ready": true,
+      "native_i2c5_ready": true,
+      "touch_version_accepted": true,
+      "touch_dma_reads": 184,
+      "charger_bus_transactions": 14,
+      "synthetic_psc_control": 4,
+      "synthetic_psc_status": 0,
+      "dma_fault_injected": false,
+      "touch_worker_stopped_on_error": false,
+      "kernel_panic_observed": false,
+      "queue_mode": "cycle",
+      "expected_cpu_count": 8,
+      "secondary_cpus_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "queue_observer_ready": true,
+      "queue_downs": 3,
+      "queue_moves": 41,
+      "queue_ups": 3,
+      "queue_matching_releases": 3,
+      "queue_matching_release_after_error": false,
+      "queue_held_at_end": 0,
+      "local_evidence": "boot/native-power-build8/queue/sspm-stale-input.json"
+    },
+    {
+      "synthetic_model_only": true,
+      "physical_hardware_tested": false,
+      "kernel_sha256": "17c62ebe34cbaea27c9c596e95a1c26cf2d43ab4740eb95877364e292d0700b8",
+      "qemu_binary_sha256": "d76d44bb3b6d5f86d3ef0a2ddfb846510122a03f1f33637f3133e36f52ac96df",
+      "synthetic_framebuffer_untouched": true,
+      "native_display_accepted": false,
+      "display_startup_fault": "none",
+      "native_brightness_accepted": false,
+      "synthetic_display_state": null,
+      "sspm_startup_fault": "dead",
+      "key_mode": "none",
+      "buttons_down": [],
+      "buttons_matching_up": [],
+      "buttons_held_at_end": [],
+      "native_power_accepted": true,
+      "synthetic_power_state": {
+        "enabled": true,
+        "synthetic": true,
+        "fault": 0,
+        "key_mask": 0,
+        "fsm": 0,
+        "commands": 110,
+        "reads": 106,
+        "writes": 4,
+        "rejected": 0,
+        "clears": 106,
+        "key_reads": 194,
+        "adc_requests": [
+          2,
+          2
+        ],
+        "adc_completions": [
+          2,
+          2
+        ]
+      },
+      "native_sysctls": {
+        "mt6762_pmic_id": {
+          "value": 22320,
+          "error": 0
+        },
+        "mt6762_power_valid": {
+          "value": 71,
+          "error": 0
+        },
+        "mt6762_power_errors": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_battery_adc_mv": {
+          "value": 4400,
+          "error": 0
+        },
+        "mt6762_ntc_adc_mv": {
+          "value": 615,
+          "error": 0
+        },
+        "mt6762_adc_voltage_samples": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_adc_ntc_samples": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_charger_control_safe": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_charger_state": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_sspm_alive": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_sspm_fault": {
+          "value": 0,
+          "error": 0
+        }
+      },
+      "native_sspm_alive": false,
+      "synthetic_sspm_state": {
+        "enabled": true,
+        "synthetic": true,
+        "dvfs_emulated": false,
+        "fault": 6,
+        "in_irq": 0,
+        "out_irq": 0,
+        "last_command": 57005,
+        "requests": 1,
+        "responses": 1,
+        "ack_clears": 1,
+        "reads": 8,
+        "data_writes": 3,
+        "control_writes": 2,
+        "rejected_commands": 0,
+        "rejected_writes": 0
+      },
+      "native_i2c0_ready": true,
+      "native_i2c5_ready": true,
+      "touch_version_accepted": true,
+      "touch_dma_reads": 171,
+      "charger_bus_transactions": 14,
+      "synthetic_psc_control": 4,
+      "synthetic_psc_status": 0,
+      "dma_fault_injected": false,
+      "touch_worker_stopped_on_error": false,
+      "kernel_panic_observed": false,
+      "queue_mode": "cycle",
+      "expected_cpu_count": 8,
+      "secondary_cpus_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "queue_observer_ready": true,
+      "queue_downs": 3,
+      "queue_moves": 32,
+      "queue_ups": 3,
+      "queue_matching_releases": 3,
+      "queue_matching_release_after_error": false,
+      "queue_held_at_end": 0,
+      "local_evidence": "boot/native-power-build8/queue/sspm-dead.json"
+    },
+    {
+      "synthetic_model_only": true,
+      "physical_hardware_tested": false,
+      "kernel_sha256": "17c62ebe34cbaea27c9c596e95a1c26cf2d43ab4740eb95877364e292d0700b8",
+      "qemu_binary_sha256": "d76d44bb3b6d5f86d3ef0a2ddfb846510122a03f1f33637f3133e36f52ac96df",
+      "synthetic_framebuffer_untouched": true,
+      "native_display_accepted": false,
+      "display_startup_fault": "none",
+      "native_brightness_accepted": false,
+      "synthetic_display_state": null,
+      "sspm_startup_fault": "wrong-ack",
+      "key_mode": "none",
+      "buttons_down": [],
+      "buttons_matching_up": [],
+      "buttons_held_at_end": [],
+      "native_power_accepted": true,
+      "synthetic_power_state": {
+        "enabled": true,
+        "synthetic": true,
+        "fault": 0,
+        "key_mask": 0,
+        "fsm": 0,
+        "commands": 450,
+        "reads": 436,
+        "writes": 14,
+        "rejected": 0,
+        "clears": 436,
+        "key_reads": 814,
+        "adc_requests": [
+          7,
+          7
+        ],
+        "adc_completions": [
+          7,
+          7
+        ]
+      },
+      "native_sysctls": {
+        "mt6762_pmic_id": {
+          "value": 22320,
+          "error": 0
+        },
+        "mt6762_power_valid": {
+          "value": 71,
+          "error": 0
+        },
+        "mt6762_power_errors": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_battery_adc_mv": {
+          "value": 4400,
+          "error": 0
+        },
+        "mt6762_ntc_adc_mv": {
+          "value": 615,
+          "error": 0
+        },
+        "mt6762_adc_voltage_samples": {
+          "value": 7,
+          "error": 0
+        },
+        "mt6762_adc_ntc_samples": {
+          "value": 7,
+          "error": 0
+        },
+        "mt6762_charger_control_safe": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_charger_state": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_sspm_alive": {
+          "value": -1,
+          "error": 0
+        },
+        "mt6762_sspm_fault": {
+          "value": 1,
+          "error": 0
+        }
+      },
+      "native_sspm_alive": false,
+      "synthetic_sspm_state": {
+        "enabled": true,
+        "synthetic": true,
+        "dvfs_emulated": false,
+        "fault": 7,
+        "in_irq": 0,
+        "out_irq": 2,
+        "last_command": 57005,
+        "requests": 1,
+        "responses": 1,
+        "ack_clears": 0,
+        "reads": 10004,
+        "data_writes": 3,
+        "control_writes": 1,
+        "rejected_commands": 0,
+        "rejected_writes": 0
+      },
+      "native_i2c0_ready": true,
+      "native_i2c5_ready": true,
+      "touch_version_accepted": true,
+      "touch_dma_reads": 735,
+      "charger_bus_transactions": 39,
+      "synthetic_psc_control": 4,
+      "synthetic_psc_status": 0,
+      "dma_fault_injected": false,
+      "touch_worker_stopped_on_error": false,
+      "kernel_panic_observed": false,
+      "queue_mode": "cycle",
+      "expected_cpu_count": 8,
+      "secondary_cpus_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "queue_observer_ready": true,
+      "queue_downs": 10,
+      "queue_moves": 150,
+      "queue_ups": 10,
+      "queue_matching_releases": 10,
+      "queue_matching_release_after_error": false,
+      "queue_held_at_end": 0,
+      "local_evidence": "boot/native-power-build8/queue/sspm-wrong-ack-long.json"
+    },
+    {
+      "synthetic_only": true,
+      "kernel_sha256": "ecd3d5a4218500c2f6f80cc7f39903bee7148710561ee97eb2297b72a70da90b",
+      "preservation_rejected": true,
+      "panic": false,
+      "sspm": {
+        "enabled": true,
+        "synthetic": true,
+        "dvfs_emulated": false,
+        "fault": 0,
+        "in_irq": 0,
+        "out_irq": 0,
+        "last_command": 0,
+        "requests": 0,
+        "responses": 0,
+        "ack_clears": 0,
+        "reads": 0,
+        "data_writes": 0,
+        "control_writes": 0,
+        "rejected_commands": 0,
+        "rejected_writes": 0
+      },
+      "local_evidence": "boot/native-sspm-preservation-build9/payload/rejection.json"
+    }
+  ],
+  "negative_long_run": {
+    "kernel_sha256": "77ef453327ccfe64fa044280ec8bd7d9a12f17efa3f5de34a28ada93ee604c5f",
+    "cpu_count": 8,
+    "local_evidence": "boot/native-display-build7/ios/gui430.serial.log",
+    "result": "ticket spinlock timeout while original iOS showed Apple logo; native GUI is not validated",
+    "cause": "unresolved; host descheduling and genuine kernel contention not distinguished"
+  },
+  "limits": [
+    "No physical loader/handoff or phone boot",
+    "No charging enable or calibrated fuel-gauge policy",
+    "No CPU DVFS control",
+    "CoreBrightness discovery/request acceptance still under investigation",
+    "QEMU fixtures do not prove electrical, clock, cache, IOMMU or firmware behavior",
+    "Linked kernels still fail inherited export/symbolset checks"
+  ]
+}

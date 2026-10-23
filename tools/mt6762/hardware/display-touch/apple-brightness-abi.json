@@ -1,0 +1,144 @@
+{
+  "target": "Apple iOS16.5 (20F66), iPhone10,3/iPhone10,6 arm64 shared cache",
+  "framework": "/System/Library/PrivateFrameworks/CoreBrightness.framework/CoreBrightness",
+  "uuid_load_command": "LC_UUID                     E51FB0E4-4383-3BB5-A5E7-ADB4C7192D18",
+  "source_reference": {
+    "url": "https://github.com/joranv1/ios-sailfish",
+    "path": "xnu/patches/0168-sailfish-panel-brightness.patch",
+    "role": "AppleARMBacklight service/property contract; independently corroborated against local20F66 binary. Qualcomm DSI command path is not reused."
+  },
+  "evidence": [
+    {
+      "function": "-[CBDisplayContaineriOS initWithBacklightService:]",
+      "start": "0x1af066f28",
+      "callsite": "0x1af067334",
+      "fact": "IOObjectConformsTo(service,\"AppleARMBacklight\"), class literal at0x1af0e46b0; stub0x1afb35c1c resolves IOObjectConformsTo."
+    },
+    {
+      "function": "_DisplayCreateWithID",
+      "start": "0x1af075510",
+      "range": "0x1af075780..0x1af0758a0",
+      "fact": "Reads IODisplayParameters->brightness->value,min,max via IORegistryEntryCreateCFProperty/CFDictionaryGetValue/CFNumberGetValue(SInt32). Fields stored at0x43c,0x434,0x438."
+    },
+    {
+      "function": "___DisplaySetPhysicalBrightnessLegacyOnThread",
+      "start": "0x1af08b798",
+      "range": "0x1af08b9e4..0x1af08bc08",
+      "fact": "Builds CFNumberSInt32 brightness=ceil(floatlevel*(max-min))+min; FadePeriod=trunc(seconds*65536); optional backlight-level uses same advertisedrange; sends dictionary with IORegistryEntrySetCFProperties."
+    },
+    {
+      "callsite": "0x1af08bc08",
+      "stub": "0x1afb35cb8",
+      "destination": "0x18e542298",
+      "symbol": "_IORegistryEntrySetCFProperties"
+    },
+    {
+      "constant": "0x1af0ed0c0",
+      "type": "IEEE754binary64",
+      "value": 65536,
+      "role": "seconds to16.16 fade conversion"
+    },
+    {
+      "service_property": "backlight-control=true",
+      "evidence": "Sailfish patch0168; matching key string independently located at0x1af0e3a99 in CoreBrightness."
+    }
+  ],
+  "cfstring_objects": {
+    "0x1d88ab588": "IODisplayParameters",
+    "0x1d88ab5a8": "brightness",
+    "0x1d88ab5c8": "min",
+    "0x1d88ab5e8": "max",
+    "0x1d88a5a48": "value",
+    "0x1d88ac3a8": "FadePeriod",
+    "0x1d88ac3c8": "backlight-level"
+  },
+  "caller_authorization": {
+    "program": "/usr/libexec/backboardd",
+    "launchd_user": "mobile",
+    "original_codesign_entitlement": "com.apple.internal.display-params-access-privileged",
+    "entitlement_value": true,
+    "implementation_policy": "Require this boolean entitlement or root administrator; do not require root alone."
+  },
+  "implementation": {
+    "source": "iokit/Kernel/MiniIOMobileFramebuffer.cpp:AppleARMBacklight",
+    "backend": "bsd/dev/mt6762_display.c:mt6762_brightness_set/get",
+    "registration": "Only when native PWM prerequisites and readback succeed; actual currentlevel fromEN/duty. No registration for ordinary lab framebuffer.",
+    "range": [
+      0,
+      1023
+    ],
+    "fade": "Nonnegative signed16.16 seconds; integer arithmetic,16ms timer, retargetfromactualPWM. Readbackfailure stopsfade and disables backlight-control. Publishedvalue is last successfully programmedlevel, not unconfirmedtarget.",
+    "apple_binary_changes": false,
+    "new_numeric_userclient_selector": false,
+    "physical_tested": false,
+    "actual_slider_tested": false
+  },
+  "local_evidence_hashes": {
+    "corebrightness-text.bin": "bea44f312cd08b13823dd9dc4a7cd33e3bb7b9a173bada679ba897b3de2dd4c6",
+    "physical-brightness-legacy.asm": "36a7d44883ea1612532d8f801affb78965790f808fcbe7c3ba5b63933df9b59e",
+    "display-create.asm": "13b1814db39ecc6b63e984369099897c6087f12d585d07a26ecff8bcfd80fd63",
+    "match-backlight.asm": "2fb1b8fe4d75acfe6d42445c5eff30132cc6b52bb4471c3ecb8f7e463bfdcf0c",
+    "backboardd-entitlements.plist": "1953f13b1cd0d23a15d1ec281d1f66fe7008df79e3d22dae75ce86fc8eca34f5",
+    "find-backlight.asm": "a4449babf0378a7b22e79d9ca3d6a4544cba6641c5a3785836ea15fe6b1f17f2",
+    "container-find-backlight.asm": "5e3b9149d45bbdd68de5723f62ea29bbfc736614700f88f1eaf72ad922d9cdec",
+    "blcontrol-start.asm": "16a8ddc3000eac9c7e99af505155c16fa4823ad2379261eca76dcedf464b395f",
+    "backlight-container-init.asm": "05658f46cd8af1938d7edcbd5a1d2814185a72381fea097170caca448bc2e2d1"
+  },
+  "reproduce": [
+    "ipsw dyld symaddr CACHE -i CoreBrightness",
+    "ipsw dyld disass CACHE -q -a0x1af08b798 -c400",
+    "ipsw dyld disass CACHE -q -a0x1af075510 -c240",
+    "ipsw dyld disass CACHE -q -a0x1af06731c -c18",
+    "ipsw macho info ROOTFS/usr/libexec/backboardd --ent"
+  ],
+  "validation": "Host fixedpoint/range/retarget tests pass; native kernel compilation and runtime service/property tests tracked separately by root agent.",
+  "discovery": {
+    "BLControl_start": {
+      "function": "___18-[BLControl start]_block_invoke",
+      "findDisplays_call": "0x1af03e810",
+      "success_skips_legacy_fallback": "0x1af03e824",
+      "legacy_findBacklight_call": "0x1af03e914"
+    },
+    "legacy_match": {
+      "function": "-[BLControl findBacklight]",
+      "start": "0x1af03f1f8",
+      "call": "0x1af03f318",
+      "api": "IOServiceGetMatchingServices",
+      "dictionary": {
+        "IOPropertyMatch": {
+          "backlight-control": true
+        }
+      },
+      "key_pointer_slots": [
+        "0x1d88a4850",
+        "0x1d88a4858"
+      ],
+      "per_result": "initWithBacklightService: then scheduleWithDispatchQueue:, registerNotificationBlock:, start"
+    },
+    "CADisplay_container_match": {
+      "function": "-[CBDisplayContaineriOS findBacklight]",
+      "start": "0x1af068224",
+      "call": "0x1af068320",
+      "dictionary": {
+        "IOPropertyMatch": {
+          "backlight-control": true
+        }
+      },
+      "key_pointer_slots": [
+        "0x1d88a4d80",
+        "0x1d88a4d88"
+      ],
+      "built_in_class_check": "0x1af068398 IOObjectConformsTo AppleARMBacklight"
+    },
+    "container_init": {
+      "function": "-[CBDisplayContaineriOS initWithBacklightService:]",
+      "required": "Valid IORegistryEntry ID and successful internal dispatch queue allocation",
+      "class_check": "AppleARMBacklight marks built-in; other services mark external",
+      "optional_property": "kUSBContainerID searched recursively in IOService plane; absence logs but continues at0x1af0675ec",
+      "optional_property_key": "0x1d88a9808",
+      "missing_property_is_not_a_readiness_failure": true
+    },
+    "diagnostic": "backlight_probe.c repeats exact matcher plus class matching and reads properties only; no IORegistryEntrySetCFProperties or PWM writes.",
+    "runtime_boundary": "Service registration alone does not prove Apple discovery or request delivery. Kernel logs now distinguish first8 entry/rejection cases from accepted updates. GUI1 first diagnostic run used wrong /bin path and produced no registry evidence."
+  }
+}

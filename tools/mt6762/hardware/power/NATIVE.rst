@@ -1,0 +1,109 @@
+Native XNU integration
+======================
+
+``bsd/dev/mt6762_power.c`` observes power and quiesces an owned charger. It consumes the common version-1
+``/chosen/mt6762-handoff`` contract and starts no hardware path without
+``native-io=1`` accepted by ``mt6762_platform_init``. This is source under
+validation, not a working physical-device charging implementation. All device
+register activity described below is gated; no physical execution has been
+performed. The ordinary QEMU boot has none of these native flags.
+
+Ownership and readiness
+-----------------------
+
+* ``pwrap-verified=1`` means the loader has configured the PMIC wrapper,
+  transferred exclusive AP WACS2 ownership, and quiesced previous AP users.
+  The driver separately checks WACS2 initialization bit 21 and reads PMIC
+  hardware ID at 0x0008, requiring the MT6357 family byte 0x57. A timeout or
+  lost initialization latches a fault. It does not reset or clear an unknown
+  owner's transaction. SSPM/modem channels are not claimed by this contract.
+* ``adc-verified=1`` additionally grants exclusive use of initialized ADC
+  channels 1 (ISENSE, the stock DT battery-voltage input) and 3 (BAT_TEMP),
+  with their stock averaging/reference configuration. This is a loader
+  prerequisite, not something a flag initializes. Hardware readiness is
+  observed per conversion through bit 15 of the output, and timeout/rail
+  readings are rejected. Configuration and electrical calibration still need
+  physical readback validation. The only worker PMIC writes are request bits
+  1 or 3 to AUXADC_RQST0 (0x110e). No VBIF request, BATON detection changes,
+  regulator writes, or charge-enable writes occur. Owned charger quiescence is described below.
+* ``keypad-verified=1`` grants the already clocked and configured keypad
+  register block at 0x10010000. The driver checks KP_EN bit 0 on each sample.
+  It observes matrix index 0 for volume-down and index 1 for volume-up, as
+  confirmed by physical stock input capture. PMIC TOPSTATUS bit 1 supplies
+  power. The advertised PMIC home/volume-up mapping is not used.
+  Boot-held keys are ignored until released; transitions require two samples,
+  and failed reads release any previously emitted key.
+* ``charger-verified=1`` plus an independently ready I2C5 bus permits access
+  to PSC5425E at 0x6a. A real handoff additionally requires
+  ``charger-control-owned=1``. The loader must already disable charging before
+  jumping and transfer exclusive control, with an independently verified
+  fallback if the bus fails. XNU checks identity 0xf0, reads control register
+  1, sets CE-disable bit 2 if needed while preserving every other bit, and
+  verifies exact readback. The worker repeats this each poll. Boost mode is
+  rejected because OTG ownership/routing is not established. No charge-enable
+  operation exists. Failed bus/readback means safety UNKNOWN, not disabled.
+* ``lab-fixture=1`` permits an explicitly synthetic observation-only test
+  without control ownership. Such a test never yields control-safe readiness.
+  The preferred fixture also sets ``charger-control-owned`` and exercises the
+  same disable/write/readback path. Laboratory results do not confer physical
+  readiness. The separate ``mt6762_charger_control_safe()`` reports only the
+  last checked disable readback, not complete battery protection or port
+  readiness. Status 3 is reserved and omitted; an apparent charging state
+  while CE-disable is confirmed is treated as inconsistent, not fabricated
+  as not charging.
+
+Polling uses a kernel worker (nominal 16 ms for buttons, approximately one
+second for power), not IRQ handlers. Exclusive AP ownership and initialized
+clocks/pins are bootloader handoff requirements. Polling does not preserve
+Android's interrupt wakeup, suspend, long-press shutdown, or thermal policy.
+The 16 ms period may be delayed by bounded bus transactions.
+
+Truthful battery properties
+---------------------------
+
+The new 36-byte ``mt6762_battery_sample`` has an explicit validity mask and a
+separate call path to IOKit. The existing redwood userspace/battery structure
+has not changed. Every sample replaces validity; missing IOKit properties are
+removed from both the internal power-source dictionary and IORegistry.
+
+Known observations can include battery detection (only while BATON detection
+is enabled), PMIC external power, nominal ADC voltage, and PSC state. Current,
+SOC, and calibrated temperature are not available. A nominal NTC estimate is
+exposed only in a diagnostic sysctl, never as battery temperature or as
+permission to charge. The stock 25 C constant is not reused. Sysctl current's
+legacy zero fallback is not a measurement: ``kern.redwood.mt6762_power_valid``
+must be consulted. Unknown SOC and temperature use -1 and -273 sentinels.
+
+A real handoff must leave charging disabled or retain an independently
+verified protecting controller. Inheriting an enabled charger while Android
+thermal logic is gone does not satisfy this prerequisite.
+
+No maximum capacity, adapter budget, current, temperature, or charging
+capability is invented. Because powerd normally requires CurrentCapacity and
+MaxCapacity, a missing iOS percentage is expected until a real calibrated
+gauge implementation exists. This implementation does not satisfy autonomous
+charging, thermal protection, battery percentage, suspend, or native DVFS.
+The actual cell limits, board sense resistance, NTC compensation, Coulomb
+calibration, adapter budget, and handoff readback remain required work. Chip
+register/timer semantics are now grounded in the linked manufacturer audit.
+
+Host and emulator validation
+----------------------------
+
+``./test.sh`` compiles the exact native protocol header with injected register
+callbacks and tests WACS2 command/valid-clear order, bounded polling,
+initialization loss, no result publication on errors, ADC conversion/scaling,
+rail rejection, and button arming/debounce/failure release. These are protocol
+fixtures, not measurements from a phone. Charger tests exercise the actual native ownership/disable/readback path,
+identity failure, read/write faults, register preservation, and nominal
+manufacturer decoders. ADC request/sample counters and observed millivolt
+min/max expose whether any real conversion occurred; zero requests do not
+validate a temperature. The original recovered-protocol and nominal-thermistor
+tests also run. No sanitizer claim is made.
+
+An opt-in QEMU I2C fixture can exercise the native charger transaction path
+with ``charger-verified``, ``charger-control-owned``, and an initialized lab
+I2C5 handoff. Its deterministic
+identity/state values are synthetic; they cannot establish physical charger,
+PMIC, ADC or charging functionality. Review the parent integration logs for
+the exact kernel build and emulator result.

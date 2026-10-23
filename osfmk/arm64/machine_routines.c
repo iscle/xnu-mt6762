@@ -87,7 +87,7 @@
 #define MPIDR_CPU_ID(mpidr_el1_val)             (((mpidr_el1_val) & MPIDR_AFF0_MASK) >> MPIDR_AFF0_SHIFT)
 #define MPIDR_CLUSTER_ID(mpidr_el1_val)         (((mpidr_el1_val) & MPIDR_AFF1_MASK) >> MPIDR_AFF1_SHIFT)
 
-#if HAS_CLUSTER
+#if HAS_CLUSTER || ARM64_GENERIC_CLUSTERED_AFFINITY
 static uint8_t cluster_initialized = 0;
 #endif
 
@@ -1143,7 +1143,7 @@ ml_parse_cpu_topology(void)
 		 * on the value provided by EDT. Instead, use the MPIDR value to see if we have
 		 * seen this exact cluster before. If so, then reuse that cluster ID for this CPU.
 		 */
-#if HAS_CLUSTER
+#if HAS_CLUSTER || ARM64_GENERIC_CLUSTERED_AFFINITY
 		uint32_t phys_cluster_id = MPIDR_CLUSTER_ID(cpu->phys_id);
 #else
 		uint32_t phys_cluster_id = (cpu->cluster_type == CLUSTER_TYPE_P);
@@ -1177,7 +1177,7 @@ ml_parse_cpu_topology(void)
 			ml_read_reg_range(child, "cpm-impl-reg", &cluster->cpm_IMPL_pa, &cluster->cpm_IMPL_len);
 		}
 
-#if HAS_CLUSTER
+#if HAS_CLUSTER || ARM64_GENERIC_CLUSTERED_AFFINITY
 		if (MPIDR_CPU_ID(cpu->phys_id) > cluster_max_cpu_phys_id[phys_cluster_id]) {
 			cluster_max_cpu_phys_id[phys_cluster_id] = MPIDR_CPU_ID(cpu->phys_id);
 		}
@@ -1197,7 +1197,7 @@ ml_parse_cpu_topology(void)
 
 	}
 
-#if HAS_CLUSTER
+#if HAS_CLUSTER || ARM64_GENERIC_CLUSTERED_AFFINITY
 	/*
 	 * Build the cluster offset array, ensuring that the region reserved
 	 * for each physical cluster contains enough entries to be indexed
@@ -1516,12 +1516,19 @@ ml_processor_register(ml_processor_info_t *in_processor_info,
 	this_cpu_datap->cpu_l3_id = in_processor_info->l3_cache_id;
 	this_cpu_datap->cpu_l3_size = in_processor_info->l3_cache_size;
 
-#if HAS_CLUSTER
+#if HAS_CLUSTER || ARM64_GENERIC_CLUSTERED_AFFINITY
 	this_cpu_datap->cluster_master = !OSTestAndSet(this_cpu_datap->cpu_cluster_id, &cluster_initialized);
 #else /* HAS_CLUSTER */
 	this_cpu_datap->cluster_master = is_boot_cpu;
 #endif /* HAS_CLUSTER */
 	lck_mtx_lock(&pset_create_lock);
+#if MT6762 && CONFIG_SCHED_CLUTCH && !CONFIG_SCHED_EDGE
+	/* Both clusters are Cortex-A53 SMP cores. Clutch without Edge protects
+	 * shared bucket state with pset0; a second scheduler pset violates that
+	 * locking contract. Retain the physical cluster/MPIDR data above for GIC,
+	 * reset and DVFS, but schedule all eight cores in the same SMP set. */
+	pset = &pset0;
+#else
 	pset = pset_find(in_processor_info->cluster_id, NULL);
 	kprintf("[%d]%s>pset_find(cluster_id=%d) returned pset %d\n", current_processor()->cpu_id, __FUNCTION__, in_processor_info->cluster_id, pset ? pset->pset_id : -1);
 	if (pset == NULL) {
@@ -1536,6 +1543,7 @@ ml_processor_register(ml_processor_info_t *in_processor_info,
 		assert(pset != PROCESSOR_SET_NULL);
 #endif /* __AMP__ */
 	}
+#endif /* MT6762 single Clutch pset */
 	kprintf("[%d]%s>cpu_id %p cluster_id %d cpu_number %d is type %d\n", current_processor()->cpu_id, __FUNCTION__, in_processor_info->cpu_id, in_processor_info->cluster_id, this_cpu_datap->cpu_number, in_processor_info->cluster_type);
 	lck_mtx_unlock(&pset_create_lock);
 

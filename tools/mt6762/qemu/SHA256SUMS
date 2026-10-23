@@ -1,2 +1,6 @@
 3ca5f91a744a0557334b7abef9b1a78f77f95b1458cb1cbbd2cc7a40066065dc  0001-arm-add-experimental-MT6762-early-boot-research-mach.patch
 10b9b35f234e43a4040124798125a03c01b99a1d8ae6ac027e2d3a4902d6ebaf  0002-arm-supply-the-recovered-MT6762-boot-log-SRAM-handof.patch
+ecc8d55639a4c5d650ad1744414b9c3149ba0b306be2c7606459401275a56cbd  0003-arm-add-opt-in-MT6762-I2C-DMA-laboratory-fixtures.patch
+49ff483adc76339ae3d1bf222c2ca2577682cbed1cd9062dbd026f1bc690c396  0004-arm-add-opt-in-inherited-display-and-PWM-laboratory.patch
+cb88db3657b853657c55b306e756280727063d2a8b86127985e55dd25d956c49  0005-arm-add-opt-in-power-and-SSPM-laboratory-fixtures.patch
+355232772dbe1b1a3dfb5e1ca5a58c92d73e4c417b6ed490d851bb54054c8b28  0006-arm-add-explicit-AXS-packet-override-for-native-tests.patch

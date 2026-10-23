@@ -13,6 +13,7 @@
 #include <mach/mach_types.h>
 #include <pexpert/pexpert.h>
 #include <sys/redwood_input.h>
+#include <sys/mt6762_power.h>
 #include <sys/sysctl.h>
 #include <sys/systm.h>
 
@@ -56,15 +57,15 @@ SYSCTL_INT(_kern_redwood, OID_AUTO, battery_soc, CTLFLAG_RD | CTLFLAG_LOCKED,
 SYSCTL_INT(_kern_redwood, OID_AUTO, battery_voltage_mv, CTLFLAG_RD | CTLFLAG_LOCKED,
     &battery_voltage_mv, 0, "battery voltage in millivolts, or -1 if unknown");
 SYSCTL_INT(_kern_redwood, OID_AUTO, battery_current_ma, CTLFLAG_RD | CTLFLAG_LOCKED,
-    &battery_current_ma, 0, "battery current reported by Qualcomm firmware, in milliamps");
+    &battery_current_ma, 0, "battery current in milliamps; for native MT6762 consult mt6762_power_valid");
 SYSCTL_INT(_kern_redwood, OID_AUTO, battery_temperature_c, CTLFLAG_RD | CTLFLAG_LOCKED,
-    &battery_temperature_c, 0, "battery temperature reported by Qualcomm firmware, in Celsius");
+    &battery_temperature_c, 0, "battery temperature in Celsius, -273 if unknown");
 SYSCTL_INT(_kern_redwood, OID_AUTO, battery_present, CTLFLAG_RD | CTLFLAG_LOCKED,
-    &battery_present, 0, "1 if Qualcomm firmware reports a battery");
+    &battery_present, 0, "battery present: 0/1, -1 if unknown");
 SYSCTL_INT(_kern_redwood, OID_AUTO, battery_charger_present, CTLFLAG_RD | CTLFLAG_LOCKED,
-    &battery_charger_present, 0, "1 if Qualcomm firmware reports an attached charger");
+    &battery_charger_present, 0, "charger present: 0/1, -1 if unknown");
 SYSCTL_INT(_kern_redwood, OID_AUTO, battery_charging, CTLFLAG_RD | CTLFLAG_LOCKED,
-    &battery_charging, 0, "1 while an attached charger is charging a non-full battery");
+    &battery_charging, 0, "charging: 0/1, -1 if unknown");
 SYSCTL_INT(_kern_redwood, OID_AUTO, battery_soc_estimated, CTLFLAG_RD | CTLFLAG_LOCKED,
     &battery_soc_estimated, 0, "1 only when SOC had to be estimated from voltage");
 SYSCTL_INT(_kern_redwood, OID_AUTO, battery_charger_action, CTLFLAG_RD | CTLFLAG_LOCKED,
@@ -154,6 +155,27 @@ redwood_battery_report(const struct redwood_battery_state *b)
 	battery_source_dsp = 1;
 	battery_updates++;
 	RedwoodBatteryReport(b, sizeof(*b));
+}
+
+/* Native MT6762 samples are partial. Unknown values must not become 0% or
+ * the stock driver's constant 25 C. The validity mask accompanies sysctls. */
+extern void RedwoodBatteryReportPartial(const void *state, unsigned size);
+void
+mt6762_battery_report(const struct mt6762_battery_sample *b)
+{
+	if (!b || b->size != sizeof(*b)) return;
+	battery_soc_percent = (b->valid & MT6762_BAT_SOC) ? (b->percent_hundredths + 50) / 100 : -1;
+	battery_voltage_mv = (b->valid & MT6762_BAT_VOLTAGE) ? b->voltage_uv / 1000 : -1;
+	battery_current_ma = (b->valid & MT6762_BAT_CURRENT) ? b->current_ua / 1000 : 0;
+	battery_temperature_c = (b->valid & MT6762_BAT_TEMP) ? b->temperature_hundredths / 100 : -273;
+	battery_present = (b->valid & MT6762_BAT_PRESENT) ? !!b->present : -1;
+	battery_charger_present = (b->valid & MT6762_BAT_EXTERNAL) ? !!b->external : -1;
+	battery_charging = (b->valid & (MT6762_BAT_STATUS | MT6762_BAT_EXTERNAL)) ==
+	    (MT6762_BAT_STATUS | MT6762_BAT_EXTERNAL) ? (!!b->external && b->status == 1) : -1;
+	battery_charger_action = (b->valid & MT6762_BAT_STATUS) ? b->status : -1;
+	battery_soc_estimated = battery_source_dsp = 0;
+	battery_updates++;
+	RedwoodBatteryReportPartial(b, sizeof(*b));
 }
 
 static void

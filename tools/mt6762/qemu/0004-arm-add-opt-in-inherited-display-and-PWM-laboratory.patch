@@ -1,0 +1,722 @@
+From dafbf7f83d81cea79804ec731a6214a47e53d646 Mon Sep 17 00:00:00 2001
+From: MT6762 local experiment <mt6762-build@localhost>
+Date: Fri, 23 Oct 2026 23:40:47 +0200
+Subject: [PATCH] arm: add opt-in inherited display and PWM laboratory fixtures
+
+AI-assisted local experiment, not intended for upstream submission. Adds explicit synthetic register readbacks, bounded framebuffer assertions, PWM commit and fault fixtures, and independent QTest checks. No physical display or scanout emulation is claimed.
+---
+ docs/system/arm/mt6762.rst          |  29 ++++
+ hw/arm/meson.build                  |   2 +-
+ hw/arm/mt6762.c                     | 103 +++++++++++++-
+ hw/arm/mt6762_lab_display.c         | 208 ++++++++++++++++++++++++++++
+ hw/arm/mt6762_lab_i2c.c             |  13 +-
+ include/hw/arm/mt6762_lab_display.h |  19 +++
+ include/hw/arm/mt6762_lab_i2c.h     |   1 +
+ tests/mt6762/test_lab_display.py    | 191 +++++++++++++++++++++++++
+ 8 files changed, 561 insertions(+), 5 deletions(-)
+ create mode 100644 hw/arm/mt6762_lab_display.c
+ create mode 100644 include/hw/arm/mt6762_lab_display.h
+ create mode 100644 tests/mt6762/test_lab_display.py
+
+diff --git a/docs/system/arm/mt6762.rst b/docs/system/arm/mt6762.rst
+index cb9a0df..3e64607 100644
+--- a/docs/system/arm/mt6762.rst
++++ b/docs/system/arm/mt6762.rst
+@@ -145,3 +145,32 @@ worker's startup message from actual completed DMA, and record failure
+ injection separately. These counters describe only the synthetic model.
+ The bus5 counter record also exposes the synthetic PSC control/status bytes,
+ so integration evidence can establish CE-bit readback after a guest write.
++
++Opt-in inherited-display laboratory
++-----------------------------------
++
++``-M mt6762,lab-i2c=on,lab-display=on,lab-display-fb=0x41000000`` adds
++synthetic SPM, MMSYS, OVL0, RDMA0, DSI0 and DISP_PWM0 register fixtures. The
++explicit framebuffer must occupy a 16KiB-aligned 0x144000-byte guest RAM
++range entirely below 4GiB. Its pixels remain ordinary RAM; no scanout fetch,
++DSI packet, panel, backlight physics or IOMMU is emulated. ``lab-display``
++and its framebuffer address are immutable after machine initialization.
++
++Fixed readbacks describe one BGRA8888 OVL0 layer at 384x854, stride1536,
++RDMA direct-link, three DSI lanes and the recovered panel timing constants.
++Only PWM writes are accepted: the bounded duty latches on an ordered commit
++1-to-0 transition. PWM starts enabled at duty512, period1023, divider3. The
++shared TOPCKGEN fixture exposes PWM parent3 and an open gate only when this
++fixture is enabled. Other pipeline writes are rejected and counted.
++
++Dynamic ``lab-display-fault`` values ``none``, ``pwm-drop``, ``power-off`` and
++``scanout-mismatch`` exercise write/readback and inherited-handoff rejection.
++Read-only ``lab-display-state`` returns synthetic register-access counters,
++commit count and applied PWM level. Those counters can prove guest driver
++activity but cannot prove physical brightness or display operation.
++
++Run ``python3 tests/mt6762/test_lab_display.py --qemu build/qemu-system-aarch64
++--dtb /path/to/boot.bin.dtb`` for bounds, default absence, commit ordering,
++readback faults and rejected pipeline-write tests. Native XNU integration
++uses the separately packaged ``prepare.py --native-lab-display`` option;
++its assertions must never be copied into a real phone's loader handoff.
+diff --git a/hw/arm/meson.build b/hw/arm/meson.build
+index 92ce5dd..fb53a63 100644
+--- a/hw/arm/meson.build
++++ b/hw/arm/meson.build
+@@ -1,5 +1,5 @@
+ arm_common_ss = ss.source_set()
+-arm_common_ss.add(when: 'CONFIG_MT6762', if_true: files('mt6762.c', 'mt6762_lab_i2c.c'))
++arm_common_ss.add(when: 'CONFIG_MT6762', if_true: files('mt6762.c', 'mt6762_lab_i2c.c', 'mt6762_lab_display.c'))
+ arm_common_ss.add(when: 'CONFIG_ARM_VIRT', if_true: files('virt.c'))
+ arm_common_ss.add(when: 'CONFIG_ACPI', if_true: files('virt-acpi-build.c'))
+ arm_common_ss.add(when: 'CONFIG_DIGIC', if_true: files('digic_boards.c'))
+diff --git a/hw/arm/mt6762.c b/hw/arm/mt6762.c
+index 35322ce..65258ff 100644
+--- a/hw/arm/mt6762.c
++++ b/hw/arm/mt6762.c
+@@ -7,11 +7,13 @@
+  * The dump's device tree supplies the address map and MPIDR topology. Only
+  * CPU, RAM, GICv3, timers, IRQ polarity registers and a UART subset are modeled
+  * by default. Explicit lab-i2c enables synthetic I2C/DMA/clock/pad fixtures;
+- * it does not model the physical peripherals. UART extensions, PMIC, storage
+- * and display remain absent.
++ * lab-display additionally provides inherited-register/PWM test fixtures.
++ * Neither models physical peripherals. UART extensions, PMIC and storage
++ * remain absent.
+  */
+ #include "qemu/osdep.h"
+ #include "qapi/error.h"
++#include "qapi/visitor.h"
+ #include "qemu/units.h"
+ #include "qemu/error-report.h"
+ #include "qemu/log.h"
+@@ -21,6 +23,7 @@
+ #include "hw/core/qdev-properties.h"
+ #include "hw/arm/boot.h"
+ #include "hw/arm/mt6762_lab_i2c.h"
++#include "hw/arm/mt6762_lab_display.h"
+ #include "hw/char/serial-mm.h"
+ #include "hw/intc/arm_gicv3_common.h"
+ #include "system/system.h"
+@@ -49,7 +52,10 @@ struct MT6762MachineState {
+     uint32_t systimer_control;
+     uint32_t systimer_value;
+     bool lab_i2c, lab_touch, initialized;
+-    unsigned lab_fault;
++    unsigned lab_fault, lab_display_fault;
++    bool lab_display;
++    uint64_t lab_display_fb;
++    MT6762DisplayLab *display;
+     MT6762I2CLab *lab;
+ };
+ 
+@@ -255,12 +261,28 @@ static void mt6762_init(MachineState *ms)
+     memory_region_add_subregion(sysmem, 0x10017000, &s->systimer_mmio);
+     qemu_register_reset(mt6762_reset, s);
+ 
++    if (s->lab_display && (!s->lab_i2c ||
++        s->lab_display_fb < MT6762_RAM_BASE ||
++        (s->lab_display_fb & 0x3fff) || s->lab_display_fb > UINT32_MAX ||
++        0x144000 > 0x100000000ULL - s->lab_display_fb ||
++        s->lab_display_fb - MT6762_RAM_BASE >= ms->ram_size ||
++        0x144000 > ms->ram_size - (s->lab_display_fb - MT6762_RAM_BASE))) {
++        error_report("lab-display requires lab-i2c and a 16KiB-aligned "
++                     "0x144000-byte framebuffer in guest RAM below 4GiB");
++        exit(EXIT_FAILURE);
++    }
+     if (s->lab_i2c) {
+         s->lab = mt6762_lab_i2c_create(OBJECT(s), sysmem, ms->ram_size,
+                                       qdev_get_gpio_in(gic, 84),
+                                       qdev_get_gpio_in(gic, 130));
+         mt6762_lab_i2c_configure(s->lab, s->lab_fault, s->lab_touch);
+     }
++    if (s->lab_display) {
++        mt6762_lab_i2c_display(s->lab, true);
++        s->display = mt6762_lab_display_create(OBJECT(s), sysmem,
++                                               s->lab_display_fb);
++        mt6762_lab_display_configure(s->display, s->lab_display_fault);
++    }
+     s->initialized = true;
+ 
+     s->bootinfo.ram_size = ms->ram_size;
+@@ -328,6 +350,71 @@ static void mt6762_set_lab_fault(Object *obj, const char *value, Error **errp)
+     error_setg(errp, "lab-i2c-fault must be none, nack, dma or stall");
+ }
+ 
++static bool mt6762_get_lab_display(Object *obj, Error **errp)
++{
++    return MT6762_MACHINE(obj)->lab_display;
++}
++
++static void mt6762_set_lab_display(Object *obj, bool value, Error **errp)
++{
++    MT6762MachineState *s = MT6762_MACHINE(obj);
++    if (s->initialized) {
++        error_setg(errp, "lab-display must be selected before initialization");
++        return;
++    }
++    s->lab_display = value;
++}
++
++static void mt6762_get_display_fb(Object *obj, Visitor *v, const char *name,
++                                 void *opaque, Error **errp)
++{
++    uint64_t value = MT6762_MACHINE(obj)->lab_display_fb;
++    visit_type_uint64(v, name, &value, errp);
++}
++
++static void mt6762_set_display_fb(Object *obj, Visitor *v, const char *name,
++                                 void *opaque, Error **errp)
++{
++    MT6762MachineState *s = MT6762_MACHINE(obj);
++    if (s->initialized) {
++        error_setg(errp, "lab-display-fb must be selected before initialization");
++        return;
++    }
++    visit_type_uint64(v, name, &s->lab_display_fb, errp);
++}
++
++static const char *const mt6762_display_fault_names[] = {
++    "none", "pwm-drop", "power-off", "scanout-mismatch"
++};
++
++static char *mt6762_get_display_fault(Object *obj, Error **errp)
++{
++    return g_strdup(mt6762_display_fault_names[
++        MT6762_MACHINE(obj)->lab_display_fault]);
++}
++
++static void mt6762_set_display_fault(Object *obj, const char *value, Error **errp)
++{
++    MT6762MachineState *s = MT6762_MACHINE(obj);
++    unsigned i;
++    for (i = 0; i < ARRAY_SIZE(mt6762_display_fault_names); i++) {
++        if (!strcmp(value, mt6762_display_fault_names[i])) {
++            s->lab_display_fault = i;
++            if (s->display) {
++                mt6762_lab_display_configure(s->display, i);
++            }
++            return;
++        }
++    }
++    error_setg(errp, "lab-display-fault must be none, pwm-drop, power-off "
++               "or scanout-mismatch");
++}
++
++static char *mt6762_get_display_state(Object *obj, Error **errp)
++{
++    return mt6762_lab_display_state(MT6762_MACHINE(obj)->display);
++}
++
+ static void mt6762_class_init(ObjectClass *oc, const void *data)
+ {
+     MachineClass *mc = MACHINE_CLASS(oc);
+@@ -340,6 +427,16 @@ static void mt6762_class_init(ObjectClass *oc, const void *data)
+     mc->default_cpus = 8;
+     mc->no_floppy = 1;
+     mc->no_cdrom = 1;
++    object_class_property_add_bool(oc, "lab-display", mt6762_get_lab_display,
++                                   mt6762_set_lab_display);
++    object_class_property_add(oc, "lab-display-fb", "uint64",
++                              mt6762_get_display_fb, mt6762_set_display_fb,
++                              NULL, NULL);
++    object_class_property_add_str(oc, "lab-display-fault",
++                                  mt6762_get_display_fault,
++                                  mt6762_set_display_fault);
++    object_class_property_add_str(oc, "lab-display-state",
++                                  mt6762_get_display_state, NULL);
+     object_class_property_add_bool(oc, "lab-i2c", mt6762_get_lab_i2c,
+                                    mt6762_set_lab_i2c);
+     object_class_property_set_description(oc, "lab-i2c",
+diff --git a/hw/arm/mt6762_lab_display.c b/hw/arm/mt6762_lab_display.c
+new file mode 100644
+index 0000000..89c24f5
+--- /dev/null
++++ b/hw/arm/mt6762_lab_display.c
+@@ -0,0 +1,208 @@
++/*
++ * SPDX-License-Identifier: GPL-2.0-or-later
++ * AI-assisted local experiment; not intended for upstream submission.
++ *
++ * Explicit synthetic inherited-display fixture for native-consumer tests.
++ * The supplied MT6765 BSP defines these register offsets; fixed pipeline
++ * contents and PWM latching are test assumptions, not physical observations.
++ * No DSI packets, panel, DMA fetch, SMI/IOMMU, pixel scanout or real clocks are
++ * emulated. The framebuffer remains ordinary guest RAM observed by host tools.
++ */
++#include "qemu/osdep.h"
++#include "qemu/log.h"
++#include "hw/arm/mt6762_lab_display.h"
++#include "system/reset.h"
++
++enum { SPM, MMSYS, OVL, RDMA, DSI, PWM, BLOCKS };
++typedef struct DisplayBlock {
++    MT6762DisplayLab *display;
++    MemoryRegion region;
++    unsigned id;
++} DisplayBlock;
++struct MT6762DisplayLab {
++    DisplayBlock blocks[BLOCKS];
++    uint64_t framebuffer_pa, reads[BLOCKS], pwm_writes, commits, rejected_writes;
++    unsigned fault, applied_level;
++    uint32_t pwm_enable, pwm_con0, pwm_con1, pwm_commit;
++};
++
++static uint64_t display_read(void *opaque, hwaddr offset, unsigned size)
++{
++    DisplayBlock *block = opaque;
++    MT6762DisplayLab *s = block->display;
++    s->reads[block->id]++;
++    switch (block->id) {
++    case SPM:
++        if (offset == 0x180 || offset == 0x184) {
++            return s->fault == MT6762_DISPLAY_FAULT_POWER_OFF ? 0 : 8;
++        }
++        if (offset == 0x30c) {
++            return s->fault == MT6762_DISPLAY_FAULT_POWER_OFF ? 0x1112 : 13;
++        }
++        break;
++    case MMSYS:
++        if (offset == 0x100) {
++            return s->fault == MT6762_DISPLAY_FAULT_POWER_OFF ? UINT32_MAX : 0;
++        }
++        break;
++    case OVL:
++        switch (offset) {
++        case 0x00c: case 0x02c: case 0x0c0: return 1;
++        case 0x020: case 0x038: return 384 | (854u << 16);
++        case 0x030: return 0x20ff; /* BGRA8888, memory source, alpha disabled */
++        case 0x044: return 1536;
++        case 0xf40:
++            return s->framebuffer_pa +
++                (s->fault == MT6762_DISPLAY_FAULT_SCANOUT ? 0x4000 : 0);
++        case 0x03c: case 0x04c: case 0x324: return 0;
++        }
++        break;
++    case RDMA:
++        if (offset == 0x010) {
++            return 1; /* Engine on, direct-link mode */
++        }
++        break;
++    case DSI:
++        switch (offset) {
++        case 0x000: return 1;
++        case 0x014: return 2; /* SYNC_EVENT_VDO */
++        case 0x018: return 7u << 2; /* Three-lane bit mask */
++        case 0x01c: return (2u << 16) | 1152; /* RGB888,384*3 bytes */
++        case 0x020: return 2;
++        case 0x024: return 20;
++        case 0x028: return 170;
++        case 0x02c: return 854;
++        }
++        break;
++    case PWM:
++        switch (offset) {
++        case 0x000: return s->pwm_enable;
++        case 0x00c: return s->pwm_commit;
++        case 0x018: return s->pwm_con0;
++        case 0x01c: return s->pwm_con1;
++        }
++        break;
++    }
++    qemu_log_mask(LOG_UNIMP, "mt6762 lab display block%u read %#" HWADDR_PRIx "\n",
++                  block->id, offset);
++    return 0;
++}
++
++static void display_write(void *opaque, hwaddr offset, uint64_t value,
++                          unsigned size)
++{
++    DisplayBlock *block = opaque;
++    MT6762DisplayLab *s = block->display;
++    if (block->id != PWM) {
++        s->rejected_writes++;
++        qemu_log_mask(LOG_UNIMP,
++            "mt6762 lab inherited display rejects programming block%u offset%#"
++            HWADDR_PRIx "\n", block->id, offset);
++        return;
++    }
++    s->pwm_writes++;
++    if (s->fault == MT6762_DISPLAY_FAULT_PWM_DROP ||
++        s->fault == MT6762_DISPLAY_FAULT_POWER_OFF) {
++        return;
++    }
++    switch (offset) {
++    case 0x000:
++        s->pwm_enable = value;
++        return;
++    case 0x018:
++        s->pwm_con0 = value;
++        return;
++    case 0x01c:
++        s->pwm_con1 = value;
++        return;
++    case 0x00c:
++        if (value > 1) {
++            s->rejected_writes++;
++            return;
++        }
++        if (s->pwm_commit == 1 && value == 0) {
++            unsigned duty = (s->pwm_con1 >> 16) & 0x1fff;
++            /* Test fixture only latches the bounded stock configuration. */
++            if (((s->pwm_con0 >> 16) & 1023) == 3 &&
++                (s->pwm_con1 & 1023) == 1023 && duty <= 1023) {
++                s->applied_level = (s->pwm_enable & 1) ? duty : 0;
++                s->commits++;
++            } else {
++                s->rejected_writes++;
++            }
++        }
++        s->pwm_commit = value;
++        return;
++    }
++    s->rejected_writes++;
++    qemu_log_mask(LOG_UNIMP, "mt6762 lab PWM write offset%#" HWADDR_PRIx "\n", offset);
++}
++
++static const MemoryRegionOps display_ops = {
++    .read = display_read,
++    .write = display_write,
++    .endianness = DEVICE_LITTLE_ENDIAN,
++    .valid = { .min_access_size = 4, .max_access_size = 4, .unaligned = false },
++    .impl = { .min_access_size = 4, .max_access_size = 4 },
++};
++
++static void display_reset(void *opaque)
++{
++    MT6762DisplayLab *s = opaque;
++    memset(s->reads, 0, sizeof(s->reads));
++    s->pwm_writes = s->commits = s->rejected_writes = 0;
++    s->pwm_enable = 1;
++    s->pwm_con0 = 3u << 16;
++    s->pwm_con1 = (512u << 16) | 1023;
++    s->pwm_commit = 0;
++    s->applied_level = 512;
++}
++
++void mt6762_lab_display_configure(MT6762DisplayLab *s, unsigned fault)
++{
++    assert(fault < MT6762_DISPLAY_FAULT_COUNT);
++    s->fault = fault;
++}
++
++char *mt6762_lab_display_state(MT6762DisplayLab *s)
++{
++    if (!s) {
++        return g_strdup("{\"enabled\":false}");
++    }
++    return g_strdup_printf("{\"enabled\":true,\"synthetic\":true,"
++        "\"framebuffer_pa\":%" PRIu64 ",\"fault\":%u,\"applied_level\":%u,"
++        "\"enable\":%u,\"duty\":%u,\"pwm_writes\":%" PRIu64
++        ",\"commits\":%" PRIu64 ",\"rejected_writes\":%" PRIu64
++        ",\"reads\":{\"spm\":%" PRIu64 ",\"mmsys\":%" PRIu64
++        ",\"ovl\":%" PRIu64 ",\"rdma\":%" PRIu64 ",\"dsi\":%" PRIu64
++        ",\"pwm\":%" PRIu64 "}}",
++        s->framebuffer_pa, s->fault, s->applied_level, s->pwm_enable & 1,
++        (s->pwm_con1 >> 16) & 0x1fff, s->pwm_writes, s->commits, s->rejected_writes,
++        s->reads[SPM], s->reads[MMSYS], s->reads[OVL], s->reads[RDMA],
++        s->reads[DSI], s->reads[PWM]);
++}
++
++MT6762DisplayLab *mt6762_lab_display_create(Object *owner, MemoryRegion *memory,
++                                          uint64_t framebuffer_pa)
++{
++    static const hwaddr addresses[BLOCKS] = {
++        0x10006000, 0x14000000, 0x1400b000, 0x1400d000, 0x14014000, 0x1100e000
++    };
++    static const char *const names[BLOCKS] = {
++        "mt6762.lab-display-spm", "mt6762.lab-display-mmsys",
++        "mt6762.lab-display-ovl0", "mt6762.lab-display-rdma0",
++        "mt6762.lab-display-dsi0", "mt6762.lab-display-pwm0"
++    };
++    MT6762DisplayLab *s = g_new0(MT6762DisplayLab, 1);
++    s->framebuffer_pa = framebuffer_pa;
++    for (unsigned i = 0; i < BLOCKS; i++) {
++        s->blocks[i].display = s;
++        s->blocks[i].id = i;
++        memory_region_init_io(&s->blocks[i].region, owner, &display_ops,
++                              &s->blocks[i], names[i], 0x1000);
++        memory_region_add_subregion(memory, addresses[i], &s->blocks[i].region);
++    }
++    display_reset(s);
++    qemu_register_reset(display_reset, s);
++    return s;
++}
+diff --git a/hw/arm/mt6762_lab_i2c.c b/hw/arm/mt6762_lab_i2c.c
+index 30f7cec..bfcc92d 100644
+--- a/hw/arm/mt6762_lab_i2c.c
++++ b/hw/arm/mt6762_lab_i2c.c
+@@ -47,7 +47,7 @@ struct MT6762I2CLab {
+     uint64_t ram_size;
+     uint32_t gates[2], mux;
+     unsigned fault;
+-    bool touch;
++    bool touch, display;
+ };
+ 
+ static void lab_irq(MT6762I2CBus *s)
+@@ -323,6 +323,9 @@ static const MemoryRegionOps lab_dma_ops = {
+ static uint64_t lab_infra_read(void *opaque, hwaddr off, unsigned size)
+ {
+     MT6762I2CLab *s = opaque;
++    if (off == 0xac && s->display) {
++        return 0; /* Synthetic PWM gate already open; no gate writes. */
++    }
+     return off == 0x90 ? s->gates[0] : off == 0x94 ? s->gates[1] : 0;
+ }
+ 
+@@ -341,6 +344,9 @@ static void lab_infra_write(void *opaque, hwaddr off, uint64_t val, unsigned siz
+ static uint64_t lab_top_read(void *opaque, hwaddr off, unsigned size)
+ {
+     MT6762I2CLab *s = opaque;
++    if (off == 0x80 && s->display) {
++        return 0x03000000; /* Synthetic PWM parent3, gate open. */
++    }
+     return off == 0xa0 ? s->mux : 0;
+ }
+ 
+@@ -400,6 +406,11 @@ static void lab_reset(void *opaque)
+     }
+ }
+ 
++void mt6762_lab_i2c_display(MT6762I2CLab *s, bool enabled)
++{
++    s->display = enabled;
++}
++
+ void mt6762_lab_i2c_configure(MT6762I2CLab *s, unsigned fault, bool touch)
+ {
+     if (touch != s->touch) {
+diff --git a/include/hw/arm/mt6762_lab_display.h b/include/hw/arm/mt6762_lab_display.h
+new file mode 100644
+index 0000000..6e3af19
+--- /dev/null
++++ b/include/hw/arm/mt6762_lab_display.h
+@@ -0,0 +1,19 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++#ifndef HW_ARM_MT6762_LAB_DISPLAY_H
++#define HW_ARM_MT6762_LAB_DISPLAY_H
++#include "system/memory.h"
++typedef struct MT6762DisplayLab MT6762DisplayLab;
++enum {
++    MT6762_DISPLAY_FAULT_NONE,
++    MT6762_DISPLAY_FAULT_PWM_DROP,
++    MT6762_DISPLAY_FAULT_POWER_OFF,
++    MT6762_DISPLAY_FAULT_SCANOUT,
++    MT6762_DISPLAY_FAULT_COUNT,
++};
++/* Board validates a 16KiB-aligned 0x144000-byte range in RAM below 4GiB.
++ * Shared TOPCKGEN/infracfg fixtures belong to mt6762_lab_i2c.c. */
++MT6762DisplayLab *mt6762_lab_display_create(Object *owner, MemoryRegion *memory,
++                                          uint64_t framebuffer_pa);
++void mt6762_lab_display_configure(MT6762DisplayLab *s, unsigned fault);
++char *mt6762_lab_display_state(MT6762DisplayLab *s);
++#endif
+diff --git a/include/hw/arm/mt6762_lab_i2c.h b/include/hw/arm/mt6762_lab_i2c.h
+index 11c3269..077cd7b 100644
+--- a/include/hw/arm/mt6762_lab_i2c.h
++++ b/include/hw/arm/mt6762_lab_i2c.h
+@@ -7,6 +7,7 @@ typedef struct MT6762I2CLab MT6762I2CLab;
+ MT6762I2CLab *mt6762_lab_i2c_create(Object *owner, MemoryRegion *memory,
+                                   uint64_t ram_size, qemu_irq irq0,
+                                   qemu_irq irq5);
++void mt6762_lab_i2c_display(MT6762I2CLab *s, bool enabled);
+ void mt6762_lab_i2c_configure(MT6762I2CLab *s, unsigned fault, bool touch);
+ char *mt6762_lab_i2c_state(MT6762I2CLab *s);
+ #endif
+diff --git a/tests/mt6762/test_lab_display.py b/tests/mt6762/test_lab_display.py
+new file mode 100644
+index 0000000..e1099a3
+--- /dev/null
++++ b/tests/mt6762/test_lab_display.py
+@@ -0,0 +1,191 @@
++#!/usr/bin/env python3
++"""QEMU-only register/PWM fixture tests. Never connects to a physical device.
++
++Requires the local MT6762 QEMU patch series and an explicit research DTB.
++The CPU remains paused; qtest accesses synthetic MMIO and QMP injects faults.
++This does not establish DSI scanout, actual brightness or panel behaviour.
++"""
++import argparse
++import json
++from pathlib import Path
++import socket
++import subprocess
++import tempfile
++import time
++
++
++class Lab:
++    def __init__(self, qemu, dtb, directory, enabled=True):
++        directory = Path(directory)
++        self.log = (directory / "qemu.log").open("w+")
++        self.qmp_path = directory / "qmp.sock"
++        self.test_path = directory / "qtest.sock"
++        machine = "mt6762,lab-i2c=on"
++        if enabled:
++            machine += ",lab-display=on,lab-display-fb=0x41000000"
++        self.process = subprocess.Popen([
++            str(qemu), "-M", machine, "-accel", "tcg", "-cpu", "cortex-a53",
++            "-m", "512M", "-smp", "1", "-dtb", str(dtb), "-S",
++            "-display", "none", "-serial", "null", "-monitor", "none",
++            "-qmp", f"unix:{self.qmp_path},server=on,wait=off",
++            "-qtest", f"unix:{self.test_path},server=on,wait=off",
++        ], stdout=self.log, stderr=self.log)
++        self.sockets = []
++        try:
++            self.qmp = self.connect(self.qmp_path)
++            self.test = self.connect(self.test_path)
++            assert "QMP" in json.loads(self.qmp.readline())
++            self.command("qmp_capabilities")
++        except BaseException:
++            self.close()
++            raise
++
++    def connect(self, path):
++        deadline = time.monotonic() + 10
++        while time.monotonic() < deadline:
++            if self.process.poll() is not None:
++                self.log.seek(0)
++                raise RuntimeError(self.log.read())
++            sock = socket.socket(socket.AF_UNIX)
++            sock.settimeout(5)
++            try:
++                sock.connect(str(path))
++            except (FileNotFoundError, ConnectionRefusedError):
++                sock.close()
++                time.sleep(0.02)
++                continue
++            self.sockets.append(sock)
++            return sock.makefile("rwb", buffering=0)
++        raise TimeoutError(f"QEMU socket {path.name} did not appear")
++
++    def command(self, command, **arguments):
++        self.qmp.write((json.dumps({"execute": command, "arguments": arguments}) + "\n").encode())
++        while True:
++            answer = json.loads(self.qmp.readline())
++            if "event" in answer:
++                continue
++            if "error" in answer:
++                raise RuntimeError(answer["error"])
++            return answer.get("return")
++
++    def state(self):
++        return json.loads(self.command("qom-get", path="/machine", property="lab-display-state"))
++
++    def fault(self, name):
++        self.command("qom-set", path="/machine", property="lab-display-fault", value=name)
++
++    def access(self, text):
++        self.test.write((text + "\n").encode())
++        reply = self.test.readline().decode().strip()
++        if not reply.startswith("OK"):
++            raise RuntimeError(reply)
++        return reply[2:].strip()
++
++    def read(self, address):
++        return int(self.access(f"readl {address:#x}"), 0)
++
++    def write(self, address, value):
++        self.access(f"writel {address:#x} {value:#x}")
++
++    def close(self):
++        if self.process.poll() is None:
++            self.process.terminate()
++            try:
++                self.process.wait(timeout=5)
++            except subprocess.TimeoutExpired:
++                self.process.kill()
++                self.process.wait(timeout=5)
++        for name in ["qmp", "test"]:
++            stream = getattr(self, name, None)
++            if stream:
++                stream.close()
++        for sock in self.sockets:
++            sock.close()
++        self.log.close()
++
++
++def exercise(lab):
++    assert lab.state()["applied_level"] == 512
++    assert lab.read(0x1400bf40) == 0x41000000
++    assert lab.read(0x10006180) == lab.read(0x10006184) == 8
++    assert lab.read(0x10000080) == 0x03000000
++    assert not lab.read(0x100010ac) & 4
++    assert lab.read(0x1401401c) == (2 << 16) | 1152
++    pwm = 0x1100e000
++    assert lab.read(pwm + 0x18) == 3 << 16
++    assert lab.read(pwm + 0x1c) == (512 << 16) | 1023
++    lab.write(pwm + 0x1c, (700 << 16) | 1023)
++    lab.write(pwm, 1)
++    assert lab.state()["applied_level"] == 512
++    lab.write(pwm + 0xc, 1)
++    assert lab.state()["applied_level"] == 512
++    lab.write(pwm + 0xc, 0)
++    assert lab.state()["applied_level"] == 700 and lab.state()["commits"] == 1
++    lab.write(pwm + 0xc, 0)  # No rising edge: no new latch.
++    assert lab.state()["commits"] == 1
++    lab.write(pwm + 0x1c, (1 << 16) | 1023)
++    lab.write(pwm, 0)
++    lab.write(pwm + 0xc, 1)
++    lab.write(pwm + 0xc, 0)
++    assert lab.state()["applied_level"] == 0 and lab.state()["commits"] == 2
++    lab.fault("pwm-drop")
++    lab.write(pwm + 0x1c, (900 << 16) | 1023)
++    lab.write(pwm, 1)
++    lab.write(pwm + 0xc, 1)
++    lab.write(pwm + 0xc, 0)
++    assert lab.read(pwm + 0x1c) == (1 << 16) | 1023
++    assert lab.state()["applied_level"] == 0 and lab.state()["commits"] == 2
++    lab.fault("power-off")
++    assert lab.read(0x10006180) == 0 and lab.read(0x10006184) == 0
++    lab.fault("scanout-mismatch")
++    assert lab.read(0x1400bf40) != 0x41000000
++    lab.fault("none")
++    lab.write(0x1400bf40, 0x43000000)  # Pipeline is inherited, not programmable.
++    assert lab.read(0x1400bf40) == 0x41000000
++    before = lab.state()["rejected_writes"]
++    lab.write(pwm + 0x1c, (1024 << 16) | 1023)
++    lab.write(pwm + 0xc, 1)
++    lab.write(pwm + 0xc, 0)
++    assert lab.state()["rejected_writes"] == before + 1
++    assert lab.state()["commits"] == 2
++    return lab.state()
++
++
++def main():
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument("--qemu", required=True, type=Path)
++    parser.add_argument("--dtb", required=True, type=Path)
++    args = parser.parse_args()
++    with tempfile.TemporaryDirectory(prefix="mt6762-display-qtest-") as temporary:
++        lab = Lab(args.qemu.resolve(), args.dtb.resolve(), temporary)
++        try:
++            result = exercise(lab)
++        finally:
++            lab.close()
++        lab = Lab(args.qemu.resolve(), args.dtb.resolve(), temporary, enabled=False)
++        try:
++            assert lab.state() == {"enabled": False}
++            assert lab.read(0x1100e018) == 0
++        finally:
++            lab.close()
++    # Board must reject invalid physical-range assertions before mapping any
++    # display registers. The4GiB case uses RAM spanning that boundary so it
++    # exercises the narrower32-bit scanout limit, not merely the RAM bound.
++    for options, memory in [
++        ("lab-display=on,lab-display-fb=0x41000000", "512M"),
++        ("lab-i2c=on,lab-display=on,lab-display-fb=0x41000001", "512M"),
++        ("lab-i2c=on,lab-display=on,lab-display-fb=0x3fff0000", "512M"),
++        ("lab-i2c=on,lab-display=on,lab-display-fb=0x5fff0000", "512M"),
++        ("lab-i2c=on,lab-display=on,lab-display-fb=0xffffc000", "4096M"),
++    ]:
++        failed = subprocess.run([
++            str(args.qemu.resolve()), "-M", "mt6762," + options, "-m", memory,
++            "-accel", "tcg", "-smp", "1", "-dtb", str(args.dtb.resolve()),
++            "-S", "-display", "none", "-serial", "null", "-monitor", "none",
++        ], capture_output=True, timeout=10)
++        assert failed.returncode != 0 and b"lab-display requires" in failed.stderr, failed.stderr
++    print(json.dumps({"synthetic_only": True, "passed": True, "final_fixture_state": result}, indent=2))
++
++
++if __name__ == "__main__":
++    main()
+-- 
+2.55.0
+

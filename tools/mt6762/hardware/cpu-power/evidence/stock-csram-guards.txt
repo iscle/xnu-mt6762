@@ -1,0 +1,36 @@
+
+/home/iscle/mt6762-ios-port/emulator/stock.elf:	file format elf64-littleaarch64
+
+Disassembly of section .kernel:
+
+ffffff8009619f00 <init_cpuhvfs_debug_repo>:
+ffffff8009619f00: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8009619f04: f9000bf3     	str	x19, [sp, #0x10]
+ffffff8009619f08: 910003fd     	mov	x29, sp
+ffffff8009619f0c: 97aa1424     	bl	0xffffff800809ef9c <_mcount>
+ffffff8009619f10: f0001d88     	adrp	x8, 0xffffff80099cc000 <cpudvfs_lock>
+ffffff8009619f14: f9400513     	ldr	x19, [x8, #0x8]
+ffffff8009619f18: f0001d80     	adrp	x0, 0xffffff80099cc000 <cpudvfs_lock>
+ffffff8009619f1c: 91011000     	add	x0, x0, #0x44
+ffffff8009619f20: 52828002     	mov	w2, #0x1400     // =5120
+ffffff8009619f24: aa1303e1     	mov	x1, x19
+ffffff8009619f28: 97a9e491     	bl	0xffffff800809316c <__memcpy_fromio>
+ffffff8009619f2c: d28ab548     	mov	x8, #0x55aa     // =21930
+ffffff8009619f30: f2aab548     	movk	x8, #0x55aa, lsl #16
+ffffff8009619f34: f2d54aa8     	movk	x8, #0xaa55, lsl #32
+ffffff8009619f38: f2f54aa8     	movk	x8, #0xaa55, lsl #48
+ffffff8009619f3c: 910a8260     	add	x0, x19, #0x2a0
+ffffff8009619f40: 52822c02     	mov	w2, #0x1160     // =4448
+ffffff8009619f44: 2a1f03e1     	mov	w1, wzr
+ffffff8009619f48: a9002268     	stp	x8, x8, [x19]
+ffffff8009619f4c: 97a9e4d0     	bl	0xffffff800809328c <__memset_io>
+ffffff8009619f50: 528ab548     	mov	w8, #0x55aa     // =21930
+ffffff8009619f54: 72aab548     	movk	w8, #0x55aa, lsl #16
+ffffff8009619f58: b2000fe9     	mov	x9, #0xf0000000f // =64424509455
+ffffff8009619f5c: f0001d8a     	adrp	x10, 0xffffff80099cc000 <cpudvfs_lock>
+ffffff8009619f60: b902a268     	str	w8, [x19, #0x2a0]
+ffffff8009619f64: f9019269     	str	x9, [x19, #0x320]
+ffffff8009619f68: f9001d53     	str	x19, [x10, #0x38]
+ffffff8009619f6c: f9400bf3     	ldr	x19, [sp, #0x10]
+ffffff8009619f70: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8009619f74: d65f03c0     	ret

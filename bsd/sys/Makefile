@@ -229,6 +229,7 @@ PRIVATE_KERNELFILES = \
 	code_signing.h \
 
 XNU_ONLY_EXPORTS = \
+	mt6762_platform.h mt6762_display.h mt6762_power.h mt6762_i2c.h mt6762_cpufreq.h mt6762_sspm.h \
 	bsdtask_info.h \
 	file_internal.h \
 	filedesc.h \

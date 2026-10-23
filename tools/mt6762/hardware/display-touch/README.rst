@@ -1,10 +1,11 @@
 MT6762 display, touch and brightness evidence
 ===========================================
 
-This package contains portable protocol components and an evidence audit. It
-does not register a native XNU device, initialize clocks or power, perform I2C
-transactions, or establish physical scanout. No firmware blobs or captured
-device logs are included.
+This package contains portable protocol components, register validators and
+an evidence audit. Native consumers are in ``bsd/dev/mt6762_input.c`` and
+``bsd/dev/mt6762_display.c``. They require a verified platform handoff and do
+not initialize panel power, reset, DSI or touch firmware. They have not been
+run on the physical phone. No firmware blobs or captured logs are included.
 
 Components and tests
 --------------------
@@ -28,9 +29,11 @@ Run host tests from this directory::
 
     sh test.sh
 
-These are synthetic packet/state tests, including five contacts, normalization,
-missing/up releases, duplicates, malformed input and timeout handling. They do
-not establish hardware operation or physical multitouch performance.
+These are synthetic packet/state and register tests, including five contacts,
+normalization, missing/up releases, duplicates, malformed input, timeout,
+framebuffer bounds, rejected scanout configurations, PWM reserved-bit
+preservation and ordered duty/enable/commit writes. They do not establish
+hardware operation or physical multitouch performance.
 
 ``extract_display_touch.py STOCK_ELF OUTPUT_DIRECTORY`` verifies the exact
 stock Image SHA256 before extracting fixed-address facts and the stock display
@@ -85,8 +88,9 @@ already established, the observed register protocol is:
 * Commit: write1 then0 to COMMIT (+0x0c), with ordered MMIO/full-system
   barriers as in the stock direct-write path.
 
-This sequence is documented rather than exposed as a native programming
-backend because initialization prerequisites remain incomplete. In particular:
+The native backend implements only the duty/enable/commit update, after
+checking inherited parent3, divider3, period1023 and enabled clocks. It does
+not initialize these prerequisites. In particular:
 
 * The DT clock-source request0 maps through the driver to ULPOSC1_D8, whose
   hardware mux encoding is3. Directly writing request0 would select26MHz.
@@ -103,7 +107,116 @@ backend because initialization prerequisites remain incomplete. In particular:
   Historical framebuffer0x7ef90000 is not a current physical address guarantee.
   Panel reinitialization also resets AXS touch and must release active contacts.
 
-Remaining native work includes platform ownership and clock/power sequencing,
-DMA/cache/IOMMU integration, live scanout format/address verification, I2C and
-touch worker registration, display/brightness lifecycle integration and real
-device validation. QEMU graphics and host tests do not fulfill these items.
+Native consumer contract
+------------------------
+
+All native fields are under ``/chosen/mt6762-handoff`` with ``version=1`` and
+``native-io=1``. Integers are exact-width little-endian ADT values: fields below
+are u32 except the four framebuffer address/size fields, which are u64.
+The loader must obtain and validate the actual state before asserting any
+``verified`` property. The normal QEMU graphics loader does not emit this node.
+Its synthetic display remains a separate lab path. A present but malformed
+native node causes MiniFB to reject display registration.
+
+Touch requires ``touch-verified=1``, ``touch-bus=0``, ``touch-address=0x3b``,
+``touch-max-x=384`` and ``touch-max-y=854``, plus the platform's independently
+validated I2C0 prerequisites. The worker issues combined write0x0c/read2,
+requires firmware bytes00,07, and then reads32 bytes every8ms. It posts into
+``redwood_touch_post`` using the tested state tracker. A100ms deadline releases
+stale contacts; transport failure releases contacts and stops, as do eight
+consecutive malformed reports. There is no IRQ registration, reset, firmware
+upload, automatic restart, or claim that the current phone firmware was read.
+
+Display requires ``display-verified``, ``display-reserved``,
+``display-dma-physical`` and ``display-pipeline-verified`` all1. Required layout:
+
+* ``fb-phys``, ``fb-size``, ``fb-reserved-base``, ``fb-reserved-size``: u64.
+* ``fb-width=384``, ``fb-height=854``, ``fb-stride``: row bytes, divisible by4.
+* ``fb-format=1``: memory bytes B,G,R,A; ``fb-ovl-layer``:0..3 on OVL0.
+
+The base and reservation use16KiB alignment. The range must fit the reservation
+and32-bit OVL address space, and hold the visible rows rounded up to16KiB.
+The reservation assertion means the loader has excluded it from kernel
+allocation, not merely recorded an address. The DMA assertion means the
+actual M4U path is bypassed or has a verified identity mapping with ownership
+preserved. The current consumer does not configure or independently prove
+that translation; a fabricated assertion cannot make a physical boot safe.
+
+The backend reads both DIS power status copies, SRAM/reset/isolation state,
+module gates, OVL0 layer/address/pitch/format/geometry, downstream RDMA
+direct-link mode, DSI video mode/three lanes/RGB888 and vertical timing. It
+accepts only a single unrotated, unclipped BGRA8888 memory layer with opaque
+or disabled alpha. MiniFB additionally checks that every mapped console page
+and the final byte translate to the same physical framebuffer. Unsupported
+handoffs fail rather than reprogramming the display. Early PE initialization
+suppresses boot Video whenever any native handoff node exists, retaining UART
+output. Only after the later native readback checks pass does the backend
+activate the official physical-console mapping path, with IO/write-combined
+attributes. The producer must still exclude the reservation and avoid any
+conflicting cached alias. No physical boot producer exists yet.
+
+Brightness additionally requires ``brightness-verified``,
+``brightness-pins-verified`` and ``brightness-parent-verified`` all1. The
+native API ``mt6762_brightness_set(level)`` accepts0..1023. A privileged
+``IORegistryEntrySetCFProperty`` on MiniFB with integer key
+``MT6762Brightness`` invokes it; out-of-range values or unavailable hardware
+return errors. This remains an explicit engineering API. Configuration loss
+disables further updates; no PWM writes occur during initialization or failed
+validation.
+
+Apple brightness property interface
+-----------------------------------
+
+``apple-brightness-abi.json`` records the20F66 binary evidence and Sailfish
+reference. CoreBrightness's legacy path calls
+``IORegistryEntrySetCFProperties`` on an ``AppleARMBacklight`` service with
+``backlight-control=true``. It reads ``IODisplayParameters`` -> ``brightness``
+-> ``min``, ``max``, ``value`` and converts its float brightness into an integer
+before crossing the kernel boundary. There is no guessed floating-point
+user-client selector.
+
+MiniFB now creates this service only when the native PWM getter succeeds.
+It advertises0..1023 and the actual inherited duty. ``brightness`` is the
+physical integer target, ``FadePeriod`` is a nonnegative signed16.16 duration
+in seconds, and optional ``backlight-level`` is logical-level metadata.
+Fades run every16ms and retarget from hardware readback. Failed PWM writes stop
+the fade; only successfully programmed levels are published. Unsupported
+property-only requests and malformed values return errors. Ordinary lab
+graphics does not gain a simulated backlight service.
+
+The original backboardd runs as ``mobile`` and carries boolean entitlement
+``com.apple.internal.display-params-access-privileged``. Property writes require
+that entitlement or an administrator. Apple executables are unchanged. Host
+tests cover integer bounds, negative/oversized encodings,16.16 conversion,
+monotonic fades and retargeting. Actual slider-driven requests and physical
+brightness changes still require runtime validation.
+
+Remaining work includes current physical handoff evidence and producer,
+display DMA translation/cache/reservation proof, panel cold-start and power
+lifecycle, brightness UI validation, touch interrupt/suspend/resume, and
+real-device validation. QEMU graphics, synthetic I2C and host tests do not
+fulfill these items. No physical flash, reset or MMIO write was performed.
+
+Read-only backlight discovery diagnostic
+----------------------------------------
+
+``backlight_probe.c`` enumerates both ``AppleARMBacklight`` and the exact
+original CoreBrightness matcher, ``IOPropertyMatch`` containing boolean
+``backlight-control=true``. It prints class conformance, registry ID and the
+brightness dictionary. It makes no property changes. Build with an iOS
+cross compiler and SDK, linking ``CoreFoundation`` and ``IOKit``; for example::
+
+  xnu-clang -arch arm64 -isysroot "$THEOS/sdks/iPhoneOS16.5.sdk" -O1 \
+    -Wall -Wextra -framework CoreFoundation -framework IOKit \
+    -o /new/backlight_probe backlight_probe.c
+
+Include the resulting project helper in the separate laboratory root image
+and invoke ``/redwood/bin/backlight_probe 12`` through its existing job list.
+Twelve iterations take approximately110seconds; the default is one iteration.
+A helper installed in that image is not at ``/bin`` in the iOS system root.
+
+The Apple CADisplay discovery path and legacy fallback both use this property
+matcher. ``AppleARMBacklight`` conformance identifies the built-in display;
+``kUSBContainerID`` is optional. No additional properties should be invented
+without evidence. First-eight kernel entry/rejection logs distinguish missing
+requests from requests rejected by unchanged ABI/authorization checks.

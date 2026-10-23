@@ -7,6 +7,9 @@
 #define ARM_ARCH_TIMER 1
 #define GENERIC_GIC_V3_IRQ 1
 #define GENERIC_PSCI_SMP 1
+/* MPIDR.Aff1 distinguishes two A53 clusters. HAS_CLUSTER also enables Apple
+ * implementation registers, so use a topology-only switch on this platform. */
+#define ARM64_GENERIC_CLUSTERED_AFFINITY 1
 #define __ARM_ARCH__ 8
 #define __ARM_VMSA__ 8
 #define __ARM_VFP__ 4

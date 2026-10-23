@@ -1,0 +1,35 @@
+{
+  "image_sha256": "82b1919185a49f268a0f8e145a6714d6264c1f66918a90df0d763266147ead4b",
+  "send_descriptor_stride": 80,
+  "send": [
+    {
+      "pin": 0,
+      "descriptor_va": "0xffffff8009846a70",
+      "raw": "0x10600",
+      "mailbox": 0,
+      "slot": 0,
+      "words": 3,
+      "return_data": 1
+    },
+    {
+      "pin": 1,
+      "descriptor_va": "0xffffff8009846ac0",
+      "raw": "0x130818",
+      "mailbox": 0,
+      "slot": 3,
+      "words": 4,
+      "return_data": 1
+    }
+  ],
+  "cpu_notification": {
+    "descriptor_va": "0xffffff8009846e08",
+    "raw": "0x2081a",
+    "mailbox": 2,
+    "slot": 3,
+    "words": 4
+  },
+  "mailbox0_info": {
+    "va": "0xffffff8009846e30",
+    "raw": "0x2180400"
+  }
+}

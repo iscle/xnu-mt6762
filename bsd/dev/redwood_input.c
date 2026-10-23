@@ -10,6 +10,14 @@
 #include <sys/errno.h>
 #include <sys/proc.h>
 #include <sys/redwood_input.h>
+#if defined(ARM64_BOARD_CONFIG_MT6762)
+#include <sys/mt6762_platform.h>
+#include <sys/mt6762_sspm.h>
+extern void mt6762_touch_init(void);
+extern void mt6762_display_init(void);
+extern void mt6762_power_init(void);
+extern void mt6762_cpufreq_init(void);
+#endif
 #include <sys/systm.h>
 #include <sys/uio.h>
 #include <pexpert/pexpert.h>
@@ -221,7 +229,13 @@ redwood_input_init(void)
 	 * A generic boot flag must never select them on MediaTek hardware.
 	 * Native MT6762 drivers will be registered here as they are implemented.
 	 */
-	printf("MT6762: native touch, buttons, battery/charging and other board drivers unavailable; Qualcomm drivers disabled\n");
+	printf("MT6762: Qualcomm board drivers disabled; checking native handoff\n");
+	mt6762_platform_init();
+	mt6762_display_init();
+	mt6762_touch_init();
+	mt6762_power_init();
+	mt6762_sspm_init();
+	mt6762_cpufreq_init();
 #else
 	redwood_cpufreq_init();
 	redwood_goodix_init();

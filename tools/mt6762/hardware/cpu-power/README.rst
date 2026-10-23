@@ -5,7 +5,8 @@ Status
 ------
 
 This source-only package selects and checks nominal stock C62 OPPs offline.
-It contains no PLL/PMIC/MMIO writes and is not an XNU CPU frequency driver.
+It contains no PLL/PMIC/MMIO writes. NATIVE.rst documents the subsequently
+added XNU readback module; DVFS control remains disabled.
 Read-only stock Android observations and exact stock kernel evidence establish
 frequency limits and the selected nominal table. Native clock/voltage changes,
 SSPM coordination, EEM calibration and thermal limits remain unvalidated.

@@ -1,0 +1,34 @@
+{
+  "image_sha256": "82b1919185a49f268a0f8e145a6714d6264c1f66918a90df0d763266147ead4b",
+  "jump_table_va": "0xffffff80090f50c8",
+  "image_offset": "0x10750c8",
+  "bytes": [
+    0,
+    4,
+    6,
+    0
+  ],
+  "branch_base": "0xffffff8008a776ac",
+  "target_formula": "branch_base + 4 * byte",
+  "targets": [
+    "0xffffff8008a776ac",
+    "0xffffff8008a776bc",
+    "0xffffff8008a776c4",
+    "0xffffff8008a776ac"
+  ],
+  "linux_status_values": [
+    3,
+    1,
+    4,
+    3
+  ],
+  "meanings": [
+    "NOT_CHARGING",
+    "CHARGING",
+    "FULL",
+    "NOT_CHARGING"
+  ],
+  "source_function": "psc5425e_chg_get_property 0xffffff8008a77570",
+  "property_id": 0,
+  "source_field": "register 0 bits 5:4"
+}

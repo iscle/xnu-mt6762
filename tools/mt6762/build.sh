@@ -16,6 +16,7 @@ export MACHINE=MT6762 JOBS=${MTK_BUILD_JOBS:-12}
 [[ -x "$HELPER/xnu-deps/host/bin/migcom" ]] || { echo 'Run bootstrap.sh first.' >&2; exit 1; }
 LOGDIR="$WORK/evidence/builds/$(date -u +%Y%m%dT%H%M%SZ)-$$"
 mkdir -p "$LOGDIR"
+python3 "$XNU_TREE/tools/mt6762/source_snapshot.py" "$XNU_TREE" "$LOGDIR/source-before.json"
 "$HELPER/xnu-deps/setup.sh" --rebuild-libs > "$LOGDIR/dependencies.log" 2>&1 || {
   cat "$LOGDIR/dependencies.log" >&2; exit 1;
 }
@@ -28,6 +29,7 @@ set +e
 "$HELPER/xnu-build.sh" -j"$JOBS" -k > "$LOGDIR/make.log" 2>&1
 result=$?
 set -e
+python3 "$XNU_TREE/tools/mt6762/source_snapshot.py" "$XNU_TREE" "$LOGDIR/source-after.json"
 python3 - "$ARTIFACT" "$LOGDIR" "$result" "$XNU_TREE" <<'PY'
 import hashlib, json, pathlib, re, struct, subprocess, sys
 artifact, logs, rc, source = pathlib.Path(sys.argv[1]), pathlib.Path(sys.argv[2]), int(sys.argv[3]), sys.argv[4]
@@ -51,11 +53,17 @@ if linked:
     header = artifact.read_bytes()[:32]
     magic, cpu, subtype, filetype = struct.unpack_from('<IIII', header)
     valid_header = magic == 0xfeedfacf and cpu == 0x100000c and subtype == 0 and filetype == 2
-accepted = bool(linked and valid_header and (rc == 0 or known_postlink))
+before = json.loads((logs/'source-before.json').read_text())
+after = json.loads((logs/'source-after.json').read_text())
+changed = sorted(name for name in before['files'].keys() | after['files'].keys()
+                 if before['files'].get(name) != after['files'].get(name))
+accepted = bool(linked and valid_header and not changed and (rc == 0 or known_postlink))
 report = {
     'artifact_ready': accepted, 'artifact': str(artifact), 'make_exit_code': rc,
     'all_checks_passed': rc == 0, 'known_postlink_export_failures_only': bool(known_postlink),
     'new_link_observed': linked, 'macho_arm64_executable': valid_header,
+    'kernel_source_sha256': after['sha256'], 'source_unchanged_during_build': not changed,
+    'source_files_changed_during_build': changed,
     'sha256': hashlib.sha256(artifact.read_bytes()).hexdigest() if linked else None,
     'source_head': subprocess.check_output(['git','-C',source,'rev-parse','HEAD'],text=True).strip(),
     'source_status': subprocess.check_output(['git','-C',source,'status','--porcelain'],text=True),

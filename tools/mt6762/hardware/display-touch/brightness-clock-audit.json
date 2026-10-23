@@ -87,7 +87,7 @@
         "0xffffff80087f964c",
         "0xffffff80087f97d0"
       ],
-      "native_implementation": "not provided; parent clocks, output pins, domain ownership and power-state prerequisites remain unverified"
+      "native_implementation": "bsd/dev/mt6762_display.c implements guarded inherited-state duty/enable/commit only; portable sequence and tests in mt6762_display_core.h/test_display_core.c. No physical validation or clock/power initialization."
     }
   },
   "clocks": {

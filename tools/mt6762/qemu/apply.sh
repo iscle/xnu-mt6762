@@ -4,7 +4,7 @@ set -euo pipefail
 HERE=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 DEST=${1:?Usage: apply.sh NEW_QEMU_DIRECTORY}
 UPSTREAM=b6c4b7e86dec12d07f5cac65265b986d38ee9002
-EXPECTED_TREE=4e5d318d6b373e56f1df95ac66e8ae19ef6b7464
+EXPECTED_TREE=709de6edab094b6df40b37a5569b27a8f99a03eb
 [[ ! -e "$DEST" ]] || { echo "Destination already exists: $DEST" >&2; exit 1; }
 (cd "$HERE" && sha256sum -c SHA256SUMS)
 mkdir -p "$DEST"

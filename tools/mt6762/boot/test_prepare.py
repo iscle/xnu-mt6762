@@ -42,6 +42,18 @@ class BootVideo(ctypes.LittleEndianStructure):
     _fields_ = [(name, ctypes.c_uint64) for name in ('base', 'display', 'rowBytes', 'width', 'height', 'depth')]
 
 
+class TopologyTests(unittest.TestCase):
+    def test_eight_a53_affinities_and_single_boot_cpu(self):
+        tree, _ = parse_adt(p.make_adt(bytes(64), cpus=8))
+        cpus = next(n for n in tree['children'] if n['name'] == b'cpus\0')['children']
+        self.assertEqual([struct.unpack('<I', n['reg'])[0] for n in cpus],
+                         [0, 1, 2, 3, 0x100, 0x101, 0x102, 0x103])
+        self.assertEqual([n['state'] for n in cpus], [b'running\0'] + [b'stopped\0']*7)
+        self.assertEqual([struct.unpack('<I', n['cluster-id'])[0] for n in cpus], [0]*4 + [1]*4)
+        for count in (0, 9):
+            with self.assertRaises(ValueError): p.make_adt(bytes(64), cpus=count)
+
+
 class BootArgs(ctypes.LittleEndianStructure):
     _fields_ = [('revision', ctypes.c_uint16), ('version', ctypes.c_uint16),
                 ('virtBase', ctypes.c_uint64), ('physBase', ctypes.c_uint64),
@@ -53,6 +65,44 @@ class BootArgs(ctypes.LittleEndianStructure):
 
 
 class PrepareTests(unittest.TestCase):
+    def test_power_handoff_is_explicit_and_does_not_grant_charge_enable(self):
+        for enabled in (False, True):
+            tree, _ = parse_adt(p.make_adt(bytes(64), native_lab_i2c=True, native_lab_power=enabled))
+            chosen = next(n for n in tree['children'] if n['name'] == b'chosen\0')
+            handoff = next(n for n in chosen['children'] if n['name'] == b'mt6762-handoff\0')
+            for name in ('pwrap-verified', 'adc-verified', 'keypad-verified'):
+                if enabled:
+                    self.assertEqual(struct.unpack('<I', handoff[name])[0], 1)
+                else:
+                    self.assertNotIn(name, handoff)
+            for name in ('charger-enable', 'battery-calibrated', 'sspm-mailbox-owned', 'display-verified'):
+                self.assertNotIn(name, handoff)
+        with self.assertRaises(ValueError):
+            p.make_adt(bytes(64), native_lab_power=True)
+
+    def test_native_display_handoff_uses_reserved_buffer(self):
+        fb = dict(addr=0x48000000, size=0x144000)
+        tree, _ = parse_adt(p.make_adt(bytes(64), framebuffer=True,
+                           native_lab_i2c=True, native_lab_display=fb))
+        chosen = next(n for n in tree['children'] if n['name'] == b'chosen\0')
+        handoff = next(n for n in chosen['children'] if n['name'] == b'mt6762-handoff\0')
+        self.assertEqual(struct.unpack('<Q', handoff['fb-phys'])[0], fb['addr'])
+        self.assertEqual(handoff['fb-reserved-base'], handoff['fb-phys'])
+        self.assertEqual(struct.unpack('<Q', handoff['fb-size'])[0], fb['size'])
+        self.assertEqual(struct.unpack('<I', handoff['brightness-verified'])[0], 1)
+        for bad in [dict(addr=0x48000001, size=0x144000), dict(addr=0xffff0000, size=0x144000)]:
+            with self.assertRaises(ValueError):
+                p.make_adt(bytes(64), framebuffer=True, native_lab_i2c=True, native_lab_display=bad)
+        with self.assertRaises(ValueError):
+            p.make_adt(bytes(64), native_lab_display=fb)
+
+    def test_sspm_handoff_is_explicit(self):
+        tree, _ = parse_adt(p.make_adt(bytes(64), native_lab_i2c=True, native_lab_sspm=True))
+        chosen = next(n for n in tree['children'] if n['name'] == b'chosen\0')
+        handoff = next(n for n in chosen['children'] if n['name'] == b'mt6762-handoff\0')
+        self.assertEqual(struct.unpack('<I', handoff['sspm-mailbox-owned'])[0], 1)
+        with self.assertRaises(ValueError): p.make_adt(bytes(64), native_lab_sspm=True)
+
     def test_valid_macho(self):
         m = p.parse_macho(fixture())
         self.assertEqual(m['entry'], p.VIRT + 0x3004200)
@@ -126,6 +176,21 @@ class PrepareTests(unittest.TestCase):
         memory = next(n for n in chosen['children'] if n['name'] == b'memory-map\0')
         self.assertEqual(memory['RAMDisk'], struct.pack('<QQ', 0x45000000, 0x2000000))
         self.assertEqual(memory['RAMDisk1'], struct.pack('<QQ', 0x49000000, 0x4000000))
+
+    def test_native_lab_handoff_is_opt_in_and_has_no_unmodeled_claims(self):
+        for enabled in (False, True):
+            tree, _ = parse_adt(p.make_adt(bytes(64), native_lab_i2c=enabled))
+            chosen = next(n for n in tree['children'] if n['name'] == b'chosen\0')
+            children = {n['name']: n for n in chosen['children']}
+            self.assertEqual(b'mt6762-handoff\0' in children, enabled)
+            if enabled:
+                handoff = children[b'mt6762-handoff\0']
+                self.assertEqual(handoff['version'], struct.pack('<I', 1))
+                self.assertEqual(handoff['lab-fixture'], struct.pack('<I', 1))
+                self.assertEqual(handoff['i2c-parent-hz'], struct.pack('<I', 26000000))
+                self.assertEqual(handoff['touch-address'], struct.pack('<I', 0x3b))
+                for unmodeled in ('display-verified', 'pwrap-verified', 'adc-verified', 'keypad-verified'):
+                    self.assertNotIn(unmodeled, handoff)
 
     def test_synthetic_framebuffer(self):
         args = BootArgs.from_buffer_copy(p.boot_args(0x44000000, 32, 0x45000000, '', 0x44800000))

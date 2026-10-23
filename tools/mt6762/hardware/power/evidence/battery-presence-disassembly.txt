@@ -1,0 +1,59 @@
+
+/home/iscle/mt6762-ios-port/emulator/stock.elf:	file format elf64-littleaarch64
+
+Disassembly of section .kernel:
+
+ffffff8008a87464 <battery_exist_get>:
+ffffff8008a87464: d100c3ff     	sub	sp, sp, #0x30
+ffffff8008a87468: a9017bfd     	stp	x29, x30, [sp, #0x10]
+ffffff8008a8746c: a9024ff4     	stp	x20, x19, [sp, #0x20]
+ffffff8008a87470: 910043fd     	add	x29, sp, #0x10
+ffffff8008a87474: d00067a8     	adrp	x8, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008a87478: f9458508     	ldr	x8, [x8, #0xb08]
+ffffff8008a8747c: aa0203f4     	mov	x20, x2
+ffffff8008a87480: aa0003f3     	mov	x19, x0
+ffffff8008a87484: f90007e8     	str	x8, [sp, #0x8]
+ffffff8008a87488: 97d85ec5     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a8748c: f9400660     	ldr	x0, [x19, #0x8]
+ffffff8008a87490: 910013e2     	add	x2, sp, #0x4
+ffffff8008a87494: 5281c101     	mov	w1, #0xe08      // =3592
+ffffff8008a87498: 97ef4301     	bl	0xffffff800865809c <regmap_read>
+ffffff8008a8749c: b94007e8     	ldr	w8, [sp, #0x4]
+ffffff8008a874a0: 53017d09     	lsr	w9, w8, #1
+ffffff8008a874a4: 53010508     	ubfx	w8, w8, #1, #1
+ffffff8008a874a8: b90007e8     	str	w8, [sp, #0x4]
+ffffff8008a874ac: 37000089     	tbnz	w9, #0x0, 0xffffff8008a874bc <battery_exist_get+0x58>
+ffffff8008a874b0: 52800028     	mov	w8, #0x1        // =1
+ffffff8008a874b4: b9000288     	str	w8, [x20]
+ffffff8008a874b8: 14000015     	b	0xffffff8008a8750c <battery_exist_get+0xa8>
+ffffff8008a874bc: b900029f     	str	wzr, [x20]
+ffffff8008a874c0: f9400660     	ldr	x0, [x19, #0x8]
+ffffff8008a874c4: 52822941     	mov	w1, #0x114a     // =4426
+ffffff8008a874c8: 52800102     	mov	w2, #0x8        // =8
+ffffff8008a874cc: 52800103     	mov	w3, #0x8        // =8
+ffffff8008a874d0: aa1f03e4     	mov	x4, xzr
+ffffff8008a874d4: 2a1f03e5     	mov	w5, wzr
+ffffff8008a874d8: 2a1f03e6     	mov	w6, wzr
+ffffff8008a874dc: 97ef40f5     	bl	0xffffff80086578b0 <regmap_update_bits_base>
+ffffff8008a874e0: 52912b00     	mov	w0, #0x8958     // =35160
+ffffff8008a874e4: 72a00820     	movk	w0, #0x41, lsl #16
+ffffff8008a874e8: 9412441e     	bl	0xffffff8008f18560 <__const_udelay>
+ffffff8008a874ec: f9400660     	ldr	x0, [x19, #0x8]
+ffffff8008a874f0: 52822941     	mov	w1, #0x114a     // =4426
+ffffff8008a874f4: 52800102     	mov	w2, #0x8        // =8
+ffffff8008a874f8: 2a1f03e3     	mov	w3, wzr
+ffffff8008a874fc: aa1f03e4     	mov	x4, xzr
+ffffff8008a87500: 2a1f03e5     	mov	w5, wzr
+ffffff8008a87504: 2a1f03e6     	mov	w6, wzr
+ffffff8008a87508: 97ef40ea     	bl	0xffffff80086578b0 <regmap_update_bits_base>
+ffffff8008a8750c: d00067a9     	adrp	x9, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008a87510: f94007e8     	ldr	x8, [sp, #0x8]
+ffffff8008a87514: f9458529     	ldr	x9, [x9, #0xb08]
+ffffff8008a87518: eb08013f     	cmp	x9, x8
+ffffff8008a8751c: 540000c1     	b.ne	0xffffff8008a87534 <battery_exist_get+0xd0>
+ffffff8008a87520: a9424ff4     	ldp	x20, x19, [sp, #0x20]
+ffffff8008a87524: a9417bfd     	ldp	x29, x30, [sp, #0x10]
+ffffff8008a87528: 2a1f03e0     	mov	w0, wzr
+ffffff8008a8752c: 9100c3ff     	add	sp, sp, #0x30
+ffffff8008a87530: d65f03c0     	ret
+ffffff8008a87534: 97d8b849     	bl	0xffffff80080b5658 <__stack_chk_fail>

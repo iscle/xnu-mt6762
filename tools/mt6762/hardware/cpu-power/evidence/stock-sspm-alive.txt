@@ -1,0 +1,55 @@
+
+/home/iscle/mt6762-ios-port/emulator/stock.elf:	file format elf64-littleaarch64
+
+Disassembly of section .kernel:
+
+ffffff8008809d64 <sspm_alive_show>:
+ffffff8008809d64: d10103ff     	sub	sp, sp, #0x40
+ffffff8008809d68: a9027bfd     	stp	x29, x30, [sp, #0x20]
+ffffff8008809d6c: f9001bf3     	str	x19, [sp, #0x30]
+ffffff8008809d70: 910083fd     	add	x29, sp, #0x20
+ffffff8008809d74: 90007ba8     	adrp	x8, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008809d78: f9458508     	ldr	x8, [x8, #0xb08]
+ffffff8008809d7c: aa0203f3     	mov	x19, x2
+ffffff8008809d80: f81f83a8     	stur	x8, [x29, #-0x8]
+ffffff8008809d84: 97e25486     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008809d88: 529bd5a8     	mov	w8, #0xdead     // =57005
+ffffff8008809d8c: 910023e2     	add	x2, sp, #0x8
+ffffff8008809d90: 910013e4     	add	x4, sp, #0x4
+ffffff8008809d94: 52800063     	mov	w3, #0x3        // =3
+ffffff8008809d98: 52800025     	mov	w5, #0x1        // =1
+ffffff8008809d9c: 2a1f03e0     	mov	w0, wzr
+ffffff8008809da0: 2a1f03e1     	mov	w1, wzr
+ffffff8008809da4: 2900a3ff     	stp	wzr, w8, [sp, #0x4]
+ffffff8008809da8: 94000341     	bl	0xffffff800880aaac <sspm_ipi_send_sync>
+ffffff8008809dac: 34000100     	cbz	w0, 0xffffff8008809dcc <sspm_alive_show+0x68>
+ffffff8008809db0: d00067c2     	adrp	x2, 0xffffff8009503000 <f_midi_shortname+0x411b6>
+ffffff8008809db4: 2a0003e3     	mov	w3, w0
+ffffff8008809db8: 91280842     	add	x2, x2, #0xa02
+ffffff8008809dbc: 52820001     	mov	w1, #0x1000     // =4096
+ffffff8008809dc0: aa1303e0     	mov	x0, x19
+ffffff8008809dc4: 941c7b72     	bl	0xffffff8008f28b8c <snprintf>
+ffffff8008809dc8: 1400000d     	b	0xffffff8008809dfc <sspm_alive_show+0x98>
+ffffff8008809dcc: b94007e8     	ldr	w8, [sp, #0x4]
+ffffff8008809dd0: 90006989     	adrp	x9, 0xffffff8009539000 <f_midi_longname+0x18119>
+ffffff8008809dd4: d0005eca     	adrp	x10, 0xffffff80093e3000 <decpair+0x29cbd0>
+ffffff8008809dd8: 9129b129     	add	x9, x9, #0xa6c
+ffffff8008809ddc: 913d6d4a     	add	x10, x10, #0xf5b
+ffffff8008809de0: 7100011f     	cmp	w8, #0x0
+ffffff8008809de4: 90006a22     	adrp	x2, 0xffffff800954d000 <crypto_set_driver_name.suffix+0xbfb3>
+ffffff8008809de8: 9a890143     	csel	x3, x10, x9, eq
+ffffff8008809dec: 910bbc42     	add	x2, x2, #0x2ef
+ffffff8008809df0: 52820001     	mov	w1, #0x1000     // =4096
+ffffff8008809df4: aa1303e0     	mov	x0, x19
+ffffff8008809df8: 941c7b65     	bl	0xffffff8008f28b8c <snprintf>
+ffffff8008809dfc: 90007ba9     	adrp	x9, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008809e00: f85f83a8     	ldur	x8, [x29, #-0x8]
+ffffff8008809e04: f9458529     	ldr	x9, [x9, #0xb08]
+ffffff8008809e08: eb08013f     	cmp	x9, x8
+ffffff8008809e0c: 540000c1     	b.ne	0xffffff8008809e24 <sspm_alive_show+0xc0>
+ffffff8008809e10: f9401bf3     	ldr	x19, [sp, #0x30]
+ffffff8008809e14: a9427bfd     	ldp	x29, x30, [sp, #0x20]
+ffffff8008809e18: 93407c00     	sxtw	x0, w0
+ffffff8008809e1c: 910103ff     	add	sp, sp, #0x40
+ffffff8008809e20: d65f03c0     	ret
+ffffff8008809e24: 97e2ae0d     	bl	0xffffff80080b5658 <__stack_chk_fail>

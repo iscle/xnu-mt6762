@@ -1,0 +1,23 @@
+{
+  "source": "expdb.bin",
+  "sha256": "6675a9ae0eead546971136c2244be082a137f8b0b17ee5b5d5bc0ba98fce5f86",
+  "records": [
+    {
+      "offset": "0x1203d62",
+      "text": "mblock_alloc_range: start: 0x000000007F700000, sz: 0x00000000000C0000 lower_bound: 0x0000000000000000 limit: 0x0000000080000000 map:0 name:SSPM-reserved align: 0x0000000000010000"
+    },
+    {
+      "offset": "0x129b361",
+      "text": "mblock_alloc_range: start: 0x000000007F700000, sz: 0x00000000000C0000 lower_bound: 0x0000000000000000 limit: 0x0000000080000000 map:0 name:SSPM-reserved align: 0x0000000000010000"
+    },
+    {
+      "offset": "0x120f6fd",
+      "text": "mblock_reserve-R[9].start: 0x7f700000, size: 0xc0000 map:0 name:SSPM-reserved"
+    },
+    {
+      "offset": "0x12a6a68",
+      "text": "mblock_reserve-R[9].start: 0x7f700000, size: 0xc0000 map:0 name:SSPM-reserved"
+    }
+  ],
+  "scope": "Prior LK boot reservation only, distinct from dynamically allocated Linux sspm_share region"
+}

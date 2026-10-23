@@ -1,0 +1,1074 @@
+From 6c4cfc34f2c08da2bb709be5ba8a3224152273bf Mon Sep 17 00:00:00 2001
+From: MT6762 local experiment <mt6762-build@localhost>
+Date: Fri, 23 Oct 2026 23:48:05 +0200
+Subject: [PATCH] arm: add opt-in power and SSPM laboratory fixtures
+
+AI-assisted local experiment, not intended for upstream submission. Adds timed synthetic WACS2/ADC, keypad level/fault tests, and bounded PLATFORM mailbox response fixtures. No physical battery, charging safety, CPU-DVFS, SSPM firmware or phone compatibility is claimed.
+---
+ docs/system/arm/mt6762.rst        |  32 +++++
+ hw/arm/meson.build                |   2 +-
+ hw/arm/mt6762.c                   | 149 ++++++++++++++++++++++
+ hw/arm/mt6762_lab_power.c         | 202 ++++++++++++++++++++++++++++++
+ hw/misc/meson.build               |   1 +
+ hw/misc/mt6762_sspm_lab.c         | 165 ++++++++++++++++++++++++
+ include/hw/arm/mt6762_lab_power.h |  21 ++++
+ include/hw/misc/mt6762_sspm_lab.h |  20 +++
+ tests/mt6762/test_lab_power.py    | 160 +++++++++++++++++++++++
+ tests/mt6762/test_lab_sspm.py     | 194 ++++++++++++++++++++++++++++
+ 10 files changed, 945 insertions(+), 1 deletion(-)
+ create mode 100644 hw/arm/mt6762_lab_power.c
+ create mode 100644 hw/misc/mt6762_sspm_lab.c
+ create mode 100644 include/hw/arm/mt6762_lab_power.h
+ create mode 100644 include/hw/misc/mt6762_sspm_lab.h
+ create mode 100644 tests/mt6762/test_lab_power.py
+ create mode 100644 tests/mt6762/test_lab_sspm.py
+
+diff --git a/docs/system/arm/mt6762.rst b/docs/system/arm/mt6762.rst
+index 3e64607..f2e5bea 100644
+--- a/docs/system/arm/mt6762.rst
++++ b/docs/system/arm/mt6762.rst
+@@ -174,3 +174,35 @@ Run ``python3 tests/mt6762/test_lab_display.py --qemu build/qemu-system-aarch64
+ readback faults and rejected pipeline-write tests. Native XNU integration
+ uses the separately packaged ``prepare.py --native-lab-display`` option;
+ its assertions must never be copied into a real phone's loader handoff.
++
++Opt-in power and mailbox laboratories
++------------------------------------
++
++``lab-power=on`` independently adds synthetic PWRAP WACS2 and keypad MMIO.
++PWRAP transactions follow a timed idle/busy/read-valid/clear sequence. The
++only writable PMIC registers are the two ADC request bits; unknown writes
++are rejected. Fixed, explicitly synthetic battery and thermistor conversions
++become ready after virtual-time delays. No battery physics, calibration,
++charging safety, fuel gauge, rail management or real keys are simulated.
++``lab-key-mask`` accepts bits0/1/2 for power/volume-up/volume-down levels.
++``lab-power-fault`` supports ``none``, ``stall``, ``init-loss``, ``bad-id``,
++``adc-timeout``, ``adc-rail`` and ``keypad-disabled``. Read-only
++``lab-power-state`` reports requests, completions, clears and rejected writes.
++A stalled transaction does not recover just because its fault is removed.
++
++``lab-sspm=on`` adds only the mailbox0 data/control register interface.
++The exact PLATFORM ``0xdead,0,0`` liveness command receives a synthetic
++response; CPU-DVFS commands remain unsupported and receive no success ACK.
++W1C acknowledgement preserves unrelated bits. ``lab-sspm-fault`` supports
++``none``, ``timeout``, ``ack-stuck``, ``input-stuck``, ``stale-ack``,
++``stale-input``, ``dead`` and ``wrong-ack``. ``lab-sspm-state`` separately
++counts requests, responses and ACK clears and states ``dvfs_emulated=false``.
++The default board maps neither fixture. Enabling either one is immutable
++after initialization; their fault properties are dynamic for testing.
++
++Independent tests are ``tests/mt6762/test_lab_power.py`` and
++``tests/mt6762/test_lab_sspm.py`` with the same ``--qemu`` and ``--dtb``
++arguments as above. Native-loader options ``--native-lab-power`` and
++``--native-lab-sspm`` grant only the corresponding synthetic ownership and
++verification assertions. Their successful guest execution is distinct from
++real phone power, battery, buttons or SSPM firmware validation.
+diff --git a/hw/arm/meson.build b/hw/arm/meson.build
+index fb53a63..4a427e2 100644
+--- a/hw/arm/meson.build
++++ b/hw/arm/meson.build
+@@ -1,5 +1,5 @@
+ arm_common_ss = ss.source_set()
+-arm_common_ss.add(when: 'CONFIG_MT6762', if_true: files('mt6762.c', 'mt6762_lab_i2c.c', 'mt6762_lab_display.c'))
++arm_common_ss.add(when: 'CONFIG_MT6762', if_true: files('mt6762.c', 'mt6762_lab_i2c.c', 'mt6762_lab_display.c', 'mt6762_lab_power.c'))
+ arm_common_ss.add(when: 'CONFIG_ARM_VIRT', if_true: files('virt.c'))
+ arm_common_ss.add(when: 'CONFIG_ACPI', if_true: files('virt-acpi-build.c'))
+ arm_common_ss.add(when: 'CONFIG_DIGIC', if_true: files('digic_boards.c'))
+diff --git a/hw/arm/mt6762.c b/hw/arm/mt6762.c
+index 65258ff..36b4aff 100644
+--- a/hw/arm/mt6762.c
++++ b/hw/arm/mt6762.c
+@@ -24,6 +24,8 @@
+ #include "hw/arm/boot.h"
+ #include "hw/arm/mt6762_lab_i2c.h"
+ #include "hw/arm/mt6762_lab_display.h"
++#include "hw/arm/mt6762_lab_power.h"
++#include "hw/misc/mt6762_sspm_lab.h"
+ #include "hw/char/serial-mm.h"
+ #include "hw/intc/arm_gicv3_common.h"
+ #include "system/system.h"
+@@ -56,6 +58,13 @@ struct MT6762MachineState {
+     bool lab_display;
+     uint64_t lab_display_fb;
+     MT6762DisplayLab *display;
++    bool lab_sspm;
++    unsigned lab_sspm_fault;
++    MT6762SSPMLab *sspm;
++    bool lab_power;
++    unsigned lab_power_fault;
++    uint64_t lab_key_mask;
++    MT6762PowerLab *power;
+     MT6762I2CLab *lab;
+ };
+ 
+@@ -283,6 +292,15 @@ static void mt6762_init(MachineState *ms)
+                                                s->lab_display_fb);
+         mt6762_lab_display_configure(s->display, s->lab_display_fault);
+     }
++    if (s->lab_sspm) {
++        s->sspm = mt6762_sspm_lab_create(OBJECT(s), sysmem);
++        mt6762_sspm_lab_configure(s->sspm, s->lab_sspm_fault);
++    }
++    if (s->lab_power) {
++        s->power = mt6762_lab_power_create(OBJECT(s), sysmem);
++        mt6762_lab_power_configure(s->power, s->lab_power_fault);
++        mt6762_lab_power_set_keys(s->power, s->lab_key_mask);
++    }
+     s->initialized = true;
+ 
+     s->bootinfo.ram_size = ms->ram_size;
+@@ -415,6 +433,125 @@ static char *mt6762_get_display_state(Object *obj, Error **errp)
+     return mt6762_lab_display_state(MT6762_MACHINE(obj)->display);
+ }
+ 
++static bool mt6762_get_lab_sspm(Object *obj, Error **errp)
++{
++    return MT6762_MACHINE(obj)->lab_sspm;
++}
++
++static void mt6762_set_lab_sspm(Object *obj, bool value, Error **errp)
++{
++    MT6762MachineState *s = MT6762_MACHINE(obj);
++    if (s->initialized) {
++        error_setg(errp, "lab-sspm must be selected before initialization");
++        return;
++    }
++    s->lab_sspm = value;
++}
++
++static const char *const mt6762_sspm_fault_names[] = {
++    "none", "timeout", "ack-stuck", "input-stuck", "stale-ack", "stale-input",
++    "dead", "wrong-ack"
++};
++
++static char *mt6762_get_sspm_fault(Object *obj, Error **errp)
++{
++    return g_strdup(mt6762_sspm_fault_names[
++        MT6762_MACHINE(obj)->lab_sspm_fault]);
++}
++
++static void mt6762_set_sspm_fault(Object *obj, const char *value, Error **errp)
++{
++    MT6762MachineState *s = MT6762_MACHINE(obj);
++    unsigned i;
++    for (i = 0; i < ARRAY_SIZE(mt6762_sspm_fault_names); i++) {
++        if (!strcmp(value, mt6762_sspm_fault_names[i])) {
++            s->lab_sspm_fault = i;
++            if (s->sspm) {
++                mt6762_sspm_lab_configure(s->sspm, i);
++            }
++            return;
++        }
++    }
++    error_setg(errp, "unknown lab-sspm-fault");
++}
++
++static char *mt6762_get_sspm_state(Object *obj, Error **errp)
++{
++    return mt6762_sspm_lab_state(MT6762_MACHINE(obj)->sspm);
++}
++
++static bool mt6762_get_lab_power(Object *obj, Error **errp)
++{
++    return MT6762_MACHINE(obj)->lab_power;
++}
++
++static void mt6762_set_lab_power(Object *obj, bool value, Error **errp)
++{
++    MT6762MachineState *s = MT6762_MACHINE(obj);
++    if (s->initialized) {
++        error_setg(errp, "lab-power must be selected before initialization");
++        return;
++    }
++    s->lab_power = value;
++}
++
++static const char *const mt6762_power_fault_names[] = {
++    "none", "stall", "init-loss", "bad-id", "adc-timeout", "adc-rail",
++    "keypad-disabled"
++};
++
++static char *mt6762_get_power_fault(Object *obj, Error **errp)
++{
++    return g_strdup(mt6762_power_fault_names[
++        MT6762_MACHINE(obj)->lab_power_fault]);
++}
++
++static void mt6762_set_power_fault(Object *obj, const char *value, Error **errp)
++{
++    MT6762MachineState *s = MT6762_MACHINE(obj);
++    unsigned i;
++    for (i = 0; i < ARRAY_SIZE(mt6762_power_fault_names); i++) {
++        if (!strcmp(value, mt6762_power_fault_names[i])) {
++            s->lab_power_fault = i;
++            if (s->power) {
++                mt6762_lab_power_configure(s->power, i);
++            }
++            return;
++        }
++    }
++    error_setg(errp, "unknown lab-power-fault");
++}
++
++static char *mt6762_get_power_state(Object *obj, Error **errp)
++{
++    return mt6762_lab_power_state(MT6762_MACHINE(obj)->power);
++}
++
++static void mt6762_get_key_mask(Object *obj, Visitor *v, const char *name,
++                               void *opaque, Error **errp)
++{
++    uint64_t value = MT6762_MACHINE(obj)->lab_key_mask;
++    visit_type_uint64(v, name, &value, errp);
++}
++
++static void mt6762_set_key_mask(Object *obj, Visitor *v, const char *name,
++                               void *opaque, Error **errp)
++{
++    MT6762MachineState *s = MT6762_MACHINE(obj);
++    uint64_t value;
++    if (!visit_type_uint64(v, name, &value, errp)) {
++        return;
++    }
++    if (value > 7) {
++        error_setg(errp, "lab-key-mask must be 0..7");
++        return;
++    }
++    s->lab_key_mask = value;
++    if (s->power) {
++        mt6762_lab_power_set_keys(s->power, value);
++    }
++}
++
+ static void mt6762_class_init(ObjectClass *oc, const void *data)
+ {
+     MachineClass *mc = MACHINE_CLASS(oc);
+@@ -427,6 +564,18 @@ static void mt6762_class_init(ObjectClass *oc, const void *data)
+     mc->default_cpus = 8;
+     mc->no_floppy = 1;
+     mc->no_cdrom = 1;
++    object_class_property_add_bool(oc, "lab-power", mt6762_get_lab_power,
++                                   mt6762_set_lab_power);
++    object_class_property_add_str(oc, "lab-power-fault", mt6762_get_power_fault,
++                                  mt6762_set_power_fault);
++    object_class_property_add_str(oc, "lab-power-state", mt6762_get_power_state, NULL);
++    object_class_property_add(oc, "lab-key-mask", "uint64", mt6762_get_key_mask,
++                              mt6762_set_key_mask, NULL, NULL);
++    object_class_property_add_bool(oc, "lab-sspm", mt6762_get_lab_sspm,
++                                   mt6762_set_lab_sspm);
++    object_class_property_add_str(oc, "lab-sspm-fault", mt6762_get_sspm_fault,
++                                  mt6762_set_sspm_fault);
++    object_class_property_add_str(oc, "lab-sspm-state", mt6762_get_sspm_state, NULL);
+     object_class_property_add_bool(oc, "lab-display", mt6762_get_lab_display,
+                                    mt6762_set_lab_display);
+     object_class_property_add(oc, "lab-display-fb", "uint64",
+diff --git a/hw/arm/mt6762_lab_power.c b/hw/arm/mt6762_lab_power.c
+new file mode 100644
+index 0000000..3c9da69
+--- /dev/null
++++ b/hw/arm/mt6762_lab_power.c
+@@ -0,0 +1,202 @@
++/*
++ * SPDX-License-Identifier: GPL-2.0-or-later
++ * AI-assisted local experiment; not intended for upstream submission.
++ *
++ * Opt-in synthetic PWRAP WACS2/MT6357 ADC/keypad protocol fixture.
++ * Register addresses follow the supplied BSP and native consumer. Fixed ADC
++ * values, initial state and completion delays are test assumptions. This is
++ * not a PMIC electrical, charging, battery, interrupt or power-domain model.
++ * The only supported PMIC writes request ADC channels1 and3. No rail writes.
++ */
++#include "qemu/osdep.h"
++#include "qemu/log.h"
++#include "qemu/timer.h"
++#include "system/reset.h"
++#include "hw/arm/mt6762_lab_power.h"
++
++struct MT6762PowerLab {
++    MemoryRegion pwrap, keypad;
++    QEMUTimer *transaction, *adc[2];
++    unsigned fault, keys, fsm;
++    uint32_t command;
++    uint16_t data, adc_data[2];
++    uint64_t commands, reads, writes, rejected, clears, key_reads;
++    uint64_t adc_requests[2], adc_completions[2];
++};
++
++static void adc_complete(MT6762PowerLab *s, unsigned channel)
++{
++    if (s->fault == MT6762_POWER_FAULT_ADC_TIMEOUT ||
++        s->fault == MT6762_POWER_FAULT_INIT_LOSS) {
++        return;
++    }
++    s->adc_data[channel] = 0x8000 |
++        (s->fault == MT6762_POWER_FAULT_ADC_RAIL ? 0 :
++         channel == 0 ? 26700 : 1400);
++    s->adc_completions[channel]++;
++}
++static void adc0_complete(void *opaque) { adc_complete(opaque, 0); }
++static void adc1_complete(void *opaque) { adc_complete(opaque, 1); }
++
++static uint16_t pmic_read(MT6762PowerLab *s, uint16_t address)
++{
++    switch (address) {
++    case 0x0008:
++        return s->fault == MT6762_POWER_FAULT_BAD_ID ? 0x1234 : 0x5730;
++    case 0x0024:
++        return 4 | ((s->keys & 1) ? 0 : 2); /* VBUS present; power active-low */
++    case 0x0e08:
++        return 1; /* BATON detection enabled, battery present */
++    case 0x108a:
++        return s->adc_data[0];
++    case 0x108e:
++        return s->adc_data[1];
++    }
++    s->rejected++;
++    qemu_log_mask(LOG_UNIMP, "mt6762 power fixture unsupported PMIC read %#x\n",
++                  address);
++    return 0xffff;
++}
++static void pmic_write(MT6762PowerLab *s, uint16_t address, uint16_t data)
++{
++    if (address == 0x110e && (data == 2 || data == 8)) {
++        unsigned channel = data == 2 ? 0 : 1;
++        s->adc_data[channel] = 0;
++        s->adc_requests[channel]++;
++        timer_mod(s->adc[channel], qemu_clock_get_ns(QEMU_CLOCK_VIRTUAL) +
++                  (channel == 0 ? 1280000 : 80000));
++        return;
++    }
++    s->rejected++;
++    qemu_log_mask(LOG_GUEST_ERROR,
++                  "mt6762 power fixture rejects PMIC write %#x=%#x\n",
++                  address, data);
++}
++static void transaction_complete(void *opaque)
++{
++    MT6762PowerLab *s = opaque;
++    uint16_t address = (s->command >> 16) << 1;
++    if (s->fault == MT6762_POWER_FAULT_STALL ||
++        s->fault == MT6762_POWER_FAULT_INIT_LOSS) {
++        return;
++    }
++    if (s->command & 0x80000000u) {
++        pmic_write(s, address, s->command);
++        s->writes++;
++        s->fsm = 0;
++    } else {
++        s->data = pmic_read(s, address);
++        s->reads++;
++        s->fsm = 6;
++    }
++}
++static uint64_t pwrap_read(void *opaque, hwaddr offset, unsigned size)
++{
++    MT6762PowerLab *s = opaque;
++    if (offset == 0xc24) {
++        return (s->fault == MT6762_POWER_FAULT_INIT_LOSS ? 0 : 1u << 21) |
++               (s->fsm << 16) | s->data;
++    }
++    return 0;
++}
++static void pwrap_write(void *opaque, hwaddr offset, uint64_t value, unsigned size)
++{
++    MT6762PowerLab *s = opaque;
++    if (offset == 0xc28 && value == 1 && s->fsm == 6) {
++        s->fsm = 0;
++        s->data = 0;
++        s->clears++;
++        return;
++    }
++    if (offset == 0xc20 && s->fsm == 0 &&
++        s->fault != MT6762_POWER_FAULT_INIT_LOSS) {
++        s->command = value;
++        s->fsm = 2;
++        s->commands++;
++        timer_mod(s->transaction, qemu_clock_get_ns(QEMU_CLOCK_VIRTUAL) + 10000);
++        return;
++    }
++    s->rejected++;
++}
++static uint64_t keypad_read(void *opaque, hwaddr offset, unsigned size)
++{
++    MT6762PowerLab *s = opaque;
++    s->key_reads++;
++    if (offset == 0x24) {
++        return s->fault == MT6762_POWER_FAULT_KEYPAD_DISABLED ? 0 : 1;
++    }
++    if (offset == 4) {
++        return 0xffff & ~((s->keys & 2 ? 2 : 0) | (s->keys & 4 ? 1 : 0));
++    }
++    if (offset >= 8 && offset <= 0x14) {
++        return 0xffff;
++    }
++    return 0;
++}
++static void keypad_write(void *opaque, hwaddr offset, uint64_t value, unsigned size)
++{
++    MT6762PowerLab *s = opaque;
++    s->rejected++; /* No keypad setup or interrupt programming */
++}
++static const MemoryRegionOps pwrap_ops = {
++    .read = pwrap_read, .write = pwrap_write, .endianness = DEVICE_LITTLE_ENDIAN,
++    .valid = { .min_access_size = 4, .max_access_size = 4 },
++    .impl = { .min_access_size = 4, .max_access_size = 4 },
++};
++static const MemoryRegionOps keypad_ops = {
++    .read = keypad_read, .write = keypad_write, .endianness = DEVICE_LITTLE_ENDIAN,
++    .valid = { .min_access_size = 2, .max_access_size = 2 },
++    .impl = { .min_access_size = 2, .max_access_size = 2 },
++};
++static void power_reset(void *opaque)
++{
++    MT6762PowerLab *s = opaque;
++    timer_del(s->transaction);
++    for (unsigned i = 0; i < 2; i++) {
++        timer_del(s->adc[i]);
++        s->adc_data[i] = 0;
++        s->adc_requests[i] = s->adc_completions[i] = 0;
++    }
++    s->keys = s->fsm = s->command = s->data = 0;
++    s->commands = s->reads = s->writes = s->rejected = s->clears = s->key_reads = 0;
++}
++MT6762PowerLab *mt6762_lab_power_create(Object *owner, MemoryRegion *memory)
++{
++    MT6762PowerLab *s = g_new0(MT6762PowerLab, 1);
++    s->transaction = timer_new_ns(QEMU_CLOCK_VIRTUAL, transaction_complete, s);
++    s->adc[0] = timer_new_ns(QEMU_CLOCK_VIRTUAL, adc0_complete, s);
++    s->adc[1] = timer_new_ns(QEMU_CLOCK_VIRTUAL, adc1_complete, s);
++    memory_region_init_io(&s->pwrap, owner, &pwrap_ops, s,
++                          "mt6762-lab-pwrap", 0x1000);
++    memory_region_init_io(&s->keypad, owner, &keypad_ops, s,
++                          "mt6762-lab-keypad", 0x1000);
++    memory_region_add_subregion(memory, 0x1000d000, &s->pwrap);
++    memory_region_add_subregion(memory, 0x10010000, &s->keypad);
++    power_reset(s);
++    qemu_register_reset(power_reset, s);
++    return s;
++}
++void mt6762_lab_power_configure(MT6762PowerLab *s, unsigned fault)
++{
++    s->fault = fault < MT6762_POWER_FAULT_COUNT ? fault : MT6762_POWER_FAULT_NONE;
++}
++void mt6762_lab_power_set_keys(MT6762PowerLab *s, unsigned mask)
++{
++    s->keys = mask & 7;
++}
++char *mt6762_lab_power_state(MT6762PowerLab *s)
++{
++    if (!s) {
++        return g_strdup("{\"enabled\":false}");
++    }
++    return g_strdup_printf("{\"enabled\":true,\"synthetic\":true,"
++        "\"fault\":%u,\"key_mask\":%u,\"fsm\":%u,"
++        "\"commands\":%" PRIu64 ",\"reads\":%" PRIu64 ","
++        "\"writes\":%" PRIu64 ",\"rejected\":%" PRIu64 ","
++        "\"clears\":%" PRIu64 ",\"key_reads\":%" PRIu64 ","
++        "\"adc_requests\":[%" PRIu64 ",%" PRIu64 "],"
++        "\"adc_completions\":[%" PRIu64 ",%" PRIu64 "]}",
++        s->fault, s->keys, s->fsm, s->commands, s->reads, s->writes,
++        s->rejected, s->clears, s->key_reads, s->adc_requests[0],
++        s->adc_requests[1], s->adc_completions[0], s->adc_completions[1]);
++}
+diff --git a/hw/misc/meson.build b/hw/misc/meson.build
+index 8a94aba..c136ca8 100644
+--- a/hw/misc/meson.build
++++ b/hw/misc/meson.build
+@@ -1,3 +1,4 @@
++system_ss.add(when: 'CONFIG_MT6762', if_true: files('mt6762_sspm_lab.c'))
+ system_ss.add(when: 'CONFIG_APPLESMC', if_true: files('applesmc.c'))
+ 
+ system_ss.add(when: 'CONFIG_EDU', if_true: files('edu.c'))
+diff --git a/hw/misc/mt6762_sspm_lab.c b/hw/misc/mt6762_sspm_lab.c
+new file mode 100644
+index 0000000..34e8abf
+--- /dev/null
++++ b/hw/misc/mt6762_sspm_lab.c
+@@ -0,0 +1,165 @@
++/*
++ * SPDX-License-Identifier: GPL-2.0-or-later
++ * AI-assisted local experiment; not intended for upstream submission.
++ *
++ * Opt-in synthetic SSPM PLATFORM mailbox fixture. Stock DT and kernel define
++ * addresses, pin/slot layout and 0xDEAD liveness command. Immediate responses,
++ * fixed alive=1, and injected failures are test assumptions, not firmware.
++ * No SSPM instructions, CPU-DVFS commands, rails, clocks, notifications or
++ * IRQ delivery are emulated. Unknown commands receive no fabricated success.
++ */
++#include "qemu/osdep.h"
++#include "qemu/log.h"
++#include "hw/misc/mt6762_sspm_lab.h"
++#include "system/reset.h"
++
++typedef struct SSPMBlock {
++    MT6762SSPMLab *sspm;
++    MemoryRegion region;
++    bool control;
++} SSPMBlock;
++struct MT6762SSPMLab {
++    SSPMBlock data, control;
++    uint32_t words[64], in_irq, out_irq, last_command;
++    unsigned fault;
++    uint64_t reads, data_writes, control_writes, requests, responses;
++    uint64_t ack_clears, rejected_commands, rejected_writes;
++};
++
++static uint64_t sspm_read(void *opaque, hwaddr offset, unsigned size)
++{
++    SSPMBlock *block = opaque;
++    MT6762SSPMLab *s = block->sspm;
++    s->reads++;
++    if (!block->control) {
++        return s->words[offset / 4];
++    }
++    if (offset == 0) {
++        return s->in_irq |
++            (s->fault == MT6762_SSPM_FAULT_STALE_INPUT ? 1 : 0);
++    }
++    return s->out_irq |
++        (s->fault == MT6762_SSPM_FAULT_STALE_ACK ? 1 : 0);
++}
++
++static void platform_command(MT6762SSPMLab *s)
++{
++    s->requests++;
++    s->last_command = s->words[0];
++    if (s->words[0] != 0xdead || s->words[1] || s->words[2]) {
++        s->rejected_commands++;
++        qemu_log_mask(LOG_GUEST_ERROR,
++            "mt6762 lab SSPM: unsupported PLATFORM command %#x\n", s->words[0]);
++        return;
++    }
++    if (s->fault == MT6762_SSPM_FAULT_TIMEOUT) {
++        return;
++    }
++    s->words[0] = s->fault == MT6762_SSPM_FAULT_DEAD ? 0 : 1;
++    if (s->fault != MT6762_SSPM_FAULT_INPUT_STUCK) {
++        s->in_irq &= ~1u;
++    }
++    s->out_irq |= s->fault == MT6762_SSPM_FAULT_WRONG_ACK ? 2 : 1;
++    s->responses++;
++}
++
++static void sspm_write(void *opaque, hwaddr offset, uint64_t value,
++                       unsigned size)
++{
++    SSPMBlock *block = opaque;
++    MT6762SSPMLab *s = block->sspm;
++    uint32_t bits = value;
++    if (!block->control) {
++        s->words[offset / 4] = bits;
++        s->data_writes++;
++        return;
++    }
++    s->control_writes++;
++    if (offset == 4) {
++        s->ack_clears++;
++        if (s->fault != MT6762_SSPM_FAULT_ACK_STUCK) {
++            s->out_irq &= ~bits; /* W1C: preserve every other channel. */
++        }
++        return;
++    }
++    if (bits & ~3u) {
++        s->rejected_writes++;
++        qemu_log_mask(LOG_UNIMP, "mt6762 lab SSPM: unsupported doorbell %#x\n",
++                      bits);
++        return;
++    }
++    uint32_t pending = s->in_irq | s->out_irq;
++    if (s->fault == MT6762_SSPM_FAULT_STALE_ACK ||
++        s->fault == MT6762_SSPM_FAULT_STALE_INPUT) {
++        pending |= 1;
++    }
++    if (bits & pending) {
++        s->rejected_writes++;
++        return;
++    }
++    s->in_irq |= bits;
++    if (bits & 1) {
++        platform_command(s);
++    }
++    if (bits & 2) {
++        /* The CPU mailbox layout is present, but no DVFS firmware exists. */
++        s->rejected_commands++;
++        qemu_log_mask(LOG_UNIMP,
++            "mt6762 lab SSPM: CPU-DVFS command %#x is not emulated\n", s->words[3]);
++    }
++}
++static const MemoryRegionOps sspm_ops = {
++    .read = sspm_read,
++    .write = sspm_write,
++    .endianness = DEVICE_LITTLE_ENDIAN,
++    .valid = { .min_access_size = 4, .max_access_size = 4, .unaligned = false },
++    .impl = { .min_access_size = 4, .max_access_size = 4 },
++};
++static void sspm_reset(void *opaque)
++{
++    MT6762SSPMLab *s = opaque;
++    memset(s->words, 0, sizeof(s->words));
++    s->in_irq = s->out_irq = s->last_command = 0;
++    s->reads = s->data_writes = s->control_writes = 0;
++    s->requests = s->responses = s->ack_clears = 0;
++    s->rejected_commands = s->rejected_writes = 0;
++}
++void mt6762_sspm_lab_configure(MT6762SSPMLab *s, unsigned fault)
++{
++    assert(fault < MT6762_SSPM_FAULT_COUNT);
++    s->fault = fault;
++}
++char *mt6762_sspm_lab_state(MT6762SSPMLab *s)
++{
++    if (!s) {
++        return g_strdup("{\"enabled\":false}");
++    }
++    return g_strdup_printf("{\"enabled\":true,\"synthetic\":true,"
++        "\"dvfs_emulated\":false,\"fault\":%u,\"in_irq\":%u,\"out_irq\":%u,"
++        "\"last_command\":%u,\"requests\":%" PRIu64 ",\"responses\":%" PRIu64
++        ",\"ack_clears\":%" PRIu64 ",\"reads\":%" PRIu64
++        ",\"data_writes\":%" PRIu64 ",\"control_writes\":%" PRIu64
++        ",\"rejected_commands\":%" PRIu64 ",\"rejected_writes\":%" PRIu64 "}",
++        s->fault,
++        s->in_irq | (s->fault == MT6762_SSPM_FAULT_STALE_INPUT ? 1 : 0),
++        s->out_irq | (s->fault == MT6762_SSPM_FAULT_STALE_ACK ? 1 : 0),
++        s->last_command, s->requests,
++        s->responses, s->ack_clears, s->reads, s->data_writes,
++        s->control_writes, s->rejected_commands, s->rejected_writes);
++}
++MT6762SSPMLab *mt6762_sspm_lab_create(Object *owner, MemoryRegion *memory)
++{
++    MT6762SSPMLab *s = g_new0(MT6762SSPMLab, 1);
++    s->data.sspm = s;
++    s->control.sspm = s;
++    s->control.control = true;
++    memory_region_init_io(&s->data.region, owner, &sspm_ops, &s->data,
++                          "mt6762.lab-sspm-data", 0x100);
++    memory_region_init_io(&s->control.region, owner, &sspm_ops, &s->control,
++                          "mt6762.lab-sspm-control", 8);
++    memory_region_add_subregion(memory, 0x10450000, &s->data.region);
++    memory_region_add_subregion(memory, 0x10451000, &s->control.region);
++    sspm_reset(s);
++    qemu_register_reset(sspm_reset, s);
++    return s;
++}
+diff --git a/include/hw/arm/mt6762_lab_power.h b/include/hw/arm/mt6762_lab_power.h
+new file mode 100644
+index 0000000..6b542de
+--- /dev/null
++++ b/include/hw/arm/mt6762_lab_power.h
+@@ -0,0 +1,21 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++#ifndef HW_ARM_MT6762_LAB_POWER_H
++#define HW_ARM_MT6762_LAB_POWER_H
++#include "system/memory.h"
++typedef struct MT6762PowerLab MT6762PowerLab;
++enum {
++    MT6762_POWER_FAULT_NONE,
++    MT6762_POWER_FAULT_STALL,
++    MT6762_POWER_FAULT_INIT_LOSS,
++    MT6762_POWER_FAULT_BAD_ID,
++    MT6762_POWER_FAULT_ADC_TIMEOUT,
++    MT6762_POWER_FAULT_ADC_RAIL,
++    MT6762_POWER_FAULT_KEYPAD_DISABLED,
++    MT6762_POWER_FAULT_COUNT,
++};
++MT6762PowerLab *mt6762_lab_power_create(Object *owner, MemoryRegion *memory);
++void mt6762_lab_power_configure(MT6762PowerLab *s, unsigned fault);
++/* Bits0/1/2: power/volume-up/volume-down. Synthetic levels, not host keys. */
++void mt6762_lab_power_set_keys(MT6762PowerLab *s, unsigned mask);
++char *mt6762_lab_power_state(MT6762PowerLab *s);
++#endif
+diff --git a/include/hw/misc/mt6762_sspm_lab.h b/include/hw/misc/mt6762_sspm_lab.h
+new file mode 100644
+index 0000000..ecba2ca
+--- /dev/null
++++ b/include/hw/misc/mt6762_sspm_lab.h
+@@ -0,0 +1,20 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++#ifndef HW_MISC_MT6762_SSPM_LAB_H
++#define HW_MISC_MT6762_SSPM_LAB_H
++#include "system/memory.h"
++typedef struct MT6762SSPMLab MT6762SSPMLab;
++enum {
++    MT6762_SSPM_FAULT_NONE,
++    MT6762_SSPM_FAULT_TIMEOUT,
++    MT6762_SSPM_FAULT_ACK_STUCK,
++    MT6762_SSPM_FAULT_INPUT_STUCK,
++    MT6762_SSPM_FAULT_STALE_ACK,
++    MT6762_SSPM_FAULT_STALE_INPUT,
++    MT6762_SSPM_FAULT_DEAD,
++    MT6762_SSPM_FAULT_WRONG_ACK,
++    MT6762_SSPM_FAULT_COUNT,
++};
++MT6762SSPMLab *mt6762_sspm_lab_create(Object *owner, MemoryRegion *memory);
++void mt6762_sspm_lab_configure(MT6762SSPMLab *s, unsigned fault);
++char *mt6762_sspm_lab_state(MT6762SSPMLab *s);
++#endif
+diff --git a/tests/mt6762/test_lab_power.py b/tests/mt6762/test_lab_power.py
+new file mode 100644
+index 0000000..c3ae7c0
+--- /dev/null
++++ b/tests/mt6762/test_lab_power.py
+@@ -0,0 +1,160 @@
++#!/usr/bin/env python3
++"""Test only opt-in synthetic PWRAP/ADC/keypad MMIO; no phone access.
++
++The qtest accelerator executes no guest instructions. Virtual-time stepping tests WACS2 busy/read-valid/clear,
++conversion-ready delays, faults, command restrictions and active-low keys.
++Native-worker integration is a separate full-kernel acceptance run.
++"""
++import argparse
++import json
++from pathlib import Path
++import subprocess
++import tempfile
++from test_lab_display import Lab
++
++
++class PowerLab(Lab):
++    def __init__(self, qemu, dtb, directory, enabled=True):
++        directory = Path(directory)
++        self.log = (directory / 'qemu.log').open('w+')
++        self.qmp_path = directory / 'qmp.sock'
++        self.test_path = directory / 'qtest.sock'
++        self.process = subprocess.Popen([
++            str(qemu), '-M', 'mt6762' + (',lab-power=on' if enabled else ''),
++            '-accel', 'qtest', '-cpu', 'cortex-a53', '-m', '512M', '-smp', '1',
++            '-dtb', str(dtb), '-display', 'none', '-serial', 'null',
++            '-monitor', 'none', '-qmp', f'unix:{self.qmp_path},server=on,wait=off',
++            '-qtest', f'unix:{self.test_path},server=on,wait=off',
++        ], stdout=self.log, stderr=self.log)
++        self.sockets = []
++        try:
++            self.qmp = self.connect(self.qmp_path)
++            self.test = self.connect(self.test_path)
++            assert 'QMP' in json.loads(self.qmp.readline())
++            self.command('qmp_capabilities')
++        except BaseException:
++            self.close()
++            raise
++
++    def state(self):
++        return json.loads(self.command('qom-get', path='/machine', property='lab-power-state'))
++
++    def fault(self, name):
++        self.command('qom-set', path='/machine', property='lab-power-fault', value=name)
++
++    def keys(self, mask):
++        self.command('qom-set', path='/machine', property='lab-key-mask', value=mask)
++
++    def step(self, ns):
++        self.access(f'clock_step {ns}')
++
++    def status(self):
++        return self.read(0x1000dc24)
++
++    def pmic(self, address, value=None):
++        assert address % 2 == 0
++        assert (self.status() >> 16) & 7 == 0
++        command = (address >> 1) << 16
++        if value is not None:
++            command |= 0x80000000 | value
++        self.write(0x1000dc20, command)
++        assert (self.status() >> 16) & 7 == 2
++        self.step(10000)
++        if value is not None:
++            assert (self.status() >> 16) & 7 == 0
++            return
++        assert (self.status() >> 16) & 7 == 6
++        result = self.status() & 0xffff
++        self.write(0x1000dc28, 1)
++        assert (self.status() >> 16) & 7 == 0
++        return result
++
++    def keymem(self):
++        return int(self.access('readw 0x10010004'), 0)
++
++
++def exercise(lab):
++    assert lab.status() == 1 << 21
++    assert lab.pmic(8) == 0x5730
++    assert lab.pmic(0x24) == 6 and lab.pmic(0xe08) == 1
++    assert lab.keymem() == 0xffff
++    for mask in range(8):
++        lab.keys(mask)
++        assert bool(lab.pmic(0x24) & 2) == (not bool(mask & 1))
++        mem = lab.keymem()
++        assert bool(mem & 2) == (not bool(mask & 2))
++        assert bool(mem & 1) == (not bool(mask & 4))
++    lab.keys(0)
++    # Ready must remain clear before the conversion delay.
++    lab.pmic(0x110e, 2)
++    assert lab.pmic(0x108a) == 0
++    lab.step(1280000)
++    raw = lab.pmic(0x108a)
++    assert raw == 0x8000 | 26700
++    assert ((raw & 0x7fff) * 3 * 1800) >> 15 == 4400
++    lab.pmic(0x110e, 8)
++    assert lab.pmic(0x108e) == 0
++    lab.step(80000)
++    raw = lab.pmic(0x108e)
++    assert raw == 0x8000 | 1400
++    assert ((raw & 0xfff) * 1800) >> 12 == 615
++    # No fabricated PMIC programming beyond the two conversion requests.
++    before = lab.state()['rejected']
++    lab.pmic(0x110e, 4)
++    lab.pmic(0x24, 0)
++    assert lab.state()['rejected'] == before + 2
++    assert lab.pmic(0x24) == 6
++    lab.fault('bad-id')
++    assert lab.pmic(8) == 0x1234
++    lab.fault('adc-timeout')
++    lab.pmic(0x110e, 2)
++    lab.step(40000000)
++    assert lab.pmic(0x108a) == 0
++    lab.fault('adc-rail')
++    lab.pmic(0x110e, 8)
++    lab.step(80000)
++    assert lab.pmic(0x108e) == 0x8000
++    lab.fault('keypad-disabled')
++    assert int(lab.access('readw 0x10010024'), 0) == 0
++    lab.fault('init-loss')
++    assert not lab.status() & (1 << 21)
++    lab.fault('none')
++    assert lab.status() == 1 << 21
++    # No automatic recovery from a timed-out in-flight command.
++    lab.fault('stall')
++    lab.write(0x1000dc20, (8 >> 1) << 16)
++    lab.step(20000000)
++    assert (lab.status() >> 16) & 7 == 2
++    lab.fault('none')
++    lab.step(20000000)
++    assert (lab.status() >> 16) & 7 == 2
++    before = lab.state()['rejected']
++    lab.write(0x1000dc20, (8 >> 1) << 16)
++    lab.write(0x1000dc28, 1)
++    assert lab.state()['rejected'] == before + 2
++    return lab.state()
++
++
++def main():
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument('--qemu', type=Path, required=True)
++    parser.add_argument('--dtb', type=Path, required=True)
++    args = parser.parse_args()
++    with tempfile.TemporaryDirectory(prefix='mt6762-power-qtest-') as temporary:
++        lab = PowerLab(args.qemu.resolve(), args.dtb.resolve(), temporary)
++        try:
++            result = exercise(lab)
++        finally:
++            lab.close()
++        lab = PowerLab(args.qemu.resolve(), args.dtb.resolve(), temporary, enabled=False)
++        try:
++            assert lab.state() == {'enabled': False}
++            assert lab.status() == 0
++            assert lab.keymem() == 0
++        finally:
++            lab.close()
++    print(json.dumps({'passed': True, 'synthetic_only': True, 'final_state': result}, indent=2))
++
++
++if __name__ == '__main__':
++    main()
+diff --git a/tests/mt6762/test_lab_sspm.py b/tests/mt6762/test_lab_sspm.py
+new file mode 100644
+index 0000000..7f5ba6a
+--- /dev/null
++++ b/tests/mt6762/test_lab_sspm.py
+@@ -0,0 +1,194 @@
++#!/usr/bin/env python3
++"""Paused QEMU SSPM fixture tests; no physical device access or DVFS proof."""
++import argparse
++import json
++from pathlib import Path
++import socket
++import subprocess
++import tempfile
++import time
++
++
++class Lab:
++    def __init__(self, qemu, dtb, directory, enabled=True):
++        directory = Path(directory)
++        self.log = (directory / "qemu.log").open("w+")
++        self.qmp_path = directory / "qmp.sock"
++        self.test_path = directory / "qtest.sock"
++        machine = "mt6762"
++        if enabled:
++            machine += ",lab-sspm=on"
++        self.process = subprocess.Popen([
++            str(qemu), "-M", machine, "-accel", "tcg", "-cpu", "cortex-a53",
++            "-m", "512M", "-smp", "1", "-dtb", str(dtb), "-S",
++            "-display", "none", "-serial", "null", "-monitor", "none",
++            "-qmp", f"unix:{self.qmp_path},server=on,wait=off",
++            "-qtest", f"unix:{self.test_path},server=on,wait=off",
++        ], stdout=self.log, stderr=self.log)
++        self.sockets = []
++        try:
++            self.qmp = self.connect(self.qmp_path)
++            self.test = self.connect(self.test_path)
++            assert "QMP" in json.loads(self.qmp.readline())
++            self.command("qmp_capabilities")
++        except BaseException:
++            self.close()
++            raise
++
++    def connect(self, path):
++        deadline = time.monotonic() + 10
++        while time.monotonic() < deadline:
++            if self.process.poll() is not None:
++                self.log.seek(0)
++                raise RuntimeError(self.log.read())
++            sock = socket.socket(socket.AF_UNIX)
++            sock.settimeout(5)
++            try:
++                sock.connect(str(path))
++            except (FileNotFoundError, ConnectionRefusedError):
++                sock.close()
++                time.sleep(0.02)
++                continue
++            self.sockets.append(sock)
++            return sock.makefile("rwb", buffering=0)
++        raise TimeoutError(f"QEMU socket {path.name} did not appear")
++
++    def command(self, command, **arguments):
++        self.qmp.write((json.dumps({"execute": command, "arguments": arguments}) + "\n").encode())
++        while True:
++            answer = json.loads(self.qmp.readline())
++            if "event" in answer:
++                continue
++            if "error" in answer:
++                raise RuntimeError(answer["error"])
++            return answer.get("return")
++
++    def state(self):
++        return json.loads(self.command("qom-get", path="/machine", property="lab-sspm-state"))
++
++    def fault(self, name):
++        self.command("qom-set", path="/machine", property="lab-sspm-fault", value=name)
++
++    def access(self, text):
++        self.test.write((text + "\n").encode())
++        reply = self.test.readline().decode().strip()
++        if not reply.startswith("OK"):
++            raise RuntimeError(reply)
++        return reply[2:].strip()
++
++    def read(self, address):
++        return int(self.access(f"readl {address:#x}"), 0)
++
++    def write(self, address, value):
++        self.access(f"writel {address:#x} {value:#x}")
++
++    def close(self):
++        if self.process.poll() is None:
++            self.process.terminate()
++            try:
++                self.process.wait(timeout=5)
++            except subprocess.TimeoutExpired:
++                self.process.kill()
++                self.process.wait(timeout=5)
++        for name in ["qmp", "test"]:
++            stream = getattr(self, name, None)
++            if stream:
++                stream.close()
++        for sock in self.sockets:
++            sock.close()
++        self.log.close()
++
++
++DATA, IN, OUT = 0x10450000, 0x10451000, 0x10451004
++
++def request(lab, command=0xdead, arguments=(0, 0)):
++    lab.write(DATA, command)
++    lab.write(DATA + 4, arguments[0])
++    lab.write(DATA + 8, arguments[1])
++    lab.write(IN, 1)
++
++
++def reset(lab, fault="none"):
++    lab.command("system_reset")
++    lab.fault(fault)
++
++
++def exercise(lab):
++    assert lab.state()["synthetic"] and not lab.state()["dvfs_emulated"]
++    request(lab)
++    assert lab.read(IN) == 0 and lab.read(OUT) == 1 and lab.read(DATA) == 1
++    lab.write(OUT, 1)
++    assert lab.read(OUT) == 0
++    assert lab.state()["requests"] == lab.state()["responses"] == 1
++    assert lab.state()["ack_clears"] == 1
++    # An ACK on another pin must survive clearing only the PLATFORM pin.
++    reset(lab, "wrong-ack")
++    request(lab)
++    assert lab.read(IN) == 0 and lab.read(OUT) == 2
++    lab.fault("none")
++    request(lab)
++    assert lab.read(OUT) == 3
++    lab.write(OUT, 1)
++    assert lab.read(OUT) == 2
++    lab.write(OUT, 2)
++    assert lab.read(OUT) == 0
++    # Pending inherited status is visible without modifying it.
++    for fault, register in [("stale-ack", OUT), ("stale-input", IN)]:
++        reset(lab, fault)
++        assert lab.read(register) == 1
++        state = lab.state()
++        assert state["data_writes"] == state["control_writes"] == state["requests"] == 0
++        lab.write(IN, 1)
++        assert lab.state()["rejected_writes"] == 1 and lab.state()["requests"] == 0
++    reset(lab, "timeout")
++    request(lab)
++    for _ in range(10):
++        assert lab.read(IN) == 1 and lab.read(OUT) == 0
++    assert lab.state()["requests"] == 1 and lab.state()["responses"] == 0
++    reset(lab, "input-stuck")
++    request(lab)
++    assert lab.read(IN) == 1 and lab.read(OUT) == 1 and lab.read(DATA) == 1
++    reset(lab, "ack-stuck")
++    request(lab)
++    lab.write(OUT, 1)
++    assert lab.read(IN) == 0 and lab.read(OUT) == 1
++    reset(lab, "dead")
++    request(lab)
++    assert lab.read(IN) == 0 and lab.read(OUT) == 1 and lab.read(DATA) == 0
++    # No success is fabricated for an unsupported PLATFORM command or args.
++    for command, args in [(1, (0, 0)), (0xdead, (1, 0))]:
++        reset(lab)
++        request(lab, command, args)
++        assert lab.read(IN) == 1 and lab.read(OUT) == 0
++        assert lab.state()["rejected_commands"] == 1 and lab.state()["responses"] == 0
++    reset(lab)
++    for i, value in enumerate([0, 0, 0, 0]):
++        lab.write(DATA + 12 + 4*i, value)
++    lab.write(IN, 2)
++    assert lab.read(IN) == 2 and lab.read(OUT) == 0
++    assert lab.state()["rejected_commands"] == 1 and not lab.state()["dvfs_emulated"]
++    return lab.state()
++
++
++def main():
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument("--qemu", required=True, type=Path)
++    parser.add_argument("--dtb", required=True, type=Path)
++    args = parser.parse_args()
++    with tempfile.TemporaryDirectory(prefix="mt6762-sspm-qtest-") as directory:
++        lab = Lab(args.qemu.resolve(), args.dtb.resolve(), directory)
++        try:
++            result = exercise(lab)
++        finally:
++            lab.close()
++        lab = Lab(args.qemu.resolve(), args.dtb.resolve(), directory, enabled=False)
++        try:
++            assert lab.state() == {"enabled": False}
++            assert lab.read(DATA) == lab.read(IN) == lab.read(OUT) == 0
++        finally:
++            lab.close()
++    print(json.dumps({"synthetic_only": True, "passed": True, "final_fixture_state": result}, indent=2))
++
++
++if __name__ == "__main__":
++    main()
+-- 
+2.55.0
+

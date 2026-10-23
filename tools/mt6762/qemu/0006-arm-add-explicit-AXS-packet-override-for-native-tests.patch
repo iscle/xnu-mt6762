@@ -1,0 +1,245 @@
+From 1cefe6067521f188fffbe2070bd520501a8c60fe Mon Sep 17 00:00:00 2001
+From: MT6762 local experiment <mt6762-build@localhost>
+Date: Fri, 23 Oct 2026 23:50:48 +0200
+Subject: [PATCH] arm: add explicit AXS packet override for native gesture
+ tests
+
+AI-assisted local experiment, not intended for upstream submission. Allows opt-in QMP packets to traverse modeled I2C/DMA and the native guest worker instead of injecting into a guest event queue. Preserves default fixture behavior and validates setters atomically.
+---
+ docs/system/arm/mt6762.rst       | 16 ++++++++
+ hw/arm/mt6762_lab_i2c.c          | 59 ++++++++++++++++++++++++++++
+ tests/mt6762/test_lab_display.py |  7 ++--
+ tests/mt6762/test_lab_touch.py   | 67 ++++++++++++++++++++++++++++++++
+ 4 files changed, 146 insertions(+), 3 deletions(-)
+ create mode 100644 tests/mt6762/test_lab_touch.py
+
+diff --git a/docs/system/arm/mt6762.rst b/docs/system/arm/mt6762.rst
+index f2e5bea..579dca0 100644
+--- a/docs/system/arm/mt6762.rst
++++ b/docs/system/arm/mt6762.rst
+@@ -206,3 +206,19 @@ arguments as above. Native-loader options ``--native-lab-power`` and
+ ``--native-lab-sspm`` grant only the corresponding synthetic ownership and
+ verification assertions. Their successful guest execution is distinct from
+ real phone power, battery, buttons or SSPM firmware validation.
++
++Consumed synthetic AXS gestures
++------------------------------
++
++When ``lab-i2c`` is enabled, QMP ``qom-set`` can set ``lab-touch-frame`` on
++``/machine`` to exactly64 hexadecimal digits. Each subsequent AXS32-byte
++DMA read returns that packet. A zero-contact packet releases all contacts;
++an empty string restores the original sequence/default behavior. Invalid
++values leave the current packet unchanged. This property is a test-only
++peripheral response override, not an input-queue injection interface.
++
++``tests/mt6762/test_lab_touch.py`` tests exact five-contact packet DMA,
++release, rejected malformed setters and restoration of default behavior.
++The source-only XNU helper ``touch_lab.py`` waits for two completed native
++DMA reads after each published frame before advancing a gesture. Model
++counters still represent synthetic I2C traffic, not real touch hardware.
+diff --git a/hw/arm/mt6762_lab_i2c.c b/hw/arm/mt6762_lab_i2c.c
+index bfcc92d..f238c52 100644
+--- a/hw/arm/mt6762_lab_i2c.c
++++ b/hw/arm/mt6762_lab_i2c.c
+@@ -11,6 +11,7 @@
+ #include "qemu/log.h"
+ #include "qemu/timer.h"
+ #include "qapi/error.h"
++#include "qapi/visitor.h"
+ #include "hw/arm/mt6762_lab_i2c.h"
+ #include "system/address-spaces.h"
+ #include "system/reset.h"
+@@ -48,6 +49,8 @@ struct MT6762I2CLab {
+     uint32_t gates[2], mux;
+     unsigned fault;
+     bool touch, display;
++    bool touch_override;
++    uint8_t touch_frame[32];
+ };
+ 
+ static void lab_irq(MT6762I2CBus *s)
+@@ -89,6 +92,10 @@ static unsigned lab_endpoint(MT6762I2CBus *s, unsigned address,
+         if (nt || nr != 32) {
+             return ACKERR;
+         }
++        if (s->lab->touch_override) {
++            memcpy(rx, s->lab->touch_frame, sizeof(s->lab->touch_frame));
++            return 0;
++        }
+         unsigned frame = s->frames++ % 64;
+         if (s->lab->touch) {
+             /* 8-ms polling: down, held/moved, then an explicit zero frame. */
+@@ -388,6 +395,8 @@ static void lab_reset(void *opaque)
+     s->gates[0] = BIT(11);
+     s->gates[1] = BIT(18);
+     s->mux = 0;
++    s->touch_override = false;
++    memset(s->touch_frame, 0, sizeof(s->touch_frame));
+     for (i = 0; i < 2; i++) {
+         MT6762I2CBus *b = &s->bus[i];
+         timer_del(b->timer);
+@@ -435,6 +444,54 @@ char *mt6762_lab_i2c_state(MT6762I2CLab *s)
+         s->bus[1].psc[1], s->bus[1].psc[0]);
+ }
+ 
++/* Runtime-only laboratory input. Bytes travel through the actual guest
++ * controller/DMA/parser; this never posts directly into an XNU input queue.
++ * Empty string restores the existing deterministic-sequence mode. */
++static void lab_touch_frame_get(Object *owner, Visitor *v, const char *name,
++                                void *opaque, Error **errp)
++{
++    MT6762I2CLab *s = opaque;
++    g_autofree char *value = g_malloc0(65);
++    unsigned i;
++    if (s->touch_override) {
++        for (i = 0; i < sizeof(s->touch_frame); i++) {
++            snprintf(value + i * 2, 3, "%02x", s->touch_frame[i]);
++        }
++    }
++    visit_type_str(v, name, &value, errp);
++}
++
++static void lab_touch_frame_set(Object *owner, Visitor *v, const char *name,
++                                void *opaque, Error **errp)
++{
++    MT6762I2CLab *s = opaque;
++    g_autofree char *value = NULL;
++    uint8_t frame[32];
++    unsigned i;
++    if (!visit_type_str(v, name, &value, errp)) {
++        return;
++    }
++    if (!value[0]) {
++        s->touch_override = false;
++        return;
++    }
++    if (strlen(value) != sizeof(frame) * 2) {
++        error_setg(errp, "lab-touch-frame needs exactly 32 hex-encoded bytes");
++        return;
++    }
++    for (i = 0; i < sizeof(frame); i++) {
++        int high = g_ascii_xdigit_value(value[i * 2]);
++        int low = g_ascii_xdigit_value(value[i * 2 + 1]);
++        if (high < 0 || low < 0) {
++            error_setg(errp, "lab-touch-frame contains a non-hex digit");
++            return;
++        }
++        frame[i] = high * 16 + low;
++    }
++    memcpy(s->touch_frame, frame, sizeof(frame));
++    s->touch_override = true;
++}
++
+ MT6762I2CLab *mt6762_lab_i2c_create(Object *owner, MemoryRegion *memory,
+                                   uint64_t ram_size, qemu_irq irq0, qemu_irq irq5)
+ {
+@@ -466,6 +523,8 @@ MT6762I2CLab *mt6762_lab_i2c_create(Object *owner, MemoryRegion *memory,
+                           "mt6762.lab-gpio-fixture", 0x1000);
+     memory_region_add_subregion(memory, 0x10005000, &s->gpio_mmio);
+     lab_reset(s);
++    object_property_add(owner, "lab-touch-frame", "str", lab_touch_frame_get,
++                        lab_touch_frame_set, NULL, s);
+     qemu_register_reset(lab_reset, s);
+     return s;
+ }
+diff --git a/tests/mt6762/test_lab_display.py b/tests/mt6762/test_lab_display.py
+index e1099a3..4bce4d9 100644
+--- a/tests/mt6762/test_lab_display.py
++++ b/tests/mt6762/test_lab_display.py
+@@ -15,7 +15,7 @@
+ 
+ 
+ class Lab:
+-    def __init__(self, qemu, dtb, directory, enabled=True):
++    def __init__(self, qemu, dtb, directory, enabled=True, accel='tcg'):
+         directory = Path(directory)
+         self.log = (directory / "qemu.log").open("w+")
+         self.qmp_path = directory / "qmp.sock"
+@@ -24,8 +24,9 @@ def __init__(self, qemu, dtb, directory, enabled=True):
+         if enabled:
+             machine += ",lab-display=on,lab-display-fb=0x41000000"
+         self.process = subprocess.Popen([
+-            str(qemu), "-M", machine, "-accel", "tcg", "-cpu", "cortex-a53",
+-            "-m", "512M", "-smp", "1", "-dtb", str(dtb), "-S",
++            str(qemu), "-M", machine, "-accel", accel, "-cpu", "cortex-a53",
++            "-m", "512M", "-smp", "1", "-dtb", str(dtb),
++            *([] if accel == 'qtest' else ['-S']),
+             "-display", "none", "-serial", "null", "-monitor", "none",
+             "-qmp", f"unix:{self.qmp_path},server=on,wait=off",
+             "-qtest", f"unix:{self.test_path},server=on,wait=off",
+diff --git a/tests/mt6762/test_lab_touch.py b/tests/mt6762/test_lab_touch.py
+new file mode 100644
+index 0000000..b789391
+--- /dev/null
++++ b/tests/mt6762/test_lab_touch.py
+@@ -0,0 +1,67 @@
++#!/usr/bin/env python3
++"""Validate runtime raw AXS packets through the synthetic APDMA model."""
++import argparse
++import importlib.util
++from pathlib import Path
++import tempfile
++from test_lab_display import Lab
++
++spec = importlib.util.spec_from_file_location('touch_lab', Path(__file__).resolve().parents[1] / 'boot/touch_lab.py')
++touch = importlib.util.module_from_spec(spec)
++spec.loader.exec_module(touch)
++
++
++def main():
++    p = argparse.ArgumentParser(description=__doc__)
++    p.add_argument('--qemu', type=Path, required=True)
++    p.add_argument('--dtb', type=Path, required=True)
++    a = p.parse_args()
++    with tempfile.TemporaryDirectory(prefix='mtk-touch-') as directory:
++        lab = Lab(a.qemu.resolve(), a.dtb.resolve(), directory, enabled=False, accel='qtest')
++        try:
++            def get():
++                return lab.command('qom-get', path='/machine', property='lab-touch-frame')
++            def put(value):
++                lab.command('qom-set', path='/machine', property='lab-touch-frame', value=value)
++            assert get() == ''
++            packet = touch.frame([(0, 384, 854), (1, 0, 0), (2, 120, 200), (3, 300, 800), (4, 1, 853)])
++            put(packet)
++            assert get() == packet
++            for bad in ('0', '00' * 31, '00' * 33, 'gg' * 32):
++                try:
++                    put(bad)
++                except RuntimeError:
++                    pass
++                else:
++                    raise AssertionError('Malformed packet accepted')
++                assert get() == packet, 'Invalid setter changed previous state'
++            lab.write(0x10001084, 1 << 11)
++            lab.write(0x1000108c, 1 << 18)
++            def receive():
++                base, dma, target = 0x11007000, 0x11000080, 0x41000000
++                for offset, value in ((4, 0x77), (12, 0xffff), (16, 4), (20, 32), (24, 1)):
++                    lab.access(f'writew {base + offset:#x} {value:#x}')
++                for offset, value in ((24, 1), (32, target), (36, 0), (40, 32), (84, 0), (88, 0), (8, 1)):
++                    lab.write(dma + offset, value)
++                lab.access(f'writew {base + 36:#x} 1')
++                lab.access('clock_step 1000000')
++                assert int(lab.access(f'readw {base + 12:#x}'), 0) == 1
++                assert lab.read(dma + 8) == 0
++                return lab.access(f'read {target:#x} 32').removeprefix('0x').lower()
++            assert receive() == packet
++            put(touch.frame([])); assert receive() == '00' * 32
++            put(''); assert get() == '' and receive() == '00' * 32
++            for points in ([(0, -1, 0)], [(5, 1, 1)], [(0, 385, 0)], [(0, 0, 855)], [(0, 1, 1)] * 2):
++                try:
++                    touch.frame(points)
++                except ValueError:
++                    pass
++                else:
++                    raise AssertionError('Invalid contacts accepted')
++            print('Synthetic raw AXS: five contacts, DMA bytes, invalid setter preservation and release passed')
++        finally:
++            lab.close()
++
++
++if __name__ == '__main__':
++    main()
+-- 
+2.55.0
+

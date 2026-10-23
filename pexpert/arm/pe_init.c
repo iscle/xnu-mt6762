@@ -422,6 +422,17 @@ PE_init_platform(boolean_t vm_initialized, void *args)
 		 * can be used..
 		 */
 		SecureDTInit(PE_state.deviceTreeHead, PE_state.deviceTreeSize);
+#if defined(ARM64_BOARD_CONFIG_MT6762)
+		/* A native handoff is a candidate, not permission for the early
+		 * console to write boot_args Video. Stay on UART until the native
+		 * display consumer validates scanout and maps its reserved buffer.
+		 * A malformed native node also remains headless. Lab boots without
+		 * this node retain their existing synthetic framebuffer. */
+		DTEntry mt6762_native;
+		if (SecureDTLookupEntry(NULL, "/chosen/mt6762-handoff", &mt6762_native) == kSuccess) {
+			bzero(&PE_state.video, sizeof(PE_state.video));
+		}
+#endif
 		pe_identify_machine(boot_args_ptr);
 	} else {
 		pe_arm_init_interrupts(args);

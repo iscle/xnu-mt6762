@@ -20,6 +20,7 @@
  */
 
 #include <IOKit/IOLib.h>
+#include <sys/mt6762_power.h>
 #include <IOKit/IOPlatformExpert.h>
 #include <IOKit/pwr_mgt/IOPM.h>
 #include <IOKit/pwr_mgt/IOPMPowerSource.h>
@@ -42,6 +43,7 @@ struct redwood_battery_state {
 };
 
 extern "C" void RedwoodBatteryReport(const void * state, unsigned size);
+extern "C" void RedwoodBatteryReportPartial(const void * state, unsigned size);
 
 class RedwoodBattery : public IOPMPowerSource
 {
@@ -49,11 +51,13 @@ class RedwoodBattery : public IOPMPowerSource
 
 public:
 	void report(const struct redwood_battery_state * b);
+	void reportPartial(const struct mt6762_battery_sample * b);
 
 private:
 	void number(const char * key, long long value);
 	void flag(const char * key, bool value);
 	void object(const char * key, OSObject * value);
+	void forget(const char * key);
 };
 
 OSDefineMetaClassAndStructors(RedwoodBattery, IOPMPowerSource);
@@ -227,4 +231,95 @@ RedwoodBatteryReport(const void * state, unsigned size)
 		return;
 	}
 	battery->report(b);
+}
+
+/* updateStatus copies present properties; it does not remove absent ones. */
+void
+RedwoodBattery::forget(const char * key)
+{
+	if (properties->getObject(key) != NULL || getProperty(key) != NULL) {
+		properties->removeObject(key);
+		removeProperty(key);
+		settingsChangedSinceUpdate = true;
+	}
+}
+
+void
+RedwoodBattery::reportPartial(const struct mt6762_battery_sample * b)
+{
+	const uint32_t v = b->valid;
+	if (v & MT6762_BAT_PRESENT) setBatteryInstalled(b->present != 0);
+	else forget(kIOPMPSBatteryInstalledKey);
+	if (v & MT6762_BAT_EXTERNAL) {
+		setExternalConnected(b->external != 0);
+		flag("AppleRawExternalConnected", b->external != 0);
+	} else {
+		forget(kIOPMPSExternalConnectedKey);
+		forget("AppleRawExternalConnected");
+	}
+	if ((v & (MT6762_BAT_STATUS | MT6762_BAT_EXTERNAL)) ==
+	    (MT6762_BAT_STATUS | MT6762_BAT_EXTERNAL)) {
+		setIsCharging(b->external && b->status == 1);
+		flag("FullyCharged", b->external && b->status == 4);
+	} else {
+		forget(kIOPMPSIsChargingKey);
+		forget("FullyCharged");
+	}
+	if ((v & MT6762_BAT_SOC) && b->percent_hundredths >= 0 && b->percent_hundredths <= 10000) {
+		setCurrentCapacity((unsigned)(b->percent_hundredths + 50) / 100);
+		setMaxCapacity(100);
+	} else {
+		forget(kIOPMPSCurrentCapacityKey);
+		forget(kIOPMPSMaxCapacityKey);
+	}
+	if (v & MT6762_BAT_VOLTAGE) setVoltage((unsigned)(b->voltage_uv / 1000));
+	else forget(kIOPMPSVoltageKey);
+	if (v & MT6762_BAT_CURRENT) {
+		setAmperage(b->current_ua / 1000);
+		number("InstantAmperage", b->current_ua / 1000);
+	} else {
+		forget(kIOPMPSAmperageKey);
+		forget("InstantAmperage");
+	}
+	if (v & MT6762_BAT_TEMP) number("Temperature", b->temperature_hundredths);
+	else forget("Temperature");
+	/* No capacity, charge capability, adapter budget or calibration is inferred
+	 * from voltage/presence. These fields are outside the partial contract. */
+	const char * unknown[] = { kIOPMPSExternalChargeCapableKey, kIOPMPSAdapterDetailsKey,
+	    "AppleRawCurrentCapacity", "AppleRawMaxCapacity", "NominalChargeCapacity",
+	    kIOPMPSDesignCapacityKey, kIOPMPSCycleCountKey, kIOPMPSTimeRemainingKey };
+	for (unsigned i = 0; i < sizeof(unknown) / sizeof(unknown[0]); i++) forget(unknown[i]);
+	number("MT6762ValidFields", v);
+	updateStatus();
+}
+
+/* One native worker owns this entry point. Missing capacity intentionally
+ * leaves the iOS percentage unavailable until a calibrated fuel gauge exists. */
+void
+RedwoodBatteryReportPartial(const void * state, unsigned size)
+{
+	const struct mt6762_battery_sample * b = (const struct mt6762_battery_sample *)state;
+	if (!b || size != sizeof(*b) || b->size != sizeof(*b)) return;
+	if (battery == NULL) {
+		if (!b->valid) return;
+		IOService * platform = IOService::getPlatform();
+		RedwoodBattery * made = OSTypeAlloc(RedwoodBattery);
+		if (platform == NULL || made == NULL || !made->init()) {
+			OSSafeReleaseNULL(made);
+			return;
+		}
+		made->reportPartial(b);
+		if (!made->attach(platform)) { made->release(); return; }
+		made->setName("MT6762Battery");
+		if (!made->start(platform)) {
+			made->detach(platform);
+			made->release();
+			return;
+		}
+		made->registerService();
+		battery = made;
+		IOLog("MT6762Battery: partial observations published; validity %#x\n", b->valid);
+		return;
+	}
+	battery->reportPartial(b);
 }

@@ -1,0 +1,560 @@
+{
+  "synthetic_model_only": true,
+  "physical_hardware_tested": false,
+  "note": "wrong-ack initial 3-second run ended before PID1 observer; successful rerun allowed 8 seconds. Both original records retained.",
+  "cases": {
+    "timeout": {
+      "kernel_sha256": "17c62ebe34cbaea27c9c596e95a1c26cf2d43ab4740eb95877364e292d0700b8",
+      "qemu_binary_sha256": "d76d44bb3b6d5f86d3ef0a2ddfb846510122a03f1f33637f3133e36f52ac96df",
+      "native_sspm_alive": false,
+      "synthetic_sspm_state": {
+        "enabled": true,
+        "synthetic": true,
+        "dvfs_emulated": false,
+        "fault": 1,
+        "in_irq": 1,
+        "out_irq": 0,
+        "last_command": 57005,
+        "requests": 1,
+        "responses": 0,
+        "ack_clears": 0,
+        "reads": 10004,
+        "data_writes": 3,
+        "control_writes": 1,
+        "rejected_commands": 0,
+        "rejected_writes": 0
+      },
+      "native_sysctls": {
+        "mt6762_pmic_id": {
+          "value": 22320,
+          "error": 0
+        },
+        "mt6762_power_valid": {
+          "value": 71,
+          "error": 0
+        },
+        "mt6762_power_errors": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_battery_adc_mv": {
+          "value": 4400,
+          "error": 0
+        },
+        "mt6762_ntc_adc_mv": {
+          "value": 615,
+          "error": 0
+        },
+        "mt6762_adc_voltage_samples": {
+          "value": 2,
+          "error": 0
+        },
+        "mt6762_adc_ntc_samples": {
+          "value": 2,
+          "error": 0
+        },
+        "mt6762_charger_control_safe": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_charger_state": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_sspm_alive": {
+          "value": -1,
+          "error": 0
+        },
+        "mt6762_sspm_fault": {
+          "value": 1,
+          "error": 0
+        }
+      },
+      "kernel_panic_observed": false,
+      "secondary_cpus_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "queue_observer_ready": true
+    },
+    "ack-stuck": {
+      "kernel_sha256": "17c62ebe34cbaea27c9c596e95a1c26cf2d43ab4740eb95877364e292d0700b8",
+      "qemu_binary_sha256": "d76d44bb3b6d5f86d3ef0a2ddfb846510122a03f1f33637f3133e36f52ac96df",
+      "native_sspm_alive": false,
+      "synthetic_sspm_state": {
+        "enabled": true,
+        "synthetic": true,
+        "dvfs_emulated": false,
+        "fault": 2,
+        "in_irq": 0,
+        "out_irq": 1,
+        "last_command": 57005,
+        "requests": 1,
+        "responses": 1,
+        "ack_clears": 1,
+        "reads": 8,
+        "data_writes": 3,
+        "control_writes": 2,
+        "rejected_commands": 0,
+        "rejected_writes": 0
+      },
+      "native_sysctls": {
+        "mt6762_pmic_id": {
+          "value": 22320,
+          "error": 0
+        },
+        "mt6762_power_valid": {
+          "value": 71,
+          "error": 0
+        },
+        "mt6762_power_errors": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_battery_adc_mv": {
+          "value": 4400,
+          "error": 0
+        },
+        "mt6762_ntc_adc_mv": {
+          "value": 615,
+          "error": 0
+        },
+        "mt6762_adc_voltage_samples": {
+          "value": 2,
+          "error": 0
+        },
+        "mt6762_adc_ntc_samples": {
+          "value": 2,
+          "error": 0
+        },
+        "mt6762_charger_control_safe": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_charger_state": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_sspm_alive": {
+          "value": -1,
+          "error": 0
+        },
+        "mt6762_sspm_fault": {
+          "value": 1,
+          "error": 0
+        }
+      },
+      "kernel_panic_observed": false,
+      "secondary_cpus_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "queue_observer_ready": true
+    },
+    "input-stuck": {
+      "kernel_sha256": "17c62ebe34cbaea27c9c596e95a1c26cf2d43ab4740eb95877364e292d0700b8",
+      "qemu_binary_sha256": "d76d44bb3b6d5f86d3ef0a2ddfb846510122a03f1f33637f3133e36f52ac96df",
+      "native_sspm_alive": false,
+      "synthetic_sspm_state": {
+        "enabled": true,
+        "synthetic": true,
+        "dvfs_emulated": false,
+        "fault": 3,
+        "in_irq": 1,
+        "out_irq": 1,
+        "last_command": 57005,
+        "requests": 1,
+        "responses": 1,
+        "ack_clears": 0,
+        "reads": 7,
+        "data_writes": 3,
+        "control_writes": 1,
+        "rejected_commands": 0,
+        "rejected_writes": 0
+      },
+      "native_sysctls": {
+        "mt6762_pmic_id": {
+          "value": 22320,
+          "error": 0
+        },
+        "mt6762_power_valid": {
+          "value": 71,
+          "error": 0
+        },
+        "mt6762_power_errors": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_battery_adc_mv": {
+          "value": 4400,
+          "error": 0
+        },
+        "mt6762_ntc_adc_mv": {
+          "value": 615,
+          "error": 0
+        },
+        "mt6762_adc_voltage_samples": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_adc_ntc_samples": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_charger_control_safe": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_charger_state": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_sspm_alive": {
+          "value": -1,
+          "error": 0
+        },
+        "mt6762_sspm_fault": {
+          "value": 1,
+          "error": 0
+        }
+      },
+      "kernel_panic_observed": false,
+      "secondary_cpus_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "queue_observer_ready": true
+    },
+    "stale-ack": {
+      "kernel_sha256": "17c62ebe34cbaea27c9c596e95a1c26cf2d43ab4740eb95877364e292d0700b8",
+      "qemu_binary_sha256": "d76d44bb3b6d5f86d3ef0a2ddfb846510122a03f1f33637f3133e36f52ac96df",
+      "native_sspm_alive": false,
+      "synthetic_sspm_state": {
+        "enabled": true,
+        "synthetic": true,
+        "dvfs_emulated": false,
+        "fault": 4,
+        "in_irq": 0,
+        "out_irq": 1,
+        "last_command": 0,
+        "requests": 0,
+        "responses": 0,
+        "ack_clears": 0,
+        "reads": 2,
+        "data_writes": 0,
+        "control_writes": 0,
+        "rejected_commands": 0,
+        "rejected_writes": 0
+      },
+      "native_sysctls": {
+        "mt6762_pmic_id": {
+          "value": 22320,
+          "error": 0
+        },
+        "mt6762_power_valid": {
+          "value": 71,
+          "error": 0
+        },
+        "mt6762_power_errors": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_battery_adc_mv": {
+          "value": 4400,
+          "error": 0
+        },
+        "mt6762_ntc_adc_mv": {
+          "value": 615,
+          "error": 0
+        },
+        "mt6762_adc_voltage_samples": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_adc_ntc_samples": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_charger_control_safe": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_charger_state": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_sspm_alive": {
+          "value": -1,
+          "error": 0
+        },
+        "mt6762_sspm_fault": {
+          "value": 1,
+          "error": 0
+        }
+      },
+      "kernel_panic_observed": false,
+      "secondary_cpus_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "queue_observer_ready": true
+    },
+    "stale-input": {
+      "kernel_sha256": "17c62ebe34cbaea27c9c596e95a1c26cf2d43ab4740eb95877364e292d0700b8",
+      "qemu_binary_sha256": "d76d44bb3b6d5f86d3ef0a2ddfb846510122a03f1f33637f3133e36f52ac96df",
+      "native_sspm_alive": false,
+      "synthetic_sspm_state": {
+        "enabled": true,
+        "synthetic": true,
+        "dvfs_emulated": false,
+        "fault": 5,
+        "in_irq": 1,
+        "out_irq": 0,
+        "last_command": 0,
+        "requests": 0,
+        "responses": 0,
+        "ack_clears": 0,
+        "reads": 2,
+        "data_writes": 0,
+        "control_writes": 0,
+        "rejected_commands": 0,
+        "rejected_writes": 0
+      },
+      "native_sysctls": {
+        "mt6762_pmic_id": {
+          "value": 22320,
+          "error": 0
+        },
+        "mt6762_power_valid": {
+          "value": 71,
+          "error": 0
+        },
+        "mt6762_power_errors": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_battery_adc_mv": {
+          "value": 4400,
+          "error": 0
+        },
+        "mt6762_ntc_adc_mv": {
+          "value": 615,
+          "error": 0
+        },
+        "mt6762_adc_voltage_samples": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_adc_ntc_samples": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_charger_control_safe": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_charger_state": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_sspm_alive": {
+          "value": -1,
+          "error": 0
+        },
+        "mt6762_sspm_fault": {
+          "value": 1,
+          "error": 0
+        }
+      },
+      "kernel_panic_observed": false,
+      "secondary_cpus_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "queue_observer_ready": true
+    },
+    "dead": {
+      "kernel_sha256": "17c62ebe34cbaea27c9c596e95a1c26cf2d43ab4740eb95877364e292d0700b8",
+      "qemu_binary_sha256": "d76d44bb3b6d5f86d3ef0a2ddfb846510122a03f1f33637f3133e36f52ac96df",
+      "native_sspm_alive": false,
+      "synthetic_sspm_state": {
+        "enabled": true,
+        "synthetic": true,
+        "dvfs_emulated": false,
+        "fault": 6,
+        "in_irq": 0,
+        "out_irq": 0,
+        "last_command": 57005,
+        "requests": 1,
+        "responses": 1,
+        "ack_clears": 1,
+        "reads": 8,
+        "data_writes": 3,
+        "control_writes": 2,
+        "rejected_commands": 0,
+        "rejected_writes": 0
+      },
+      "native_sysctls": {
+        "mt6762_pmic_id": {
+          "value": 22320,
+          "error": 0
+        },
+        "mt6762_power_valid": {
+          "value": 71,
+          "error": 0
+        },
+        "mt6762_power_errors": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_battery_adc_mv": {
+          "value": 4400,
+          "error": 0
+        },
+        "mt6762_ntc_adc_mv": {
+          "value": 615,
+          "error": 0
+        },
+        "mt6762_adc_voltage_samples": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_adc_ntc_samples": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_charger_control_safe": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_charger_state": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_sspm_alive": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_sspm_fault": {
+          "value": 0,
+          "error": 0
+        }
+      },
+      "kernel_panic_observed": false,
+      "secondary_cpus_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "queue_observer_ready": true
+    },
+    "wrong-ack-long": {
+      "kernel_sha256": "17c62ebe34cbaea27c9c596e95a1c26cf2d43ab4740eb95877364e292d0700b8",
+      "qemu_binary_sha256": "d76d44bb3b6d5f86d3ef0a2ddfb846510122a03f1f33637f3133e36f52ac96df",
+      "native_sspm_alive": false,
+      "synthetic_sspm_state": {
+        "enabled": true,
+        "synthetic": true,
+        "dvfs_emulated": false,
+        "fault": 7,
+        "in_irq": 0,
+        "out_irq": 2,
+        "last_command": 57005,
+        "requests": 1,
+        "responses": 1,
+        "ack_clears": 0,
+        "reads": 10004,
+        "data_writes": 3,
+        "control_writes": 1,
+        "rejected_commands": 0,
+        "rejected_writes": 0
+      },
+      "native_sysctls": {
+        "mt6762_pmic_id": {
+          "value": 22320,
+          "error": 0
+        },
+        "mt6762_power_valid": {
+          "value": 71,
+          "error": 0
+        },
+        "mt6762_power_errors": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_battery_adc_mv": {
+          "value": 4400,
+          "error": 0
+        },
+        "mt6762_ntc_adc_mv": {
+          "value": 615,
+          "error": 0
+        },
+        "mt6762_adc_voltage_samples": {
+          "value": 7,
+          "error": 0
+        },
+        "mt6762_adc_ntc_samples": {
+          "value": 7,
+          "error": 0
+        },
+        "mt6762_charger_control_safe": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_charger_state": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_sspm_alive": {
+          "value": -1,
+          "error": 0
+        },
+        "mt6762_sspm_fault": {
+          "value": 1,
+          "error": 0
+        }
+      },
+      "kernel_panic_observed": false,
+      "secondary_cpus_online": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "queue_observer_ready": true
+    }
+  }
+}

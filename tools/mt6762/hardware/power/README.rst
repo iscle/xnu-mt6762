@@ -189,3 +189,24 @@ faults to a plausible temperature. The passive614/1797mV and configured16900ohm
 produce an uncorrected28.6C estimate. This is not validated thermal safety.
 Physical NTC/pullup calibration, current compensation and independent measured
 temperature are prerequisites for a native charging-enable policy.
+
+Native status and presence corroboration
+---------------------------------------
+
+``psc5425e_chg_get_property`` at 0xffffff8008a77570 handles property 0
+(POWER_SUPPLY_PROP_STATUS). At 0xffffff8008a77660 it reads register 0 with
+mask 3 and shift 4. The four-byte jump table at 0xffffff80090f50c8 is
+00 04 06 00, indexing four-byte instructions from 0xffffff8008a776ac.
+The targets set Linux status 3, 1, 4, 3 respectively: not charging, charging,
+full, not charging. This is the exact stock interpretation, independent of
+the enable bit. See ``evidence/psc-status-jump-table.json`` and the existing
+PSC disassembly. The native driver checks a successful transaction before
+using this table; it does not reproduce the stock ignored-read-error issue.
+
+``battery_exist_get`` at 0xffffff8008a87464 explicitly reads 0x0e08 and
+returns !bit1. See ``evidence/battery-presence-disassembly.txt``. BSP
+``include/linux/mfd/mt6357/registers.h`` calls 0x0e08 BATON_ANA_CON0,
+bit 0 RG_BATON_EN and bit 1 RGS_BATON_UNDET. Native observation additionally
+requires enable bit 0, since a disabled detector is not evidence of presence.
+Stock's absent-battery path pulses AUXADC register 0x114a bit3; native
+observation does not reproduce this state-changing side effect.
