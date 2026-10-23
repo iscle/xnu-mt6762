@@ -201,6 +201,17 @@ def main():
             if held.pop(key,None)==point:
                 matched_releases+=1
                 release_after_error |= error_offset>=0 and event['log_offset']>error_offset
+    battery_observations=[]
+    if m.get('native_lab_battery_gap_ms'):
+        for block in re.findall(r'MT6762_SYSCTL_BEGIN(.*?)MT6762_SYSCTL_END',serial,re.S):
+            observation={name:int(value) for name,value in re.findall(
+                r'MT6762_SYSCTL (\w+)=(-?\d+) error=0',block)}
+            fields=('mt6762_battery_report_gap_state','mt6762_battery_reports_suppressed',
+                'mt6762_adc_voltage_requests','mt6762_power_valid','battery_voltage_mv',
+                'battery_current_ma','battery_present','battery_charger_present',
+                'battery_charging','battery_soc','battery_temperature_c')
+            if all(k in observation for k in fields):
+                battery_observations.append({k:observation[k] for k in fields})
     result={'synthetic_model_only':True,
             'synthetic_adc_delay_override_us':m.get('native_lab_adc_delay_us',0),'physical_hardware_tested':False,'kernel_sha256':m['kernel_sha256'],
             'qemu_binary_sha256':qemu_sha256,'synthetic_framebuffer_untouched':framebuffer_untouched,
@@ -225,6 +236,8 @@ def main():
             'thermal_fault_injected_at_seconds':thermal_injected_at,
             'key_mode':a.key_mode, 'buttons_down':buttons_down,'buttons_matching_up':buttons_up,
             'buttons_held_at_end':sorted(buttons_held),
+            'native_battery_publication_gap':dict(start_ms=m.get('native_lab_battery_gap_start_ms',0),
+                duration_ms=m.get('native_lab_battery_gap_ms',0),observations=battery_observations),
             'native_power_accepted':'power: PMIC 0x5730' in serial,
             'synthetic_power_state':snapshots[-1].get('power') if snapshots else None,
             'native_sysctls':{name:{'value':int(value),'error':int(error)} for name,value,error in
@@ -263,6 +276,24 @@ def main():
         raise SystemExit(1)
     if m.get('native_lab_power') and not result['native_power_accepted']:
         raise SystemExit(1)
+    if m.get('native_lab_battery_gap_ms'):
+        before=[o for o in battery_observations if o['mt6762_battery_report_gap_state']==0 and
+                o['mt6762_power_valid']&4 and o['battery_voltage_mv']==4400]
+        expired=[o for o in battery_observations if o['mt6762_battery_report_gap_state']==1 and
+                 o['mt6762_power_valid']==0]
+        recovered=[o for o in battery_observations if o['mt6762_battery_report_gap_state']==2 and
+                   o['mt6762_power_valid']&4 and o['battery_voltage_mv']==4400]
+        unknown={'battery_voltage_mv':-1,'battery_current_ma':-2147483648,
+                 'battery_present':-1,'battery_charger_present':-1,'battery_charging':-1}
+        # Separate getters may cross a publication boundary; require repeated
+        # coherent expiry observations, not equality for every read sequence.
+        expired=[o for o in expired if all(o[k]==value for k,value in unknown.items())]
+        if not before or len(expired)<2 or not recovered:
+            raise SystemExit(1)
+        if (expired[-1]['mt6762_adc_voltage_requests']<=expired[0]['mt6762_adc_voltage_requests'] or
+            recovered[-1]['mt6762_battery_reports_suppressed']<1 or
+            any(o['battery_soc']!=-1 or o['battery_temperature_c']!=-273 for o in battery_observations)):
+            raise SystemExit(1)
     if a.bif_clear_after_rejection and not bif_cleared:
         raise SystemExit(1)
     if a.bif_fault_after_fresh and not bif_injected:

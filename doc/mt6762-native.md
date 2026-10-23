@@ -150,7 +150,13 @@ diagnostics only: their conversion freshness is not established and they
 cannot authorize DVFS. See the [thermal evidence and limits](../tools/mt6762/hardware/cpu-power/THERMAL.rst).
 
 Battery samples carry explicit field-validity bits. IOKit removes values
-that become unavailable. The calibrated gauge-current observer requires
+that become unavailable. Both native BSD getters and the IOKit service also
+expire a stopped publisher's snapshot. Deadlines start at acquisition and are
+capped by the gauge sample's original expiry; publication cannot renew old data.
+An original-library test observed valid measurements, six expired snapshots
+with measured properties absent, and recovery after publication resumed.
+See the [expiry evidence](../tools/mt6762/hardware/power/evidence/native-expiry-build19-iokit.json).
+The calibrated gauge-current observer requires
 exclusive latch ownership, matching live calibration, completed latch
 handshakes and an advancing NTER counter. It expires samples after two seconds;
 a stopped counter invalidates current even when latch transactions succeed.

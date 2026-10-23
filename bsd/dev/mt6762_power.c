@@ -36,8 +36,13 @@ static uint64_t bif_deadline;
 static const uint16_t bif_config_regs[]={0x10de,0x10e0,0x1120,0x1126,0x1128,
     0x112e,0x1132,0x1136,0x113a,0x113c};
 static uint16_t bif_config[10];
+static uint32_t report_gap_start_ms,report_gap_ms;
+static uint64_t report_gap_start,report_gap_end;
+static int report_gap_state,reports_suppressed;
 
 SYSCTL_DECL(_kern_redwood);
+SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_battery_report_gap_state,CTLFLAG_RD|CTLFLAG_LOCKED,&report_gap_state,0,"Explicit synthetic publication gap:0disabled/armed,1active,2complete");
+SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_battery_reports_suppressed,CTLFLAG_RD|CTLFLAG_LOCKED,&reports_suppressed,0,"Reports omitted by explicit lab-only publication-gap test");
 static int bif_sysctl SYSCTL_HANDLER_ARGS
 {
     uint64_t now;
@@ -58,7 +63,12 @@ SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_bif_fault,CTLFLAG_RD|CTLFLAG_LOCKED,&bi
 SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_bif_generation_rejections,CTLFLAG_RD|CTLFLAG_LOCKED,&bif_generation_rejections,0,"Invalid missed-generation pairs eligible for next-period retry");
 SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_bif_last_error,CTLFLAG_RD|CTLFLAG_LOCKED,&bif_last_error,0,"Last BIF result: 0 completed, -5 missed generation; other negatives are errors");
 SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_pmic_id,CTLFLAG_RD|CTLFLAG_LOCKED,&pmic_id,0,"Observed MT6357 hardware ID, -1 unknown");
-SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_power_valid,CTLFLAG_RD|CTLFLAG_LOCKED,&power_valid,0,"Current native battery sample validity mask");
+static int power_valid_sysctl SYSCTL_HANDLER_ARGS
+{
+    int value=(int)mt6762_battery_valid_fields();
+    return sysctl_handle_int(oidp,&value,0,req);
+}
+SYSCTL_PROC(_kern_redwood,OID_AUTO,mt6762_power_valid,CTLTYPE_INT|CTLFLAG_RD|CTLFLAG_LOCKED,NULL,0,power_valid_sysctl,"I","Unexpired native battery sample validity mask");
 SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_power_errors,CTLFLAG_RD|CTLFLAG_LOCKED,&power_errors,0,"Native power read failures");
 SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_charger_state,CTLFLAG_RD|CTLFLAG_LOCKED,&charger_state,0,"PSC5425E raw state 0..3, -1 unknown");
 SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_battery_adc_mv,CTLFLAG_RD|CTLFLAG_LOCKED,&battery_adc_mv,0,"MT6357 battery ADC millivolts, -1 unknown");
@@ -293,10 +303,15 @@ static void poll_buttons(void)
 static void poll_battery(void)
 {
     struct mt6762_battery_sample s={.size=sizeof(s)};
+    uint64_t duration,gauge_expires,now;
     uint16_t v;
     uint8_t id,state;
     static uint32_t last_valid=~0u;
     static int last_charger=-2,last_safe=-2;
+    clock_get_uptime(&s.acquired_abs);
+    clock_interval_to_absolutetime_interval(2000,NSEC_PER_MSEC,&duration);
+    s.expires_abs=s.acquired_abs+duration;
+    if(s.expires_abs<=s.acquired_abs)s.expires_abs=0;
     battery_adc_mv=ntc_adc_mv=-1;
     ntc_nominal_deci_c=-2730;
     charger_state=-1;
@@ -334,14 +349,38 @@ static void poll_battery(void)
             if(safe && charger_state==1)charger_control_safe=-1;
         }else {power_errors++;if(charger_owned)charger_control_safe=-1;}
     }
-    if(!mt6762_gauge_current_read(&s.current_ua))s.valid|=MT6762_BAT_CURRENT;
+    if(!mt6762_gauge_current_snapshot(&s.current_ua,&gauge_expires)) {
+        s.valid|=MT6762_BAT_CURRENT;
+        if(gauge_expires<s.expires_abs)s.expires_abs=gauge_expires;
+    }
     /* Learned SOC and compensated battery NTC are not established. Their
      * validity bits remain clear; no fake percentage or25C value. */
+    clock_get_uptime(&now);
+    if(!s.expires_abs || now>=s.expires_abs)s.valid=0;
     power_valid=(int)s.valid;
     if(s.valid!=last_valid || charger_state!=last_charger || charger_control_safe!=last_safe) {
         printf("MT6762 power: observed valid=%#x PSC state=%d CE-safe=%d control=%d battery ADC=%d mV\n",
             s.valid,charger_state,charger_control_safe,charger_control,battery_adc_mv);
         last_valid=s.valid;last_charger=charger_state;last_safe=charger_control_safe;
+    }
+    /* Explicit lab test suppresses delivery only. Acquisition and button work
+     * continue so BSD getters and the IOKit timer must expire independently. */
+    if(report_gap_ms) {
+        clock_get_uptime(&now);
+        if(!report_gap_start) {
+            clock_interval_to_absolutetime_interval(report_gap_start_ms,NSEC_PER_MSEC,&duration);
+            report_gap_start=now+duration;
+            clock_interval_to_absolutetime_interval(report_gap_ms,NSEC_PER_MSEC,&duration);
+            report_gap_end=report_gap_start+duration;
+        }
+        if(now>=report_gap_start && now<report_gap_end) {
+            if(report_gap_state!=1)printf("MT6762 power: synthetic publication gap begins; acquisition continues\n");
+            report_gap_state=1;reports_suppressed++;return;
+        }
+        if(now>=report_gap_end && report_gap_state!=2) {
+            report_gap_state=2;
+            printf("MT6762 power: synthetic publication gap ends\n");
+        }
     }
     mt6762_battery_report(&s);
 }
@@ -370,6 +409,14 @@ void mt6762_power_init(void)
     }
     adc_ready=pwrap_ready && verified("adc-verified");
     bif_init();
+    if(verified("lab-fixture")) {
+        uint32_t start_ms,gap_ms;
+        if(!mt6762_handoff_u32("battery-report-gap-start-ms",&start_ms) &&
+           !mt6762_handoff_u32("battery-report-gap-ms",&gap_ms) &&
+           start_ms>=1000 && start_ms<=300000 && gap_ms>=2000 && gap_ms<=10000) {
+            report_gap_start_ms=start_ms;report_gap_ms=gap_ms;
+        }
+    }
     charger_owned=verified("charger-control-owned");
     charger_lab=verified("lab-fixture");
     charger_ready=verified("charger-verified") && mt6762_i2c_ready(5);

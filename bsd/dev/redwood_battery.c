@@ -8,6 +8,8 @@
  * Charger limits and JEITA protection therefore remain firmware-owned.
  */
 #include <kern/clock.h>
+#include <kern/locks.h>
+#include "../../tools/mt6762/hardware/power/report_expiry.h"
 #include <kern/thread.h>
 #include <libkern/libkern.h>
 #include <mach/mach_types.h>
@@ -44,32 +46,81 @@ static int battery_temperature_c = -273, battery_present, battery_charger_presen
 static int battery_charging, battery_soc_estimated, battery_charger_action = -1;
 static uint64_t battery_updates, battery_failures;
 
-/* for others in the kernel (the flashlight's thermal guard): -273 while it is not known */
-int
-redwood_battery_temperature(void)
+/* Native MT6762 observations use their own ordered, expiring snapshot. The
+ * legacy redwood loader/ADSP scalars retain their existing behavior. Never hold
+ * this lock while calling IOKit or acquiring a power/ADC/gauge lock. */
+static LCK_GRP_DECLARE(native_battery_group,"mt6762-battery-report");
+static LCK_MTX_DECLARE(native_battery_mutex,&native_battery_group);
+static struct mt6762_battery_sample native_battery_sample;
+static struct mt6762_report_expiry native_battery_age;
+static int native_battery_seen;
+enum { NATIVE_SOC,NATIVE_VOLTAGE,NATIVE_CURRENT,NATIVE_TEMPERATURE,NATIVE_PRESENT,
+    NATIVE_EXTERNAL,NATIVE_CHARGING,NATIVE_ESTIMATED,NATIVE_ACTION,NATIVE_FULL,
+    NATIVE_DESIGN,NATIVE_CYCLES,NATIVE_DSP };
+static int
+native_battery_snapshot(struct mt6762_battery_sample *sample)
 {
-	return battery_temperature_c;
+    uint64_t now;
+    int seen;
+    lck_mtx_lock(&native_battery_mutex);
+    clock_get_uptime(&now);
+    seen=native_battery_seen;
+    if(seen) {
+        (void)mt6762_report_expire(&native_battery_age,now);
+        *sample=native_battery_sample;
+        if(!native_battery_age.active)sample->valid=0;
+    }
+    lck_mtx_unlock(&native_battery_mutex);
+    return seen;
 }
-
+uint32_t
+mt6762_battery_valid_fields(void)
+{
+    struct mt6762_battery_sample sample;
+    return native_battery_snapshot(&sample)?sample.valid:0;
+}
+static int
+battery_scalar(unsigned field,int legacy)
+{
+    struct mt6762_battery_sample b;
+    if(!native_battery_snapshot(&b))return legacy;
+    const uint32_t v=b.valid;
+    switch(field) {
+    case NATIVE_SOC:return (v&MT6762_BAT_SOC)?(b.percent_hundredths+50)/100:-1;
+    case NATIVE_VOLTAGE:return (v&MT6762_BAT_VOLTAGE)?b.voltage_uv/1000:-1;
+    case NATIVE_CURRENT:return (v&MT6762_BAT_CURRENT)?b.current_ua/1000:(-2147483647-1);
+    case NATIVE_TEMPERATURE:return (v&MT6762_BAT_TEMP)?b.temperature_hundredths/100:-273;
+    case NATIVE_PRESENT:return (v&MT6762_BAT_PRESENT)?!!b.present:-1;
+    case NATIVE_EXTERNAL:return (v&MT6762_BAT_EXTERNAL)?!!b.external:-1;
+    case NATIVE_CHARGING:return (v&(MT6762_BAT_STATUS|MT6762_BAT_EXTERNAL))==
+        (MT6762_BAT_STATUS|MT6762_BAT_EXTERNAL)?(!!b.external && b.status==1):-1;
+    case NATIVE_ACTION:return (v&MT6762_BAT_STATUS)?b.status:-1;
+    default:return 0; /* No learned capacity/cycles/estimated SOC or ADSP source. */
+    }
+}
+/* For the flashlight thermal guard: -273 is unknown, including expired native data. */
+int redwood_battery_temperature(void)
+{
+    return battery_scalar(NATIVE_TEMPERATURE,battery_temperature_c);
+}
+static int battery_scalar_sysctl SYSCTL_HANDLER_ARGS
+{
+    int value=battery_scalar((unsigned)arg2,*(int *)arg1);
+    return sysctl_handle_int(oidp,&value,0,req);
+}
 SYSCTL_NODE(_kern, OID_AUTO, redwood, CTLFLAG_RW | CTLFLAG_LOCKED, 0, "redwood phone bits");
-SYSCTL_INT(_kern_redwood, OID_AUTO, battery_soc, CTLFLAG_RD | CTLFLAG_LOCKED,
-    &battery_soc_percent, 0, "battery state of charge, 0..100 percent, or -1 if unknown");
-SYSCTL_INT(_kern_redwood, OID_AUTO, battery_voltage_mv, CTLFLAG_RD | CTLFLAG_LOCKED,
-    &battery_voltage_mv, 0, "battery voltage in millivolts, or -1 if unknown");
-SYSCTL_INT(_kern_redwood, OID_AUTO, battery_current_ma, CTLFLAG_RD | CTLFLAG_LOCKED,
-    &battery_current_ma, 0, "battery current in milliamps; for native MT6762 consult mt6762_power_valid");
-SYSCTL_INT(_kern_redwood, OID_AUTO, battery_temperature_c, CTLFLAG_RD | CTLFLAG_LOCKED,
-    &battery_temperature_c, 0, "battery temperature in Celsius, -273 if unknown");
-SYSCTL_INT(_kern_redwood, OID_AUTO, battery_present, CTLFLAG_RD | CTLFLAG_LOCKED,
-    &battery_present, 0, "battery present: 0/1, -1 if unknown");
-SYSCTL_INT(_kern_redwood, OID_AUTO, battery_charger_present, CTLFLAG_RD | CTLFLAG_LOCKED,
-    &battery_charger_present, 0, "charger present: 0/1, -1 if unknown");
-SYSCTL_INT(_kern_redwood, OID_AUTO, battery_charging, CTLFLAG_RD | CTLFLAG_LOCKED,
-    &battery_charging, 0, "charging: 0/1, -1 if unknown");
-SYSCTL_INT(_kern_redwood, OID_AUTO, battery_soc_estimated, CTLFLAG_RD | CTLFLAG_LOCKED,
-    &battery_soc_estimated, 0, "1 only when SOC had to be estimated from voltage");
-SYSCTL_INT(_kern_redwood, OID_AUTO, battery_charger_action, CTLFLAG_RD | CTLFLAG_LOCKED,
-    &battery_charger_action, 0, "last Qualcomm charger action, for diagnostics");
+#define BATTERY_SCALAR(name,variable,field,description) \
+    SYSCTL_PROC(_kern_redwood,OID_AUTO,name,CTLTYPE_INT|CTLFLAG_RD|CTLFLAG_LOCKED, \
+        &variable,field,battery_scalar_sysctl,"I",description)
+BATTERY_SCALAR(battery_soc,battery_soc_percent,NATIVE_SOC,"Battery SOC, -1 unknown");
+BATTERY_SCALAR(battery_voltage_mv,battery_voltage_mv,NATIVE_VOLTAGE,"Battery voltage mV, -1 unknown");
+BATTERY_SCALAR(battery_current_ma,battery_current_ma,NATIVE_CURRENT,"Battery current mA; INT_MIN unknown native MT6762");
+BATTERY_SCALAR(battery_temperature_c,battery_temperature_c,NATIVE_TEMPERATURE,"Battery temperature C, -273 unknown");
+BATTERY_SCALAR(battery_present,battery_present,NATIVE_PRESENT,"Battery present0/1, -1 unknown native MT6762");
+BATTERY_SCALAR(battery_charger_present,battery_charger_present,NATIVE_EXTERNAL,"Charger present0/1, -1 unknown native MT6762");
+BATTERY_SCALAR(battery_charging,battery_charging,NATIVE_CHARGING,"Charging0/1, -1 unknown native MT6762");
+BATTERY_SCALAR(battery_soc_estimated,battery_soc_estimated,NATIVE_ESTIMATED,"SOC estimated from voltage");
+BATTERY_SCALAR(battery_charger_action,battery_charger_action,NATIVE_ACTION,"Last charger action; -1 unknown native MT6762");
 
 static bool
 battery_snapshot(struct loader_battery *out)
@@ -118,14 +169,11 @@ battery_poll(void)
  */
 static int battery_full_uah, battery_design_uah, battery_cycles, battery_source_dsp;
 
-SYSCTL_INT(_kern_redwood, OID_AUTO, battery_full_uah, CTLFLAG_RD | CTLFLAG_LOCKED,
-    &battery_full_uah, 0, "the battery's full charge as the fuel gauge has learnt it, in uAh (0 if unknown)");
-SYSCTL_INT(_kern_redwood, OID_AUTO, battery_design_uah, CTLFLAG_RD | CTLFLAG_LOCKED,
-    &battery_design_uah, 0, "the battery's charge as designed, in uAh (0 if unknown)");
-SYSCTL_INT(_kern_redwood, OID_AUTO, battery_cycles, CTLFLAG_RD | CTLFLAG_LOCKED,
-    &battery_cycles, 0, "the battery's charge cycles (0 if unknown)");
-SYSCTL_INT(_kern_redwood, OID_AUTO, battery_from_dsp, CTLFLAG_RD | CTLFLAG_LOCKED,
-    &battery_source_dsp, 0, "1 when the values come from the audio DSP's battery manager");
+BATTERY_SCALAR(battery_full_uah,battery_full_uah,NATIVE_FULL,"Learned full charge uAh,0unknown");
+BATTERY_SCALAR(battery_design_uah,battery_design_uah,NATIVE_DESIGN,"Design charge uAh,0unknown");
+BATTERY_SCALAR(battery_cycles,battery_cycles,NATIVE_CYCLES,"Battery cycles,0unknown");
+BATTERY_SCALAR(battery_from_dsp,battery_source_dsp,NATIVE_DSP,"Battery source is ADSP");
+#undef BATTERY_SCALAR
 
 extern void RedwoodBatteryReport(const void *state, unsigned size);     /* iokit/Kernel/RedwoodBattery.cpp */
 
@@ -163,19 +211,26 @@ extern void RedwoodBatteryReportPartial(const void *state, unsigned size);
 void
 mt6762_battery_report(const struct mt6762_battery_sample *b)
 {
-	if (!b || b->size != sizeof(*b)) return;
-	battery_soc_percent = (b->valid & MT6762_BAT_SOC) ? (b->percent_hundredths + 50) / 100 : -1;
-	battery_voltage_mv = (b->valid & MT6762_BAT_VOLTAGE) ? b->voltage_uv / 1000 : -1;
-	battery_current_ma = (b->valid & MT6762_BAT_CURRENT) ? b->current_ua / 1000 : 0;
-	battery_temperature_c = (b->valid & MT6762_BAT_TEMP) ? b->temperature_hundredths / 100 : -273;
-	battery_present = (b->valid & MT6762_BAT_PRESENT) ? !!b->present : -1;
-	battery_charger_present = (b->valid & MT6762_BAT_EXTERNAL) ? !!b->external : -1;
-	battery_charging = (b->valid & (MT6762_BAT_STATUS | MT6762_BAT_EXTERNAL)) ==
-	    (MT6762_BAT_STATUS | MT6762_BAT_EXTERNAL) ? (!!b->external && b->status == 1) : -1;
-	battery_charger_action = (b->valid & MT6762_BAT_STATUS) ? b->status : -1;
-	battery_soc_estimated = battery_source_dsp = 0;
-	battery_updates++;
-	RedwoodBatteryReportPartial(b, sizeof(*b));
+    struct mt6762_battery_sample report;
+    uint64_t now,maximum_age;
+    int action;
+    if(!b || b->size!=sizeof(*b))return;
+    report=*b;
+    clock_interval_to_absolutetime_interval(2000,NSEC_PER_MSEC,&maximum_age);
+    lck_mtx_lock(&native_battery_mutex);
+    clock_get_uptime(&now);
+    action=mt6762_report_receive(&native_battery_age,b->acquired_abs,b->expires_abs,
+                                now,b->valid,maximum_age);
+    if(action!=MT6762_REPORT_IGNORE) {
+        native_battery_seen=1;
+        if(action==MT6762_REPORT_CLEAR)report.valid=0;
+        native_battery_sample=report;
+        battery_updates++;
+    }
+    lck_mtx_unlock(&native_battery_mutex);
+    /* A delayed older report cannot replace newer BSD or IOKit observations.
+     * No BSD snapshot lock crosses into the IOKit workloop. */
+    if(action!=MT6762_REPORT_IGNORE)RedwoodBatteryReportPartial(&report,sizeof(report));
 }
 
 static void

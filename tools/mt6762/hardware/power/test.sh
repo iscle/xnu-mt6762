@@ -34,3 +34,5 @@ NTC
 cc -std=c11 -Wall -Wextra -Werror -g -I "$testdir" thermistor.c test_ntc_compensation.c -o "$testdir/test-ntc-compensation"
 "$testdir/test-ntc-compensation"
 sh ./test_bif.sh
+cc -std=c11 -Wall -Wextra -Werror -g test_report_expiry.c -o "$testdir/test-report-expiry"
+"$testdir/test-report-expiry"

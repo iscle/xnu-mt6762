@@ -1,0 +1,521 @@
+{
+  "synthetic_only": true,
+  "physical_hardware_tested": false,
+  "original_apple_iokit_used": true,
+  "passed": true,
+  "errors": [],
+  "duration_seconds": 130,
+  "kernel_sha256": "4827e096eadd1a4ead829274e7063a67c9009b517164732bdc7d127260c808c1",
+  "qemu_binary_sha256": "bd081f2077f2d88f69e1436712c7765bceaf496ba06081ad4499ea9e353eb84c",
+  "cpu_count": 1,
+  "run_completed": true,
+  "panic_observed": false,
+  "publication_gap_start_ms": 60000,
+  "publication_gap_ms": 8000,
+  "gap_clock_anchor": "first native report delivery opportunity, not guaranteed IOKit acceptance",
+  "helper_sha256": "3db90bd64ac501c5dcd5b17f867d7259db2b8ede83a3ce4dd136fba7179eb4e6",
+  "helper_command": "/redwood/bin/battery_probe 100 1000 &",
+  "artifacts": {
+    "expiry.serial.log": "cdfcc5bc60ff92c8e0846bd98ad99ddde26f8f20a45cc978c9a4585aff2a61a3",
+    "expiry.models.json": "0cac01aa02d1e4878f3085ade3763406e39c010be2e6fceb0d4c53a671934d88",
+    "expiry-validation.json": "14f02cffd0b77a40174e73c407653ba68142494fd77591202a7f5d6e3b1a8ec2",
+    "manifest.json": "1ddbb8e120de697345d4e886dc0f19767267cfc34708c813bf4e13669532480e"
+  },
+  "root_apfs_sha256": "f325a1e7d931d15dfeb7836f22503bc72ef7dd4d3bd4394302c760b724c079f4",
+  "apple_preservation": {
+    "status": "verified-byte-preservation",
+    "apple_executables_recompiled": false,
+    "critical_executables_checked": 3,
+    "critical_executables_checked_against_retained_apple_dmg": 3,
+    "mapped_cache_files_checked": 43,
+    "resources_are_unmodified": false,
+    "resource_changes": "Donor fetch recipe trims AppleColorEmoji and PingFang fonts; build selects/rearranges resources and launch jobs.",
+    "limit": "Checks extracted Apple cache files against APFS bytes and three executables against the retained Apple DMG when available; does not establish boot, authenticity, or all-file preservation."
+  },
+  "apple_preservation_report_sha256": "c44230cf04af80a98f825d4b40e70c9712135056eac94156e509b6f1f91791ee",
+  "complete_native_snapshots": 92,
+  "expired_snapshot_count": 6,
+  "before": {
+    "iteration": 28,
+    "monotonic_ns": 60639873000,
+    "properties": {
+      "MT6762ValidFields": "sint32:79",
+      "BatteryInstalled": "bool:1",
+      "ExternalConnected": "bool:1",
+      "IsCharging": "bool:0",
+      "Voltage": "sint32:4400",
+      "AppleRawExternalConnected": "bool:1",
+      "FullyCharged": "bool:0",
+      "ExternalChargeCapable": "<absent>",
+      "AdapterDetails": "<absent>",
+      "Amperage": "sint32:31",
+      "InstantAmperage": "sint32:31",
+      "CurrentCapacity": "<absent>",
+      "MaxCapacity": "<absent>",
+      "AppleRawCurrentCapacity": "<absent>",
+      "AppleRawMaxCapacity": "<absent>",
+      "DesignCapacity": "<absent>",
+      "NominalChargeCapacity": "<absent>",
+      "Temperature": "<absent>",
+      "CycleCount": "<absent>",
+      "TimeRemaining": "<absent>",
+      "MT6762ReportExpired": "bool:0"
+    },
+    "sysctls": {
+      "mt6762_power_valid": {
+        "value": 0,
+        "error": 0
+      },
+      "mt6762_adc_voltage_requests": {
+        "value": 55,
+        "error": 0
+      },
+      "mt6762_battery_report_gap_state": {
+        "value": 1,
+        "error": 0
+      },
+      "mt6762_battery_reports_suppressed": {
+        "value": 1,
+        "error": 0
+      }
+    }
+  },
+  "expired": [
+    {
+      "iteration": 29,
+      "monotonic_ns": 62016631000,
+      "properties": {
+        "MT6762ValidFields": "sint32:0",
+        "BatteryInstalled": "<absent>",
+        "ExternalConnected": "<absent>",
+        "IsCharging": "<absent>",
+        "Voltage": "<absent>",
+        "AppleRawExternalConnected": "<absent>",
+        "FullyCharged": "<absent>",
+        "ExternalChargeCapable": "<absent>",
+        "AdapterDetails": "<absent>",
+        "Amperage": "<absent>",
+        "InstantAmperage": "<absent>",
+        "CurrentCapacity": "<absent>",
+        "MaxCapacity": "<absent>",
+        "AppleRawCurrentCapacity": "<absent>",
+        "AppleRawMaxCapacity": "<absent>",
+        "DesignCapacity": "<absent>",
+        "NominalChargeCapacity": "<absent>",
+        "Temperature": "<absent>",
+        "CycleCount": "<absent>",
+        "TimeRemaining": "<absent>",
+        "MT6762ReportExpired": "bool:1"
+      },
+      "sysctls": {
+        "mt6762_power_valid": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_adc_voltage_requests": {
+          "value": 56,
+          "error": 0
+        },
+        "mt6762_battery_report_gap_state": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_battery_reports_suppressed": {
+          "value": 2,
+          "error": 0
+        }
+      }
+    },
+    {
+      "iteration": 30,
+      "monotonic_ns": 63631007000,
+      "properties": {
+        "MT6762ValidFields": "sint32:0",
+        "BatteryInstalled": "<absent>",
+        "ExternalConnected": "<absent>",
+        "IsCharging": "<absent>",
+        "Voltage": "<absent>",
+        "AppleRawExternalConnected": "<absent>",
+        "FullyCharged": "<absent>",
+        "ExternalChargeCapable": "<absent>",
+        "AdapterDetails": "<absent>",
+        "Amperage": "<absent>",
+        "InstantAmperage": "<absent>",
+        "CurrentCapacity": "<absent>",
+        "MaxCapacity": "<absent>",
+        "AppleRawCurrentCapacity": "<absent>",
+        "AppleRawMaxCapacity": "<absent>",
+        "DesignCapacity": "<absent>",
+        "NominalChargeCapacity": "<absent>",
+        "Temperature": "<absent>",
+        "CycleCount": "<absent>",
+        "TimeRemaining": "<absent>",
+        "MT6762ReportExpired": "bool:1"
+      },
+      "sysctls": {
+        "mt6762_power_valid": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_adc_voltage_requests": {
+          "value": 57,
+          "error": 0
+        },
+        "mt6762_battery_report_gap_state": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_battery_reports_suppressed": {
+          "value": 3,
+          "error": 0
+        }
+      }
+    },
+    {
+      "iteration": 31,
+      "monotonic_ns": 64658181000,
+      "properties": {
+        "MT6762ValidFields": "sint32:0",
+        "BatteryInstalled": "<absent>",
+        "ExternalConnected": "<absent>",
+        "IsCharging": "<absent>",
+        "Voltage": "<absent>",
+        "AppleRawExternalConnected": "<absent>",
+        "FullyCharged": "<absent>",
+        "ExternalChargeCapable": "<absent>",
+        "AdapterDetails": "<absent>",
+        "Amperage": "<absent>",
+        "InstantAmperage": "<absent>",
+        "CurrentCapacity": "<absent>",
+        "MaxCapacity": "<absent>",
+        "AppleRawCurrentCapacity": "<absent>",
+        "AppleRawMaxCapacity": "<absent>",
+        "DesignCapacity": "<absent>",
+        "NominalChargeCapacity": "<absent>",
+        "Temperature": "<absent>",
+        "CycleCount": "<absent>",
+        "TimeRemaining": "<absent>",
+        "MT6762ReportExpired": "bool:1"
+      },
+      "sysctls": {
+        "mt6762_power_valid": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_adc_voltage_requests": {
+          "value": 58,
+          "error": 0
+        },
+        "mt6762_battery_report_gap_state": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_battery_reports_suppressed": {
+          "value": 4,
+          "error": 0
+        }
+      }
+    },
+    {
+      "iteration": 32,
+      "monotonic_ns": 65685548000,
+      "properties": {
+        "MT6762ValidFields": "sint32:0",
+        "BatteryInstalled": "<absent>",
+        "ExternalConnected": "<absent>",
+        "IsCharging": "<absent>",
+        "Voltage": "<absent>",
+        "AppleRawExternalConnected": "<absent>",
+        "FullyCharged": "<absent>",
+        "ExternalChargeCapable": "<absent>",
+        "AdapterDetails": "<absent>",
+        "Amperage": "<absent>",
+        "InstantAmperage": "<absent>",
+        "CurrentCapacity": "<absent>",
+        "MaxCapacity": "<absent>",
+        "AppleRawCurrentCapacity": "<absent>",
+        "AppleRawMaxCapacity": "<absent>",
+        "DesignCapacity": "<absent>",
+        "NominalChargeCapacity": "<absent>",
+        "Temperature": "<absent>",
+        "CycleCount": "<absent>",
+        "TimeRemaining": "<absent>",
+        "MT6762ReportExpired": "bool:1"
+      },
+      "sysctls": {
+        "mt6762_power_valid": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_adc_voltage_requests": {
+          "value": 59,
+          "error": 0
+        },
+        "mt6762_battery_report_gap_state": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_battery_reports_suppressed": {
+          "value": 5,
+          "error": 0
+        }
+      }
+    },
+    {
+      "iteration": 33,
+      "monotonic_ns": 66709360000,
+      "properties": {
+        "MT6762ValidFields": "sint32:0",
+        "BatteryInstalled": "<absent>",
+        "ExternalConnected": "<absent>",
+        "IsCharging": "<absent>",
+        "Voltage": "<absent>",
+        "AppleRawExternalConnected": "<absent>",
+        "FullyCharged": "<absent>",
+        "ExternalChargeCapable": "<absent>",
+        "AdapterDetails": "<absent>",
+        "Amperage": "<absent>",
+        "InstantAmperage": "<absent>",
+        "CurrentCapacity": "<absent>",
+        "MaxCapacity": "<absent>",
+        "AppleRawCurrentCapacity": "<absent>",
+        "AppleRawMaxCapacity": "<absent>",
+        "DesignCapacity": "<absent>",
+        "NominalChargeCapacity": "<absent>",
+        "Temperature": "<absent>",
+        "CycleCount": "<absent>",
+        "TimeRemaining": "<absent>",
+        "MT6762ReportExpired": "bool:1"
+      },
+      "sysctls": {
+        "mt6762_power_valid": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_adc_voltage_requests": {
+          "value": 60,
+          "error": 0
+        },
+        "mt6762_battery_report_gap_state": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_battery_reports_suppressed": {
+          "value": 6,
+          "error": 0
+        }
+      }
+    },
+    {
+      "iteration": 34,
+      "monotonic_ns": 67742892000,
+      "properties": {
+        "MT6762ValidFields": "sint32:0",
+        "BatteryInstalled": "<absent>",
+        "ExternalConnected": "<absent>",
+        "IsCharging": "<absent>",
+        "Voltage": "<absent>",
+        "AppleRawExternalConnected": "<absent>",
+        "FullyCharged": "<absent>",
+        "ExternalChargeCapable": "<absent>",
+        "AdapterDetails": "<absent>",
+        "Amperage": "<absent>",
+        "InstantAmperage": "<absent>",
+        "CurrentCapacity": "<absent>",
+        "MaxCapacity": "<absent>",
+        "AppleRawCurrentCapacity": "<absent>",
+        "AppleRawMaxCapacity": "<absent>",
+        "DesignCapacity": "<absent>",
+        "NominalChargeCapacity": "<absent>",
+        "Temperature": "<absent>",
+        "CycleCount": "<absent>",
+        "TimeRemaining": "<absent>",
+        "MT6762ReportExpired": "bool:1"
+      },
+      "sysctls": {
+        "mt6762_power_valid": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_adc_voltage_requests": {
+          "value": 61,
+          "error": 0
+        },
+        "mt6762_battery_report_gap_state": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_battery_reports_suppressed": {
+          "value": 7,
+          "error": 0
+        }
+      }
+    }
+  ],
+  "recovered": {
+    "iteration": 35,
+    "monotonic_ns": 68865231000,
+    "properties": {
+      "MT6762ValidFields": "sint32:79",
+      "BatteryInstalled": "bool:1",
+      "ExternalConnected": "bool:1",
+      "IsCharging": "bool:0",
+      "Voltage": "sint32:4400",
+      "AppleRawExternalConnected": "bool:1",
+      "FullyCharged": "bool:0",
+      "ExternalChargeCapable": "<absent>",
+      "AdapterDetails": "<absent>",
+      "Amperage": "sint32:31",
+      "InstantAmperage": "sint32:31",
+      "CurrentCapacity": "<absent>",
+      "MaxCapacity": "<absent>",
+      "AppleRawCurrentCapacity": "<absent>",
+      "AppleRawMaxCapacity": "<absent>",
+      "DesignCapacity": "<absent>",
+      "NominalChargeCapacity": "<absent>",
+      "Temperature": "<absent>",
+      "CycleCount": "<absent>",
+      "TimeRemaining": "<absent>",
+      "MT6762ReportExpired": "bool:0"
+    },
+    "sysctls": {
+      "mt6762_power_valid": {
+        "value": 79,
+        "error": 0
+      },
+      "mt6762_adc_voltage_requests": {
+        "value": 63,
+        "error": 0
+      },
+      "mt6762_battery_report_gap_state": {
+        "value": 2,
+        "error": 0
+      },
+      "mt6762_battery_reports_suppressed": {
+        "value": 7,
+        "error": 0
+      }
+    }
+  },
+  "publication_transition_snapshots": [],
+  "expired_adc_request_observations": [
+    [
+      29,
+      56
+    ],
+    [
+      30,
+      57
+    ],
+    [
+      31,
+      58
+    ],
+    [
+      32,
+      59
+    ],
+    [
+      33,
+      60
+    ],
+    [
+      34,
+      61
+    ]
+  ],
+  "last_model_sample": {
+    "elapsed_seconds": 130.003,
+    "states": {
+      "lab-i2c-state": {
+        "enabled": true,
+        "synthetic": true,
+        "i2c0": {
+          "transactions": 12732,
+          "dma_reads": 12731,
+          "rx_bytes": 407394,
+          "last_status": 1
+        },
+        "i2c5": {
+          "transactions": 604,
+          "dma_reads": 0,
+          "rx_bytes": 603,
+          "last_status": 1,
+          "psc_control": 4,
+          "psc_status": 0
+        }
+      },
+      "lab-display-state": {
+        "enabled": true,
+        "synthetic": true,
+        "framebuffer_pa": 3705421824,
+        "fault": 0,
+        "applied_level": 512,
+        "enable": 1,
+        "duty": 512,
+        "pwm_writes": 0,
+        "commits": 0,
+        "rejected_writes": 0,
+        "reads": {
+          "spm": 18,
+          "mmsys": 2,
+          "ovl": 22,
+          "rdma": 2,
+          "dsi": 16,
+          "pwm": 14
+        }
+      },
+      "lab-power-state": {
+        "enabled": true,
+        "synthetic": true,
+        "fault": 0,
+        "key_mask": 0,
+        "fsm": 6,
+        "commands": 11691,
+        "reads": 10931,
+        "writes": 760,
+        "rejected": 0,
+        "clears": 10930,
+        "key_reads": 14334,
+        "adc_requests": [
+          120,
+          120
+        ],
+        "adc_completions": [
+          120,
+          120
+        ],
+        "thermal_enabled": false,
+        "thermal_calibration_synthetic": false,
+        "thermal_requests": [
+          0,
+          0,
+          0
+        ],
+        "thermal_completions": [
+          0,
+          0,
+          0
+        ],
+        "gauge_enabled": true,
+        "gauge_calibration_synthetic": true,
+        "gauge_control": 0,
+        "gauge_ticks": 258,
+        "gauge_snapshots": 130,
+        "gauge_commands": 520,
+        "bif_enabled": false,
+        "bif_config_synthetic": false,
+        "adc_delay_us": 0,
+        "bif_requests": 0,
+        "bif_completions": 0,
+        "bif_tdet_write_attempts": 0
+      }
+    }
+  },
+  "limits": [
+    "No physical battery, PMIC or charging validation.",
+    "Synthetic fixture31mA/4400mV do not establish physical calibration.",
+    "No home-screen/UI success claim for this130second diagnostic run.",
+    "Modeldata acquisition continued; only explicit native publication hook suppressed reportdelivery."
+  ]
+}

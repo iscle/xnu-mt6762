@@ -1,0 +1,275 @@
+{
+  "synthetic_only": true,
+  "physical_hardware_tested": false,
+  "cpu_count": 1,
+  "requested_duration_seconds": 430,
+  "run_completed": true,
+  "kernel_sha256": "346cbf6ea7a10b6a5a1778cf23e852974d89fb416de63e645f86bdadcb11ee7e",
+  "qemu_binary_sha256": "bd081f2077f2d88f69e1436712c7765bceaf496ba06081ad4499ea9e353eb84c",
+  "panic_observed": false,
+  "visual_observation": "Apple logo on black384x854; no home screen observed at bounded completion.",
+  "artifacts": {
+    "gui430.png": "860982503fbd9641439683dc421b082a9964156d6f57e72f435ddb246aa7f57b",
+    "gui430.serial.log": "5f12a30fb3f19b5f7a3e91563c6e6d165585b5cdbc5d3f6340c6bfe801839b73",
+    "gui430.models.json": "b037637768432a39c58299663860c56518f429db176b4a8f21e1ad595a641297",
+    "manifest.json": "1f2e9bca5526473bdf01182a680ab2f0a06ff3d5f71e952743087b4abbb6bbba"
+  },
+  "last_model_sample": {
+    "elapsed_seconds": 430.007,
+    "states": {
+      "lab-i2c-state": {
+        "enabled": true,
+        "synthetic": true,
+        "i2c0": {
+          "transactions": 43776,
+          "dma_reads": 43775,
+          "rx_bytes": 1400802,
+          "last_status": 1
+        },
+        "i2c5": {
+          "transactions": 2039,
+          "dma_reads": 0,
+          "rx_bytes": 2038,
+          "last_status": 1,
+          "psc_control": 4,
+          "psc_status": 0
+        }
+      },
+      "lab-display-state": {
+        "enabled": true,
+        "synthetic": true,
+        "framebuffer_pa": 3705421824,
+        "fault": 0,
+        "applied_level": 512,
+        "enable": 1,
+        "duty": 512,
+        "pwm_writes": 0,
+        "commits": 0,
+        "rejected_writes": 0,
+        "reads": {
+          "spm": 18,
+          "mmsys": 2,
+          "ovl": 22,
+          "rdma": 2,
+          "dsi": 16,
+          "pwm": 14
+        }
+      },
+      "lab-power-state": {
+        "enabled": true,
+        "synthetic": true,
+        "fault": 0,
+        "key_mask": 0,
+        "fsm": 0,
+        "commands": 39530,
+        "reads": 36988,
+        "writes": 2542,
+        "rejected": 0,
+        "clears": 36988,
+        "key_reads": 48828,
+        "adc_requests": [
+          407,
+          407
+        ],
+        "adc_completions": [
+          407,
+          407
+        ],
+        "thermal_enabled": false,
+        "thermal_calibration_synthetic": false,
+        "thermal_requests": [
+          0,
+          0,
+          0
+        ],
+        "thermal_completions": [
+          0,
+          0,
+          0
+        ],
+        "gauge_enabled": true,
+        "gauge_calibration_synthetic": true,
+        "gauge_control": 0,
+        "gauge_ticks": 858,
+        "gauge_snapshots": 432,
+        "gauge_commands": 1728,
+        "bif_enabled": false,
+        "bif_config_synthetic": false,
+        "adc_delay_us": 0,
+        "bif_requests": 0,
+        "bif_completions": 0,
+        "bif_tdet_write_attempts": 0
+      }
+    }
+  },
+  "native_input_actions": [
+    {
+      "elapsed_seconds": 260.519,
+      "action": {
+        "at": 260,
+        "keys": 1,
+        "hold": 0.15
+      },
+      "completed": true
+    },
+    {
+      "elapsed_seconds": 277.61,
+      "action": {
+        "at": 277,
+        "from": [
+          192,
+          427
+        ],
+        "steps": 2
+      },
+      "completed": true
+    },
+    {
+      "elapsed_seconds": 291.177,
+      "action": {
+        "at": 290,
+        "from": [
+          192,
+          840
+        ],
+        "to": [
+          192,
+          256
+        ],
+        "steps": 24
+      },
+      "completed": true
+    },
+    {
+      "elapsed_seconds": 315.295,
+      "action": {
+        "at": 315,
+        "from": [
+          192,
+          427
+        ],
+        "steps": 2
+      },
+      "completed": true
+    },
+    {
+      "elapsed_seconds": 340.419,
+      "action": {
+        "at": 340,
+        "from": [
+          192,
+          427
+        ],
+        "steps": 2
+      },
+      "completed": true
+    }
+  ],
+  "source_image_hashes": {
+    "RAMDisk": "9329e9c9bf46d6890798bb15d0d0036ec8c9235abf7d77edbacdd346992454a0",
+    "RAMDisk1": "a1d15481a70770f43a4c755e389b67363a121946eb1a2fb6d26e7350b3e1120a"
+  },
+  "differential": {
+    "reference": "native-gui1-input/payload-final/native430, build8 home screenshot",
+    "system_image_identical": true,
+    "input_schedule_identical": true,
+    "root_files_different": [
+      {
+        "file": "bin/backlight_probe",
+        "old": [
+          "file",
+          67656,
+          "d1fd761d40175f762fbe04041e16c0c561eb3327cca6c5cbba0a5f3fe35ef335"
+        ],
+        "new": null
+      },
+      {
+        "file": "etc/rc.jobs",
+        "old": [
+          "file",
+          105,
+          "4ad715dde2d32e00e8d8f8e61414d7f5d8118345e7ae9bfa849c5994676ac64e"
+        ],
+        "new": [
+          "file",
+          59,
+          "985f1e38b61f2df97305621008bcfa6635cc0ef47a336899bec74df06a679da9"
+        ]
+      }
+    ],
+    "launch_daemon_files_identical": true,
+    "new_gauge_fixture_enabled": true,
+    "apple_milestones": {
+      "build8_home": {
+        "shell_connected": {
+          "count": 1,
+          "first": "1970-01-01 01:00:32.519273+0100 backboardd[12:230] [SystemShell] System shell connected: <BKSystemShellClient: 0x1004a2020; bundleIdentifier: com.apple.springboard; bundlePath: /System/Library/CoreServices/SpringBoard.app; jobLabel: com.apple.SpringBoard; pid: 8; systemIdleSleepInterval: 3.00; watchdogType: shell; connection: <(null):0x100417950>>",
+          "last": "1970-01-01 01:00:32.519273+0100 backboardd[12:230] [SystemShell] System shell connected: <BKSystemShellClient: 0x1004a2020; bundleIdentifier: com.apple.springboard; bundlePath: /System/Library/CoreServices/SpringBoard.app; jobLabel: com.apple.SpringBoard; pid: 8; systemIdleSleepInterval: 3.00; watchdogType: shell; connection: <(null):0x100417950>>"
+        },
+        "shell_checked_in": {
+          "count": 1,
+          "first": "1970-01-01 01:06:02.653377+0100 backboardd[12:861] [SystemShell] Updating primary system app to: <BKSystemShellClient: 0x1004a2020; bundleIdentifier: com.apple.springboard; bundlePath: /System/Library/CoreServices/SpringBoard.app; jobLabel: com.apple.SpringBoard; pid: 8; systemIdleSleepInterval: 3.00; watchdogType: shell; connection: <BSCnx:host:Shell:0x100417950>; checkedIn: YES>",
+          "last": "1970-01-01 01:06:02.653377+0100 backboardd[12:861] [SystemShell] Updating primary system app to: <BKSystemShellClient: 0x1004a2020; bundleIdentifier: com.apple.springboard; bundlePath: /System/Library/CoreServices/SpringBoard.app; jobLabel: com.apple.SpringBoard; pid: 8; systemIdleSleepInterval: 3.00; watchdogType: shell; connection: <BSCnx:host:Shell:0x100417950>; checkedIn: YES>"
+        },
+        "bootui_shell_changed": {
+          "count": 3,
+          "first": "1970-01-01 01:00:32.553155+0100 backboardd[12:272] [BootUI] systemShellChangedWithPrimary: bundleIdentifier: com.apple.springboard; bundlePath: /System/Library/CoreServices/SpringBoard.app; jobLabel: com.apple.SpringBoard; pid: 8; systemIdleSleepInterval: 3.00; watchdogType: shell",
+          "last": "1970-01-01 01:06:02.704433+0100 backboardd[12:861] [BootUI] systemShellChangedWithPrimary: bundleIdentifier: com.apple.springboard; bundlePath: /System/Library/CoreServices/SpringBoard.app; jobLabel: com.apple.SpringBoard; pid: 8; systemIdleSleepInterval: 3.00; watchdogType: shell"
+        },
+        "first_filemanifest": {
+          "count": 77,
+          "first": "1970-01-01 01:06:15.128574+0100 SpringBoard[8:188] [FileManifest] [com.apple.FMDMagSafeSetupRemoteUI] ID Mismatch. purging and reingesting. savedCachedGUIDString=(null) currentCacheGUID=6B1C38DB-6F27-42C7-81C8-5293380A8D8D savedInstallInstanceID=(null) currentInstallInstanceID=file:///Applications/FMDMagSafeSetupRemoteUI.app/ savedIngestorVersionNSNumber=(null) currentIngestorVersion=5 dataStore=<FBSApplicationDataStore: 0x282d84820>",
+          "last": "1970-01-01 01:06:18.972602+0100 SpringBoard[8:188] [FileManifest] [com.apple.CTNotifyUIService] ID Mismatch. purging and reingesting. savedCachedGUIDString=(null) currentCacheGUID=6B1C38DB-6F27-42C7-81C8-5293380A8D8D savedInstallInstanceID=(null) currentInstallInstanceID=file:///Applications/CTNotifyUIService.app/ savedIngestorVersionNSNumber=(null) currentIngestorVersion=5 dataStore=<FBSApplicationDataStore: 0x282d8b800>"
+        },
+        "application_launch": {
+          "count": 1,
+          "first": "1970-01-01 01:07:01.210442+0100 SpringBoard[8:188] [Application] Application windows are expected to have a root view controller at the end of application launch",
+          "last": "1970-01-01 01:07:01.210442+0100 SpringBoard[8:188] [Application] Application windows are expected to have a root view controller at the end of application launch"
+        },
+        "native_display_power": {
+          "count": 0,
+          "first": null,
+          "last": null
+        }
+      },
+      "build18": {
+        "shell_connected": {
+          "count": 1,
+          "first": "1970-01-01 01:00:45.826314+0100 backboardd[12:221] [SystemShell] System shell connected: <BKSystemShellClient: 0x1007a37b0; bundleIdentifier: com.apple.springboard; bundlePath: /System/Library/CoreServices/SpringBoard.app; jobLabel: com.apple.SpringBoard; pid: 8; systemIdleSleepInterval: 3.00; watchdogType: shell; connection: <(null):0x10071b950>>",
+          "last": "1970-01-01 01:00:45.826314+0100 backboardd[12:221] [SystemShell] System shell connected: <BKSystemShellClient: 0x1007a37b0; bundleIdentifier: com.apple.springboard; bundlePath: /System/Library/CoreServices/SpringBoard.app; jobLabel: com.apple.SpringBoard; pid: 8; systemIdleSleepInterval: 3.00; watchdogType: shell; connection: <(null):0x10071b950>>"
+        },
+        "shell_checked_in": {
+          "count": 1,
+          "first": "1970-01-01 01:06:22.759359+0100 backboardd[12:343] [SystemShell] Updating primary system app to: <BKSystemShellClient: 0x1007a37b0; bundleIdentifier: com.apple.springboard; bundlePath: /System/Library/CoreServices/SpringBoard.app; jobLabel: com.apple.SpringBoard; pid: 8; systemIdleSleepInterval: 3.00; watchdogType: shell; connection: <BSCnx:host:Shell:0x10071b950>; checkedIn: YES>",
+          "last": "1970-01-01 01:06:22.759359+0100 backboardd[12:343] [SystemShell] Updating primary system app to: <BKSystemShellClient: 0x1007a37b0; bundleIdentifier: com.apple.springboard; bundlePath: /System/Library/CoreServices/SpringBoard.app; jobLabel: com.apple.SpringBoard; pid: 8; systemIdleSleepInterval: 3.00; watchdogType: shell; connection: <BSCnx:host:Shell:0x10071b950>; checkedIn: YES>"
+        },
+        "bootui_shell_changed": {
+          "count": 3,
+          "first": "1970-01-01 01:00:46.570418+0100 backboardd[12:261] [BootUI] systemShellChangedWithPrimary: bundleIdentifier: com.apple.springboard; bundlePath: /System/Library/CoreServices/SpringBoard.app; jobLabel: com.apple.SpringBoard; pid: 8; systemIdleSleepInterval: 3.00; watchdogType: shell",
+          "last": "1970-01-01 01:06:22.828109+0100 backboardd[12:333] [BootUI] systemShellChangedWithPrimary: bundleIdentifier: com.apple.springboard; bundlePath: /System/Library/CoreServices/SpringBoard.app; jobLabel: com.apple.SpringBoard; pid: 8; systemIdleSleepInterval: 3.00; watchdogType: shell"
+        },
+        "first_filemanifest": {
+          "count": 77,
+          "first": "1970-01-01 01:06:35.204513+0100 SpringBoard[8:189] [FileManifest] [com.apple.CredentialSharingService] ID Mismatch. purging and reingesting. savedCachedGUIDString=(null) currentCacheGUID=603C401F-FD82-452A-9C33-413012615162 savedInstallInstanceID=(null) currentInstallInstanceID=file:///Applications/CredentialSharingUIViewService.app/ savedIngestorVersionNSNumber=(null) currentIngestorVersion=5 dataStore=<FBSApplicationDataStore: 0x280aa1600>",
+          "last": "1970-01-01 01:06:39.624486+0100 SpringBoard[8:189] [FileManifest] [com.apple.PassbookUISceneService] ID Mismatch. purging and reingesting. savedCachedGUIDString=(null) currentCacheGUID=603C401F-FD82-452A-9C33-413012615162 savedInstallInstanceID=(null) currentInstallInstanceID=file:///Applications/PassbookUISceneService.app/ savedIngestorVersionNSNumber=(null) currentIngestorVersion=5 dataStore=<FBSApplicationDataStore: 0x280aafec0>"
+        },
+        "application_launch": {
+          "count": 0,
+          "first": null,
+          "last": null
+        },
+        "native_display_power": {
+          "count": 0,
+          "first": null,
+          "last": null
+        }
+      }
+    },
+    "interpretation": "Build18 Apple startup milestones occurred about20 seconds later. Build8 application-launch/root-view-controller log appeared at421s, while build18 had not reached it before430s. This supports testing a longer bounded run; it does not establish the cause of the missing home screen or a kernel regression."
+  },
+  "limits": [
+    "No physical display scanout/DSI validation.",
+    "No claim that prior eight-core timeout is fixed.",
+    "No display-off request observed; do not attribute the logo to native blanking without further evidence."
+  ]
+}

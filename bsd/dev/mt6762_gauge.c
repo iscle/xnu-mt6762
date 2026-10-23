@@ -38,15 +38,23 @@ SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_gauge_samples,CTLFLAG_RD|CTLFLAG_LOCKED
 SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_gauge_errors,CTLFLAG_RD|CTLFLAG_LOCKED,&errors,0,"Gauge admission/transaction/configuration failures");
 SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_gauge_fault,CTLFLAG_RD|CTLFLAG_LOCKED,&transport_fault,0,"Latched protocol/calibration ownership failure");
 SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_gauge_raw_current,CTLFLAG_RD|CTLFLAG_LOCKED,&raw_current,0,"Latest completed raw current, not calibrated freshness; -1 absent");
-int mt6762_gauge_current_read(int *ua)
+int mt6762_gauge_current_snapshot(int *ua,uint64_t *expires_abs)
 {
     uint64_t now;
     int e=-ENXIO;
     if(!ua)return -EINVAL;
     lck_mtx_lock(&gauge_mutex);
     clock_get_uptime(&now);
-    if(valid && now<deadline) {*ua=current_ua;e=0;}
+    if(valid && now<deadline) {
+        *ua=current_ua;
+        if(expires_abs)*expires_abs=deadline;
+        e=0;
+    }
     lck_mtx_unlock(&gauge_mutex);return e;
+}
+int mt6762_gauge_current_read(int *ua)
+{
+    return mt6762_gauge_current_snapshot(ua,NULL);
 }
 static int flag(const char *name)
 {uint32_t v;return !mt6762_handoff_u32(name,&v) && v==1;}

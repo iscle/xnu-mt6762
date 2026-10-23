@@ -20,7 +20,11 @@
  */
 
 #include <IOKit/IOLib.h>
+#include <IOKit/IOWorkLoop.h>
+#include <IOKit/IOTimerEventSource.h>
+#include <kern/clock.h>
 #include <sys/mt6762_power.h>
+#include "../../tools/mt6762/hardware/power/report_expiry.h"
 #include <IOKit/IOPlatformExpert.h>
 #include <IOKit/pwr_mgt/IOPM.h>
 #include <IOKit/pwr_mgt/IOPMPowerSource.h>
@@ -52,17 +56,31 @@ class RedwoodBattery : public IOPMPowerSource
 public:
 	void report(const struct redwood_battery_state * b);
 	void reportPartial(const struct mt6762_battery_sample * b);
+	bool preparePartialExpiry(void);
+	void stop(IOService *provider) APPLE_KEXT_OVERRIDE;
+	void free(void) APPLE_KEXT_OVERRIDE;
 
 private:
 	void number(const char * key, long long value);
 	void flag(const char * key, bool value);
 	void object(const char * key, OSObject * value);
 	void forget(const char * key);
+	void publishPartial(const struct mt6762_battery_sample * b);
+	void clearPartial(bool expired);
+	void partialTimer(void);
+	static void partialTimerFired(OSObject *owner, IOTimerEventSource *timer);
+	IOWorkLoop * fPartialLoop = NULL;
+	IOTimerEventSource * fPartialTimer = NULL;
+	bool fPartialTimerAdded = false;
+	struct mt6762_report_expiry fPartialExpiry = {};
+	uint64_t fMaximumAge = 0;
 };
 
 OSDefineMetaClassAndStructors(RedwoodBattery, IOPMPowerSource);
 
 static RedwoodBattery * battery;
+/* Native and legacy publishers cannot share a service/timer by accident. */
+static RedwoodBattery * nativeBattery;
 
 void
 RedwoodBattery::number(const char * key, long long value)
@@ -245,7 +263,7 @@ RedwoodBattery::forget(const char * key)
 }
 
 void
-RedwoodBattery::reportPartial(const struct mt6762_battery_sample * b)
+RedwoodBattery::publishPartial(const struct mt6762_battery_sample * b)
 {
 	const uint32_t v = b->valid;
 	if (v & MT6762_BAT_PRESENT) setBatteryInstalled(b->present != 0);
@@ -293,6 +311,111 @@ RedwoodBattery::reportPartial(const struct mt6762_battery_sample * b)
 	updateStatus();
 }
 
+bool
+RedwoodBattery::preparePartialExpiry(void)
+{
+	if (fPartialLoop) return false;
+	nanoseconds_to_absolutetime(2 * NSEC_PER_SEC, &fMaximumAge);
+	fPartialLoop = IOWorkLoop::workLoop();
+	fPartialTimer = IOTimerEventSource::timerEventSource(this, &RedwoodBattery::partialTimerFired);
+	if (!fMaximumAge || !fPartialLoop || !fPartialTimer ||
+	    fPartialLoop->addEventSource(fPartialTimer) != kIOReturnSuccess) return false;
+	fPartialTimerAdded = true;
+	return true;
+}
+
+/* All partial property changes, including invalidation, run under this same
+ * workloop gate. Never hold a BSD snapshot mutex while entering this gate. */
+void
+RedwoodBattery::reportPartial(const struct mt6762_battery_sample * b)
+{
+	if (!fPartialLoop || !b) return;
+	fPartialLoop->runActionBlock(^IOReturn (void) {
+		uint64_t now = mach_absolute_time();
+		bool oldReportExpiredCurrent = fPartialExpiry.seen &&
+		    b->acquired_abs <= fPartialExpiry.last_acquired &&
+		    fPartialExpiry.active && now >= fPartialExpiry.expires;
+		int action = mt6762_report_receive(&fPartialExpiry, b->acquired_abs,
+		    b->expires_abs, now, b->valid, fMaximumAge);
+		if (action == MT6762_REPORT_IGNORE) return kIOReturnSuccess;
+		fPartialTimer->cancelTimeout();
+		if (action == MT6762_REPORT_APPLY) {
+			/* Arm before publishing, so allocation/notification work cannot
+			 * postpone when the observation is eligible for invalidation. */
+			if (fPartialTimer->wakeAtTime(fPartialExpiry.expires) == kIOReturnSuccess) {
+				flag("MT6762ReportExpired", false);
+				publishPartial(b);
+				return kIOReturnSuccess;
+			}
+			fPartialExpiry.active = 0;
+			clearPartial(true);
+			return kIOReturnError;
+		}
+		clearPartial(oldReportExpiredCurrent ||
+		    !mt6762_report_fresh(b->acquired_abs, b->expires_abs, now, fMaximumAge));
+		return kIOReturnSuccess;
+	});
+}
+
+void
+RedwoodBattery::clearPartial(bool expired)
+{
+	struct mt6762_battery_sample unavailable = {};
+	unavailable.size = sizeof(unavailable);
+	flag("MT6762ReportExpired", expired);
+	/* Removal is explicit: updateStatus alone only copies present keys. */
+	publishPartial(&unavailable);
+}
+
+void
+RedwoodBattery::partialTimer(void)
+{
+	if (fPartialExpiry.stopped) return;
+	if (mt6762_report_expire(&fPartialExpiry, mach_absolute_time()) == MT6762_REPORT_CLEAR) {
+		clearPartial(true);
+	} else if (fPartialExpiry.active &&
+	    fPartialTimer->wakeAtTime(fPartialExpiry.expires) != kIOReturnSuccess) {
+		fPartialExpiry.active = 0;
+		clearPartial(true);
+	}
+}
+
+void
+RedwoodBattery::partialTimerFired(OSObject *owner, IOTimerEventSource *timer)
+{
+	(void)timer;
+	RedwoodBattery *source = OSDynamicCast(RedwoodBattery, owner);
+	if (source) source->partialTimer();
+}
+
+void
+RedwoodBattery::stop(IOService *provider)
+{
+	if (fPartialLoop) fPartialLoop->runActionBlock(^IOReturn (void) {
+		mt6762_report_stop(&fPartialExpiry);
+		if (fPartialTimer) fPartialTimer->cancelTimeout();
+		clearPartial(true);
+		return kIOReturnSuccess;
+	});
+	IOPMPowerSource::stop(provider);
+}
+
+void
+RedwoodBattery::free(void)
+{
+	/* Gate acquisition drains any running timer/report before removal. Initial
+	 * attach/start failures use this path too, before nativeBattery is set. */
+	if (fPartialLoop) fPartialLoop->runActionBlock(^IOReturn (void) {
+		mt6762_report_stop(&fPartialExpiry);
+		if (fPartialTimer) fPartialTimer->cancelTimeout();
+		return kIOReturnSuccess;
+	});
+	if (fPartialTimerAdded && fPartialLoop) fPartialLoop->removeEventSource(fPartialTimer);
+	OSSafeReleaseNULL(fPartialTimer);
+	OSSafeReleaseNULL(fPartialLoop);
+	IOPMPowerSource::free();
+}
+
 /* One native worker owns this entry point. Missing capacity intentionally
  * leaves the iOS percentage unavailable until a calibrated fuel gauge exists. */
 void
@@ -300,11 +423,11 @@ RedwoodBatteryReportPartial(const void * state, unsigned size)
 {
 	const struct mt6762_battery_sample * b = (const struct mt6762_battery_sample *)state;
 	if (!b || size != sizeof(*b) || b->size != sizeof(*b)) return;
-	if (battery == NULL) {
+	if (nativeBattery == NULL) {
 		if (!b->valid) return;
 		IOService * platform = IOService::getPlatform();
 		RedwoodBattery * made = OSTypeAlloc(RedwoodBattery);
-		if (platform == NULL || made == NULL || !made->init()) {
+		if (platform == NULL || made == NULL || !made->init() || !made->preparePartialExpiry()) {
 			OSSafeReleaseNULL(made);
 			return;
 		}
@@ -317,9 +440,9 @@ RedwoodBatteryReportPartial(const void * state, unsigned size)
 			return;
 		}
 		made->registerService();
-		battery = made;
-		IOLog("MT6762Battery: partial observations published; validity %#x\n", b->valid);
+		nativeBattery = made;
+		IOLog("MT6762Battery: partial observation service registered with acquisition expiry\n");
 		return;
 	}
-	battery->reportPartial(b);
+	nativeBattery->reportPartial(b);
 }

@@ -61,24 +61,25 @@ The 16 ms period may be delayed by bounded bus transactions.
 Truthful battery properties
 ---------------------------
 
-The new 36-byte ``mt6762_battery_sample`` has an explicit validity mask and a
+The internal ``mt6762_battery_sample`` has an explicit validity mask and a
 separate call path to IOKit. The existing redwood userspace/battery structure
 has not changed. Every sample replaces validity; missing IOKit properties are
 removed from both the internal power-source dictionary and IORegistry.
 
 Known observations can include battery detection (only while BATON detection
 is enabled), PMIC external power, nominal ADC voltage, and PSC state. Current,
-SOC, and calibrated temperature are not available. A nominal NTC estimate is
+SOC, and calibrated temperature are not available from the basic observer.
+The separately gated fuel gauge can supply signed current (see ``GAUGE.rst``). A nominal NTC estimate is
 exposed only in a diagnostic sysctl, never as battery temperature or as
-permission to charge. The stock 25 C constant is not reused. Sysctl current's
-legacy zero fallback is not a measurement: ``kern.redwood.mt6762_power_valid``
-must be consulted. Unknown SOC and temperature use -1 and -273 sentinels.
+permission to charge. The stock 25 C constant is not reused. Native sysctl unknown current uses INT_MIN; validity must also be checked via
+``kern.redwood.mt6762_power_valid``. Unknown SOC, voltage and presence use -1,
+and unknown temperature uses -273. The ordinary Redwood legacy path is unchanged.
 
 A real handoff must leave charging disabled or retain an independently
 verified protecting controller. Inheriting an enabled charger while Android
 thermal logic is gone does not satisfy this prerequisite.
 
-No maximum capacity, adapter budget, current, temperature, or charging
+No maximum capacity, adapter budget, unknown current, temperature, or charging
 capability is invented. Because powerd normally requires CurrentCapacity and
 MaxCapacity, a missing iOS percentage is expected until a real calibrated
 gauge implementation exists. This implementation does not satisfy autonomous
@@ -107,3 +108,55 @@ I2C5 handoff. Its deterministic
 identity/state values are synthetic; they cannot establish physical charger,
 PMIC, ADC or charging functionality. Review the parent integration logs for
 the exact kernel build and emulator result.
+
+Acquisition age and publication expiry
+-------------------------------------
+
+Native reports carry internal ``acquired_abs`` and ``expires_abs`` timestamps,
+not an Apple ABI change. Acquisition is stamped before PMIC/ADC/charger reads.
+The deadline is no later than acquisition plus two seconds and is shortened
+to an included gauge reading's own expiry. Slow reads and delayed delivery
+cannot extend source lifetime. Missing, future, overlong and already expired
+timestamps are rejected. Acquisition time orders reports independently of
+expiry: a newer report may legitimately have an earlier source deadline.
+
+``report_expiry.h`` is shared by the BSD snapshot and IOKit consumer. The BSD
+mutex is released before entering IOKit. Native ``RedwoodBattery`` uses its own
+IOWorkLoop and IOTimerEventSource; report publication, timer expiry, stop and
+cleanup share that gate. An old queued callback examines the current deadline
+and cannot erase a newer fresh observation. At expiry the service publishes
+``MT6762ValidFields=0`` and ``MT6762ReportExpired=true`` and removes measured
+properties from both the power-source dictionary and IORegistry. Unknown is
+represented by absent properties, not zero voltage/current or false presence.
+Fresh delivery restores only valid fields and clears the expired flag. A fresh
+explicit invalid report clears fields immediately without claiming an age
+timeout. Stop cancels the timer and is terminal; free drains the gate and
+removes/releases the timer. Ordinary Redwood reports create no expiry timer.
+
+The timer deadline is absolute and armed before publication; actual callback
+delivery remains subject to kernel scheduling. This is not a hard realtime
+guarantee during a stalled kernel. BSD scalar getters independently check age
+at read time. Raw ADC diagnostics describe continuing acquisition and must not
+be interpreted as the age of the separately published battery snapshot.
+
+Original iOS16.5 powerd matches IOPMPowerSource, subscribes to the battery-status
+message and rereads properties. Its capacity checks reject missing
+CurrentCapacity/MaxCapacity. ``evidence/powerd-publication-contract.json`` records
+bounded addresses and file identity. IOPMPowerSource::updateStatus copies
+present keys and notifies clients but does not remove missing keys; explicit
+removal is therefore required. No percentage is fabricated to satisfy powerd.
+
+``./test.sh`` includes source-age, expired-arrival, shortened-deadline, queued
+old-timer, duplicate/older-report, stop and overflow-boundary vectors. Runtime
+validation uses the original IOKit framework through the read-only
+``battery_probe 100 1000`` helper. Each iteration takes one registry dictionary
+snapshot and reports named fields, expiry state, and read-only BSD counters.
+A snapshot can still intersect a multi-property update; the test requires
+repeated complete expired observations and later recovery.
+
+The optional ``battery-report-gap-start-ms``/``battery-report-gap-ms`` handoff
+properties require ``lab-fixture=1`` and are disabled by default. They suppress
+report delivery to BSD and IOKit only; acquisition and key polling continue.
+The planned explicit 60-second start/8-second gap checks that the timer and
+getters invalidate a stopped publisher without relying on new invalid reports.
+This synthetic test does not model a physical PMIC or establish charging safety.

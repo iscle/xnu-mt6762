@@ -122,6 +122,26 @@ class PrepareTests(unittest.TestCase):
             self.assertEqual(struct.unpack('<I', handoff[key])[0],value)
         with self.assertRaises(ValueError): p.make_adt(bytes(64), native_lab_gauge=True)
 
+    def test_publication_gap_requires_explicit_power_lab_and_bounds(self):
+        tree,_=parse_adt(p.make_adt(bytes(64),native_lab_i2c=True,
+            native_lab_power=True,native_lab_battery_gap_start_ms=60000,
+            native_lab_battery_gap_ms=8000))
+        chosen=next(n for n in tree['children'] if n['name']==b'chosen\0')
+        handoff=next(n for n in chosen['children'] if n['name']==b'mt6762-handoff\0')
+        self.assertEqual(struct.unpack('<I',handoff['lab-fixture'])[0],1)
+        self.assertEqual(struct.unpack('<I',handoff['battery-report-gap-start-ms'])[0],60000)
+        self.assertEqual(struct.unpack('<I',handoff['battery-report-gap-ms'])[0],8000)
+        for start,duration in [(0,2000),(1000,0),(999,2000),(300001,2000),(1000,1999),(1000,10001)]:
+            with self.assertRaises(ValueError):
+                p.make_adt(bytes(64),native_lab_i2c=True,native_lab_power=True,
+                    native_lab_battery_gap_start_ms=start,native_lab_battery_gap_ms=duration)
+        with self.assertRaises(ValueError):
+            p.make_adt(bytes(64),native_lab_battery_gap_start_ms=1000,native_lab_battery_gap_ms=2000)
+        normal,_=parse_adt(p.make_adt(bytes(64),native_lab_i2c=True,native_lab_power=True))
+        chosen=next(n for n in normal['children'] if n['name']==b'chosen\0')
+        handoff=next(n for n in chosen['children'] if n['name']==b'mt6762-handoff\0')
+        self.assertNotIn('battery-report-gap-ms',handoff)
+
     def test_bif_handoff_is_explicit_and_readonly_tdet(self):
         tree, _ = parse_adt(p.make_adt(bytes(64), native_lab_i2c=True,
                            native_lab_power=True, native_lab_bif=True))

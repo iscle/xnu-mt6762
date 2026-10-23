@@ -11,6 +11,7 @@
 /* Every sample replaces validity; omitted values must not remain stale. */
 struct mt6762_battery_sample {
     uint32_t size, valid;
+    uint64_t acquired_abs, expires_abs;
     int32_t present, external, voltage_uv, current_ua;
     int32_t temperature_hundredths, percent_hundredths, status;
 };
@@ -24,6 +25,7 @@ int mt6762_pwrap_read16(uint16_t address, uint16_t *value);
 int mt6762_pwrap_write16(uint16_t address, uint16_t value);
 int mt6762_pmic_thermal_sample(unsigned sensor,uint16_t *raw);
 void mt6762_battery_report(const struct mt6762_battery_sample *sample);
+uint32_t mt6762_battery_valid_fields(void);
 #ifdef __cplusplus
 }
 #endif

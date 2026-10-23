@@ -227,3 +227,41 @@ For ownership/configuration/timeout/rail failures it instead requires the
 native fault to remain latched after the model is externally repaired. The
 captured pre-clear native and model snapshots distinguish recovery evidence
 from merely starting with a healthy device.
+
+Publication deadlines without new reports
+----------------------------------------
+
+The paired options ``--native-lab-battery-gap-start-ms`` and
+``--native-lab-battery-gap-ms`` select a default-off, explicitly synthetic
+publication gap. The native hook requires ``lab-fixture=1`` and bounded
+start1000..300000ms/duration2000..10000ms. Time starts at the first native
+report delivery opportunity, not guaranteed successful IOKit publication.
+Only report delivery stops; acquisition and button polling continue. No
+peripheral writes are added by this hook.
+
+For the static observer, a5000ms start/5000ms gap and15second run exercise
+BSD getter expiry and recovery. ``probe_native.py`` requires valid voltage
+before the gap, repeated coherent expired BSD values during the gap,
+continued ADC requests, and recovered fresh voltage afterward. Unknown SOC
+and battery temperature remain unavailable. Separate getters can straddle
+a boundary, so partially transitioned observations are not treated as a
+coherent sample.
+
+For original Apple IOKit, prepare a new run with
+``MTK_NATIVE_BATTERY_GAP_START_MS=60000``, ``MTK_NATIVE_BATTERY_GAP_MS=8000``,
+``MTK_NATIVE_GAUGE=1`` and the source-built read-only
+``MTK_BATTERY_PROBE``. Set ``MTK_BATTERY_PROBE_REPEATS=100`` and
+``MTK_BATTERY_PROBE_INTERVAL_MS=1000``; capture130seconds. The helper copies
+one property dictionary for each service and reports native BSD validity
+and acquisition counters separately. Validate its serial log with::
+
+  python3 tools/mt6762/boot/check_battery_expiry.py SERIAL_LOG \
+    --require-current --output NEW_RESULT_JSON
+
+The validator selects only ``MT6762Battery`` and requires original IOKit
+valid measurements, repeated expired observations with validity0 and all
+measured properties absent, then fresh recovery. ADC acquisition must
+continue during expiry; unknown capacity, SOC-related fields, temperature,
+cycle count and time remaining must stay absent. Any publication-boundary
+snapshots are retained explicitly. This is emulation evidence, not physical
+battery validation or a new source of battery capacity/temperature data.

@@ -178,13 +178,16 @@ def load_identity(path):
     return result
 
 
-def make_adt(seed, ramdisks=(), framebuffer=False, identity=None, native_lab_i2c=False, cpus=1, native_lab_display=None, native_lab_sspm=False, native_lab_power=False, native_lab_thermal=False, native_lab_gauge=False, native_lab_bif=False):
+def make_adt(seed, ramdisks=(), framebuffer=False, identity=None, native_lab_i2c=False, cpus=1, native_lab_display=None, native_lab_sspm=False, native_lab_power=False, native_lab_thermal=False, native_lab_gauge=False, native_lab_bif=False, native_lab_battery_gap_start_ms=0, native_lab_battery_gap_ms=0):
     if not 1 <= cpus <= 8:
         raise ValueError('MT6762 laboratory topology supports1..8 CPUs')
     if len(seed) != 64:
         raise ValueError('Random seed must be64 bytes')
     chosen_children = [node('memory-map', [('RAMDisk' + (str(i) if i else ''), u64(*disk))
                             for i, disk in enumerate(ramdisks)])]
+    if native_lab_battery_gap_start_ms or native_lab_battery_gap_ms:
+        if not native_lab_power or not 1000<=native_lab_battery_gap_start_ms<=300000 or not 2000<=native_lab_battery_gap_ms<=10000:
+            raise ValueError('Battery report gap requires power, start1000..300000ms and duration2000..10000ms')
     if native_lab_bif and not native_lab_power:
         raise ValueError('Native BIF fixture requires native power fixtures')
     if native_lab_gauge and not native_lab_power:
@@ -209,6 +212,9 @@ def make_adt(seed, ramdisks=(), framebuffer=False, identity=None, native_lab_i2c
             'touch-max-x': 384, 'touch-max-y': 854, 'charger-verified': 1,
             'charger-control-owned': 1,
         }
+        if native_lab_battery_gap_ms:
+            fixture.update({'battery-report-gap-start-ms': native_lab_battery_gap_start_ms,
+                            'battery-report-gap-ms': native_lab_battery_gap_ms})
         if native_lab_bif:
             fixture.update({'bif-adc-owned': 1, 'baton-tdet-owned': 1, 'bif-trim-verified': 1,
                 'bif-tdet': 4, 'bif-sw-gain-trim': 0x4000, 'bif-sw-offset-trim': 0})
@@ -380,6 +386,10 @@ def main():
                    help='Opt-in native driver handoff for QEMU I2C/APDMA fixtures; never a phone handoff')
     p.add_argument('--native-lab-sspm', action='store_true',
                    help='With --native-lab-i2c, synthetic SSPM PLATFORM liveness; no DVFS')
+    p.add_argument('--native-lab-battery-gap-start-ms',type=int,default=0,
+                   help='Explicit lab publication gap start after first delivery attempt,1000..300000ms; paired with gap duration')
+    p.add_argument('--native-lab-battery-gap-ms',type=int,default=0,
+                   help='Lab-only report publication gap2000..10000ms; acquisition and keys continue')
     p.add_argument('--native-lab-adc-delay-us', type=int, default=0,
                    help='Explicit synthetic channels3/11 conversion delay, 0 keeps80us; otherwise80..10000us')
     p.add_argument('--native-lab-bif', action='store_true',
@@ -403,6 +413,9 @@ def main():
         raise ValueError('Boot cpus= must match --cpus exactly')
     if not cpu_args:
         a.cmdline += f' cpus={a.cpus}'
+    if a.native_lab_battery_gap_start_ms or a.native_lab_battery_gap_ms:
+        if not a.native_lab_power or not 1000<=a.native_lab_battery_gap_start_ms<=300000 or not 2000<=a.native_lab_battery_gap_ms<=10000:
+            raise ValueError('Battery report gap needs --native-lab-power, paired bounded start and duration')
     if a.native_lab_adc_delay_us and (not a.native_lab_power or not 80<=a.native_lab_adc_delay_us<=10000):
         raise ValueError('--native-lab-adc-delay-us requires --native-lab-power and80..10000us')
     if a.native_lab_bif and not a.native_lab_power:
@@ -474,7 +487,7 @@ def main():
         cursor += size
     identity = load_identity(a.identity_header) if a.identity_header else None
     adt = make_adt(os.urandom(64), ramdisk_pairs, a.framebuffer, identity, a.native_lab_i2c, a.cpus,
-                   framebuffer if a.native_lab_display else None, a.native_lab_sspm, a.native_lab_power, a.native_lab_thermal, a.native_lab_gauge, a.native_lab_bif)
+                   framebuffer if a.native_lab_display else None, a.native_lab_sspm, a.native_lab_power, a.native_lab_thermal, a.native_lab_gauge, a.native_lab_bif, a.native_lab_battery_gap_start_ms, a.native_lab_battery_gap_ms)
     adt_pa = skip_linux_dtb(cursor, align(len(adt)) + PAGE)
     ba_pa = align(adt_pa + len(adt))
     top = ba_pa + PAGE
@@ -549,6 +562,7 @@ def main():
                     ram_size=MEMORY, vm_page_size=PAGE, hardware_page_size=4096, cpu_count=a.cpus,
                     boot_args_pa=hex(ba_pa), adt_pa=hex(adt_pa), top_of_kernel_data=hex(top),
                     chained_rebases=nfix, ramdisk=ramdisk_info, framebuffer=framebuffer,
+                    native_lab_battery_gap_start_ms=a.native_lab_battery_gap_start_ms, native_lab_battery_gap_ms=a.native_lab_battery_gap_ms,
                     native_lab_adc_delay_us=a.native_lab_adc_delay_us, native_lab_bif=a.native_lab_bif, native_lab_gauge=a.native_lab_gauge, native_lab_thermal=a.native_lab_thermal, native_lab_power=a.native_lab_power, native_lab_sspm=a.native_lab_sspm, native_lab_i2c=a.native_lab_i2c, native_lab_display=a.native_lab_display, native_lab_touch_events=a.native_lab_touch_events,
                     identity_header_sha256=hashlib.sha256(a.identity_header.read_bytes()).hexdigest() if a.identity_header else None,
                     regions=regions, reserved=reserved, command=command,

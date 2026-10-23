@@ -1,0 +1,49 @@
+{
+  "artifact": "iOS16.5 iPhone10,3 original System/Library/CoreServices/powerd.bundle/powerd",
+  "sha256": "0d504def14d3eeacfa1ad361788d12abe3a752c8253fd65c1457a07a5826b808",
+  "method": "Format-aware Mach-O segment/CFString resolution, Capstone5 disassembly, llvm-objdump indirect-symbol mapping; no executable patches",
+  "observations": [
+    {
+      "at": "0x100027e70..0x100027e9c",
+      "behavior": "IOServiceMatching(IOPMPowerSource), register matching callback0x10002d768."
+    },
+    {
+      "at": "0x10002d8cc..0x10002d8ec",
+      "behavior": "IOServiceAddInterestNotification with IOGeneralInterest, callback0x10002da90 and per-source state."
+    },
+    {
+      "at": "0x10002dab8..0x10002dadc",
+      "behavior": "Compare message0xe0024100 then tail-call battery refresh0x10002daf0."
+    },
+    {
+      "at": "0x10002db54..0x10002db64",
+      "behavior": "Release prior cached dictionary and clear its slot before refreshing."
+    },
+    {
+      "at": "0x10002dbac..0x10002dbc0",
+      "behavior": "Normal registry path calls IORegistryEntryCreateCFProperties; success proceeds to field handling. Separate existing override-dictionary path precedes it."
+    },
+    {
+      "at": "0x10002dbfc..0x10002dc24",
+      "behavior": "Read BatteryInstalled with CFDictionaryGetValueIfPresent; true value reaches capacity checks."
+    },
+    {
+      "at": "0x10002dca8..0x10002dccc",
+      "behavior": "Get CurrentCapacity then MaxCapacity; either missing branches0x10002e010."
+    },
+    {
+      "at": "0x10002e010..0x10002e034",
+      "behavior": "Missing-capacity path optionally logs, releases new dictionary and clears cached dictionary slot."
+    }
+  ],
+  "kernel_contract": {
+    "file": "iokit/Kernel/IOPMPowerSource.cpp",
+    "function": "IOPMPowerSource::updateStatus",
+    "behavior": "Copies existing internal keys to registry, then messageClients(kIOPMMessageBatteryStatusHasChanged). Does not remove absent keys. Consumer must explicitly remove expired measurements."
+  },
+  "limits": [
+    "Static control-flow evidence only; not proof of complete powerd UI behavior on this port.",
+    "No capacity or percentage fabricated; native partial service may remain unavailable to Apple power-source percentage UI.",
+    "Native report expiry validation is separate from gauge, ADC and physical charging safety."
+  ]
+}

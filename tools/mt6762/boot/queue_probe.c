@@ -60,8 +60,13 @@ static void observe(int fd)
         "mt6762_gauge_raw_current",
         "mt6762_bif_raw", "mt6762_bif_ntc_raw", "mt6762_bif_pair_fresh",
         "mt6762_bif_samples", "mt6762_bif_errors", "mt6762_bif_fault",
-        "mt6762_bif_generation_rejections", "mt6762_bif_last_error"
+        "mt6762_bif_generation_rejections", "mt6762_bif_last_error",
+        "mt6762_battery_report_gap_state", "mt6762_battery_reports_suppressed",
+        "mt6762_adc_voltage_requests", "battery_voltage_mv", "battery_current_ma",
+        "battery_present", "battery_charger_present", "battery_charging",
+        "battery_soc", "battery_temperature_c"
     };
+    print(fd, "MT6762_SYSCTL_BEGIN\n");
     for (unsigned i = 0; i < sizeof(fields) / sizeof(fields[0]); i++) {
         char name[96], line[192], *end = text(name, "kern.redwood.");
         end = text(end, fields[i]); *end = 0;
@@ -75,6 +80,7 @@ static void observe(int fd)
         p = decimal(p, error < 0 ? -error : error); *p++ = '\n';
         call3(4, fd, (long)line, p-line);
     }
+    print(fd, "MT6762_SYSCTL_END\n");
 }
 void start(void)
 {

@@ -88,7 +88,15 @@ if [[ "$NATIVE" == 1 ]]; then
     chmod 755 "$OUT/root/bin/battery_probe"
     # com.redwood.demo has AbandonProcessGroup=true; this bounded reader may
     # continue while the foreground BKS request helper completes independently.
-    printf '%s\n' '/redwood/bin/battery_probe 16 &' >> "$OUT/root/etc/rc.jobs"
+    PROBE_REPEATS=${MTK_BATTERY_PROBE_REPEATS:-16}
+    PROBE_INTERVAL=${MTK_BATTERY_PROBE_INTERVAL_MS:-10000}
+    [[ "$PROBE_REPEATS" =~ ^[1-9][0-9]{0,2}$ && "$PROBE_INTERVAL" =~ ^[1-9][0-9]{0,4}$ ]] || {
+      echo 'Battery probe repeats/interval must be positive integers.' >&2; exit 1;
+    }
+    (( PROBE_REPEATS <= 256 && PROBE_INTERVAL <= 10000 )) || {
+      echo 'Battery probe exceeds256 samples or10000ms interval.' >&2; exit 1;
+    }
+    printf '/redwood/bin/battery_probe %s %s &\n' "$PROBE_REPEATS" "$PROBE_INTERVAL" >> "$OUT/root/etc/rc.jobs"
   fi
   if [[ -n ${MTK_DISPLAY_POWER_PROBE:-} ]]; then
     [[ -z ${MTK_BRIGHTNESS_CLIENT:-} ]] || { echo 'Use only one mutating brightness/lifecycle helper per run.' >&2; exit 1; }
@@ -104,6 +112,17 @@ if [[ "$NATIVE" == 1 ]]; then
     printf '%s\n' '/redwood/bin/backlight_request --qemu-lab 45' >> "$OUT/root/etc/rc.jobs"
   fi
   NATIVE_FLAGS=(--native-lab-i2c --native-lab-power --native-lab-display)
+  if [[ -n ${MTK_NATIVE_BATTERY_GAP_START_MS:-} || -n ${MTK_NATIVE_BATTERY_GAP_MS:-} ]]; then
+    GAP_START=${MTK_NATIVE_BATTERY_GAP_START_MS:-0}
+    GAP_MS=${MTK_NATIVE_BATTERY_GAP_MS:-0}
+    [[ "$GAP_START" =~ ^[1-9][0-9]{0,5}$ && "$GAP_MS" =~ ^[1-9][0-9]{0,4}$ ]] || {
+      echo 'Both native lab battery gap values must be positive integers.' >&2; exit 1;
+    }
+    (( GAP_START >= 1000 && GAP_START <= 300000 && GAP_MS >= 2000 && GAP_MS <= 10000 )) || {
+      echo 'Native lab battery gap exceeds explicit test bounds.' >&2; exit 1;
+    }
+    NATIVE_FLAGS+=(--native-lab-battery-gap-start-ms "$GAP_START" --native-lab-battery-gap-ms "$GAP_MS")
+  fi
   case "${MTK_NATIVE_GAUGE:-0}" in
     0) ;;
     1) NATIVE_FLAGS+=(--native-lab-gauge) ;;
