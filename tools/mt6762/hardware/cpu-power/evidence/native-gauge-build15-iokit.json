@@ -1,0 +1,376 @@
+{
+  "synthetic_model_only": true,
+  "physical_hardware_tested": false,
+  "kernel_sha256": "ef175089615dbe3d82b1b25d03fef5b4455b26e0eb95835783c72e8b2cccfd1d",
+  "qemu_binary_sha256": "a73c442a61ed53cc754f4c5cb503628850d73e1db765f04bcd48f9523012f32c",
+  "seconds": 180,
+  "gauge_clock_fault_injected_seconds": 120.214,
+  "kernel_panic_observed": false,
+  "original_apple_IOKit_used": true,
+  "registry_probe_read_only": true,
+  "unknown_capacity_temperature_cycle_fields_absent": true,
+  "positive_pwm_state": {
+    "enabled": true,
+    "synthetic": true,
+    "framebuffer_pa": 3705421824,
+    "fault": 0,
+    "applied_level": 512,
+    "enable": 1,
+    "duty": 512,
+    "pwm_writes": 16,
+    "commits": 4,
+    "rejected_writes": 0,
+    "reads": {
+      "spm": 39,
+      "mmsys": 2,
+      "ovl": 22,
+      "rdma": 2,
+      "dsi": 16,
+      "pwm": 50
+    }
+  },
+  "fault_final_power_state": {
+    "enabled": true,
+    "synthetic": true,
+    "fault": 16,
+    "key_mask": 0,
+    "fsm": 0,
+    "commands": 14480,
+    "reads": 13662,
+    "writes": 818,
+    "rejected": 0,
+    "clears": 13662,
+    "key_reads": 20180,
+    "adc_requests": [
+      169,
+      169
+    ],
+    "adc_completions": [
+      169,
+      169
+    ],
+    "thermal_enabled": false,
+    "thermal_calibration_synthetic": false,
+    "thermal_requests": [
+      0,
+      0,
+      0
+    ],
+    "thermal_completions": [
+      0,
+      0,
+      0
+    ],
+    "gauge_enabled": true,
+    "gauge_calibration_synthetic": true,
+    "gauge_control": 0,
+    "gauge_ticks": 238,
+    "gauge_snapshots": 120,
+    "gauge_commands": 480
+  },
+  "registry_observations": [
+    {
+      "iteration": 0,
+      "fields": {
+        "MT6762ValidFields": "sint32:79",
+        "BatteryInstalled": "bool:1",
+        "ExternalConnected": "bool:1",
+        "IsCharging": "bool:0",
+        "Voltage": "sint32:4400",
+        "Amperage": "sint32:31",
+        "InstantAmperage": "sint32:31",
+        "CurrentCapacity": "<absent>",
+        "MaxCapacity": "<absent>",
+        "AppleRawCurrentCapacity": "<absent>",
+        "AppleRawMaxCapacity": "<absent>",
+        "DesignCapacity": "<absent>",
+        "Temperature": "<absent>",
+        "CycleCount": "<absent>",
+        "TimeRemaining": "<absent>"
+      }
+    },
+    {
+      "iteration": 1,
+      "fields": {
+        "MT6762ValidFields": "sint32:79",
+        "BatteryInstalled": "bool:1",
+        "ExternalConnected": "bool:1",
+        "IsCharging": "bool:0",
+        "Voltage": "sint32:4400",
+        "Amperage": "sint32:31",
+        "InstantAmperage": "sint32:31",
+        "CurrentCapacity": "<absent>",
+        "MaxCapacity": "<absent>",
+        "AppleRawCurrentCapacity": "<absent>",
+        "AppleRawMaxCapacity": "<absent>",
+        "DesignCapacity": "<absent>",
+        "Temperature": "<absent>",
+        "CycleCount": "<absent>",
+        "TimeRemaining": "<absent>"
+      }
+    },
+    {
+      "iteration": 2,
+      "fields": {
+        "MT6762ValidFields": "sint32:79",
+        "BatteryInstalled": "bool:1",
+        "ExternalConnected": "bool:1",
+        "IsCharging": "bool:0",
+        "Voltage": "sint32:4400",
+        "Amperage": "sint32:31",
+        "InstantAmperage": "sint32:31",
+        "CurrentCapacity": "<absent>",
+        "MaxCapacity": "<absent>",
+        "AppleRawCurrentCapacity": "<absent>",
+        "AppleRawMaxCapacity": "<absent>",
+        "DesignCapacity": "<absent>",
+        "Temperature": "<absent>",
+        "CycleCount": "<absent>",
+        "TimeRemaining": "<absent>"
+      }
+    },
+    {
+      "iteration": 3,
+      "fields": {
+        "MT6762ValidFields": "sint32:79",
+        "BatteryInstalled": "bool:1",
+        "ExternalConnected": "bool:1",
+        "IsCharging": "bool:0",
+        "Voltage": "sint32:4400",
+        "Amperage": "sint32:31",
+        "InstantAmperage": "sint32:31",
+        "CurrentCapacity": "<absent>",
+        "MaxCapacity": "<absent>",
+        "AppleRawCurrentCapacity": "<absent>",
+        "AppleRawMaxCapacity": "<absent>",
+        "DesignCapacity": "<absent>",
+        "Temperature": "<absent>",
+        "CycleCount": "<absent>",
+        "TimeRemaining": "<absent>"
+      }
+    },
+    {
+      "iteration": 4,
+      "fields": {
+        "MT6762ValidFields": "sint32:79",
+        "BatteryInstalled": "bool:1",
+        "ExternalConnected": "bool:1",
+        "IsCharging": "bool:0",
+        "Voltage": "sint32:4400",
+        "Amperage": "sint32:31",
+        "InstantAmperage": "sint32:31",
+        "CurrentCapacity": "<absent>",
+        "MaxCapacity": "<absent>",
+        "AppleRawCurrentCapacity": "<absent>",
+        "AppleRawMaxCapacity": "<absent>",
+        "DesignCapacity": "<absent>",
+        "Temperature": "<absent>",
+        "CycleCount": "<absent>",
+        "TimeRemaining": "<absent>"
+      }
+    },
+    {
+      "iteration": 5,
+      "fields": {
+        "MT6762ValidFields": "sint32:79",
+        "BatteryInstalled": "bool:1",
+        "ExternalConnected": "bool:1",
+        "IsCharging": "bool:0",
+        "Voltage": "sint32:4400",
+        "Amperage": "sint32:31",
+        "InstantAmperage": "sint32:31",
+        "CurrentCapacity": "<absent>",
+        "MaxCapacity": "<absent>",
+        "AppleRawCurrentCapacity": "<absent>",
+        "AppleRawMaxCapacity": "<absent>",
+        "DesignCapacity": "<absent>",
+        "Temperature": "<absent>",
+        "CycleCount": "<absent>",
+        "TimeRemaining": "<absent>"
+      }
+    },
+    {
+      "iteration": 6,
+      "fields": {
+        "MT6762ValidFields": "sint32:79",
+        "BatteryInstalled": "bool:1",
+        "ExternalConnected": "bool:1",
+        "IsCharging": "bool:0",
+        "Voltage": "sint32:4400",
+        "Amperage": "sint32:31",
+        "InstantAmperage": "sint32:31",
+        "CurrentCapacity": "<absent>",
+        "MaxCapacity": "<absent>",
+        "AppleRawCurrentCapacity": "<absent>",
+        "AppleRawMaxCapacity": "<absent>",
+        "DesignCapacity": "<absent>",
+        "Temperature": "<absent>",
+        "CycleCount": "<absent>",
+        "TimeRemaining": "<absent>"
+      }
+    },
+    {
+      "iteration": 7,
+      "fields": {
+        "MT6762ValidFields": "sint32:79",
+        "BatteryInstalled": "bool:1",
+        "ExternalConnected": "bool:1",
+        "IsCharging": "bool:0",
+        "Voltage": "sint32:4400",
+        "Amperage": "sint32:31",
+        "InstantAmperage": "sint32:31",
+        "CurrentCapacity": "<absent>",
+        "MaxCapacity": "<absent>",
+        "AppleRawCurrentCapacity": "<absent>",
+        "AppleRawMaxCapacity": "<absent>",
+        "DesignCapacity": "<absent>",
+        "Temperature": "<absent>",
+        "CycleCount": "<absent>",
+        "TimeRemaining": "<absent>"
+      }
+    },
+    {
+      "iteration": 8,
+      "fields": {
+        "MT6762ValidFields": "sint32:79",
+        "BatteryInstalled": "bool:1",
+        "ExternalConnected": "bool:1",
+        "IsCharging": "bool:0",
+        "Voltage": "sint32:4400",
+        "Amperage": "sint32:31",
+        "InstantAmperage": "sint32:31",
+        "CurrentCapacity": "<absent>",
+        "MaxCapacity": "<absent>",
+        "AppleRawCurrentCapacity": "<absent>",
+        "AppleRawMaxCapacity": "<absent>",
+        "DesignCapacity": "<absent>",
+        "Temperature": "<absent>",
+        "CycleCount": "<absent>",
+        "TimeRemaining": "<absent>"
+      }
+    },
+    {
+      "iteration": 9,
+      "fields": {
+        "MT6762ValidFields": "sint32:71",
+        "BatteryInstalled": "bool:1",
+        "ExternalConnected": "bool:1",
+        "IsCharging": "bool:0",
+        "Voltage": "sint32:4400",
+        "Amperage": "<absent>",
+        "InstantAmperage": "<absent>",
+        "CurrentCapacity": "<absent>",
+        "MaxCapacity": "<absent>",
+        "AppleRawCurrentCapacity": "<absent>",
+        "AppleRawMaxCapacity": "<absent>",
+        "DesignCapacity": "<absent>",
+        "Temperature": "<absent>",
+        "CycleCount": "<absent>",
+        "TimeRemaining": "<absent>"
+      }
+    },
+    {
+      "iteration": 10,
+      "fields": {
+        "MT6762ValidFields": "sint32:71",
+        "BatteryInstalled": "bool:1",
+        "ExternalConnected": "bool:1",
+        "IsCharging": "bool:0",
+        "Voltage": "sint32:4400",
+        "Amperage": "<absent>",
+        "InstantAmperage": "<absent>",
+        "CurrentCapacity": "<absent>",
+        "MaxCapacity": "<absent>",
+        "AppleRawCurrentCapacity": "<absent>",
+        "AppleRawMaxCapacity": "<absent>",
+        "DesignCapacity": "<absent>",
+        "Temperature": "<absent>",
+        "CycleCount": "<absent>",
+        "TimeRemaining": "<absent>"
+      }
+    },
+    {
+      "iteration": 11,
+      "fields": {
+        "MT6762ValidFields": "sint32:71",
+        "BatteryInstalled": "bool:1",
+        "ExternalConnected": "bool:1",
+        "IsCharging": "bool:0",
+        "Voltage": "sint32:4400",
+        "Amperage": "<absent>",
+        "InstantAmperage": "<absent>",
+        "CurrentCapacity": "<absent>",
+        "MaxCapacity": "<absent>",
+        "AppleRawCurrentCapacity": "<absent>",
+        "AppleRawMaxCapacity": "<absent>",
+        "DesignCapacity": "<absent>",
+        "Temperature": "<absent>",
+        "CycleCount": "<absent>",
+        "TimeRemaining": "<absent>"
+      }
+    },
+    {
+      "iteration": 12,
+      "fields": {
+        "MT6762ValidFields": "sint32:71",
+        "BatteryInstalled": "bool:1",
+        "ExternalConnected": "bool:1",
+        "IsCharging": "bool:0",
+        "Voltage": "sint32:4400",
+        "Amperage": "<absent>",
+        "InstantAmperage": "<absent>",
+        "CurrentCapacity": "<absent>",
+        "MaxCapacity": "<absent>",
+        "AppleRawCurrentCapacity": "<absent>",
+        "AppleRawMaxCapacity": "<absent>",
+        "DesignCapacity": "<absent>",
+        "Temperature": "<absent>",
+        "CycleCount": "<absent>",
+        "TimeRemaining": "<absent>"
+      }
+    },
+    {
+      "iteration": 13,
+      "fields": {
+        "MT6762ValidFields": "sint32:71",
+        "BatteryInstalled": "bool:1",
+        "ExternalConnected": "bool:1",
+        "IsCharging": "bool:0",
+        "Voltage": "sint32:4400",
+        "Amperage": "<absent>",
+        "InstantAmperage": "<absent>",
+        "CurrentCapacity": "<absent>",
+        "MaxCapacity": "<absent>",
+        "AppleRawCurrentCapacity": "<absent>",
+        "AppleRawMaxCapacity": "<absent>",
+        "DesignCapacity": "<absent>",
+        "Temperature": "<absent>",
+        "CycleCount": "<absent>",
+        "TimeRemaining": "<absent>"
+      }
+    },
+    {
+      "iteration": 14,
+      "fields": {
+        "MT6762ValidFields": "sint32:71",
+        "BatteryInstalled": "bool:1",
+        "ExternalConnected": "bool:1",
+        "IsCharging": "bool:0",
+        "Voltage": "sint32:4400",
+        "Amperage": "<absent>",
+        "InstantAmperage": "<absent>",
+        "CurrentCapacity": "<absent>",
+        "MaxCapacity": "<absent>",
+        "AppleRawCurrentCapacity": "<absent>",
+        "AppleRawMaxCapacity": "<absent>",
+        "DesignCapacity": "<absent>",
+        "Temperature": "<absent>",
+        "CycleCount": "<absent>",
+        "TimeRemaining": "<absent>"
+      }
+    }
+  ],
+  "local_manifest": "boot/native-gauge-build15/original-bks-battery/payload/manifest.json",
+  "local_serial": "boot/native-gauge-build15/original-bks-battery/payload/gauge-clock120.serial.log",
+  "local_models": "boot/native-gauge-build15/original-bks-battery/payload/gauge-clock120.models.json"
+}

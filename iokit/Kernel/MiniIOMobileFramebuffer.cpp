@@ -232,6 +232,10 @@ swapWord(const uint8_t * swap, unsigned offset)
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 struct RowJob;
+#if defined(ARM64_BOARD_CONFIG_MT6762)
+static IOReturn nativeBacklightPower(IOService *provider, bool on);
+static IOReturn nativeBacklightEngineeringLevel(IOService *provider, OSNumber *level);
+#endif
 
 class IOMobileFramebuffer : public IOService
 {
@@ -247,6 +251,10 @@ public:
 	uint32_t        fSwapsShown;
 	uint32_t        fLayersShown;           /* which layers the last swap had a surface in */
 	bool            fGraphics;              /* the text console has been told to stop */
+#if defined(ARM64_BOARD_CONFIG_MT6762)
+	bool            fNativeBlanked;          /* protected by fLock; scanout stays inherited */
+	IOReturn nativePower(bool on);
+#endif
 	/*
 	 * A frame goes to the panel when the GPU is done with it: a thread of ours waits for that
 	 * and copies it there, and whoever made the frame is back at the next one meanwhile. One
@@ -402,8 +410,8 @@ IOMobileFramebuffer::publishModes(void)
 }
 
 #if defined(ARM64_BOARD_CONFIG_MT6762)
-/* Explicit engineering API. Apple brightness selectors have not been mapped
- * to this backend; an unsupported native path must not report success. */
+/* Explicit admin engineering API, serialized by the same backlight workloop
+ * as original CoreBrightness, so it cannot bypass blank/fade/fault state. */
 IOReturn
 IOMobileFramebuffer::setProperties(OSObject * properties)
 {
@@ -412,11 +420,24 @@ IOMobileFramebuffer::setProperties(OSObject * properties)
 	if (!value) return IOService::setProperties(properties);
 	if (IOUserClient::clientHasPrivilege(current_task(), kIOClientPrivilegeAdministrator) != kIOReturnSuccess)
 		return kIOReturnNotPrivileged;
-	uint64_t level = value->unsigned64BitValue();
-	if (level > 1023) return kIOReturnBadArgument;
-	if (mt6762_brightness_set((unsigned)level)) return kIOReturnNotReady;
-	setProperty("MT6762Brightness", level, 32);
-	return kIOReturnSuccess;
+	if (!mt6762_backlight_integer_type(value->numberOfBits()) || value->unsigned64BitValue() > 1023)
+		return kIOReturnBadArgument;
+	return nativeBacklightEngineeringLevel(this, value);
+}
+
+IOReturn IOMobileFramebuffer::nativePower(bool on)
+{
+	uint32_t native = 0;
+	if (mt6762_handoff_u32("native-io", &native) || native != 1) return kIOReturnSuccess;
+	/* Lock order: framebuffer fLock -> backlight workloop -> native PWM mutex.
+	 * Neither the timer nor any backlight callback acquires framebuffer fLock.
+	 * VBL notifications and swap queue completion retain their existing locks. */
+	IOLockLock(fLock);
+	IOReturn result = nativeBacklightPower(this, on);
+	if (!on || result == kIOReturnSuccess) fNativeBlanked = !on;
+	IOLockUnlock(fLock);
+	IOLog("MT6762: inherited display requested %s result %#x (PWM/copies only)\n", on ? "on" : "off", result);
+	return result;
 }
 #endif
 
@@ -1016,6 +1037,14 @@ IOMobileFramebuffer::show(const uint8_t * swap, MiniIOSurface ** surfaces)
 	IOLockWakeup(fSwapLock, &fSwapsWaiting, true);
 	IOLockUnlock(fSwapLock);
 	IOLockLock(fLock);
+#if defined(ARM64_BOARD_CONFIG_MT6762)
+	/* The queue slot was completed above. Keep processing swaps/notifications
+	 * while off, but leave the last confirmed framebuffer pixels untouched. */
+	if (fNativeBlanked) {
+		IOLockUnlock(fLock);
+		return;
+	}
+#endif
 	if (fLastFrame != 0) {
 		absolutetime_to_nanoseconds(began - fLastFrame, &nanos);
 		nanos /= NSEC_PER_MSEC;
@@ -1400,9 +1429,27 @@ IOMobileFramebufferUserClient::externalMethod(uint32_t selector, IOExternalMetho
 	case kFBMethodSwapSignal:
 	case kFBMethodSwapCancel:
 	case kFBMethodSwapCancelAll:
-	case kFBMethodRequestPowerChange:
 	case kFBMethodChangeFrameInfo:
 		return kIOReturnSuccess;
+	case kFBMethodRequestPowerChange:
+#if defined(ARM64_BOARD_CONFIG_MT6762)
+	{
+		uint32_t native = 0;
+		if (mt6762_handoff_u32("native-io", &native) || native != 1) return kIOReturnSuccess;
+		if (args->scalarInputCount != 1 || in[0] > 1 || args->structureInputSize != 0 ||
+		    args->scalarOutputCount != 0 || args->structureOutputSize != 0)
+			return kIOReturnBadArgument;
+		OSObject *entitlement = IOUserClient::copyClientEntitlement(current_task(),
+		    "com.apple.internal.display-params-access-privileged");
+		bool entitled = entitlement == kOSBooleanTrue;
+		OSSafeReleaseNULL(entitlement);
+		if (!entitled && IOUserClient::clientHasPrivilege(current_task(), kIOClientPrivilegeAdministrator) != kIOReturnSuccess)
+			return kIOReturnNotPrivileged;
+		return fOwner->nativePower(in[0] != 0);
+	}
+#else
+		return kIOReturnSuccess;
+#endif
 
 	case kFBMethodNotifications:                    /* in: callback (0 = off), its argument, type, 0 */
 		if (args->scalarInputCount < 3 || in[2] >= kFBNotifyTypes) {
@@ -1682,6 +1729,7 @@ class AppleARMBacklight : public IOService {
 	IOTimerEventSource *fTimer = NULL;
 	bool fTimerAdded = false, fFaulted = false;
 	unsigned fCurrent, fFrom, fTarget;
+	struct mt6762_backlight_lifecycle fLifecycle;
 	unsigned fRequestsLogged = 0;
 	volatile SInt32 fRequestsObserved = 0;
 	uint64_t fStartedUS, fDurationUS;
@@ -1693,6 +1741,7 @@ public:
 	void stop(IOService *provider) APPLE_KEXT_OVERRIDE;
 	void free(void) APPLE_KEXT_OVERRIDE;
 	IOReturn setProperties(OSObject *properties) APPLE_KEXT_OVERRIDE;
+	IOReturn displayPower(bool on);
 };
 OSDefineMetaClassAndStructors(AppleARMBacklight, IOService);
 
@@ -1717,6 +1766,7 @@ bool AppleARMBacklight::start(IOService *provider)
 {
 	fLoop = NULL; fTimer = NULL; fTimerAdded = false; fFaulted = false;
 	if (!IOService::start(provider) || mt6762_brightness_get(&fCurrent)) return false;
+	fLifecycle = {MT6762_BACKLIGHT_ACTIVE, fCurrent, 0};
 	fLoop = IOWorkLoop::workLoop();
 	fTimer = IOTimerEventSource::timerEventSource(this, &AppleARMBacklight::timerFired);
 	if (!fLoop || !fTimer || fLoop->addEventSource(fTimer) != kIOReturnSuccess) return false;
@@ -1730,6 +1780,7 @@ void AppleARMBacklight::stop(IOService *provider)
 {
 	if (fLoop) fLoop->runActionBlock(^IOReturn (void) {
 		fFaulted = true;
+		fLifecycle.mode = MT6762_BACKLIGHT_STOPPED;
 		if (fTimer) fTimer->cancelTimeout();
 		return kIOReturnSuccess;
 	});
@@ -1745,7 +1796,7 @@ void AppleARMBacklight::free(void)
 }
 IOReturn AppleARMBacklight::step(void)
 {
-	if (fFaulted) return kIOReturnNotReady;
+	if (fFaulted || fLifecycle.mode != MT6762_BACKLIGHT_ACTIVE) return kIOReturnNotReady;
 	uint64_t ns;
 	absolutetime_to_nanoseconds(mach_absolute_time(), &ns);
 	uint64_t nowUS = ns / 1000;
@@ -1755,6 +1806,7 @@ IOReturn AppleARMBacklight::step(void)
 	 * acknowledging an asynchronous fade. Never publish an unconfirmed target. */
 	if (mt6762_brightness_set(level)) {
 		fFaulted = true;
+		fLifecycle.mode = MT6762_BACKLIGHT_STOPPED;
 		fTimer->cancelTimeout();
 		setProperty("backlight-control", false);
 		setProperty("MT6762BacklightFault", true);
@@ -1775,6 +1827,68 @@ void AppleARMBacklight::timerFired(OSObject *owner, IOTimerEventSource *timer)
 	AppleARMBacklight *backlight = OSDynamicCast(AppleARMBacklight, owner);
 	if (backlight) (void)backlight->step();
 }
+
+IOReturn AppleARMBacklight::displayPower(bool on)
+{
+	if (!fLoop) return kIOReturnNotReady;
+	return fLoop->runActionBlock(^IOReturn (void) {
+		if (fFaulted || fLifecycle.mode == MT6762_BACKLIGHT_STOPPED) return kIOReturnNotReady;
+		unsigned current;
+		if (mt6762_brightness_get(&current)) {
+			fFaulted = true;
+			fLifecycle.mode = MT6762_BACKLIGHT_STOPPED;
+			fTimer->cancelTimeout();
+			setProperty("backlight-control", false);
+			setProperty("MT6762BacklightFault", true);
+			return kIOReturnNotReady;
+		}
+		if ((on && fLifecycle.mode == MT6762_BACKLIGHT_ACTIVE) ||
+		    (!on && fLifecycle.mode == MT6762_BACKLIGHT_BLANKED)) return kIOReturnSuccess;
+		fTimer->cancelTimeout();
+		if (!on) {
+			if (mt6762_brightness_set(0)) {
+				fFaulted = true;
+				fLifecycle.mode = MT6762_BACKLIGHT_STOPPED;
+				setProperty("backlight-control", false);
+				setProperty("MT6762BacklightFault", true);
+				return kIOReturnIOError;
+			}
+			mt6762_backlight_blank_confirmed(&fLifecycle, current);
+			fCurrent = 0;
+			setProperty("MT6762DesiredBrightness", (uint64_t)fLifecycle.desired, 32);
+			setProperty("MT6762DisplayBlanked", true);
+			return publish(0) ? kIOReturnSuccess : kIOReturnNoMemory;
+		}
+		/* Restore the saved confirmed level, or the latest authenticated target
+		 * queued while blank. Only step() can publish a confirmed actual level. */
+		fFrom = current; fTarget = fLifecycle.desired; fDurationUS = fLifecycle.fade_us;
+		fLifecycle.mode = MT6762_BACKLIGHT_ACTIVE;
+		uint64_t ns;
+		absolutetime_to_nanoseconds(mach_absolute_time(), &ns);
+		fStartedUS = ns / 1000;
+		IOReturn result = step();
+		if (result == kIOReturnSuccess) setProperty("MT6762DisplayBlanked", false);
+		return result;
+	});
+}
+/* Numeric-only diagnostics: preserve floating values as IEEE754 bits rather
+ * than format or approximate them inside the kernel. OSNumber stores size31
+ * (float-origin) and63 (double-origin) in its double payload. */
+static void logNativeBacklightNumber(const char *key, OSObject *object)
+{
+	OSNumber *number = OSDynamicCast(OSNumber, object);
+	if (!number) return;
+	unsigned bits = number->numberOfBits();
+	if (bits == 31 || bits == 63) {
+		double value = number->doubleValue();
+		uint64_t raw;
+		memcpy(&raw, &value, sizeof(raw));
+		IOLog("MT6762: backlight numeric key=%.64s numberBits=%u fp64bits=%#llx\n", key, bits, raw);
+	} else {
+		IOLog("MT6762: backlight numeric key=%.64s numberBits=%u integer=%llu\n",
+		    key, bits, number->unsigned64BitValue());
+	}
+}
 IOReturn AppleARMBacklight::setProperties(OSObject *properties)
 {
 	/* Observe rejected requests too; the accepted-request log below cannot
@@ -1790,6 +1904,35 @@ IOReturn AppleARMBacklight::setProperties(OSObject *properties)
 	};
 	OSDictionary *dictionary = OSDynamicCast(OSDictionary, properties);
 	if (!dictionary) return reject(kIOReturnBadArgument, "dictionary");
+	if (logRequest) {
+		OSCollectionIterator *keys = OSCollectionIterator::withCollection(dictionary);
+		for (unsigned n = 0; keys && n < 8; n++) {
+			const OSSymbol *key = OSDynamicCast(OSSymbol, keys->getNextObject());
+			if (!key) break;
+			OSObject *value = dictionary->getObject(key);
+			IOLog("MT6762: backlight property key=%.64s type=%.32s\n",
+			    key->getCStringNoCopy(), value ? value->getMetaClass()->getClassName() : "null");
+			if (key->isEqualTo("brightness") || key->isEqualTo("FadePeriod") ||
+			    key->isEqualTo("backlight-level") || key->isEqualTo("brightness-nits") ||
+			    key->isEqualTo("brightness-nits-cap") || key->isEqualTo("DisplayBrightnessSliderPosition"))
+				logNativeBacklightNumber(key->getCStringNoCopy(), value);
+			OSDictionary *nested = key->isEqualTo("DisplayBrightness") ?
+			    OSDynamicCast(OSDictionary, value) : NULL;
+			if (nested) {
+				OSCollectionIterator *inner = OSCollectionIterator::withCollection(nested);
+				for (unsigned j = 0; inner && j < 8; j++) {
+					const OSSymbol *name = OSDynamicCast(OSSymbol, inner->getNextObject());
+					if (!name) break;
+					OSObject *number = nested->getObject(name);
+					IOLog("MT6762: DisplayBrightness key=%.64s type=%.32s\n",
+					    name->getCStringNoCopy(), number ? number->getMetaClass()->getClassName() : "null");
+					logNativeBacklightNumber(name->getCStringNoCopy(), number);
+				}
+				OSSafeReleaseNULL(inner);
+			}
+		}
+		OSSafeReleaseNULL(keys);
+	}
 	OSNumber *brightness = OSDynamicCast(OSNumber, dictionary->getObject("brightness"));
 	OSObject *fadeObject = dictionary->getObject("FadePeriod");
 	OSNumber *fade = OSDynamicCast(OSNumber, fadeObject);
@@ -1798,6 +1941,12 @@ IOReturn AppleARMBacklight::setProperties(OSObject *properties)
 	if (logRequest) IOLog("MT6762: backlight property request from %s brightness=%u fade=%u logical=%u\n",
 	    callerName, brightness != NULL, fadeObject != NULL, logicalObject != NULL);
 	if (!brightness) return reject(kIOReturnUnsupported, "missing integer brightness");
+	/* OSNumber's unsigned getter would silently truncate float-origin payloads.
+	 * Apple's observed legacy ABI sends SInt32; reject floating values first. */
+	if (!mt6762_backlight_integer_type(brightness->numberOfBits()) ||
+	    (fade && !mt6762_backlight_integer_type(fade->numberOfBits())) ||
+	    (logical && !mt6762_backlight_integer_type(logical->numberOfBits())))
+		return reject(kIOReturnBadArgument, "floating legacy value");
 	if ((fadeObject && !fade) || (logicalObject && !logical) ||
 	    (logical && logical->unsigned64BitValue() > 1023))
 		return reject(kIOReturnBadArgument, "fade/logical type or range");
@@ -1821,10 +1970,18 @@ IOReturn AppleARMBacklight::setProperties(OSObject *properties)
 			IOLog("MT6762: backlight request from %s target %llu/1023 fade16.16 %llu\n",
 			    callerName, level, fade ? fade->unsigned64BitValue() : 0ULL);
 		}
+		if (fFaulted || fLifecycle.mode == MT6762_BACKLIGHT_STOPPED) return kIOReturnNotReady;
+		int deferred = mt6762_backlight_desire(&fLifecycle, (unsigned)level, durationUS);
+		if (deferred < 0) return kIOReturnNotReady;
+		setProperty("MT6762DesiredBrightness", level, 32);
+		if (deferred) {
+			if (logical) setProperty("backlight-level", logical);
+			return kIOReturnSuccess;
+		}
 		fTimer->cancelTimeout();
-		if (fFaulted) return kIOReturnNotReady;
 		if (mt6762_brightness_get(&fCurrent)) {
 			fFaulted = true;
+			fLifecycle.mode = MT6762_BACKLIGHT_STOPPED;
 			setProperty("backlight-control", false);
 			setProperty("MT6762BacklightFault", true);
 			return kIOReturnNotReady;
@@ -1838,6 +1995,40 @@ IOReturn AppleARMBacklight::setProperties(OSObject *properties)
 			setProperty("backlight-level", logical);
 		return result;
 	});
+}
+
+/* Child lookup retains the service while invoking it. The parent owns no raw
+ * backlight pointer and the backlight never locks or calls its framebuffer. */
+static AppleARMBacklight *nativeBacklightChild(IOService *provider)
+{
+	OSIterator *children = provider->getChildIterator(gIOServicePlane);
+	AppleARMBacklight *found = NULL;
+	OSObject *child;
+	while (children && (child = children->getNextObject())) {
+		found = OSDynamicCast(AppleARMBacklight, child);
+		if (found) { found->retain(); break; }
+	}
+	OSSafeReleaseNULL(children);
+	return found;
+}
+static IOReturn nativeBacklightPower(IOService *provider, bool on)
+{
+	AppleARMBacklight *backlight = nativeBacklightChild(provider);
+	if (!backlight) return kIOReturnNotReady;
+	IOReturn result = backlight->displayPower(on);
+	backlight->release();
+	return result;
+}
+static IOReturn nativeBacklightEngineeringLevel(IOService *provider, OSNumber *level)
+{
+	AppleARMBacklight *backlight = nativeBacklightChild(provider);
+	if (!backlight) return kIOReturnNotReady;
+	OSDictionary *request = OSDictionary::withCapacity(1);
+	IOReturn result = kIOReturnNoMemory;
+	if (request && request->setObject("brightness", level)) result = backlight->setProperties(request);
+	OSSafeReleaseNULL(request);
+	backlight->release();
+	return result;
 }
 static void publishNativeBacklight(IOService *provider)
 {

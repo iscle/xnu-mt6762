@@ -1,0 +1,134 @@
+{
+  "synthetic_only": true,
+  "physical_brightness_tested": false,
+  "onscreen_slider_gesture_tested": false,
+  "apple_framework_modified": false,
+  "run_seconds": 220,
+  "kernel_sha256": "d3dafbd7d3a3f4daa6d3720ee26c287f58692e131e4cf8b5ab5e8703862efc3e",
+  "qemu_binary_sha256": "53724c0778ca20cdead5aa88a51487abda30a42627eccb4ef18b28a91fdba7dc",
+  "helper_invocation": "/redwood/bin/backlight_request --qemu-lab 45 4",
+  "helper_path": "backlight_request.c",
+  "original_framework_path": "BackBoardServices -> Mach IPC -> backboardd/CoreBrightness -> AppleARMBacklight -> native PWM",
+  "kernel_accepted_targets": [
+    256,
+    768,
+    1,
+    512
+  ],
+  "helper_observed_published_levels": [
+    256,
+    1,
+    512
+  ],
+  "helper_ipc_statuses": [
+    "0",
+    "0",
+    "0"
+  ],
+  "run_completed": true,
+  "sampling_limit": "20-second independent model samples missed intermediate targets; counters independently confirm four commits and restored level512, not separate instantaneous256/768 samples. Kernel native backend verifies register writes before publishing each level.",
+  "policy_interaction": "Original Apple idle policy superseded requested0.75 with target1 before helper observation; helper subsequently restored initial0.5 ->512.",
+  "local_artifacts": {
+    "boot/native-brightness-build13/original-bks/payload/gui.serial.log": "a73e1ce3dd757fd3d440de8d75884d0b426ec3cdbd6739976c7d59f064fb1c8d",
+    "boot/native-brightness-build13/original-bks/payload/gui.models.json": "034eee7a673c80161654b8ceb2b956ce2677bc0903e93e609411e397e6ae1a73",
+    "boot/native-brightness-build13/original-bks/payload/manifest.json": "e5a5bc97bf70332fb3218bc660225440502ca568cf0fa1fbcd2bd8856b05cd7b",
+    "boot/native-brightness-build13/original-bks/apple-preservation.json": "b1d9e7820ecf7742a126ca7db03504989e00357d9f014e67709456336ad23cf3"
+  },
+  "model_display_samples": [
+    {
+      "elapsed_seconds": 20.016,
+      "applied_level": 512,
+      "duty": 512,
+      "pwm_writes": 0,
+      "commits": 0,
+      "rejected_writes": 0
+    },
+    {
+      "elapsed_seconds": 40.079,
+      "applied_level": 512,
+      "duty": 512,
+      "pwm_writes": 0,
+      "commits": 0,
+      "rejected_writes": 0
+    },
+    {
+      "elapsed_seconds": 60.103,
+      "applied_level": 512,
+      "duty": 512,
+      "pwm_writes": 0,
+      "commits": 0,
+      "rejected_writes": 0
+    },
+    {
+      "elapsed_seconds": 80.132,
+      "applied_level": 512,
+      "duty": 512,
+      "pwm_writes": 0,
+      "commits": 0,
+      "rejected_writes": 0
+    },
+    {
+      "elapsed_seconds": 100.163,
+      "applied_level": 512,
+      "duty": 512,
+      "pwm_writes": 16,
+      "commits": 4,
+      "rejected_writes": 0
+    },
+    {
+      "elapsed_seconds": 120.188,
+      "applied_level": 512,
+      "duty": 512,
+      "pwm_writes": 16,
+      "commits": 4,
+      "rejected_writes": 0
+    },
+    {
+      "elapsed_seconds": 140.213,
+      "applied_level": 512,
+      "duty": 512,
+      "pwm_writes": 16,
+      "commits": 4,
+      "rejected_writes": 0
+    },
+    {
+      "elapsed_seconds": 160.238,
+      "applied_level": 512,
+      "duty": 512,
+      "pwm_writes": 16,
+      "commits": 4,
+      "rejected_writes": 0
+    },
+    {
+      "elapsed_seconds": 180.264,
+      "applied_level": 512,
+      "duty": 512,
+      "pwm_writes": 16,
+      "commits": 4,
+      "rejected_writes": 0
+    },
+    {
+      "elapsed_seconds": 200.291,
+      "applied_level": 512,
+      "duty": 512,
+      "pwm_writes": 16,
+      "commits": 4,
+      "rejected_writes": 0
+    },
+    {
+      "elapsed_seconds": 220.004,
+      "applied_level": 512,
+      "duty": 512,
+      "pwm_writes": 16,
+      "commits": 4,
+      "rejected_writes": 0
+    }
+  ],
+  "apple_preservation": {
+    "status": "verified-byte-preservation",
+    "critical_executables_checked_against_retained_apple_dmg": 3,
+    "mapped_cache_files_checked": 43,
+    "limit": "Checks cover extracted shared-cache files and three executable binaries; resource changes and launch-job arrangement remain in donor root. Does not claim all-file preservation."
+  },
+  "kernel_panic_observed": false
+}

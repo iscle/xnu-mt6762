@@ -22,6 +22,10 @@ def main():
     parser.add_argument('--native-input-schedule', type=Path,
                         help='JSON timed synthetic PMIC key/AXS gestures, never guest queue injection')
     parser.add_argument('--stop-on-panic', action='store_true')
+    parser.add_argument('--host-scheduling', action='store_true',
+                        help='Record bounded Linux host vCPU scheduling counters for timeout diagnosis')
+    parser.add_argument('--gauge-clock-fault-at', type=float,
+                        help='Inject synthetic gauge clock loss at this elapsed second; explicit gauge fixture required')
     parser.add_argument('--sample-every', type=float, default=0,
                         help='Also save numbered framebuffer snapshots at this interval')
     args = parser.parse_args()
@@ -31,6 +35,9 @@ def main():
     fb = manifest.get('framebuffer')
     if not fb or not fb.get('simulated_ram_only'):
         raise ValueError('Manifest has no synthetic framebuffer')
+    if args.gauge_clock_fault_at is not None and (not manifest.get('native_lab_gauge') or not 0<=args.gauge_clock_fault_at<args.seconds):
+        raise ValueError('Gauge clock fault requires its explicit fixture and a time inside the bounded run')
+    gauge_clock_fault_injected=None
     schedule = []
     if args.native_input_schedule:
         from touch_lab import frame, send_frame
@@ -64,6 +71,7 @@ def main():
     model_states = []
     qemu_sha256 = hashlib.sha256(Path(manifest['command'][0]).read_bytes()).hexdigest()
     qemu = None
+    host_scheduling = None
     run_completed = False
     with (out / (args.label + '.serial.log')).open('w') as serial:
         try:
@@ -95,6 +103,9 @@ def main():
                             return result['return']
 
                 execute('qmp_capabilities')
+                if args.host_scheduling:
+                    from host_scheduling import HostScheduling
+                    host_scheduling = HostScheduling(qemu.pid, execute('query-cpus-fast'))
                 def record_models():
                     states = {}
                     for option, prop in [('native_lab_i2c', 'lab-i2c-state'),
@@ -110,11 +121,17 @@ def main():
                 next_sample = started + args.sample_every if args.sample_every else deadline
                 sample = 0
                 while time.monotonic() < deadline:
+                    if host_scheduling:
+                        host_scheduling.sample()
                     if qemu.poll() is not None:
                         raise RuntimeError('QEMU exited during capture wait')
                     if args.stop_on_panic and 'panic(' in (out / (args.label + '.serial.log')).read_text(errors='replace'):
                         panic_observed=True
                         break
+                    if args.gauge_clock_fault_at is not None and gauge_clock_fault_injected is None and time.monotonic()-started>=args.gauge_clock_fault_at:
+                        execute('qom-set',{'path':'/machine','property':'lab-power-fault','value':'gauge-clock'})
+                        gauge_clock_fault_injected=round(time.monotonic()-started,3)
+                        record_models()
                     if next_action<len(schedule) and time.monotonic()-started>=schedule[next_action]['at']:
                         action=schedule[next_action]
                         if 'keys' in action:
@@ -142,6 +159,8 @@ def main():
                         next_sample += args.sample_every
                     time.sleep(min(1, max(0, deadline - time.monotonic())))
                 execute('stop')
+                if host_scheduling:
+                    host_scheduling.sample()
                 panic_observed |= 'panic(' in (out / (args.label + '.serial.log')).read_text(errors='replace')
                 if panic_observed:
                     registers=[]
@@ -175,11 +194,15 @@ def main():
                 except subprocess.TimeoutExpired:
                     qemu.kill()
                     qemu.wait()
+            if host_scheduling:
+                (out / (args.label + '.host-scheduling.json')).write_text(
+                    json.dumps(host_scheduling.report, indent=2) + '\n')
             (out / (args.label + '.qmp.json')).write_text(json.dumps(transcript, indent=2) + '\n')
             (out / (args.label + '.models.json')).write_text(json.dumps({
                 'synthetic_only':True, 'run_completed':run_completed, 'kernel_sha256':manifest['kernel_sha256'],
                 'qemu_binary_sha256':qemu_sha256, 'samples':model_states,
                 'native_input_actions':actions,'kernel_panic_observed':panic_observed,
+                'gauge_clock_fault_injected_seconds':gauge_clock_fault_injected,
                 'native_input_schedule_sha256':hashlib.sha256(args.native_input_schedule.read_bytes()).hexdigest() if args.native_input_schedule else None}, indent=2) + '\n')
     filename, visible = save_png(raw, fb)
     print(json.dumps({'png': str(filename), 'distinct_bytes': len(set(visible)),

@@ -1,0 +1,52 @@
+{
+  "target": "iOS16.5 20F66 iPhone10,3/10,6 arm64",
+  "apple_abi": {
+    "QuartzCore_function": "CA::WindowServer::IOMFBDisplay::set_power_state(bool)",
+    "address": "0x18838dbc0",
+    "call": "0x18838dc4c forwards bool x1 to stub0x18dbb8310 -> IOMobileFramebufferRequestPowerChange",
+    "export_address": "0x1af1c14f8",
+    "backend": "_kern_RequestPowerChange at0x1af1c54f0",
+    "selector": 12,
+    "input": "One scalar, zero-extended32-bit on argument",
+    "outputs": 0,
+    "observed_runtime": "Original backboardd startup passes1. Native off/on lifecycle not yet exercised.",
+    "reference": "joranv1/ios-sailfish xnu/patches/0167-sailfish-display-sleep.patch independently treats this scalar as display on; Qualcomm register implementation is not reused."
+  },
+  "stock_panel": {
+    "suspend": "DCS0x28 data00; delay120ms; DCS0x10 data00; delay30ms",
+    "proximity_power_preserved_resume": "DCS0x11 data00; delay150ms; DCS0x29 data00; delay20ms",
+    "implementation": "axs15260_panel.h sequences reconstructed from stock kernel",
+    "constraint": "Normal resume involves power/reset/init branches. Current native consumer has no verified DSI command transport or cold power/reset sequence. Do not equate PWM disable with panel sleep."
+  },
+  "source_evidence_hashes": {
+    "iomfb-request-power.asm": "31867805dd72c29d4237703d3c423c12421d0373651b5318ae57f5e9083e1513",
+    "iomfb-kern-power.asm": "52ac6eb6509b1a1d43d165d00f66f2fbab46cdbabf8c09c28e53161313fc8b48",
+    "quartzcore-power-state.asm": "70b403eac6e677a9b8d9f856ba6970b4a4ce744b136c37518e990aad11807caf",
+    "iomfb-main-display.asm": "c1e8853bd053b09479f07dc831777226b05ef849b4b33aa3b7cb0f41c9aa20be",
+    "iomfb-open-display.asm": "3a870dc029990509cc5a66380a506922cfb9bbe5bdb617825453ce077359ccdd"
+  },
+  "implementation_status": "Implemented gated inherited-display PWM/copy lifecycle; host tests pass; original-framework synthetic180-second run passes. See display-lifecycle-build16.json. No physical or DSI panel sleep/wake validation.",
+  "lifecycle": {
+    "authorization": "Original boolean display entitlement or administrator; scalar exactly0/1",
+    "off": "Cancel fade; read actual duty; write/readback0; save previous confirmed duty; stop framebuffer copies while completing swap queue and VBL notifications.",
+    "off_brightness_request": "Authenticated valid legacy target/fade deferred without PWM writes or publication as actual value. MT6762DesiredBrightness is distinct metadata. Latest request wins; duplicateoff retains it.",
+    "on": "Use saved confirmed duty or latest pending target/fade; restore through existing native readback path before permitting framebuffer copies.",
+    "fault_or_stop": "Terminal; no fade retarget or resume permitted.",
+    "lock_order": "framebuffer fLock -> backlight workloop -> native PWM mutex. No backlight callback acquires framebuffer fLock.",
+    "engineering_API": "Admin MT6762Brightness now calls same backlight service and cannot bypass its gates.",
+    "no_native_handoff": "Existing GUI behavior unchanged."
+  },
+  "diagnostic": {
+    "source": "display_power_probe.c",
+    "command": "/redwood/bin/display_power_probe --qemu-lab 45",
+    "original_export_signatures": {
+      "IOMobileFramebufferGetMainDisplay": "int32_t(void **out)",
+      "IOMobileFramebufferRequestPowerChange": "int32_t(void *display,uint32_t on)"
+    },
+    "GetMainDisplay_evidence": "0x1af1c1954 passes caller output pointer through0x1af1c7368 -> IOMobileFramebufferOpen, output loaded from[x19] at0x1af1c73c0.",
+    "restriction": "Requires synthetic ADT lab-fixture and explicit--qemu-lab; no raw register/IOKit writes.",
+    "verification": "Observe original requests, published confirmed duty, model PWM counters at1-second intervals. No claim of actual panel sleep.",
+    "helper_source_sha256": "9d96723404343d0bb7ee20f37e65cd5de75a80cf980a6a07bb5193b5c1829d0b",
+    "helper_compiled_sha256": "b77a515b48cd0ec2fbdeabc5080da3b458968511a25b9ee12f8a00f997ea4179"
+  }
+}

@@ -150,9 +150,15 @@ diagnostics only: their conversion freshness is not established and they
 cannot authorize DVFS. See the [thermal evidence and limits](../tools/mt6762/hardware/cpu-power/THERMAL.rst).
 
 Battery samples carry explicit field-validity bits. IOKit removes values
-that become unavailable. Uncalibrated nominal thermistor conversion is
-diagnostic only; capacity, current and protected charging temperature are
-not fabricated. ADC requests and readings have their own counters and bounds.
+that become unavailable. The calibrated gauge-current observer requires
+exclusive latch ownership, matching live calibration, completed latch
+handshakes and an advancing NTER counter. It expires samples after two seconds;
+a stopped counter invalidates current even when latch transactions succeed.
+It never resets the gauge or infers state of charge. Uncalibrated nominal
+thermistor conversion remains diagnostic only; capacity and protected charging
+temperature are not fabricated. See the
+[gauge evidence and prerequisites](../tools/mt6762/hardware/power/GAUGE.rst).
+ADC requests and readings have their own counters and bounds.
 
 Charging control currently supports verified disable only. A real native
 handoff must transfer charger control explicitly and leave the charger in a
@@ -191,8 +197,15 @@ at 430 seconds without a panic. Its private root issued no `rwtouch` commands;
 Apple backboardd logged keys and touches delivered through the PMIC/AXS native
 workers. The model counted 44,150 touch DMA reads. The donor still contains
 an automatic-unlock helper, so the earlier native swipe is not credited with
-causing the home-screen transition. PWM writes remained zero; an explicit
-original-framework brightness-change test is still in progress.
+causing the home-screen transition. PWM writes remained zero in that run.
+A later explicit test called the original Apple BackBoardServices brightness
+APIs at 25%, 75% and the initial 50% value. Apple backboardd sent the legacy
+integer requests to the native driver, which verified PWM writes; the model
+independently counted 16 writes and four commits, ending at duty 512/1023.
+Apple idle policy also changed brightness during the test. This establishes
+the framework-to-driver path, not an on-screen slider gesture or physical
+panel brightness. See the
+[bounded brightness evidence](../tools/mt6762/hardware/display-touch/original-bks-build13.json).
 Compact pass/failure evidence is recorded in
 [`native-integration.json`](../tools/mt6762/evidence/native-integration.json).
 

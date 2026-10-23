@@ -80,9 +80,35 @@ if [[ "$NATIVE" == 1 ]]; then
     [[ -f "$MTK_BACKLIGHT_PROBE" ]] || { echo 'Missing MTK_BACKLIGHT_PROBE' >&2; exit 1; }
     cp "$MTK_BACKLIGHT_PROBE" "$OUT/root/bin/backlight_probe"
     chmod 755 "$OUT/root/bin/backlight_probe"
-    printf '%s\n' '/redwood/bin/backlight_probe 12' >> "$OUT/root/etc/rc.jobs"
+    printf '%s\n' '/redwood/bin/backlight_probe 1' >> "$OUT/root/etc/rc.jobs"
+  fi
+  if [[ -n ${MTK_BATTERY_PROBE:-} ]]; then
+    [[ -f "$MTK_BATTERY_PROBE" ]] || { echo 'Missing MTK_BATTERY_PROBE' >&2; exit 1; }
+    cp "$MTK_BATTERY_PROBE" "$OUT/root/bin/battery_probe"
+    chmod 755 "$OUT/root/bin/battery_probe"
+    # com.redwood.demo has AbandonProcessGroup=true; this bounded reader may
+    # continue while the foreground BKS request helper completes independently.
+    printf '%s\n' '/redwood/bin/battery_probe 16 &' >> "$OUT/root/etc/rc.jobs"
+  fi
+  if [[ -n ${MTK_DISPLAY_POWER_PROBE:-} ]]; then
+    [[ -z ${MTK_BRIGHTNESS_CLIENT:-} ]] || { echo 'Use only one mutating brightness/lifecycle helper per run.' >&2; exit 1; }
+    [[ -f "$MTK_DISPLAY_POWER_PROBE" ]] || { echo 'Missing MTK_DISPLAY_POWER_PROBE' >&2; exit 1; }
+    cp "$MTK_DISPLAY_POWER_PROBE" "$OUT/root/bin/display_power_probe"
+    chmod 755 "$OUT/root/bin/display_power_probe"
+    printf '%s\n' '/redwood/bin/display_power_probe --qemu-lab 45' >> "$OUT/root/etc/rc.jobs"
+  fi
+  if [[ -n ${MTK_BRIGHTNESS_CLIENT:-} ]]; then
+    [[ -f "$MTK_BRIGHTNESS_CLIENT" ]] || { echo 'Missing MTK_BRIGHTNESS_CLIENT' >&2; exit 1; }
+    cp "$MTK_BRIGHTNESS_CLIENT" "$OUT/root/bin/backlight_request"
+    chmod 755 "$OUT/root/bin/backlight_request"
+    printf '%s\n' '/redwood/bin/backlight_request --qemu-lab 45' >> "$OUT/root/etc/rc.jobs"
   fi
   NATIVE_FLAGS=(--native-lab-i2c --native-lab-power --native-lab-display)
+  case "${MTK_NATIVE_GAUGE:-0}" in
+    0) ;;
+    1) NATIVE_FLAGS+=(--native-lab-gauge) ;;
+    *) echo 'MTK_NATIVE_GAUGE must be 0 or 1' >&2; exit 1 ;;
+  esac
   python3 - "$SCRIPT/boot/native-input.json" "$OUT/native-input.json" "$SECONDS_TO_RUN" <<'PY_SCHEDULE'
 import json,pathlib,sys
 schedule=json.loads(pathlib.Path(sys.argv[1]).read_text())

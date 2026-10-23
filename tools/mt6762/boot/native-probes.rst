@@ -154,6 +154,16 @@ register and frame-chain snapshots, then reports failure. The serial log
 remains authoritative: an image, timeout or successful QEMU process exit is
 not sufficient evidence of a completed iOS boot.
 
+For an isolated SMP reproduction, ``capture.py --host-scheduling`` also maps
+QEMU vCPU IDs to Linux host thread IDs and records cumulative ``schedstat``
+runtime, runnable-queue wait and timeslice counts at the existing polling
+interval. The companion ``.host-scheduling.json`` records unavailable counters
+and the host accounting setting explicitly. Collection is bounded to2048
+samples and changes no host scheduler settings. These counters can establish
+host contention; they do not establish that contention caused a guest timeout,
+and zero counters do not prove its absence when accounting is disabled. Keep
+the default guest lock timeout and preserve failing runs and register captures.
+
 PMIC temperature freshness
 --------------------------
 
@@ -169,3 +179,20 @@ valid buck values remain allowed. ``--thermal-fault-after-fresh`` waits for
 actual native sysctl fresh-mask7 before injecting the requested failure,
 then requires invalidation. Use ``--queue-mode cycle --seconds 6`` so the
 read-only observer continues sampling sysctls throughout the test.
+
+Gauge current snapshots
+----------------------
+
+``--native-lab-gauge`` requires native power fixtures and asserts their
+explicit synthetic live calibration. The observer reads current in uA,
+validity, raw current, completed snapshots, errors and transport fault. The
+first snapshot is only a liveness baseline. The synthetic raw100 value maps
+to31400uA after counter progression; it is not a measurement of this phone.
+
+``--gauge-fault timeout|latch-stuck|stale|clock|calibration|counter-stuck``
+exercises startup rejection. ``--gauge-fault-after-valid`` waits for an actual
+native current-valid1 sample before injecting the fault and requires
+current INT_MIN/valid0 afterwards. Use ``--queue-mode cycle --seconds 6``.
+IOKit battery publication is checked separately by the read-only
+``battery_probe`` helper; unknown capacity/temperature/cycle fields must
+remain absent rather than fabricated.

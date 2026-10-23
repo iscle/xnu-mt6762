@@ -1,0 +1,113 @@
+Bounded disassembly of user-supplied stock Image via emulator/stock.elf.
+0xffffff8008889104: adrp     x24, #0xffffff8009a89000
+0xffffff8008889108: ldr      x8, [x24, #0xf98]
+0xffffff800888910c: adrp     x25, #0xffffff8009a8e000
+0xffffff8008889110: add      x8, x8, #0xf04
+0xffffff8008889114: ldr      w8, [x8]
+0xffffff8008889118: dsb      ld
+0xffffff800888911c: mov      w9, w8
+0xffffff8008889120: eor      x9, x9, x9
+0xffffff8008889124: cbnz     x9, #0xffffff8008889124
+0xffffff8008889128: ldr      w9, [x25, #0xff0]
+0xffffff800888912c: and      w19, w8, #0xff
+0xffffff8008889164: madd     x8, x8, x26, x27
+0xffffff8008889168: ldr      w8, [x8, #0x14]
+0xffffff800888916c: cbz      w8, #0xffffff80088891c4
+0xffffff8008889170: lsr      w8, w19, w22
+0xffffff8008889174: tbnz     w8, #0, #0xffffff80088891c4
+0xffffff8008889178: madd     x8, x22, x26, x27
+0xffffff800888917c: ldr      x9, [x24, #0xf98]
+0xffffff8008889180: ldr      w8, [x8, #0x18]
+0xffffff8008889184: add      x9, x9, x8
+0xffffff8008889188: add      x9, x9, #0x10
+0xffffff800888918c: ldr      w23, [x9]
+0xffffff8008889190: dsb      ld
+0xffffff8008889194: mov      w9, w23
+0xffffff8008889198: eor      x9, x9, x9
+0xffffff800888919c: cbnz     x9, #0xffffff800888919c
+0xffffff80088891a0: ldr      x9, [x24, #0xf98]
+0xffffff80088891a4: add      x8, x9, x8
+0xffffff80088891a8: add      x8, x8, #0x10
+0xffffff80088891ac: str      w23, [x8]
+0xffffff80088891b0: dsb      sy
+0xffffff80088891b4: ldr      w8, [x25, #0xff0]
+0xffffff80088891b8: cmp      w8, #1
+0xffffff80088891bc: b.eq     #0xffffff80088891d0
+0xffffff80088891c0: tbnz     w23, #0x1f, #0xffffff8008889240
+0xffffff80088891c4: mov      w8, #1
+0xffffff80088891e4: ldr      w8, [x25, #0xff0]
+0xffffff80088891e8: tbz      w23, #0, #0xffffff80088891f4
+0xffffff80088891ec: cmp      w8, #1
+0xffffff80088891f0: b.eq     #0xffffff800888924c
+0xffffff80088891f4: tbz      w23, #1, #0xffffff8008889200
+0xffffff80088891f8: cmp      w8, #1
+0xffffff80088891fc: b.eq     #0xffffff8008889264
+0xffffff8008889200: tbz      w23, #6, #0xffffff800888920c
+0xffffff8008889204: cmp      w8, #1
+0xffffff8008889208: b.eq     #0xffffff8008889278
+0xffffff800888920c: tbz      w23, #0xb, #0xffffff8008889218
+0xffffff8008889210: cmp      w8, #1
+0xffffff8008889214: b.eq     #0xffffff8008889290
+0xffffff8008889218: tbz      w23, #0x1d, #0xffffff8008889224
+0xffffff800888921c: cmp      w8, #1
+0xffffff8008889220: b.eq     #0xffffff80088892a4
+0xffffff8008889224: tbz      w23, #0x1e, #0xffffff80088891c0
+0xffffff8008889228: cmp      w8, #1
+0xffffff800888922c: b.ne     #0xffffff80088891c0
+0xffffff8008889230: adrp     x0, #0xffffff80093bb000
+0xffffff8008889234: add      x0, x0, #0x84d
+0xffffff8008889238: bl       #0xffffff8008125b2c
+0xffffff800888923c: b        #0xffffff80088891c0
+0xffffff8008889240: mov      x0, x28
+0xffffff8008889244: bl       #0xffffff8008125b2c
+0xffffff8008889248: b        #0xffffff80088891c4
+0xffffff8008889530: cbz      x20, #0xffffff8008889624
+0xffffff8008889534: adrp     x8, #0xffffff8009a89000
+0xffffff8008889538: ldr      x8, [x8, #0xf98]
+0xffffff800888953c: cbz      x8, #0xffffff8008889624
+0xffffff8008889540: ldr      w8, [x20]
+0xffffff8008889544: dsb      ld
+0xffffff8008889548: mov      w9, w8
+0xffffff800888954c: eor      x9, x9, x9
+0xffffff8008889550: cbnz     x9, #0xffffff8008889550
+0xffffff8008889554: ands     w20, w8, #0xfff
+0xffffff8008889c78: ldp      w10, w11, [x27, #4]
+0xffffff8008889c7c: add      x9, x9, x28
+0xffffff8008889c80: ldr      w12, [x27, #0xc]
+0xffffff8008889c84: add      x9, x9, #4
+0xffffff8008889c88: str      w10, [x9]
+0xffffff8008889c8c: dsb      sy
+0xffffff8008889c90: ldr      x9, [x24, #0xf98]
+0xffffff8008889c94: mov      w10, #0x492
+0xffffff8008889c98: add      x9, x9, x28
+0xffffff8008889c9c: add      x9, x9, #8
+0xffffff8008889ca0: str      w11, [x9]
+0xffffff8008889ca4: dsb      sy
+0xffffff8008889ca8: ldr      x9, [x24, #0xf98]
+0xffffff8008889cac: mov      w11, #0x800
+0xffffff8008889cb0: add      x9, x9, x28
+0xffffff8008889cb4: add      x9, x9, #0x40
+0xffffff8008889cb8: str      w12, [x9]
+0xffffff8008889cbc: dsb      sy
+0xffffff8008889cc0: ldr      x9, [x24, #0xf98]
+0xffffff8008889cc4: adrp     x12, #0xffffff8009a89000
+0xffffff8008889cc8: add      x9, x9, x28
+0xffffff8008889ccc: add      x9, x9, #0x38
+0xffffff8008889cd0: str      w10, [x9]
+0xffffff8008889cd4: dsb      sy
+0xffffff800888a178: ldr      w13, [x13]
+0xffffff800888a17c: dsb      ld
+0xffffff800888a180: mov      w16, w13
+0xffffff800888a184: eor      x16, x16, x16
+0xffffff800888a188: cbnz     x16, #0xffffff800888a188
+0xffffff800888a18c: ldr      x16, [x26, #0xf98]
+0xffffff800888a190: mov      w8, wzr
+0xffffff800888a194: add      x16, x16, x21
+0xffffff800888a198: add      x16, x16, #0xc
+0xffffff800888a19c: str      w8, [x16]
+0xffffff800888a250: ldr      x8, [x26, #0xf98]
+0xffffff800888a254: orr      w9, w13, #0x80000000
+0xffffff800888a258: add      x8, x8, x21
+0xffffff800888a25c: add      x8, x8, #0xc
+0xffffff800888a260: str      w9, [x8]
+0xffffff800888a264: dsb      sy

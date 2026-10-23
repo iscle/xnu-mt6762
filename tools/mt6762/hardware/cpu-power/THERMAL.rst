@@ -168,6 +168,33 @@ Simply enabling sensor clocks or receiving a valid-looking sample does not
 establish that independent protection path. No related-chip web datasheet
 was treated as proof of MT6765 register semantics.
 
+Exact-stock freshness audit
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``evidence/cpu-freshness-admission.json`` and the bounded
+``evidence/thermal-status-disassembly.txt`` corroborate the status path in the
+actual dumped Image. The handler reads bank+0x10 and writes the same complete
+status word back, then executes ``dsb sy``. A concurrent stock-style IRQ owner
+therefore also clears measurement flags; a new observer needs coordinated
+acknowledgement ownership while preserving hot/cold/SPM handling.
+
+The stock initializer writes filter configuration0x492 (two-of-four samples),
+and its temperature reader uses filtered ``TEMPMSR`` at0x90/94/98. Functions
+named ``get_immediate_*`` expose cached converted readings; they do not establish
+an immediate-register path. Immediate completion bits16..18 cannot certify
+these filtered readings. Candidate filtered completion masks are0x380000 for
+bank0's three sensors and0x180000 for bank1's two sensors. These masks are
+protocol design evidence, not permission to acknowledge them on hardware.
+
+A future admitted observer would write only its selected W1C bits, require an
+observed clear followed by assertion, and read the corresponding filtered
+result with ordering and a validated timeout. It must never acknowledge a
+full status snapshot or modify IRQ enables, protection, pause, clocks or
+sensor routes for this purpose. Exact stock does not independently exercise
+completion-bit semantics, prove assertion with measurement IRQ enable clear,
+or establish completion/data visibility ordering. Those facts and physical
+ownership remain unverified. CPU freshness and DVFS control stay disabled.
+
 A safe performance governor still requires fresh CPU temperatures (or a
 verified independent protection/observer contract), calibrated shared-rail
 current/budget, active cooling limits, coordinated SSPM/PPM/CCI policy and

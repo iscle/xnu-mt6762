@@ -1,0 +1,83 @@
+{
+  "image_sha256": "82b1919185a49f268a0f8e145a6714d6264c1f66918a90df0d763266147ead4b",
+  "scope": "Static evidence and candidate admission protocol only. No hardware/register operations and no native control changes.",
+  "facts": [
+    {
+      "function": "tscpu_thermal_all_tc_interrupt_handler",
+      "address": "0xffffff80088890e4",
+      "fact": "Read THERMINTST base+0xf04 and low8bits; each populated bank is dispatched if its summary bit is0."
+    },
+    {
+      "address": "0xffffff800888918c..0xffffff80088891b0",
+      "fact": "Read bank+0x10 into w23, then write exactly w23 back to bank+0x10 and dsb sy. Corroborates BSP write-to-clear acknowledgement. Full status acknowledgement can consume completion flags owned by a concurrent observer."
+    },
+    {
+      "address": "0xffffff80088891e8..0xffffff8008889248",
+      "fact": "Tests cold0, hot1/6/11 and SPM29/30/31. Does not interpret or consume TEMPMSR based on completion flags16..21 in this handler."
+    },
+    {
+      "function": "tscpu_thermal_read_tc_temp / read_tc_raw_and_temp",
+      "address": "0xffffff80088892f0 /0xffffff8008889510",
+      "fact": "Reader chooses bank TEMPMSR at0x90/94/98 (and supported fourth0xb8), loads and masks0xfff; no completion-generation check. get_immediate_* wrapper names refer to cached converted values, not TEMPIMMD reads."
+    },
+    {
+      "address": "0xffffff8008889c94 /0xffffff8008889cd0",
+      "fact": "Initializes TEMPMSRCTL0 bank+0x38 to0x492, corresponding to BSP two-of-four filtering. A filtered value may lag an immediate sample."
+    },
+    {
+      "address": "0xffffff800888a178..0xffffff800888a264",
+      "fact": "Protection setup reads TEMPMONINT bank+0x0c, temporarily writes0, configures protection and restores oldmask|0x80000000. A freshness observer must not reproduce this disruptive setup or alter protection IRQ enables."
+    }
+  ],
+  "bsp_only_semantic_names": {
+    "status_register": "TEMPMONINTSTS bank+0x10",
+    "immediate_done_bits": [
+      16,
+      17,
+      18
+    ],
+    "filtered_done_bits": [
+      19,
+      20,
+      21
+    ],
+    "timeout_bit": 15,
+    "immediate_result_offsets": [
+      "0xa0",
+      "0xa4",
+      "0xa8"
+    ],
+    "filtered_result_offsets": [
+      "0x90",
+      "0x94",
+      "0x98"
+    ],
+    "warning": "Exact stock confirms status acknowledgement and filtered data path; bit-name-to-result-completion semantics remain BSP definitions, not independently exercised completion logic in stock."
+  },
+  "candidate_masks": {
+    "bank0_filtered": "0x00380000",
+    "bank1_filtered": "0x00180000",
+    "warning": "Candidates for three/two active sensors respectively, not authorization to write."
+  },
+  "admission_requirements": [
+    "Exclusive per-bank completion-acknowledgement ownership shared with the real thermal IRQ handler; no independent stock-style full-status acknowledgement racing the observer. Preserve hot/cold/SPM handling and watchdog/direct-reset route.",
+    "Readback-validated initialized controller/ADC/sensor routing, clock and filter configuration; no pause/reset/reconfiguration by SSPM, firmware or another owner during measurement.",
+    "Independent proof that filtered status asserts on completion and denotes data visible in matching TEMPMSR, and whether status asserts with measurement interrupt enable clear. Do not enable measurement IRQs speculatively.",
+    "Only selected filtered W1C bits may be acknowledged using a literal mask; never read-modify-write the full status. Never write TEMPMONINT, protection registers, sensor pause bits, routing or clocks for freshness.",
+    "Observe selected filtered bits clear after acknowledgement with a bounded readback; reject preasserted/racing results if no low is observed. Require each corresponding bit subsequently high within the validated sampling bound.",
+    "After high and ordered reads, acquire corresponding TEMPMSR; reject timeout status, invalid raw/calibration, changed configuration or expired observation. Keep other protection status pending for its owner.",
+    "Treat the handshake as at least one post-clear filtered completion, not an exact generation counter. Do not infer freshness from raw change or equal repeated values.",
+    "Keep CPU fresh bits and dvfs_control_ready clear until these admission requirements and physical timing/ownership proof are satisfied."
+  ],
+  "not_proven": [
+    "Status reassertion when measurement IRQ enable is0.",
+    "Precise completion/data visibility order and conversion latency under inherited filter/clock settings.",
+    "Physical transfer of IRQ acknowledgement ownership and preservation of independent protection.",
+    "A safe failure action/current budget for an actual performance governor."
+  ],
+  "disassembly_sha256": "9ce8c8b4db8fcfcfba6f9f51e5e0a1af356b50f059393ae740547023deda15fa",
+  "bsp_sha256": {
+    "src/mtk_tc.c": "aa7927142ba6446f85185160b55e178a5eab401993c53d0b568b43c4c4dc8373",
+    "inc/tscpu_settings.h": "ceb36a4fe2d20a6b1a3c777c9811196ff1b41881e79716bf1887150e4e0a42ed"
+  }
+}

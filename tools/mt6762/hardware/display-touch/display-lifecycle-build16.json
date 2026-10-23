@@ -1,0 +1,158 @@
+{
+  "synthetic_only": true,
+  "physical_panel_tested": false,
+  "dsi_panel_sleep_tested": false,
+  "run_seconds": 180,
+  "run_completed": true,
+  "kernel_panic_observed": false,
+  "kernel_sha256": "03b65d7f33e5c3d5e275a638f301e67a4621c1994b63a7ea9ffa3aa1846f7d68",
+  "qemu_binary_sha256": "a73c442a61ed53cc754f4c5cb503628850d73e1db765f04bcd48f9523012f32c",
+  "helper_sha256": "b77a515b48cd0ec2fbdeabc5080da3b458968511a25b9ee12f8a00f997ea4179",
+  "helper_invocation": "/redwood/bin/display_power_probe --qemu-lab 45",
+  "observations": [
+    {
+      "stage": "WAIT",
+      "fields": {
+        "seconds": "45"
+      }
+    },
+    {
+      "stage": "OPEN",
+      "fields": {
+        "status": "0",
+        "present": "1"
+      }
+    },
+    {
+      "stage": "BEFORE",
+      "fields": {
+        "status": "0",
+        "published": "256"
+      }
+    },
+    {
+      "stage": "OFF",
+      "fields": {
+        "status": "0",
+        "published": "0",
+        "desired": "256"
+      }
+    },
+    {
+      "stage": "DEFERRED",
+      "fields": {
+        "status": "0",
+        "published": "0",
+        "desired": "1",
+        "logical": "0.000000"
+      }
+    },
+    {
+      "stage": "DUPLICATE_OFF",
+      "fields": {
+        "status": "0",
+        "published": "0",
+        "desired": "1"
+      }
+    },
+    {
+      "stage": "ON",
+      "fields": {
+        "status": "0",
+        "published": "1",
+        "desired": "1",
+        "logical": "0.000000"
+      }
+    },
+    {
+      "stage": "RESTORE",
+      "fields": {
+        "status": "0",
+        "published": "512",
+        "desired": "512",
+        "logical": "0.500000"
+      }
+    },
+    {
+      "stage": "DONE",
+      "fields": {}
+    }
+  ],
+  "independent_model_transitions": [
+    {
+      "elapsed_seconds": 1.002,
+      "applied_level": 512,
+      "enable": 1,
+      "duty": 512,
+      "pwm_writes": 0,
+      "commits": 0,
+      "rejected_writes": 0
+    },
+    {
+      "elapsed_seconds": 67.766,
+      "applied_level": 256,
+      "enable": 1,
+      "duty": 256,
+      "pwm_writes": 4,
+      "commits": 1,
+      "rejected_writes": 0
+    },
+    {
+      "elapsed_seconds": 71.833,
+      "applied_level": 0,
+      "enable": 0,
+      "duty": 1,
+      "pwm_writes": 8,
+      "commits": 2,
+      "rejected_writes": 0
+    },
+    {
+      "elapsed_seconds": 80.944,
+      "applied_level": 1,
+      "enable": 1,
+      "duty": 1,
+      "pwm_writes": 12,
+      "commits": 3,
+      "rejected_writes": 0
+    },
+    {
+      "elapsed_seconds": 84.986,
+      "applied_level": 512,
+      "enable": 1,
+      "duty": 512,
+      "pwm_writes": 16,
+      "commits": 4,
+      "rejected_writes": 0
+    }
+  ],
+  "blanked_model_interval": {
+    "first_sample_seconds": 71.833,
+    "last_sample_seconds": 79.932,
+    "samples": 9,
+    "commit_counts": [
+      2
+    ],
+    "applied_level": 0,
+    "PWM_representation": "EN0 and stored duty1: electrical applied level0. Native zero programming preserves safe nonzero stored duty while disabling output."
+  },
+  "findings": [
+    "Original IOMobileFramebuffer power calls succeeded; original BKS/CoreBrightness request path is preserved.",
+    "Off saved confirmed256 and published actual0. While blank, original backboardd requested768 then idle-policy1; actual remained0 and desired metadata became1.",
+    "Duplicateoff preserved latest desired1. Wake applied1; restoring logical0.5 applied512.",
+    "Independent one-second model observations show no additional commits throughout nine blanked samples, then wake and restore commits; total16 writes/four commits/zero rejected.",
+    "Framebuffer-copy suppression and continued queue/VBL handling are implemented and lock-reviewed; model PWM observations do not independently prove pixel-write suppression.",
+    "No DSI commands, panel power rails, reset or display clock changes were made. This tests backlight/copy lifecycle, not actual panel sleep."
+  ],
+  "apple_preservation": {
+    "status": "verified-byte-preservation",
+    "critical_executables_checked_against_retained_apple_dmg": 3,
+    "mapped_cache_files_checked": 43,
+    "limit": "Checks extracted Apple cache files against APFS bytes and three executables against the retained Apple DMG when available; does not establish boot, authenticity, or all-file preservation."
+  },
+  "local_artifact_sha256": {
+    "boot/native-display-lifecycle-build16/run/payload/lifecycle.serial.log": "69d8da5180a707eec5bd66b3eceaa513c0ec25e1dd8b9a265e189880bf6ab4e7",
+    "boot/native-display-lifecycle-build16/run/payload/lifecycle.models.json": "cc35438ea763c19c10cc5bba35fc4f3be4f867e3580b528beb590f9e477008b4",
+    "boot/native-display-lifecycle-build16/run/payload/manifest.json": "8f0948c1bf236c11f1bf392633670bc2963172a64e3ee2182399d01ffb63c0cf",
+    "boot/native-display-lifecycle-build16/run/apple-preservation.json": "c597a86140d0462599d065368986492d1779f0409c4b9ef02623b9360306bae8"
+  }
+}

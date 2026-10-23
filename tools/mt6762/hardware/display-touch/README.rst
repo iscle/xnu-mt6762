@@ -181,15 +181,17 @@ physical integer target, ``FadePeriod`` is a nonnegative signed16.16 duration
 in seconds, and optional ``backlight-level`` is logical-level metadata.
 Fades run every16ms and retarget from hardware readback. Failed PWM writes stop
 the fade; only successfully programmed levels are published. Unsupported
-property-only requests and malformed values return errors. Ordinary lab
+property-only requests and malformed values return errors. Float-origin OSNumber
+values are rejected before any integer conversion, including integral-looking
+floats. Ordinary lab
 graphics does not gain a simulated backlight service.
 
 The original backboardd runs as ``mobile`` and carries boolean entitlement
 ``com.apple.internal.display-params-access-privileged``. Property writes require
 that entitlement or an administrator. Apple executables are unchanged. Host
 tests cover integer bounds, negative/oversized encodings,16.16 conversion,
-monotonic fades and retargeting. Actual slider-driven requests and physical
-brightness changes still require runtime validation.
+monotonic fades and retargeting. The original framework request path is validated in the synthetic run below.
+An actual onscreen slider gesture and physical brightness remain untested.
 
 Remaining work includes current physical handoff evidence and producer,
 display DMA translation/cache/reservation proof, panel cold-start and power
@@ -220,3 +222,88 @@ matcher. ``AppleARMBacklight`` conformance identifies the built-in display;
 ``kUSBContainerID`` is optional. No additional properties should be invented
 without evidence. First-eight kernel entry/rejection logs distinguish missing
 requests from requests rejected by unchanged ABI/authorization checks.
+
+Original BackBoardServices laboratory request
+---------------------------------------------
+
+``backlight_request.c`` calls the original20F66 framework exports recorded in
+``apple-brightness-abi.json``. It sends logical levels0.25 and0.75, then restores
+the initial logical level. It never calls the direct engineering property API.
+It requires ``--qemu-lab`` plus the synthetic ADT contract and refuses an absent
+contract. Build with the same SDK and frameworks as ``backlight_probe`` and sign
+only this project helper with ``backlight_request.entitlements``::
+
+  xnu-clang -arch arm64 -isysroot "$THEOS/sdks/iPhoneOS16.5.sdk" -O1 \
+    -Wall -Wextra -framework CoreFoundation -framework IOKit \
+    -o /new/backlight_request backlight_request.c
+  ldid -Sbacklight_request.entitlements /new/backlight_request
+
+Install it in the separate laboratory root and run::
+
+  /redwood/bin/backlight_request --qemu-lab 45 4
+
+The optional numbers are initial delay and per-target hold seconds. For a
+late GUI test, a longer hold can span SpringBoard startup; availability alone
+does not prove the display is unlocked. The helper's ``native`` observation
+reads the last confirmed published duty. It is not a fresh hardware register
+read. Require independent QEMU PWM commit counters and original ``backboardd``
+request logs before attributing a change to the original Apple path. Apple idle
+policy can legitimately supersede a requested level before the next sample.
+
+The discovered ``DisplayBrightness``, ``brightness-nits``,
+``brightness-nits-cap`` and slider-position metadata do not establish a nits to
+PWM calibration. They remain unsupported as standalone native requests. The
+original legacy integer target and authorization checks stay in effect.
+
+``original-bks-build13.json`` records the completed220-second synthetic test.
+Original ``backboardd`` delivered integer targets256,768,1 and512. The helper
+observed last-confirmed published levels256,1 and512; Apple idle policy
+superseded0.75 before that sample. Independently, QEMU recorded16 PWM register
+writes, four commits, zero rejected writes and restored duty512. Its20-second
+samples did not capture intermediate levels, so they prove commit activity and
+restoration rather than each transient target. This proves the original Apple
+framework request path reaches the native backend in the model. It does not
+prove a physical panel response or an onscreen brightness slider gesture.
+
+Inherited-display blank and wake
+--------------------------------
+
+``display-power-abi.json`` records original QuartzCore/IOMobileFramebuffer
+selector12: one boolean scalar for display on. With a native handoff, MiniFB
+requires the original display entitlement or administrator. Off serializes
+against framebuffer copies, cancels any fade, saves actual confirmed PWM duty,
+and programs/readbacks zero. Queue completions and VBL notifications continue;
+subsequent swaps are consumed without copying into framebuffer RAM. The panel
+continues scanning the inherited last frame with its backlight disabled.
+
+Valid brightness requests while blank update only a separate desired target
+and duration. Published actual brightness stays zero. Repeated off preserves
+the pending request. Wake restores the saved confirmed level, or applies the
+latest pending request through the normal readback/fade path, then permits
+framebuffer copies. Faults and service stop remain terminal. The engineering
+property shares this workloop, so it cannot bypass lifecycle gates. Lock order
+is framebuffer lock, backlight workloop, then native PWM mutex; the backlight
+never acquires the framebuffer lock. Default non-native graphics is unchanged.
+
+This is not DSI panel sleep or clock/rail suspension. Stock DCS suspend and
+proximity-preserved resume commands are known, but safe command transport,
+normal resume power/reset ordering and physical validation remain outstanding.
+No panel sleep commands are issued by this implementation.
+
+Build the project probes with ``../build-probes.sh`` using explicit ``IOS_CC``,
+``IOS_SDK``, ``LDID`` and a new output directory. The QEMU-only
+``display_power_probe --qemu-lab 45`` uses original IOMobileFramebuffer power
+calls and original BKS brightness calls to test off, deferred target, repeated
+off and wake. Install it under ``/redwood/bin`` and run it separately from
+``backlight_request``. Sample independent model PWM state at one-second
+intervals; helper registry observations alone are not a hardware trace.
+
+The180-second build16 test in ``display-lifecycle-build16.json`` completed
+without a panic. Original framework calls produced256 -> off0 -> wake1 ->
+restore512. While blank, CoreBrightness queued768 then superseded it with its
+idle target1; duplicate off preserved1. Nine independent one-second QEMU
+samples held applied0 and commit count2 throughout the blank interval. Wake
+and restore brought the total to four commits/16 writes with no rejected
+writes. Model applied0 uses EN0 with stored duty1. This validates pending-target
+and PWM lifecycle behavior; it does not independently measure framebuffer-copy
+suppression or establish physical DSI/panel sleep.

@@ -71,7 +71,9 @@
     "apple_binary_changes": false,
     "new_numeric_userclient_selector": false,
     "physical_tested": false,
-    "actual_slider_tested": false
+    "actual_slider_tested": false,
+    "original_apple_to_native_pwm_synthetic_tested": true,
+    "legacy_number_types": "Reject OSNumber floating tags31/63 for brightness, FadePeriod and backlight-level before any unsigned numeric conversion. Original Apple SInt32 values remain accepted."
   },
   "local_evidence_hashes": {
     "corebrightness-text.bin": "bea44f312cd08b13823dd9dc4a7cd33e3bb7b9a173bada679ba897b3de2dd4c6",
@@ -82,7 +84,11 @@
     "find-backlight.asm": "a4449babf0378a7b22e79d9ca3d6a4544cba6641c5a3785836ea15fe6b1f17f2",
     "container-find-backlight.asm": "5e3b9149d45bbdd68de5723f62ea29bbfc736614700f88f1eaf72ad922d9cdec",
     "blcontrol-start.asm": "16a8ddc3000eac9c7e99af505155c16fa4823ad2379261eca76dcedf464b395f",
-    "backlight-container-init.asm": "05658f46cd8af1938d7edcbd5a1d2814185a72381fea097170caca448bc2e2d1"
+    "backlight-container-init.asm": "05658f46cd8af1938d7edcbd5a1d2814185a72381fea097170caca448bc2e2d1",
+    "bks-brightness-get.asm": "9000f467670cf243c93d0edbc56446ccbb13b616a0d5d0d1928efbb02163263a",
+    "bks-brightness-set.asm": "1989acdff7100cc53c4f88cea659d8ce5118918fa0060486a90520f504ba1f7c",
+    "bkshid-brightness-implicit.asm": "93440bd894fedaa825ff3b6eafb20107fd08747cfb79429103e7617bab44ace3",
+    "springboard-entitlements.plist": "f215ee2e1055c0339021c0df35df09da5c1ae59592d7efc77cb43424654adaab"
   },
   "reproduce": [
     "ipsw dyld symaddr CACHE -i CoreBrightness",
@@ -91,7 +97,7 @@
     "ipsw dyld disass CACHE -q -a0x1af06731c -c18",
     "ipsw macho info ROOTFS/usr/libexec/backboardd --ent"
   ],
-  "validation": "Host fixedpoint/range/retarget tests pass; native kernel compilation and runtime service/property tests tracked separately by root agent.",
+  "validation": "Host integer/fade tests pass; original BKS API -> original backboardd/CoreBrightness -> native PWM verified in220-second synthetic run. See original-bks-build13.json. Physical brightness and onscreen slider gesture remain untested.",
   "discovery": {
     "BLControl_start": {
       "function": "___18-[BLControl start]_block_invoke",
@@ -139,6 +145,39 @@
       "missing_property_is_not_a_readiness_failure": true
     },
     "diagnostic": "backlight_probe.c repeats exact matcher plus class matching and reads properties only; no IORegistryEntrySetCFProperties or PWM writes.",
-    "runtime_boundary": "Service registration alone does not prove Apple discovery or request delivery. Kernel logs now distinguish first8 entry/rejection cases from accepted updates. GUI1 first diagnostic run used wrong /bin path and produced no registry evidence."
+    "runtime_boundary": "Build10 read-only diagnostic found one matching AppleARMBacklight and exact property matcher. Build13 original BKS helper delivered legacy integer requests from original backboardd. Modern metadata-only requests remain rejected; no invented nits conversion."
+  },
+  "original_framework_probe": {
+    "source": "backlight_request.c",
+    "framework": "/System/Library/PrivateFrameworks/BackBoardServices.framework/BackBoardServices",
+    "exports": [
+      {
+        "name": "BKSDisplayBrightnessSetWithImplicitTransaction",
+        "address": "0x18dcdf084",
+        "signature": "int32_t(float)",
+        "evidence": "Float argument in s0; wrapper tail-calls private MIG function at0x18dd01770, whose return is signed32-bit Mach status."
+      },
+      {
+        "name": "BKSDisplayBrightnessGetCurrent",
+        "address": "0x18dcb2e40",
+        "signature": "float(void)",
+        "evidence": "MIG writes local float; wrapper returns s0 at0x18dcb2e80."
+      },
+      {
+        "name": "BKSDisplayBrightnessIsBrightnessLevelControlAvailable",
+        "address": "0x18dcdf1f0",
+        "signature": "bool(void)",
+        "evidence": "MIG writes local byte; wrapper normalizes nonzero to w0 at0x18dcdf234."
+      }
+    ],
+    "helper_entitlements": [
+      "com.apple.backboard.client",
+      "com.apple.backboard.displaybrightness"
+    ],
+    "entitlement_reference": "Both boolean entitlements observed in original20F66 SpringBoard.",
+    "restriction": "Requires --qemu-lab and exact version/native-io/lab-fixture u32=1 in /chosen/mt6762-handoff.",
+    "operation": "Calls original framework setter with0.25,0.75 and initial logical level; never directly writes IOKit properties or PWM.",
+    "observations": "Logical getter is original BackBoardServices. native log field is last confirmed published IODisplayParameters value, not an independent live hardware read.",
+    "limitations": "Successful Mach IPC alone is insufficient. Correlate original backboardd accepted target with native readback and independent QEMU PWM model counters. Apple idle/blanking policy may override a target."
   }
 }
