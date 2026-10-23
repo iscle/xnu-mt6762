@@ -1,0 +1,258 @@
+{
+  "synthetic_model_only": true,
+  "physical_hardware_tested": false,
+  "kernel_sha256": "ef175089615dbe3d82b1b25d03fef5b4455b26e0eb95835783c72e8b2cccfd1d",
+  "duration_seconds_per_fault": 6,
+  "cases": [
+    {
+      "label": "current",
+      "qemu_binary_sha256": "4712ef4702a71156453f8ed2ef383076d8aca63fd24a8f52734b1da96fe98ce5",
+      "post_valid_injected": false,
+      "kernel_panic": false,
+      "cpu_count": 8,
+      "queue_observer_ready": true,
+      "gauge_state": {
+        "gauge_enabled": true,
+        "gauge_calibration_synthetic": true,
+        "gauge_control": 0,
+        "gauge_ticks": 11,
+        "gauge_snapshots": 6,
+        "gauge_commands": 24
+      },
+      "sysctls": {
+        "mt6762_power_valid": 79,
+        "mt6762_gauge_current_ua": 31400,
+        "mt6762_gauge_current_valid": 1,
+        "mt6762_gauge_samples": 5,
+        "mt6762_gauge_errors": 0,
+        "mt6762_gauge_fault": 0,
+        "mt6762_gauge_raw_current": 100
+      }
+    },
+    {
+      "label": "gauge-timeout",
+      "qemu_binary_sha256": "4712ef4702a71156453f8ed2ef383076d8aca63fd24a8f52734b1da96fe98ce5",
+      "post_valid_injected": false,
+      "kernel_panic": false,
+      "cpu_count": 8,
+      "queue_observer_ready": true,
+      "gauge_state": {
+        "gauge_enabled": true,
+        "gauge_calibration_synthetic": true,
+        "gauge_control": 1,
+        "gauge_ticks": 2,
+        "gauge_snapshots": 1,
+        "gauge_commands": 1
+      },
+      "sysctls": {
+        "mt6762_power_valid": 71,
+        "mt6762_gauge_current_ua": -2147483648,
+        "mt6762_gauge_current_valid": 0,
+        "mt6762_gauge_samples": 0,
+        "mt6762_gauge_errors": 1,
+        "mt6762_gauge_fault": 1,
+        "mt6762_gauge_raw_current": -1
+      }
+    },
+    {
+      "label": "gauge-latch-stuck",
+      "qemu_binary_sha256": "4712ef4702a71156453f8ed2ef383076d8aca63fd24a8f52734b1da96fe98ce5",
+      "post_valid_injected": false,
+      "kernel_panic": false,
+      "cpu_count": 8,
+      "queue_observer_ready": true,
+      "gauge_state": {
+        "gauge_enabled": true,
+        "gauge_calibration_synthetic": true,
+        "gauge_control": 32776,
+        "gauge_ticks": 2,
+        "gauge_snapshots": 1,
+        "gauge_commands": 3
+      },
+      "sysctls": {
+        "mt6762_power_valid": 71,
+        "mt6762_gauge_current_ua": -2147483648,
+        "mt6762_gauge_current_valid": 0,
+        "mt6762_gauge_samples": 0,
+        "mt6762_gauge_errors": 1,
+        "mt6762_gauge_fault": 1,
+        "mt6762_gauge_raw_current": -1
+      }
+    },
+    {
+      "label": "gauge-stale",
+      "qemu_binary_sha256": "4712ef4702a71156453f8ed2ef383076d8aca63fd24a8f52734b1da96fe98ce5",
+      "post_valid_injected": false,
+      "kernel_panic": false,
+      "cpu_count": 8,
+      "queue_observer_ready": true,
+      "gauge_state": {
+        "gauge_enabled": true,
+        "gauge_calibration_synthetic": true,
+        "gauge_control": 32768,
+        "gauge_ticks": 0,
+        "gauge_snapshots": 0,
+        "gauge_commands": 0
+      },
+      "sysctls": {
+        "mt6762_power_valid": 71,
+        "mt6762_gauge_current_ua": -2147483648,
+        "mt6762_gauge_current_valid": 0,
+        "mt6762_gauge_samples": 0,
+        "mt6762_gauge_errors": 1,
+        "mt6762_gauge_fault": 1,
+        "mt6762_gauge_raw_current": -1
+      }
+    },
+    {
+      "label": "gauge-clock",
+      "qemu_binary_sha256": "4712ef4702a71156453f8ed2ef383076d8aca63fd24a8f52734b1da96fe98ce5",
+      "post_valid_injected": false,
+      "kernel_panic": false,
+      "cpu_count": 8,
+      "queue_observer_ready": true,
+      "gauge_state": {
+        "gauge_enabled": true,
+        "gauge_calibration_synthetic": true,
+        "gauge_control": 0,
+        "gauge_ticks": 0,
+        "gauge_snapshots": 0,
+        "gauge_commands": 0
+      },
+      "sysctls": {
+        "mt6762_power_valid": 71,
+        "mt6762_gauge_current_ua": -2147483648,
+        "mt6762_gauge_current_valid": 0,
+        "mt6762_gauge_samples": 0,
+        "mt6762_gauge_errors": 1,
+        "mt6762_gauge_fault": 1,
+        "mt6762_gauge_raw_current": -1
+      }
+    },
+    {
+      "label": "gauge-calibration",
+      "qemu_binary_sha256": "4712ef4702a71156453f8ed2ef383076d8aca63fd24a8f52734b1da96fe98ce5",
+      "post_valid_injected": false,
+      "kernel_panic": false,
+      "cpu_count": 8,
+      "queue_observer_ready": true,
+      "gauge_state": {
+        "gauge_enabled": true,
+        "gauge_calibration_synthetic": true,
+        "gauge_control": 0,
+        "gauge_ticks": 0,
+        "gauge_snapshots": 0,
+        "gauge_commands": 0
+      },
+      "sysctls": {
+        "mt6762_power_valid": 71,
+        "mt6762_gauge_current_ua": -2147483648,
+        "mt6762_gauge_current_valid": 0,
+        "mt6762_gauge_samples": 0,
+        "mt6762_gauge_errors": 1,
+        "mt6762_gauge_fault": 1,
+        "mt6762_gauge_raw_current": -1
+      }
+    },
+    {
+      "label": "gauge-counter-stuck",
+      "qemu_binary_sha256": "4712ef4702a71156453f8ed2ef383076d8aca63fd24a8f52734b1da96fe98ce5",
+      "post_valid_injected": false,
+      "kernel_panic": false,
+      "cpu_count": 8,
+      "queue_observer_ready": true,
+      "gauge_state": {
+        "gauge_enabled": true,
+        "gauge_calibration_synthetic": true,
+        "gauge_control": 0,
+        "gauge_ticks": 0,
+        "gauge_snapshots": 5,
+        "gauge_commands": 20
+      },
+      "sysctls": {
+        "mt6762_power_valid": 71,
+        "mt6762_gauge_current_ua": -2147483648,
+        "mt6762_gauge_current_valid": 0,
+        "mt6762_gauge_samples": 5,
+        "mt6762_gauge_errors": 0,
+        "mt6762_gauge_fault": 0,
+        "mt6762_gauge_raw_current": 100
+      }
+    },
+    {
+      "label": "gauge-post-clock",
+      "qemu_binary_sha256": "4712ef4702a71156453f8ed2ef383076d8aca63fd24a8f52734b1da96fe98ce5",
+      "post_valid_injected": true,
+      "kernel_panic": false,
+      "cpu_count": 8,
+      "queue_observer_ready": true,
+      "gauge_state": {
+        "gauge_enabled": true,
+        "gauge_calibration_synthetic": true,
+        "gauge_control": 0,
+        "gauge_ticks": 4,
+        "gauge_snapshots": 2,
+        "gauge_commands": 8
+      },
+      "sysctls": {
+        "mt6762_power_valid": 71,
+        "mt6762_gauge_current_ua": -2147483648,
+        "mt6762_gauge_current_valid": 0,
+        "mt6762_gauge_samples": 2,
+        "mt6762_gauge_errors": 1,
+        "mt6762_gauge_fault": 1,
+        "mt6762_gauge_raw_current": 100
+      }
+    },
+    {
+      "label": "gauge-post-calibration",
+      "qemu_binary_sha256": "4712ef4702a71156453f8ed2ef383076d8aca63fd24a8f52734b1da96fe98ce5",
+      "post_valid_injected": true,
+      "kernel_panic": false,
+      "cpu_count": 8,
+      "queue_observer_ready": true,
+      "gauge_state": {
+        "gauge_enabled": true,
+        "gauge_calibration_synthetic": true,
+        "gauge_control": 0,
+        "gauge_ticks": 4,
+        "gauge_snapshots": 2,
+        "gauge_commands": 8
+      },
+      "sysctls": {
+        "mt6762_power_valid": 71,
+        "mt6762_gauge_current_ua": -2147483648,
+        "mt6762_gauge_current_valid": 0,
+        "mt6762_gauge_samples": 2,
+        "mt6762_gauge_errors": 1,
+        "mt6762_gauge_fault": 1,
+        "mt6762_gauge_raw_current": 100
+      }
+    },
+    {
+      "label": "gauge-post-counter-stuck",
+      "qemu_binary_sha256": "a73c442a61ed53cc754f4c5cb503628850d73e1db765f04bcd48f9523012f32c",
+      "post_valid_injected": true,
+      "kernel_panic": false,
+      "cpu_count": 8,
+      "queue_observer_ready": true,
+      "gauge_state": {
+        "gauge_enabled": true,
+        "gauge_calibration_synthetic": true,
+        "gauge_control": 0,
+        "gauge_ticks": 3,
+        "gauge_snapshots": 6,
+        "gauge_commands": 24
+      },
+      "sysctls": {
+        "mt6762_power_valid": 71,
+        "mt6762_gauge_current_ua": -2147483648,
+        "mt6762_gauge_current_valid": 0,
+        "mt6762_gauge_samples": 5,
+        "mt6762_gauge_errors": 0,
+        "mt6762_gauge_fault": 0,
+        "mt6762_gauge_raw_current": 100
+      }
+    }
+  ]
+}

@@ -24,3 +24,24 @@ int mt6357_ntc_temperature(uint32_t adc_mv,uint32_t pullup_mv,
     }
     return -1;
 }
+
+int mt6357_ntc_compensated_temperature(uint32_t adc_mv,uint32_t bif_mv,
+    uint32_t pullup_ohms,int32_t current_ua,uint32_t com_fg,
+    uint32_t com_rfg,unsigned no_comp,int *out_deci_c)
+{
+    int64_t current=current_ua;
+    int64_t delta,corrected,bif;
+    uint64_t resistance;
+    if(no_comp>1 || !out_deci_c) return -1;
+    if(current<0) current=-current;
+    resistance=(no_comp?0:(uint64_t)com_fg)+com_rfg;
+    /* Original current is in 0.1 mA and truncates to whole mA first. */
+    delta=(int64_t)(((uint64_t)(current/1000)*resistance)/10000);
+    if(current_ua>0) delta=-delta;
+    corrected=(int64_t)adc_mv+delta;
+    bif=(int64_t)bif_mv+delta;
+    if(corrected<=0 || corrected>UINT32_MAX || bif<=0 || bif>UINT32_MAX)
+        return -1;
+    return mt6357_ntc_temperature((uint32_t)corrected,(uint32_t)bif,
+                                  pullup_ohms,out_deci_c);
+}

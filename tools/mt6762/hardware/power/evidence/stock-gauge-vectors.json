@@ -1,0 +1,196 @@
+{
+  "image_sha256": "82b1919185a49f268a0f8e145a6714d6264c1f66918a90df0d763266147ead4b",
+  "physical_hardware_tested": false,
+  "method": "Original instant_current/reg_to_current/coulomb_get ARM64; known register reads and latch/profiling/log calls intercepted",
+  "cases": [
+    {
+      "current": 0,
+      "low": 0,
+      "high": 0,
+      "rfg": 100,
+      "tune": 1000,
+      "ua": 0,
+      "uah": 0
+    },
+    {
+      "current": 1,
+      "low": 5,
+      "high": 1,
+      "rfg": 100,
+      "tune": 1000,
+      "ua": 300,
+      "uah": 400
+    },
+    {
+      "current": 100,
+      "low": 500,
+      "high": 100,
+      "rfg": 100,
+      "tune": 1000,
+      "ua": 31400,
+      "uah": 35800
+    },
+    {
+      "current": 32767,
+      "low": 32763,
+      "high": 32767,
+      "rfg": 100,
+      "tune": 1000,
+      "ua": 10299600,
+      "uah": 11718700
+    },
+    {
+      "current": 32768,
+      "low": 32768,
+      "high": 32768,
+      "rfg": 100,
+      "tune": 1000,
+      "ua": -10299600,
+      "uah": -11718700
+    },
+    {
+      "current": 65435,
+      "low": 65031,
+      "high": 65435,
+      "rfg": 100,
+      "tune": 1000,
+      "ua": -31400,
+      "uah": -35800
+    },
+    {
+      "current": 65535,
+      "low": 65531,
+      "high": 65535,
+      "rfg": 100,
+      "tune": 1000,
+      "ua": 0,
+      "uah": 0
+    },
+    {
+      "current": 0,
+      "low": 0,
+      "high": 0,
+      "rfg": 200,
+      "tune": 1500,
+      "ua": 0,
+      "uah": 0
+    },
+    {
+      "current": 1,
+      "low": 5,
+      "high": 1,
+      "rfg": 200,
+      "tune": 1500,
+      "ua": 100,
+      "uah": 300
+    },
+    {
+      "current": 100,
+      "low": 500,
+      "high": 100,
+      "rfg": 200,
+      "tune": 1500,
+      "ua": 23500,
+      "uah": 26800
+    },
+    {
+      "current": 32767,
+      "low": 32763,
+      "high": 32767,
+      "rfg": 200,
+      "tune": 1500,
+      "ua": 7724700,
+      "uah": 8788900
+    },
+    {
+      "current": 32768,
+      "low": 32768,
+      "high": 32768,
+      "rfg": 200,
+      "tune": 1500,
+      "ua": -7724700,
+      "uah": -8788900
+    },
+    {
+      "current": 65435,
+      "low": 65031,
+      "high": 65435,
+      "rfg": 200,
+      "tune": 1500,
+      "ua": -23500,
+      "uah": -26800
+    },
+    {
+      "current": 65535,
+      "low": 65531,
+      "high": 65535,
+      "rfg": 200,
+      "tune": 1500,
+      "ua": 0,
+      "uah": 0
+    },
+    {
+      "current": 0,
+      "low": 0,
+      "high": 0,
+      "rfg": 75,
+      "tune": 900,
+      "ua": 0,
+      "uah": 0
+    },
+    {
+      "current": 1,
+      "low": 5,
+      "high": 1,
+      "rfg": 75,
+      "tune": 900,
+      "ua": 300,
+      "uah": 400
+    },
+    {
+      "current": 100,
+      "low": 500,
+      "high": 100,
+      "rfg": 75,
+      "tune": 900,
+      "ua": 37600,
+      "uah": 42900
+    },
+    {
+      "current": 32767,
+      "low": 32763,
+      "high": 32767,
+      "rfg": 75,
+      "tune": 900,
+      "ua": 12359500,
+      "uah": 14062400
+    },
+    {
+      "current": 32768,
+      "low": 32768,
+      "high": 32768,
+      "rfg": 75,
+      "tune": 900,
+      "ua": -12359500,
+      "uah": -14062400
+    },
+    {
+      "current": 65435,
+      "low": 65031,
+      "high": 65435,
+      "rfg": 75,
+      "tune": 900,
+      "ua": -37600,
+      "uah": -42900
+    },
+    {
+      "current": 65535,
+      "low": 65531,
+      "high": 65535,
+      "rfg": 75,
+      "tune": 900,
+      "ua": 0,
+      "uah": 0
+    }
+  ]
+}

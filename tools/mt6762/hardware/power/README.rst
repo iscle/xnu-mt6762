@@ -210,3 +210,13 @@ bit 0 RG_BATON_EN and bit 1 RGS_BATON_UNDET. Native observation additionally
 requires enable bit 0, since a disabled detector is not evidence of presence.
 Stock's absent-battery path pulses AUXADC register 0x114a bit3; native
 observation does not reproduce this state-changing side effect.
+
+Gauge and thermistor compensation update
+---------------------------------------
+
+See GAUGE.rst for the native bounded current observer, exact active-versus-sysfs
+CAR_TUNE distinction, synthetic integration results and the recovered NTC
+current-compensation path. The additional pure thermistor converter is checked
+against original ARM64 execution. It is not a valid native battery-temperature
+provider: fresh paired NTC/BIF sampling, separate BATON/TDET ownership and live
+calibration remain required. Charging enable remains unavailable.

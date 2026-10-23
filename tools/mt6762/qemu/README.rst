@@ -1,7 +1,7 @@
 Reproducing the local MT6762 QEMU experiment
 ==========================================
 
-These seven patches reproduce the local research machine used for MT6762
+These eight patches reproduce the local research machine used for MT6762
 bring-up. They contain source code and documentation only: no phone firmware,
 iOS files, credentials, personal partitions, or built binaries.
 
@@ -16,9 +16,10 @@ Source provenance
   ``afcfb434f2ead1165e6a23ca9828c3cd414b1f21``,
   ``dafbf7f83d81cea79804ec731a6214a47e53d646``,
   ``6c4cfc34f2c08da2bb709be5ba8a3224152273bf``,
-  ``1cefe6067521f188fffbe2070bd520501a8c60fe`` and
-  ``63ec9fcb45cb0cf59214a3d2b676f408d724cf62``.
-* Resulting Git tree: ``3864daeae10044cb8c567cd2d4cc4d7e89f9619c``.
+  ``1cefe6067521f188fffbe2070bd520501a8c60fe``,
+  ``63ec9fcb45cb0cf59214a3d2b676f408d724cf62`` and
+  ``78122652f1258b3900d7fd721c9b1df06d4122d4``.
+* Resulting Git tree: ``aafff1a6302dbf3199b1c4de937899f384831435``.
 
 ``apply.sh`` verifies the patch SHA-256 hashes, fetches that exact upstream
 commit, applies the patch series in order, and verifies the final tree.
@@ -139,3 +140,8 @@ The seventh patch adds ``lab-pmic-thermal`` with synthetic calibration and
 three independent PMIC conversions, timed READY transitions and scoped
 freshness/calibration faults. It does not model CPU thermal control or DVFS.
 ``test_lab_thermal.py`` tests this fixture separately from native execution.
+
+The eighth patch adds ``lab-gauge`` with a synthetic initialized snapshot
+engine and counter progression. Its tests verify latch commands, failures
+and rejected destructive writes. Calibration/current values are fixtures;
+no battery capacity, SOC or lifetime behavior is modeled.

@@ -1,0 +1,109 @@
+Known Image SHA256 82b1919185a49f268a0f8e145a6714d6264c1f66918a90df0d763266147ead4b
+Bounded offline disassembly; no device execution.
+
+../emulator/stock.elf:	file format elf64-littleaarch64
+
+Disassembly of section .kernel:
+
+ffffff8008a7be28 <force_get_tbat_internal>:
+ffffff8008a7be28: d10303ff     	sub	sp, sp, #0xc0
+ffffff8008a7be2c: a9067bfd     	stp	x29, x30, [sp, #0x60]
+ffffff8008a7be30: a9076ffc     	stp	x28, x27, [sp, #0x70]
+ffffff8008a7be34: a90867fa     	stp	x26, x25, [sp, #0x80]
+ffffff8008a7be38: a9095ff8     	stp	x24, x23, [sp, #0x90]
+ffffff8008a7be3c: a90a57f6     	stp	x22, x21, [sp, #0xa0]
+ffffff8008a7be40: a90b4ff4     	stp	x20, x19, [sp, #0xb0]
+ffffff8008a7be44: 910183fd     	add	x29, sp, #0x60
+ffffff8008a7be48: d0006808     	adrp	x8, 0xffffff800977d000 <nf_conntrack_locks+0x940>
+ffffff8008a7be4c: f9458508     	ldr	x8, [x8, #0xb08]
+ffffff8008a7be50: aa0003f3     	mov	x19, x0
+ffffff8008a7be54: f81f83a8     	stur	x8, [x29, #-0x8]
+ffffff8008a7be58: 97d88c51     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008a7be5c: 52800048     	mov	w8, #0x2        // =2
+ffffff8008a7be60: d10073a1     	sub	x1, x29, #0x1c
+ffffff8008a7be64: 52800100     	mov	w0, #0x8        // =8
+ffffff8008a7be68: 293c23bf     	stp	wzr, w8, [x29, #-0x20]
+ffffff8008a7be6c: 97ffffb2     	bl	0xffffff8008a7bd34 <gauge_get_property>
+ffffff8008a7be70: b85e43a8     	ldur	w8, [x29, #-0x1c]
+ffffff8008a7be74: 340000e8     	cbz	w8, 0xffffff8008a7be90 <force_get_tbat_internal+0x68>
+ffffff8008a7be78: 52905888     	mov	w8, #0x82c4     // =33476
+ffffff8008a7be7c: b8686a68     	ldr	w8, [x19, x8]
+ffffff8008a7be80: b94a1e74     	ldr	w20, [x19, #0xa1c]
+ffffff8008a7be84: 34000128     	cbz	w8, 0xffffff8008a7bea8 <force_get_tbat_internal+0x80>
+ffffff8008a7be88: 2a1f03f8     	mov	w24, wzr
+ffffff8008a7be8c: 14000008     	b	0xffffff8008a7beac <force_get_tbat_internal+0x84>
+ffffff8008a7be90: 2a1f03f5     	mov	w21, wzr
+ffffff8008a7be94: 2a1f03f7     	mov	w23, wzr
+ffffff8008a7be98: 2a1f03f8     	mov	w24, wzr
+ffffff8008a7be9c: 2a1f03f4     	mov	w20, wzr
+ffffff8008a7bea0: 2a1f03f6     	mov	w22, wzr
+ffffff8008a7bea4: 14000029     	b	0xffffff8008a7bf48 <force_get_tbat_internal+0x120>
+ffffff8008a7bea8: b94a1678     	ldr	w24, [x19, #0xa14]
+ffffff8008a7beac: d10083a1     	sub	x1, x29, #0x20
+ffffff8008a7beb0: 52800020     	mov	w0, #0x1        // =1
+ffffff8008a7beb4: 97ffffa0     	bl	0xffffff8008a7bd34 <gauge_get_property>
+ffffff8008a7beb8: 297c57a8     	ldp	w8, w21, [x29, #-0x20]
+ffffff8008a7bebc: 528ccce9     	mov	w9, #0x6667     // =26215
+ffffff8008a7bec0: 72acccc9     	movk	w9, #0x6666, lsl #16
+ffffff8008a7bec4: 0b14030a     	add	w10, w24, w20
+ffffff8008a7bec8: 7100011f     	cmp	w8, #0x0
+ffffff8008a7becc: 5a88550b     	cneg	w11, w8, mi
+ffffff8008a7bed0: 9b297d69     	smull	x9, w11, w9
+ffffff8008a7bed4: d37ffd2b     	lsr	x11, x9, #63
+ffffff8008a7bed8: 9362fd29     	asr	x9, x9, #34
+ffffff8008a7bedc: 0b0b0129     	add	w9, w9, w11
+ffffff8008a7bee0: 529175ab     	mov	w11, #0x8bad    // =35757
+ffffff8008a7bee4: 72ad1b6b     	movk	w11, #0x68db, lsl #16
+ffffff8008a7bee8: b81e03a9     	stur	w9, [x29, #-0x20]
+ffffff8008a7beec: 1b0a7d29     	mul	w9, w9, w10
+ffffff8008a7bef0: 9b2b7d2a     	smull	x10, w9, w11
+ffffff8008a7bef4: d37ffd4b     	lsr	x11, x10, #63
+ffffff8008a7bef8: 936cfd4a     	asr	x10, x10, #44
+ffffff8008a7befc: 7100051f     	cmp	w8, #0x1
+ffffff8008a7bf00: 0b0b0142     	add	w2, w10, w11
+ffffff8008a7bf04: 5400014b     	b.lt	0xffffff8008a7bf2c <force_get_tbat_internal+0x104>
+ffffff8008a7bf08: 528e8a6a     	mov	w10, #0x7453    // =29779
+ffffff8008a7bf0c: 72b2e48a     	movk	w10, #0x9724, lsl #16
+ffffff8008a7bf10: 9b2a7d29     	smull	x9, w9, w10
+ffffff8008a7bf14: 4b0202a1     	sub	w1, w21, w2
+ffffff8008a7bf18: d37ffd2a     	lsr	x10, x9, #63
+ffffff8008a7bf1c: 936cfd29     	asr	x9, x9, #44
+ffffff8008a7bf20: b81e43a1     	stur	w1, [x29, #-0x1c]
+ffffff8008a7bf24: 0b0a0122     	add	w2, w9, w10
+ffffff8008a7bf28: 14000003     	b	0xffffff8008a7bf34 <force_get_tbat_internal+0x10c>
+ffffff8008a7bf2c: 0b150041     	add	w1, w2, w21
+ffffff8008a7bf30: b81e43a1     	stur	w1, [x29, #-0x1c]
+ffffff8008a7bf34: 7100011f     	cmp	w8, #0x0
+ffffff8008a7bf38: aa1303e0     	mov	x0, x19
+ffffff8008a7bf3c: 1a9fd7f7     	cset	w23, gt
+ffffff8008a7bf40: 97ffff2f     	bl	0xffffff8008a7bbfc <BattVoltToTemp>
+ffffff8008a7bf44: 2a0003f6     	mov	w22, w0
+
+../emulator/stock.elf:	file format elf64-littleaarch64
+
+Disassembly of section .kernel:
+
+ffffff8008b6b3a0 <mt6357_vbif_conv>:
+ffffff8008b6b3a0: a9be7bfd     	stp	x29, x30, [sp, #-0x20]!
+ffffff8008b6b3a4: a9014ff4     	stp	x20, x19, [sp, #0x10]
+ffffff8008b6b3a8: 910003fd     	mov	x29, sp
+ffffff8008b6b3ac: 2a0103f4     	mov	w20, w1
+ffffff8008b6b3b0: aa0003f3     	mov	x19, x0
+ffffff8008b6b3b4: 97d4cefa     	bl	0xffffff800809ef9c <_mcount>
+ffffff8008b6b3b8: 12001e88     	and	w8, w20, #0xff
+ffffff8008b6b3bc: 7100051f     	cmp	w8, #0x1
+ffffff8008b6b3c0: 54000080     	b.eq	0xffffff8008b6b3d0 <mt6357_vbif_conv+0x30>
+ffffff8008b6b3c4: 35000168     	cbnz	w8, 0xffffff8008b6b3f0 <mt6357_vbif_conv+0x50>
+ffffff8008b6b3c8: 52800043     	mov	w3, #0x2        // =2
+ffffff8008b6b3cc: 14000002     	b	0xffffff8008b6b3d4 <mt6357_vbif_conv+0x34>
+ffffff8008b6b3d0: 2a1f03e3     	mov	w3, wzr
+ffffff8008b6b3d4: f9400660     	ldr	x0, [x19, #0x8]
+ffffff8008b6b3d8: 528246c1     	mov	w1, #0x1236     // =4662
+ffffff8008b6b3dc: 52800042     	mov	w2, #0x2        // =2
+ffffff8008b6b3e0: aa1f03e4     	mov	x4, xzr
+ffffff8008b6b3e4: 2a1f03e5     	mov	w5, wzr
+ffffff8008b6b3e8: 2a1f03e6     	mov	w6, wzr
+ffffff8008b6b3ec: 97ebb131     	bl	0xffffff80086578b0 <regmap_update_bits_base>
+ffffff8008b6b3f0: a9414ff4     	ldp	x20, x19, [sp, #0x10]
+ffffff8008b6b3f4: a8c27bfd     	ldp	x29, x30, [sp], #0x20
+ffffff8008b6b3f8: d65f03c0     	ret

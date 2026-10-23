@@ -19,6 +19,9 @@ def main():
                    help='Enable synthetic contacts after the static PID1 queue observer is ready')
     p.add_argument('--expect-handoff-rejected',action='store_true',
                    help='Negative test: malformed native handoff must remain headless and perform no transfers')
+    p.add_argument('--gauge-fault',choices=('none','timeout','latch-stuck','stale','clock','calibration','counter-stuck'),default='none')
+    p.add_argument('--gauge-fault-after-valid',action='store_true',
+                   help='Inject gauge fault after actual native current-valid1 is observed')
     p.add_argument('--thermal-fault-after-fresh',action='store_true',
                    help='Inject requested thermal fault only after actual native fresh-mask7 is observed')
     p.add_argument('--thermal-fault',choices=('none','timeout','stale','uncalibrated','bad-degc','mux','rail'),default='none',
@@ -50,7 +53,13 @@ def main():
         raise ValueError('Thermal fault needs its own --native-lab-thermal run, without key fault modes')
     if a.thermal_fault_after_fresh and (a.thermal_fault=='none' or a.queue_mode!='cycle'):
         raise ValueError('Post-fresh fault requires --thermal-fault and --queue-mode cycle')
+    if a.gauge_fault!='none' and (not m.get('native_lab_gauge') or a.thermal_fault!='none' or a.key_mode!='none'):
+        raise ValueError('Gauge fault requires an isolated --native-lab-gauge run')
+    if a.gauge_fault_after_valid and (a.gauge_fault=='none' or a.queue_mode!='cycle'):
+        raise ValueError('Post-valid gauge fault requires --gauge-fault and --queue-mode cycle')
     command=list(m['command'])
+    if a.gauge_fault!='none' and not a.gauge_fault_after_valid:
+        command[command.index('-M')+1]+=',lab-power-fault=gauge-'+a.gauge_fault
     if a.thermal_fault!='none' and not a.thermal_fault_after_fresh:
         command[command.index('-M')+1]+=',lab-power-fault=thermal-'+a.thermal_fault
     if a.sspm_fault!='none':
@@ -63,6 +72,7 @@ def main():
     snapshots=[];injected=False;queue_enabled=False;cycle_disabled=False;proc=None;client=None;reader=None
     framebuffer_untouched=None
     thermal_injected=False;thermal_injected_at=None
+    gauge_injected=False;gauge_injected_at=None
     key_pressed=False;key_released=False;key_started=0
     expected_buttons={1,2,3} if a.key_mode=='cycle' else {1} if a.key_mode=='power-fault' else {2,3}
     qemu_sha256=hashlib.sha256(Path(m['command'][0]).read_bytes()).hexdigest()
@@ -99,6 +109,10 @@ def main():
                 if a.queue_mode!='none' and not queue_enabled and 'MT6762_QUEUE_READY' in observed:
                     execute('qom-set',path='/machine',property='lab-touch-sequence',value=True)
                     queue_enabled=True
+                valid_records=re.findall(r'MT6762_SYSCTL mt6762_gauge_current_valid=(\d+) error=0',observed)
+                if a.gauge_fault_after_valid and not gauge_injected and valid_records and int(valid_records[-1])==1:
+                    execute('qom-set',path='/machine',property='lab-power-fault',value='gauge-'+a.gauge_fault)
+                    gauge_injected=True;gauge_injected_at=round(time.monotonic()-started,3)
                 fresh_records=re.findall(r'MT6762_SYSCTL mt6762_thermal_fresh=(\d+) error=0',observed)
                 if a.thermal_fault_after_fresh and not thermal_injected and fresh_records and int(fresh_records[-1])==7:
                     execute('qom-set',path='/machine',property='lab-power-fault',value='thermal-'+a.thermal_fault)
@@ -160,6 +174,9 @@ def main():
             'native_brightness_accepted':'inherited DISP_PWM0 validated' in serial,
             'synthetic_display_state':snapshots[-1].get('display') if snapshots else None,
             'sspm_startup_fault':a.sspm_fault,
+            'gauge_startup_fault':a.gauge_fault if not a.gauge_fault_after_valid else 'none',
+            'gauge_post_valid_fault':a.gauge_fault if a.gauge_fault_after_valid else 'none',
+            'gauge_fault_injected_after_valid':gauge_injected,'gauge_fault_injected_at_seconds':gauge_injected_at,
             'thermal_startup_fault':a.thermal_fault if not a.thermal_fault_after_fresh else 'none',
             'thermal_post_fresh_fault':a.thermal_fault if a.thermal_fault_after_fresh else 'none',
             'thermal_fault_injected_after_fresh':thermal_injected,
@@ -204,6 +221,19 @@ def main():
         raise SystemExit(1)
     if m.get('native_lab_power') and not result['native_power_accepted']:
         raise SystemExit(1)
+    if a.gauge_fault_after_valid and not gauge_injected:
+        raise SystemExit(1)
+    if m.get('native_lab_gauge'):
+        diagnostic=result['native_sysctls']
+        fields=['mt6762_gauge_current_ua','mt6762_gauge_current_valid','mt6762_gauge_samples','mt6762_gauge_fault']
+        if any(name not in diagnostic or diagnostic[name]['error'] for name in fields):
+            raise SystemExit(1)
+        values={name:diagnostic[name]['value'] for name in fields}
+        if a.gauge_fault=='none':
+            if values['mt6762_gauge_current_ua']!=31400 or values['mt6762_gauge_current_valid']!=1 or values['mt6762_gauge_samples']<2 or values['mt6762_gauge_fault']:
+                raise SystemExit(1)
+        elif values['mt6762_gauge_current_ua']!=-2147483648 or values['mt6762_gauge_current_valid']:
+            raise SystemExit(1)
     if a.thermal_fault_after_fresh and not thermal_injected:
         raise SystemExit(1)
     if m.get('native_lab_thermal'):

@@ -1,0 +1,50 @@
+{
+  "image_sha256": "82b1919185a49f268a0f8e145a6714d6264c1f66918a90df0d763266147ead4b",
+  "descriptors": [
+    {
+      "descriptor_va": "0xffffff8009887918",
+      "name": "car_tune_value",
+      "property": 50,
+      "set_callback": "0xffffff8008a85694",
+      "get_callback": "0xffffff8008a85cd8"
+    },
+    {
+      "descriptor_va": "0xffffff8009887950",
+      "name": "r_fg_value",
+      "property": 51,
+      "set_callback": "0xffffff8008a85694",
+      "get_callback": "0xffffff8008a85cd8"
+    }
+  ],
+  "info_get_jump_table_va": "0xffffff80090f5c68",
+  "info_get_jump_table": [
+    0,
+    2,
+    4,
+    6
+  ],
+  "jump_base": "0xffffff8008a85d20",
+  "properties": [
+    {
+      "property": 50,
+      "target": "0xffffff8008a85d20"
+    },
+    {
+      "property": 51,
+      "target": "0xffffff8008a85d28"
+    },
+    {
+      "property": 52,
+      "target": "0xffffff8008a85d30"
+    },
+    {
+      "property": 53,
+      "target": "0xffffff8008a85d38"
+    }
+  ],
+  "active_current_coefficient_offsets": [
+    "0x110",
+    "0x114"
+  ],
+  "car_tune_sysfs_result_offset": "0x11c"
+}

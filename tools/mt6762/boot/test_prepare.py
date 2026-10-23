@@ -112,6 +112,16 @@ class PrepareTests(unittest.TestCase):
         self.assertNotIn('cpu-thermal-owned', handoff)
         with self.assertRaises(ValueError): p.make_adt(bytes(64), native_lab_thermal=True)
 
+    def test_gauge_handoff_matches_synthetic_fixture(self):
+        tree, _ = parse_adt(p.make_adt(bytes(64), native_lab_i2c=True,
+                           native_lab_power=True, native_lab_gauge=True))
+        chosen = next(n for n in tree['children'] if n['name'] == b'chosen\0')
+        handoff = next(n for n in chosen['children'] if n['name'] == b'mt6762-handoff\0')
+        for key,value in {'fgauge-owned':1, 'fgauge-calibration-verified':1, 'fgauge-rfg':100,
+                'fgauge-car-tune':1000, 'fgauge-con0':0x29, 'fgauge-gain':4096}.items():
+            self.assertEqual(struct.unpack('<I', handoff[key])[0],value)
+        with self.assertRaises(ValueError): p.make_adt(bytes(64), native_lab_gauge=True)
+
     def test_valid_macho(self):
         m = p.parse_macho(fixture())
         self.assertEqual(m['entry'], p.VIRT + 0x3004200)

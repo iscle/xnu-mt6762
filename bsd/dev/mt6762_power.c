@@ -10,6 +10,7 @@
 #include <sys/errno.h>
 #include <sys/mt6762_platform.h>
 #include <sys/mt6762_power.h>
+#include <sys/mt6762_gauge.h>
 #include <sys/redwood_input.h>
 #include <sys/sysctl.h>
 #include <sys/systm.h>
@@ -232,8 +233,9 @@ static void poll_battery(void)
             if(safe && charger_state==1)charger_control_safe=-1;
         }else {power_errors++;if(charger_owned)charger_control_safe=-1;}
     }
-    /* SOC/coulomb calibration and compensated NTC are not established. Their
-     * validity bits remain clear; no fake percentage, current or25C value. */
+    if(!mt6762_gauge_current_read(&s.current_ua))s.valid|=MT6762_BAT_CURRENT;
+    /* Learned SOC and compensated battery NTC are not established. Their
+     * validity bits remain clear; no fake percentage or25C value. */
     power_valid=(int)s.valid;
     if(s.valid!=last_valid || charger_state!=last_charger || charger_control_safe!=last_safe) {
         printf("MT6762 power: observed valid=%#x PSC state=%d CE-safe=%d control=%d battery ADC=%d mV\n",

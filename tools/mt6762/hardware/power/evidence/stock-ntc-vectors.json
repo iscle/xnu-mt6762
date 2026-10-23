@@ -1,0 +1,227 @@
+{
+  "image_sha256": "82b1919185a49f268a0f8e145a6714d6264c1f66918a90df0d763266147ead4b",
+  "physical_hardware_tested": false,
+  "method": "Original force_get_tbat_internal arithmetic prefix, BattVoltToTemp and BattThermistorConverTemp ARM64; gauge property reads and profiling/debug hooks replaced. Explicit synthetic configurations; no real calibration claim.",
+  "cases": [
+    {
+      "ntc_mv": 614,
+      "vbif_mv": 1797,
+      "current_0p1ma": -20000,
+      "com_fg": 100,
+      "com_rfg": 0,
+      "no_comp": 0,
+      "corrected_mv": 634,
+      "pullup_correction_mv": 20,
+      "deci_c": 277
+    },
+    {
+      "ntc_mv": 614,
+      "vbif_mv": 1797,
+      "current_0p1ma": -5000,
+      "com_fg": 100,
+      "com_rfg": 0,
+      "no_comp": 0,
+      "corrected_mv": 619,
+      "pullup_correction_mv": 5,
+      "deci_c": 284
+    },
+    {
+      "ntc_mv": 614,
+      "vbif_mv": 1797,
+      "current_0p1ma": 0,
+      "com_fg": 100,
+      "com_rfg": 0,
+      "no_comp": 0,
+      "corrected_mv": 614,
+      "pullup_correction_mv": 0,
+      "deci_c": 286
+    },
+    {
+      "ntc_mv": 614,
+      "vbif_mv": 1797,
+      "current_0p1ma": 5000,
+      "com_fg": 100,
+      "com_rfg": 0,
+      "no_comp": 0,
+      "corrected_mv": 609,
+      "pullup_correction_mv": -5,
+      "deci_c": 288
+    },
+    {
+      "ntc_mv": 614,
+      "vbif_mv": 1797,
+      "current_0p1ma": 20000,
+      "com_fg": 100,
+      "com_rfg": 0,
+      "no_comp": 0,
+      "corrected_mv": 594,
+      "pullup_correction_mv": -20,
+      "deci_c": 294
+    },
+    {
+      "ntc_mv": 614,
+      "vbif_mv": 1797,
+      "current_0p1ma": -20000,
+      "com_fg": 100,
+      "com_rfg": 0,
+      "no_comp": 1,
+      "corrected_mv": 614,
+      "pullup_correction_mv": 0,
+      "deci_c": 286
+    },
+    {
+      "ntc_mv": 614,
+      "vbif_mv": 1797,
+      "current_0p1ma": -5000,
+      "com_fg": 100,
+      "com_rfg": 0,
+      "no_comp": 1,
+      "corrected_mv": 614,
+      "pullup_correction_mv": 0,
+      "deci_c": 286
+    },
+    {
+      "ntc_mv": 614,
+      "vbif_mv": 1797,
+      "current_0p1ma": 0,
+      "com_fg": 100,
+      "com_rfg": 0,
+      "no_comp": 1,
+      "corrected_mv": 614,
+      "pullup_correction_mv": 0,
+      "deci_c": 286
+    },
+    {
+      "ntc_mv": 614,
+      "vbif_mv": 1797,
+      "current_0p1ma": 5000,
+      "com_fg": 100,
+      "com_rfg": 0,
+      "no_comp": 1,
+      "corrected_mv": 614,
+      "pullup_correction_mv": 0,
+      "deci_c": 286
+    },
+    {
+      "ntc_mv": 614,
+      "vbif_mv": 1797,
+      "current_0p1ma": 20000,
+      "com_fg": 100,
+      "com_rfg": 0,
+      "no_comp": 1,
+      "corrected_mv": 614,
+      "pullup_correction_mv": 0,
+      "deci_c": 286
+    },
+    {
+      "ntc_mv": 614,
+      "vbif_mv": 1797,
+      "current_0p1ma": -20000,
+      "com_fg": 100,
+      "com_rfg": 100,
+      "no_comp": 0,
+      "corrected_mv": 654,
+      "pullup_correction_mv": 40,
+      "deci_c": 269
+    },
+    {
+      "ntc_mv": 614,
+      "vbif_mv": 1797,
+      "current_0p1ma": -5000,
+      "com_fg": 100,
+      "com_rfg": 100,
+      "no_comp": 0,
+      "corrected_mv": 624,
+      "pullup_correction_mv": 10,
+      "deci_c": 282
+    },
+    {
+      "ntc_mv": 614,
+      "vbif_mv": 1797,
+      "current_0p1ma": 0,
+      "com_fg": 100,
+      "com_rfg": 100,
+      "no_comp": 0,
+      "corrected_mv": 614,
+      "pullup_correction_mv": 0,
+      "deci_c": 286
+    },
+    {
+      "ntc_mv": 614,
+      "vbif_mv": 1797,
+      "current_0p1ma": 5000,
+      "com_fg": 100,
+      "com_rfg": 100,
+      "no_comp": 0,
+      "corrected_mv": 604,
+      "pullup_correction_mv": -10,
+      "deci_c": 290
+    },
+    {
+      "ntc_mv": 614,
+      "vbif_mv": 1797,
+      "current_0p1ma": 20000,
+      "com_fg": 100,
+      "com_rfg": 100,
+      "no_comp": 0,
+      "corrected_mv": 574,
+      "pullup_correction_mv": -40,
+      "deci_c": 304
+    },
+    {
+      "ntc_mv": 614,
+      "vbif_mv": 1797,
+      "current_0p1ma": -20000,
+      "com_fg": 100,
+      "com_rfg": 100,
+      "no_comp": 1,
+      "corrected_mv": 634,
+      "pullup_correction_mv": 20,
+      "deci_c": 277
+    },
+    {
+      "ntc_mv": 614,
+      "vbif_mv": 1797,
+      "current_0p1ma": -5000,
+      "com_fg": 100,
+      "com_rfg": 100,
+      "no_comp": 1,
+      "corrected_mv": 619,
+      "pullup_correction_mv": 5,
+      "deci_c": 284
+    },
+    {
+      "ntc_mv": 614,
+      "vbif_mv": 1797,
+      "current_0p1ma": 0,
+      "com_fg": 100,
+      "com_rfg": 100,
+      "no_comp": 1,
+      "corrected_mv": 614,
+      "pullup_correction_mv": 0,
+      "deci_c": 286
+    },
+    {
+      "ntc_mv": 614,
+      "vbif_mv": 1797,
+      "current_0p1ma": 5000,
+      "com_fg": 100,
+      "com_rfg": 100,
+      "no_comp": 1,
+      "corrected_mv": 609,
+      "pullup_correction_mv": -5,
+      "deci_c": 288
+    },
+    {
+      "ntc_mv": 614,
+      "vbif_mv": 1797,
+      "current_0p1ma": 20000,
+      "com_fg": 100,
+      "com_rfg": 100,
+      "no_comp": 1,
+      "corrected_mv": 594,
+      "pullup_correction_mv": -20,
+      "deci_c": 294
+    }
+  ]
+}
