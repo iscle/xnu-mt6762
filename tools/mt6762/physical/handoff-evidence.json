@@ -1,0 +1,1346 @@
+{
+  "authority": "Exact LK code and retained historical boot logs; selected BSP cross-check. No physical execution/readback.",
+  "artifacts": {
+    "lk_sha256": "5badc0dc942b0babdca3da13c7e07f3b5f1e57b66d503414b7f80effe8ce891a",
+    "lk2_identical": true,
+    "boot_sha256": "95f362d6c5e018fb588ce1101a75120157079571e8749e349141a5a906f09296",
+    "expdb_sha256": "6675a9ae0eead546971136c2244be082a137f8b0b17ee5b5d5bc0ba98fce5f86"
+  },
+  "lk": {
+    "partition_header_size": 512,
+    "load_base": "0x48000000",
+    "base_literal_file_offset": "0x274",
+    "bounded_ranges": [
+      {
+        "name": "videolfb_payload_writer",
+        "va": "0x4800402c",
+        "end": "0x480040be",
+        "file_offset": "0x422c",
+        "sha256": "102e406e8555c5128bfd078079fb76f7a0f9570cbede53b9de237a3bccf1cfe6",
+        "mode": "Thumb",
+        "instructions": [
+          {
+            "va": "0x4800402c",
+            "instruction": "push.w {r3, r4, r5, r6, r7, r8, sb, lr}"
+          },
+          {
+            "va": "0x48004030",
+            "instruction": "mov r5, r0"
+          },
+          {
+            "va": "0x48004032",
+            "instruction": "ldr r6, [pc, #0x8c]"
+          },
+          {
+            "va": "0x48004034",
+            "instruction": "mov sb, r1"
+          },
+          {
+            "va": "0x48004036",
+            "instruction": "add.w r4, r0, #0x14"
+          },
+          {
+            "va": "0x4800403a",
+            "instruction": "bl #0x48001390"
+          },
+          {
+            "va": "0x4800403e",
+            "instruction": "add r6, pc"
+          },
+          {
+            "va": "0x48004040",
+            "instruction": "ldr r6, [r6]"
+          },
+          {
+            "va": "0x48004042",
+            "instruction": "mov r7, r0"
+          },
+          {
+            "va": "0x48004044",
+            "instruction": "ldrd r0, r1, [r6]"
+          },
+          {
+            "va": "0x48004048",
+            "instruction": "strd r0, r1, [r5]"
+          },
+          {
+            "va": "0x4800404c",
+            "instruction": "bl #0x48001134"
+          },
+          {
+            "va": "0x48004050",
+            "instruction": "mov r8, r0"
+          },
+          {
+            "va": "0x48004052",
+            "instruction": "bl #0x4800138c"
+          },
+          {
+            "va": "0x48004056",
+            "instruction": "str.w r8, [r5, #0xc]"
+          },
+          {
+            "va": "0x4800405a",
+            "instruction": "str r0, [r5, #8]"
+          },
+          {
+            "va": "0x4800405c",
+            "instruction": "bl #0x48011800"
+          },
+          {
+            "va": "0x48004060",
+            "instruction": "sub.w r2, sb, #0x14"
+          },
+          {
+            "va": "0x48004064",
+            "instruction": "mov r1, r7"
+          },
+          {
+            "va": "0x48004066",
+            "instruction": "str r0, [r5, #0x10]"
+          },
+          {
+            "va": "0x48004068",
+            "instruction": "mov r0, r4"
+          },
+          {
+            "va": "0x4800406a",
+            "instruction": "bl #0x480291a8"
+          },
+          {
+            "va": "0x4800406e",
+            "instruction": "mov r0, r7"
+          },
+          {
+            "va": "0x48004070",
+            "instruction": "bl #0x48029154"
+          },
+          {
+            "va": "0x48004074",
+            "instruction": "adds r0, #5"
+          },
+          {
+            "va": "0x48004076",
+            "instruction": "ldrd r2, r3, [r6]"
+          },
+          {
+            "va": "0x4800407a",
+            "instruction": "bic r1, r0, #3"
+          },
+          {
+            "va": "0x4800407e",
+            "instruction": "ldr r0, [pc, #0x44]"
+          },
+          {
+            "va": "0x48004080",
+            "instruction": "add r4, r1"
+          },
+          {
+            "va": "0x48004082",
+            "instruction": "add r0, pc"
+          },
+          {
+            "va": "0x48004084",
+            "instruction": "bl #0x48027ff8"
+          },
+          {
+            "va": "0x48004088",
+            "instruction": "bl #0x4800138c"
+          },
+          {
+            "va": "0x4800408c",
+            "instruction": "mov r1, r0"
+          },
+          {
+            "va": "0x4800408e",
+            "instruction": "ldr r0, [pc, #0x38]"
+          },
+          {
+            "va": "0x48004090",
+            "instruction": "add r0, pc"
+          },
+          {
+            "va": "0x48004092",
+            "instruction": "bl #0x48027ff8"
+          },
+          {
+            "va": "0x48004096",
+            "instruction": "ldr r0, [pc, #0x34]"
+          },
+          {
+            "va": "0x48004098",
+            "instruction": "mov r1, r8"
+          },
+          {
+            "va": "0x4800409a",
+            "instruction": "add r0, pc"
+          },
+          {
+            "va": "0x4800409c",
+            "instruction": "bl #0x48027ff8"
+          },
+          {
+            "va": "0x480040a0",
+            "instruction": "bl #0x48011800"
+          },
+          {
+            "va": "0x480040a4",
+            "instruction": "mov r1, r0"
+          },
+          {
+            "va": "0x480040a6",
+            "instruction": "ldr r0, [pc, #0x28]"
+          },
+          {
+            "va": "0x480040a8",
+            "instruction": "add r0, pc"
+          },
+          {
+            "va": "0x480040aa",
+            "instruction": "bl #0x48027ff8"
+          },
+          {
+            "va": "0x480040ae",
+            "instruction": "ldr r0, [pc, #0x24]"
+          },
+          {
+            "va": "0x480040b0",
+            "instruction": "mov r1, r7"
+          },
+          {
+            "va": "0x480040b2",
+            "instruction": "add r0, pc"
+          },
+          {
+            "va": "0x480040b4",
+            "instruction": "bl #0x48027ff8"
+          },
+          {
+            "va": "0x480040b8",
+            "instruction": "mov r0, r4"
+          },
+          {
+            "va": "0x480040ba",
+            "instruction": "pop.w {r3, r4, r5, r6, r7, r8, sb, pc}"
+          }
+        ]
+      },
+      {
+        "name": "lk_jump64_wrapper",
+        "va": "0x4801a03c",
+        "end": "0x4801a064",
+        "file_offset": "0x1a23c",
+        "sha256": "3d6697ea7c70ea68fada2c68246083c05b90566c147c82769ab8869a4c6df61b",
+        "mode": "Thumb",
+        "instructions": [
+          {
+            "va": "0x4801a03c",
+            "instruction": "push.w {r4, r5, r6, r7, r8, lr}"
+          },
+          {
+            "va": "0x4801a040",
+            "instruction": "mov r5, lr"
+          },
+          {
+            "va": "0x4801a042",
+            "instruction": "mov r4, r0"
+          },
+          {
+            "va": "0x4801a044",
+            "instruction": "mov r8, r1"
+          },
+          {
+            "va": "0x4801a046",
+            "instruction": "mov r7, r2"
+          },
+          {
+            "va": "0x4801a048",
+            "instruction": "mov r6, r3"
+          },
+          {
+            "va": "0x4801a04a",
+            "instruction": "bl #0x480175dc"
+          },
+          {
+            "va": "0x4801a04e",
+            "instruction": "cbnz r0, #0x4801a072"
+          },
+          {
+            "va": "0x4801a050",
+            "instruction": "bl #0x480175dc"
+          },
+          {
+            "va": "0x4801a054",
+            "instruction": "cmp r0, #2"
+          },
+          {
+            "va": "0x4801a056",
+            "instruction": "bhi #0x4801a084"
+          },
+          {
+            "va": "0x4801a058",
+            "instruction": "mov r0, r4"
+          },
+          {
+            "va": "0x4801a05a",
+            "instruction": "mov r1, r8"
+          },
+          {
+            "va": "0x4801a05c",
+            "instruction": "mov r2, r7"
+          },
+          {
+            "va": "0x4801a05e",
+            "instruction": "mov r3, r6"
+          },
+          {
+            "va": "0x4801a060",
+            "instruction": "bl #0x48026674"
+          }
+        ]
+      },
+      {
+        "name": "final_cache_mmu_cleanup_calls",
+        "va": "0x4801bb00",
+        "end": "0x4801bb2a",
+        "file_offset": "0x1bd00",
+        "sha256": "d11069d1ffbc26daf1f1b695b75612ff097afb0d372492653241e50aba652e75",
+        "mode": "Thumb",
+        "instructions": [
+          {
+            "va": "0x4801bb00",
+            "instruction": "ldr r3, [pc, #0x3dc]"
+          },
+          {
+            "va": "0x4801bb02",
+            "instruction": "ldr r2, [r4, r3]"
+          },
+          {
+            "va": "0x4801bb04",
+            "instruction": "ldr r3, [r2]"
+          },
+          {
+            "va": "0x4801bb06",
+            "instruction": "adds r3, #1"
+          },
+          {
+            "va": "0x4801bb08",
+            "instruction": "cmp r3, #1"
+          },
+          {
+            "va": "0x4801bb0a",
+            "instruction": "str r3, [r2]"
+          },
+          {
+            "va": "0x4801bb0c",
+            "instruction": "bne #0x4801bb12"
+          },
+          {
+            "va": "0x4801bb0e",
+            "instruction": "blx #0x48016cd0"
+          },
+          {
+            "va": "0x4801bb12",
+            "instruction": "bl #0x48002ca4"
+          },
+          {
+            "va": "0x4801bb16",
+            "instruction": "ldr r3, [pc, #0x3cc]"
+          },
+          {
+            "va": "0x4801bb18",
+            "instruction": "ldr r3, [r4, r3]"
+          },
+          {
+            "va": "0x4801bb1a",
+            "instruction": "cbz r3, #0x4801bb20"
+          },
+          {
+            "va": "0x4801bb1c",
+            "instruction": "bl #0x480036a0"
+          },
+          {
+            "va": "0x4801bb20",
+            "instruction": "movs r0, #3"
+          },
+          {
+            "va": "0x4801bb22",
+            "instruction": "blx #0x48016a80"
+          },
+          {
+            "va": "0x4801bb26",
+            "instruction": "bl #0x48017564"
+          }
+        ]
+      },
+      {
+        "name": "final_watchdog_calls",
+        "va": "0x4801bbc6",
+        "end": "0x4801bbd4",
+        "file_offset": "0x1bdc6",
+        "sha256": "356dc249b57a05d2b9c75d32d755456bd4fbf448aad74238138f5f041341b22a",
+        "mode": "Thumb",
+        "instructions": [
+          {
+            "va": "0x4801bbc6",
+            "instruction": "bl #0x480428a0"
+          },
+          {
+            "va": "0x4801bbca",
+            "instruction": "movs r0, #0x1e"
+          },
+          {
+            "va": "0x4801bbcc",
+            "instruction": "bl #0x48042f50"
+          },
+          {
+            "va": "0x4801bbd0",
+            "instruction": "bl #0x48042f6c"
+          }
+        ]
+      },
+      {
+        "name": "final_kernel64_arguments",
+        "va": "0x4801bc32",
+        "end": "0x4801bc44",
+        "file_offset": "0x1be32",
+        "sha256": "2627180711b27b86cfc72ff1c7efa09468777bca358ad9456b7785c08b27ce5c",
+        "mode": "Thumb",
+        "instructions": [
+          {
+            "va": "0x4801bc32",
+            "instruction": "ldr r3, [sp, #0x24]"
+          },
+          {
+            "va": "0x4801bc34",
+            "instruction": "mov r0, sb"
+          },
+          {
+            "va": "0x4801bc36",
+            "instruction": "ldr r3, [r3]"
+          },
+          {
+            "va": "0x4801bc38",
+            "instruction": "cbz r3, #0x4801bc58"
+          },
+          {
+            "va": "0x4801bc3a",
+            "instruction": "mov r1, r8"
+          },
+          {
+            "va": "0x4801bc3c",
+            "instruction": "movs r2, #0"
+          },
+          {
+            "va": "0x4801bc3e",
+            "instruction": "movs r3, #1"
+          },
+          {
+            "va": "0x4801bc40",
+            "instruction": "bl #0x4801a03c"
+          }
+        ]
+      },
+      {
+        "name": "cache_disable",
+        "va": "0x48016a80",
+        "end": "0x48016adc",
+        "file_offset": "0x16c80",
+        "sha256": "2d72d790712c722f1f9226a39adf0fdb1f5194541a6778e8dc665015377ce27b",
+        "mode": "ARM",
+        "instructions": [
+          {
+            "va": "0x48016a80",
+            "instruction": "push {r4, r5, r6, r7, r8, sb, sl, fp, lr}"
+          },
+          {
+            "va": "0x48016a84",
+            "instruction": "mov r7, r0"
+          },
+          {
+            "va": "0x48016a88",
+            "instruction": "mrs ip, apsr"
+          },
+          {
+            "va": "0x48016a8c",
+            "instruction": "cpsid aif"
+          },
+          {
+            "va": "0x48016a90",
+            "instruction": "tst r7, #2"
+          },
+          {
+            "va": "0x48016a94",
+            "instruction": "beq #0x48016ab8"
+          },
+          {
+            "va": "0x48016a98",
+            "instruction": "mrc p15, #0, r0, c1, c0, #0"
+          },
+          {
+            "va": "0x48016a9c",
+            "instruction": "tst r0, #4"
+          },
+          {
+            "va": "0x48016aa0",
+            "instruction": "beq #0x48016ab4"
+          },
+          {
+            "va": "0x48016aa4",
+            "instruction": "bic r0, r0, #4"
+          },
+          {
+            "va": "0x48016aa8",
+            "instruction": "mcr p15, #0, r0, c1, c0, #0"
+          },
+          {
+            "va": "0x48016aac",
+            "instruction": "bl #0x48016b34"
+          },
+          {
+            "va": "0x48016ab0",
+            "instruction": "b #0x48016ab8"
+          },
+          {
+            "va": "0x48016ab4",
+            "instruction": "bl #0x48016bc0"
+          },
+          {
+            "va": "0x48016ab8",
+            "instruction": "tst r7, #1"
+          },
+          {
+            "va": "0x48016abc",
+            "instruction": "beq #0x48016acc"
+          },
+          {
+            "va": "0x48016ac0",
+            "instruction": "mrc p15, #0, r0, c1, c0, #0"
+          },
+          {
+            "va": "0x48016ac4",
+            "instruction": "bic r0, r0, #0x1000"
+          },
+          {
+            "va": "0x48016ac8",
+            "instruction": "mcr p15, #0, r0, c1, c0, #0"
+          },
+          {
+            "va": "0x48016acc",
+            "instruction": "mov r0, #0"
+          },
+          {
+            "va": "0x48016ad0",
+            "instruction": "mcr p15, #0, r0, c7, c5, #0"
+          },
+          {
+            "va": "0x48016ad4",
+            "instruction": "msr cpsr_fc, ip"
+          },
+          {
+            "va": "0x48016ad8",
+            "instruction": "pop {r4, r5, r6, r7, r8, sb, sl, fp, pc}"
+          }
+        ]
+      },
+      {
+        "name": "mmu_disable",
+        "va": "0x48017564",
+        "end": "0x48017576",
+        "file_offset": "0x17764",
+        "sha256": "70cc7c0bddec111125a193bcb9de6729059cfadf228ed35544c0a30aa6bd22d4",
+        "mode": "Thumb",
+        "instructions": [
+          {
+            "va": "0x48017564",
+            "instruction": "push {r3, lr}"
+          },
+          {
+            "va": "0x48017566",
+            "instruction": "blx #0x48016d3c"
+          },
+          {
+            "va": "0x4801756a",
+            "instruction": "bic r0, r0, #1"
+          },
+          {
+            "va": "0x4801756e",
+            "instruction": "pop.w {r3, lr}"
+          },
+          {
+            "va": "0x48017572",
+            "instruction": "b.w #0x48058320"
+          }
+        ]
+      },
+      {
+        "name": "sctlr_read_write",
+        "va": "0x48016d3c",
+        "end": "0x48016d4c",
+        "file_offset": "0x16f3c",
+        "sha256": "a0e933f4a306134fb1a3388c5c6924235933b2dc8ade7b531efaeb5139937819",
+        "mode": "ARM",
+        "instructions": [
+          {
+            "va": "0x48016d3c",
+            "instruction": "mrc p15, #0, r0, c1, c0, #0"
+          },
+          {
+            "va": "0x48016d40",
+            "instruction": "bx lr"
+          },
+          {
+            "va": "0x48016d44",
+            "instruction": "mcr p15, #0, r0, c1, c0, #0"
+          },
+          {
+            "va": "0x48016d48",
+            "instruction": "bx lr"
+          }
+        ]
+      },
+      {
+        "name": "platform_uninit_tailcall",
+        "va": "0x48002ca4",
+        "end": "0x48002ca8",
+        "file_offset": "0x2ea4",
+        "sha256": "6e621f74184f20a21f14405bb748e2eb788da24fbc74d27bf3ed5e6a1e0aff18",
+        "mode": "Thumb",
+        "instructions": [
+          {
+            "va": "0x48002ca4",
+            "instruction": "b.w #0x48026b44"
+          }
+        ]
+      },
+      {
+        "name": "interrupt_deinit",
+        "va": "0x48026b44",
+        "end": "0x48026bc6",
+        "file_offset": "0x26d44",
+        "sha256": "0c83315b1d17994c1f5d464d4f5ff24c708e7c2c12a0202249276ede9a7b3204",
+        "mode": "Thumb",
+        "instructions": [
+          {
+            "va": "0x48026b44",
+            "instruction": "push {r3, r4, r5, r6, r7, lr}"
+          },
+          {
+            "va": "0x48026b46",
+            "instruction": "mov.w ip, #0x180"
+          },
+          {
+            "va": "0x48026b4a",
+            "instruction": "mov.w lr, #0x184"
+          },
+          {
+            "va": "0x48026b4e",
+            "instruction": "mov.w r7, #0x188"
+          },
+          {
+            "va": "0x48026b52",
+            "instruction": "mov.w r6, #0x18c"
+          },
+          {
+            "va": "0x48026b56",
+            "instruction": "mov.w r5, #0x190"
+          },
+          {
+            "va": "0x48026b5a",
+            "instruction": "mov.w r4, #0x194"
+          },
+          {
+            "va": "0x48026b5e",
+            "instruction": "mov.w r0, #0x198"
+          },
+          {
+            "va": "0x48026b62",
+            "instruction": "mov.w r1, #0x19c"
+          },
+          {
+            "va": "0x48026b66",
+            "instruction": "mov.w r2, #0x1a0"
+          },
+          {
+            "va": "0x48026b6a",
+            "instruction": "mov.w r3, #-1"
+          },
+          {
+            "va": "0x48026b6e",
+            "instruction": "movt ip, #0xc00"
+          },
+          {
+            "va": "0x48026b72",
+            "instruction": "movt lr, #0xc00"
+          },
+          {
+            "va": "0x48026b76",
+            "instruction": "movt r0, #0xc00"
+          },
+          {
+            "va": "0x48026b7a",
+            "instruction": "movt r1, #0xc00"
+          },
+          {
+            "va": "0x48026b7e",
+            "instruction": "movt r2, #0xc00"
+          },
+          {
+            "va": "0x48026b82",
+            "instruction": "movt r7, #0xc00"
+          },
+          {
+            "va": "0x48026b86",
+            "instruction": "movt r6, #0xc00"
+          },
+          {
+            "va": "0x48026b8a",
+            "instruction": "movt r5, #0xc00"
+          },
+          {
+            "va": "0x48026b8e",
+            "instruction": "movt r4, #0xc00"
+          },
+          {
+            "va": "0x48026b92",
+            "instruction": "str.w r3, [ip]"
+          },
+          {
+            "va": "0x48026b96",
+            "instruction": "str.w r3, [lr]"
+          },
+          {
+            "va": "0x48026b9a",
+            "instruction": "str r3, [r7]"
+          },
+          {
+            "va": "0x48026b9c",
+            "instruction": "str r3, [r6]"
+          },
+          {
+            "va": "0x48026b9e",
+            "instruction": "str r3, [r5]"
+          },
+          {
+            "va": "0x48026ba0",
+            "instruction": "str r3, [r4]"
+          },
+          {
+            "va": "0x48026ba2",
+            "instruction": "str r3, [r0]"
+          },
+          {
+            "va": "0x48026ba4",
+            "instruction": "str r3, [r1]"
+          },
+          {
+            "va": "0x48026ba6",
+            "instruction": "str r3, [r2]"
+          },
+          {
+            "va": "0x48026ba8",
+            "instruction": "blx #0x48016d8c"
+          },
+          {
+            "va": "0x48026bac",
+            "instruction": "mrc p15, #0, r3, c12, c12, #0"
+          },
+          {
+            "va": "0x48026bb0",
+            "instruction": "movw r2, #0x3ff"
+          },
+          {
+            "va": "0x48026bb4",
+            "instruction": "cmp r3, r2"
+          },
+          {
+            "va": "0x48026bb6",
+            "instruction": "beq #0x48026bc4"
+          },
+          {
+            "va": "0x48026bb8",
+            "instruction": "mcr p15, #0, r3, c12, c12, #1"
+          },
+          {
+            "va": "0x48026bbc",
+            "instruction": "mrc p15, #0, r3, c12, c12, #0"
+          },
+          {
+            "va": "0x48026bc0",
+            "instruction": "cmp r3, r2"
+          },
+          {
+            "va": "0x48026bc2",
+            "instruction": "bne #0x48026bb8"
+          },
+          {
+            "va": "0x48026bc4",
+            "instruction": "pop {r3, r4, r5, r6, r7, pc}"
+          }
+        ]
+      },
+      {
+        "name": "kernel_smc_setup",
+        "va": "0x48026674",
+        "end": "0x4802669e",
+        "file_offset": "0x26874",
+        "sha256": "f5c84255ad075fd7751cf5cd3eb541d86fa1d3b0dc42f0018e5fd54047b53a4b",
+        "mode": "Thumb",
+        "instructions": [
+          {
+            "va": "0x48026674",
+            "instruction": "push {r4, r5, r6, r7, lr}"
+          },
+          {
+            "va": "0x48026676",
+            "instruction": "movs r4, #0"
+          },
+          {
+            "va": "0x48026678",
+            "instruction": "sub sp, #0x14"
+          },
+          {
+            "va": "0x4802667a",
+            "instruction": "mov r7, r0"
+          },
+          {
+            "va": "0x4802667c",
+            "instruction": "mov r6, r1"
+          },
+          {
+            "va": "0x4802667e",
+            "instruction": "mov r5, r2"
+          },
+          {
+            "va": "0x48026680",
+            "instruction": "movw r0, #0x115"
+          },
+          {
+            "va": "0x48026684",
+            "instruction": "stm.w sp, {r3, r4}"
+          },
+          {
+            "va": "0x48026688",
+            "instruction": "mov r1, r7"
+          },
+          {
+            "va": "0x4802668a",
+            "instruction": "mov r2, r6"
+          },
+          {
+            "va": "0x4802668c",
+            "instruction": "mov r3, r5"
+          },
+          {
+            "va": "0x4802668e",
+            "instruction": "str r4, [sp, #8]"
+          },
+          {
+            "va": "0x48026690",
+            "instruction": "str r4, [sp, #0xc]"
+          },
+          {
+            "va": "0x48026692",
+            "instruction": "movt r0, #0x8200"
+          },
+          {
+            "va": "0x48026696",
+            "instruction": "bl #0x48026654"
+          },
+          {
+            "va": "0x4802669a",
+            "instruction": "add sp, #0x14"
+          },
+          {
+            "va": "0x4802669c",
+            "instruction": "pop {r4, r5, r6, r7, pc}"
+          }
+        ]
+      },
+      {
+        "name": "smc_trampoline",
+        "va": "0x48026654",
+        "end": "0x48026672",
+        "file_offset": "0x26854",
+        "sha256": "cdfb3c46db837a224e8037155d0845b590f3d7f0619f513919edc5c78f65d405",
+        "mode": "Thumb",
+        "instructions": [
+          {
+            "va": "0x48026654",
+            "instruction": "push {r4, r5, r6, r7}"
+          },
+          {
+            "va": "0x48026656",
+            "instruction": "ldr r7, [sp, #0x14]"
+          },
+          {
+            "va": "0x48026658",
+            "instruction": "ldr r6, [sp, #0x18]"
+          },
+          {
+            "va": "0x4802665a",
+            "instruction": "ldr r5, [sp, #0x1c]"
+          },
+          {
+            "va": "0x4802665c",
+            "instruction": "ldr r4, [sp, #0x10]"
+          },
+          {
+            "va": "0x4802665e",
+            "instruction": "smc #0"
+          },
+          {
+            "va": "0x48026662",
+            "instruction": "cbz r7, #0x48026666"
+          },
+          {
+            "va": "0x48026664",
+            "instruction": "str r1, [r7]"
+          },
+          {
+            "va": "0x48026666",
+            "instruction": "cbz r6, #0x4802666a"
+          },
+          {
+            "va": "0x48026668",
+            "instruction": "str r2, [r6]"
+          },
+          {
+            "va": "0x4802666a",
+            "instruction": "cbz r5, #0x4802666e"
+          },
+          {
+            "va": "0x4802666c",
+            "instruction": "str r3, [r5]"
+          },
+          {
+            "va": "0x4802666e",
+            "instruction": "pop {r4, r5, r6, r7}"
+          },
+          {
+            "va": "0x48026670",
+            "instruction": "bx lr"
+          }
+        ]
+      },
+      {
+        "name": "watchdog_length",
+        "va": "0x48042f50",
+        "end": "0x48042f68",
+        "file_offset": "0x43150",
+        "sha256": "2df02b8cb777f6c39db46a2b3f82341e1a5d2fe72d48bba7d342c9643c15f0c9",
+        "mode": "Thumb",
+        "instructions": [
+          {
+            "va": "0x48042f50",
+            "instruction": "ldr r3, [pc, #0x14]"
+          },
+          {
+            "va": "0x48042f52",
+            "instruction": "lsls r0, r0, #0xb"
+          },
+          {
+            "va": "0x48042f54",
+            "instruction": "movw r2, #0x7004"
+          },
+          {
+            "va": "0x48042f58",
+            "instruction": "orr r1, r0, #8"
+          },
+          {
+            "va": "0x48042f5c",
+            "instruction": "movt r2, #0x1000"
+          },
+          {
+            "va": "0x48042f60",
+            "instruction": "add r3, pc"
+          },
+          {
+            "va": "0x48042f62",
+            "instruction": "str r0, [r3]"
+          },
+          {
+            "va": "0x48042f64",
+            "instruction": "str r1, [r2]"
+          },
+          {
+            "va": "0x48042f66",
+            "instruction": "bx lr"
+          }
+        ]
+      },
+      {
+        "name": "watchdog_restart",
+        "va": "0x48042f6c",
+        "end": "0x48042f7c",
+        "file_offset": "0x4316c",
+        "sha256": "9e79feca2f8a28a7380599b0b6349219bd5c99afdf377f61fce4490bf63c50b0",
+        "mode": "Thumb",
+        "instructions": [
+          {
+            "va": "0x48042f6c",
+            "instruction": "movw r3, #0x7008"
+          },
+          {
+            "va": "0x48042f70",
+            "instruction": "movw r2, #0x1971"
+          },
+          {
+            "va": "0x48042f74",
+            "instruction": "movt r3, #0x1000"
+          },
+          {
+            "va": "0x48042f78",
+            "instruction": "str r2, [r3]"
+          },
+          {
+            "va": "0x48042f7a",
+            "instruction": "bx lr"
+          }
+        ]
+      }
+    ]
+  },
+  "selected_historical_records": [
+    {
+      "file_offset": "0x1202d72",
+      "text": "total_dram_size: 0x0000000180000000, max_dram_size: 0x0000000800000000"
+    },
+    {
+      "file_offset": "0x1204c69",
+      "text": "WDT]  mtk_wdt_mode_config LK  mode value=30, tmp:22000030"
+    },
+    {
+      "file_offset": "0x1204cf8",
+      "text": "WDT]  mtk_wdt_mode_config LK  mode value=7d, tmp:2200007d"
+    },
+    {
+      "file_offset": "0x1204d6c",
+      "text": "PWRAP] pwrap_init_lk"
+    },
+    {
+      "file_offset": "0x1204d8a",
+      "text": "PWRAP] is_pwrap_init_done 1"
+    },
+    {
+      "file_offset": "0x1204daf",
+      "text": "PWRAP] [PMIC_WRAP] pwrap_init already init, do nothing"
+    },
+    {
+      "file_offset": "0x120d75c",
+      "text": "mblock_reserve-R start: 0x47880000, sz: 0x80000 map:1 name:dtb_kernel_addr_mb"
+    },
+    {
+      "file_offset": "0x120d7b2",
+      "text": "mblock_reserve-R start: 0x40080000, sz: 0x7800000 map:0 name:kernel_addr_mb"
+    },
+    {
+      "file_offset": "0x120d806",
+      "text": "mblock_reserve-R start: 0x51b00000, sz: 0x4000000 map:0 name:ramdisk_addr_mb"
+    },
+    {
+      "file_offset": "0x120e10e",
+      "text": "SSPM: set reserved mem status=okay"
+    },
+    {
+      "file_offset": "0x120e60d",
+      "text": "videolfb - fb_base    = 0x7ef90000"
+    },
+    {
+      "file_offset": "0x120e638",
+      "text": "videolfb - islcmfound = 1"
+    },
+    {
+      "file_offset": "0x120e65a",
+      "text": "videolfb - fps        = 6184"
+    },
+    {
+      "file_offset": "0x120e67f",
+      "text": "videolfb - vram       = 4653056"
+    },
+    {
+      "file_offset": "0x120e6a7",
+      "text": "videolfb - lcmname    = axs15260_dsi_6580_hd"
+    },
+    {
+      "file_offset": "0x120f40e",
+      "text": "mblock_reserve-R[0].start: 0xbffff000, size: 0x1000 map:0 name:dramc-rk0"
+    },
+    {
+      "file_offset": "0x120f45f",
+      "text": "mblock_reserve-R[1].start: 0x1bffff000, size: 0x1000 map:0 name:dramc-rk1"
+    },
+    {
+      "file_offset": "0x120f4b1",
+      "text": "mblock_reserve-R[2].start: 0x7f800000, size: 0x800000 map:0 name:gz"
+    },
+    {
+      "file_offset": "0x120f4fd",
+      "text": "mblock_reserve-R[3].start: 0x7f600000, size: 0x41000 map:1 name:gz-log"
+    },
+    {
+      "file_offset": "0x120f54c",
+      "text": "mblock_reserve-R[4].start: 0x7f7c0000, size: 0x40000 map:1 name:log_store"
+    },
+    {
+      "file_offset": "0x120f59e",
+      "text": "mblock_reserve-R[5].start: 0x47d80000, size: 0x50000 map:0 name:atf-reserved"
+    },
+    {
+      "file_offset": "0x120f5f3",
+      "text": "mblock_reserve-R[6].start: 0xbff70000, size: 0x80000 map:0 name:atf-ramdump-reserved"
+    },
+    {
+      "file_offset": "0x120f650",
+      "text": "mblock_reserve-R[7].start: 0xbff30000, size: 0x40000 map:0 name:atf-log-reserved"
+    },
+    {
+      "file_offset": "0x120f6a9",
+      "text": "mblock_reserve-R[8].start: 0x7f400000, size: 0x200000 map:0 name:tee-secmem"
+    },
+    {
+      "file_offset": "0x120f6fd",
+      "text": "mblock_reserve-R[9].start: 0x7f700000, size: 0xc0000 map:0 name:SSPM-reserved"
+    },
+    {
+      "file_offset": "0x120f753",
+      "text": "mblock_reserve-R[10].start: 0x47c80000, size: 0x10000 map:0 name:aee_debug_kinfo"
+    },
+    {
+      "file_offset": "0x120f7ac",
+      "text": "mblock_reserve-R[11].start: 0x47c90000, size: 0xe0000 map:0 name:pstore"
+    },
+    {
+      "file_offset": "0x120f7fc",
+      "text": "mblock_reserve-R[12].start: 0x47d70000, size: 0x10000 map:0 name:minirdump"
+    },
+    {
+      "file_offset": "0x120f84f",
+      "text": "mblock_reserve-R[13].start: 0x7ef90000, size: 0x470000 map:0 name:framebuffer"
+    },
+    {
+      "file_offset": "0x120fd61",
+      "text": "[LK]jump to K64 0x40080000"
+    },
+    {
+      "file_offset": "0x1217396",
+      "text": "boot linux-64 via EL2, pc=0x40080000, x0=0x47880000, x1=0x0, mode=0x3c5"
+    },
+    {
+      "file_offset": "0x129a371",
+      "text": "total_dram_size: 0x0000000180000000, max_dram_size: 0x0000000800000000"
+    },
+    {
+      "file_offset": "0x129c269",
+      "text": "WDT]  mtk_wdt_mode_config LK  mode value=30, tmp:22000030"
+    },
+    {
+      "file_offset": "0x129c2f8",
+      "text": "WDT]  mtk_wdt_mode_config LK  mode value=7d, tmp:2200007d"
+    },
+    {
+      "file_offset": "0x129c36c",
+      "text": "PWRAP] pwrap_init_lk"
+    },
+    {
+      "file_offset": "0x129c38a",
+      "text": "PWRAP] is_pwrap_init_done 1"
+    },
+    {
+      "file_offset": "0x129c3af",
+      "text": "PWRAP] [PMIC_WRAP] pwrap_init already init, do nothing"
+    },
+    {
+      "file_offset": "0x12a4ac7",
+      "text": "mblock_reserve-R start: 0x47880000, sz: 0x80000 map:1 name:dtb_kernel_addr_mb"
+    },
+    {
+      "file_offset": "0x12a4b1d",
+      "text": "mblock_reserve-R start: 0x40080000, sz: 0x7800000 map:0 name:kernel_addr_mb"
+    },
+    {
+      "file_offset": "0x12a4b71",
+      "text": "mblock_reserve-R start: 0x51b00000, sz: 0x4000000 map:0 name:ramdisk_addr_mb"
+    },
+    {
+      "file_offset": "0x12a5479",
+      "text": "SSPM: set reserved mem status=okay"
+    },
+    {
+      "file_offset": "0x12a5974",
+      "text": "videolfb - fb_base    = 0x7ef90000"
+    },
+    {
+      "file_offset": "0x12a599f",
+      "text": "videolfb - islcmfound = 1"
+    },
+    {
+      "file_offset": "0x12a59c1",
+      "text": "videolfb - fps        = 6184"
+    },
+    {
+      "file_offset": "0x12a59e6",
+      "text": "videolfb - vram       = 4653056"
+    },
+    {
+      "file_offset": "0x12a5a0e",
+      "text": "videolfb - lcmname    = axs15260_dsi_6580_hd"
+    },
+    {
+      "file_offset": "0x12a6779",
+      "text": "mblock_reserve-R[0].start: 0xbffff000, size: 0x1000 map:0 name:dramc-rk0"
+    },
+    {
+      "file_offset": "0x12a67ca",
+      "text": "mblock_reserve-R[1].start: 0x1bffff000, size: 0x1000 map:0 name:dramc-rk1"
+    },
+    {
+      "file_offset": "0x12a681c",
+      "text": "mblock_reserve-R[2].start: 0x7f800000, size: 0x800000 map:0 name:gz"
+    },
+    {
+      "file_offset": "0x12a6868",
+      "text": "mblock_reserve-R[3].start: 0x7f600000, size: 0x41000 map:1 name:gz-log"
+    },
+    {
+      "file_offset": "0x12a68b7",
+      "text": "mblock_reserve-R[4].start: 0x7f7c0000, size: 0x40000 map:1 name:log_store"
+    },
+    {
+      "file_offset": "0x12a6909",
+      "text": "mblock_reserve-R[5].start: 0x47d80000, size: 0x50000 map:0 name:atf-reserved"
+    },
+    {
+      "file_offset": "0x12a695e",
+      "text": "mblock_reserve-R[6].start: 0xbff70000, size: 0x80000 map:0 name:atf-ramdump-reserved"
+    },
+    {
+      "file_offset": "0x12a69bb",
+      "text": "mblock_reserve-R[7].start: 0xbff30000, size: 0x40000 map:0 name:atf-log-reserved"
+    },
+    {
+      "file_offset": "0x12a6a14",
+      "text": "mblock_reserve-R[8].start: 0x7f400000, size: 0x200000 map:0 name:tee-secmem"
+    },
+    {
+      "file_offset": "0x12a6a68",
+      "text": "mblock_reserve-R[9].start: 0x7f700000, size: 0xc0000 map:0 name:SSPM-reserved"
+    },
+    {
+      "file_offset": "0x12a6abe",
+      "text": "mblock_reserve-R[10].start: 0x47c80000, size: 0x10000 map:0 name:aee_debug_kinfo"
+    },
+    {
+      "file_offset": "0x12a6b17",
+      "text": "mblock_reserve-R[11].start: 0x47c90000, size: 0xe0000 map:0 name:pstore"
+    },
+    {
+      "file_offset": "0x12a6b67",
+      "text": "mblock_reserve-R[12].start: 0x47d70000, size: 0x10000 map:0 name:minirdump"
+    },
+    {
+      "file_offset": "0x12a6bba",
+      "text": "mblock_reserve-R[13].start: 0x7ef90000, size: 0x470000 map:0 name:framebuffer"
+    },
+    {
+      "file_offset": "0x12a70b5",
+      "text": "[LK]jump to K64 0x40080000"
+    },
+    {
+      "file_offset": "0x12ae796",
+      "text": "boot linux-64 via EL2, pc=0x40080000, x0=0x47880000, x1=0x0, mode=0x3c5"
+    }
+  ],
+  "source_files": [
+    {
+      "path": "vendor/mediatek/proprietary/bootable/bootloader/lk/app/mt_boot/mt_boot.c",
+      "sha256": "bdb8a13ac779d51c0f249e702c99c5a8b5da937ca834acae5e47a04c2fd457e0"
+    },
+    {
+      "path": "vendor/mediatek/proprietary/bootable/bootloader/lk/app/mt_boot/sys_commands.c",
+      "sha256": "e539bca1b22c2ce640daff5bd04287dc01abb7a2bb725802e96de2dece8f8385"
+    },
+    {
+      "path": "vendor/mediatek/proprietary/bootable/bootloader/lk/platform/mt6765/atags.c",
+      "sha256": "cdff57a452f49892ab58909121c71d5e4d2d05907918ea63c4a0fea5e40d31b0"
+    },
+    {
+      "path": "vendor/mediatek/proprietary/bootable/bootloader/lk/platform/mt6765/mt_disp_drv.c",
+      "sha256": "1ddfe1dcca75006752ab439f1acdd22782cfd888cd13c610aac9800b96487065"
+    },
+    {
+      "path": "vendor/mediatek/proprietary/bootable/bootloader/lk/platform/mt6765/platform.c",
+      "sha256": "ce07cea6e5256fdacdefce7d747aa4392dd409a4da4f0acb71e5971ac9395db3"
+    },
+    {
+      "path": "vendor/mediatek/proprietary/bootable/bootloader/lk/platform/mt6765/mt_sspm.c",
+      "sha256": "78cd897d5c3d43257daef38c6698299dbe86b68c29ac7dfc26ec2bebf86de854"
+    },
+    {
+      "path": "vendor/mediatek/proprietary/bootable/bootloader/lk/platform/mt6765/mtk_wdt.c",
+      "sha256": "3f8a1bc74d40a6ebfcd198919bb9455d397fe804fa71fcf566242691a353a9f4"
+    },
+    {
+      "path": "vendor/mediatek/proprietary/bootable/bootloader/lk/platform/mt6765/rules.mk",
+      "sha256": "ea20c1f665e11e45667093997ea575ce19a4528c9d774395d8c3559e4c37c9ee"
+    },
+    {
+      "path": "vendor/mediatek/proprietary/bootable/bootloader/lk/platform/mt6765/include/platform/mtk_wdt.h",
+      "sha256": "c86b5e60fa925d022a3aa41602fb0a9efb7eee1d45580449118dc8185ae1093e"
+    },
+    {
+      "path": "vendor/mediatek/proprietary/bootable/bootloader/lk/platform/mt6765/include/platform/ddp_data_type.h",
+      "sha256": "41abadd09e4eb9ce6f37d0c27878bed7825f48c12f7d9b3cdd197a4d76013a6b"
+    },
+    {
+      "path": "vendor/mediatek/proprietary/bootable/bootloader/lk/platform/mt6765/ddp_ovl.c",
+      "sha256": "76a753a3eef3a0aea0fb8985d30711eac181730ead5207477d8caa23c0a414a8"
+    },
+    {
+      "path": "vendor/mediatek/proprietary/trustzone/atf/v1.4/plat/mediatek/mt6765/bl31_plat_setup.c",
+      "sha256": "68eb92a1be6870cb8ddde2bff690a158b68e3e69741af67a93a8aad054a95a50"
+    }
+  ],
+  "video_tag": {
+    "endian": "little",
+    "header_present": false,
+    "fields": {
+      "fb_base": [
+        0,
+        8
+      ],
+      "islcmfound": [
+        8,
+        4
+      ],
+      "fps": [
+        12,
+        4
+      ],
+      "vram": [
+        16,
+        4
+      ],
+      "lcmname": [
+        20,
+        "NUL-terminated"
+      ]
+    },
+    "absent_fields": [
+      "width",
+      "height",
+      "stride",
+      "pixel_format",
+      "active_layer",
+      "rotation",
+      "DMA_translation"
+    ]
+  },
+  "caveats": [
+    "Historical normal boot is not proof of a future fastboot entry state.",
+    "GZ historical mode0x3c5 is EL1h; generic selected ATF source can chooseEL2, so entry must measure CurrentEL.",
+    "Watchdog length is30seconds; IRQ/dual-stage/reset routing means this is not a proved exact reset deadline.",
+    "Static512MiB DT memory/reg is not actual6GiB runtime map; preserve all runtime reservations.",
+    "No lab-fixture/native peripheral ownership is established by this evidence."
+  ]
+}

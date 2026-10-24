@@ -162,3 +162,16 @@ The current loader supplies one linked kernel and RAM disks, with no external
 Driver- entries or prelinked collection. Frozen build22's PRELINK segments are
 empty. See consumers/README.rst for hashes, scanner tests and limits; no export
 was removed and no Apple hardware descriptor was replaced by an MTK stub.
+
+Build23 GUI regression
+----------------------
+
+The unchanged precompiled Apple executable/cache inputs also reached the home
+screen in a completed630-second single-core run using synthetic native
+peripherals. The last sampled logo was390.623s and first sampled home400.658s.
+All10 scheduled input actions completed, with no observed kernel panic.
+Volume HID down/up events reached backboardd. Later power events preceded
+modeled off/black and on/lockscreen transitions; the final frame is home.
+See ../evidence/native-gui1-build23.json for frame hashes and bounded evidence.
+The inherited auto-unlock shim remains, blank widgets/missing services remain,
+and this establishes neither real hardware behavior nor measured battery SOC.

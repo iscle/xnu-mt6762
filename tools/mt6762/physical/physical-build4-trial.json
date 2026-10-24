@@ -1,0 +1,24 @@
+{
+  "utc": "2026-10-24T01:04:55.373048+00:00",
+  "image_sha256": "049ed1cb4c825c7606e21aef68fed91a98c6b4638cdeddabc25726c967ad8b05",
+  "image_bytes": 6025216,
+  "actual_phone_attempt": true,
+  "xnu_executed": false,
+  "fastboot_download_succeeded": true,
+  "fastboot_boot_succeeded": false,
+  "boot_error": "not allowed in locked state",
+  "live_unlocked_getvar": "no",
+  "live_max_download_size": "0x8000000",
+  "live_product": "r62xy1_sye_c11_j",
+  "partitions_flashed": false,
+  "subsequent_unlock": {
+    "explicit_user_authorized_data_erasure": true,
+    "command": "fastboot flashing unlock",
+    "returned_okay": true,
+    "elapsed_seconds": 18.758,
+    "unlock_state_after_request": "no",
+    "user_report": "volume key didnt work",
+    "meaning": "Command OKAY alone does not establish successful unlock; confirmation diagnosis pending."
+  },
+  "physical_peripheral_acceptance": false
+}

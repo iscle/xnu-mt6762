@@ -1,0 +1,465 @@
+{
+  "authority": "static supplied artifact and selected BSP source; no physical execution",
+  "stock_boot": {
+    "format": "android-boot-v2",
+    "source_sha256": "95f362d6c5e018fb588ce1101a75120157079571e8749e349141a5a906f09296",
+    "page_size": 2048,
+    "header_size": 1660,
+    "payload_size": 12652544,
+    "addresses": {
+      "kernel": "0x40080000",
+      "ramdisk": "0x51b00000",
+      "second": "0x0",
+      "tags": "0x47880000",
+      "dtb": "0x47880000"
+    },
+    "cmdline": "bootopt=64S3,32N2,64N2 buildvariant=user",
+    "image_id": "5b1326f1715379ddb574eb332e0b78e52724737c",
+    "components": {
+      "kernel": {
+        "offset": 2048,
+        "size": 10915906,
+        "sha256": "0e879a8f78975d2c2be458f64c6e027af7d15fcf8136a0443cc117a15e23eb10"
+      },
+      "ramdisk": {
+        "offset": 10919936,
+        "size": 1620262,
+        "sha256": "de21ee7038aa58713890461b578ff688913f5881c855d9a6207ece9eb46a23db"
+      },
+      "second": {
+        "offset": 12541952,
+        "size": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "recovery_dtbo": {
+        "offset": 12541952,
+        "size": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "dtb": {
+        "offset": 12541952,
+        "size": 109780,
+        "sha256": "22a13e40699dbeab82ac14719da7e258b7a5513ce527485d9fd2df4e4005e533"
+      }
+    },
+    "dt_table": {
+      "total_size": 109780,
+      "page_size": 2048,
+      "entries": [
+        {
+          "offset": 64,
+          "size": 109716,
+          "id": 0,
+          "revision": 0,
+          "custom": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "sha256": "658e181d1a13d930dc09567883e734bdbd4579350c8332ff954a0ecbb2ed08fe"
+        }
+      ]
+    },
+    "trailer_size": 20901888,
+    "avb_footer": {
+      "major": 1,
+      "minor": 0,
+      "original_size": 12652544,
+      "vbmeta_offset": 12652544,
+      "vbmeta_size": 1600
+    }
+  },
+  "stock_kernel": {
+    "size": 25714688,
+    "sha256": "82b1919185a49f268a0f8e145a6714d6264c1f66918a90df0d763266147ead4b",
+    "text_offset": 524288,
+    "image_size": 29507584
+  },
+  "lk": {
+    "sha256": "5badc0dc942b0babdca3da13c7e07f3b5f1e57b66d503414b7f80effe8ce891a",
+    "size": 1048576,
+    "partition_header_size": 512,
+    "load_base": "0x48000000",
+    "load_base_evidence": "ARM startup relocation literal at file0x274 equals0x48000000",
+    "default_max_download": 134217728,
+    "boot_registration": {
+      "call": "0x4801d244",
+      "command_string": "0x480703f4",
+      "handler_thumb": "0x4801deb5",
+      "allowed_secure": 1,
+      "requires_unlock": 1
+    },
+    "bounded_disassembly": [
+      {
+        "va": "0x4801cf88",
+        "file_offset": "0x1d188",
+        "bytes": "2de9f047",
+        "instruction": "push.w {r4, r5, r6, r7, r8, sb, sl, lr}"
+      },
+      {
+        "va": "0x4801cf8c",
+        "file_offset": "0x1d18c",
+        "bytes": "8046",
+        "instruction": "mov r8, r0"
+      },
+      {
+        "va": "0x4801cf8e",
+        "file_offset": "0x1d18e",
+        "bytes": "dff85004",
+        "instruction": "ldr.w r0, [pc, #0x450]"
+      },
+      {
+        "va": "0x4801cf92",
+        "file_offset": "0x1d192",
+        "bytes": "84b0",
+        "instruction": "sub sp, #0x10"
+      },
+      {
+        "va": "0x4801cf94",
+        "file_offset": "0x1d194",
+        "bytes": "f246",
+        "instruction": "mov sl, lr"
+      },
+      {
+        "va": "0x4801cf96",
+        "file_offset": "0x1d196",
+        "bytes": "4ff00067",
+        "instruction": "mov.w r7, #0x8000000"
+      },
+      {
+        "va": "0x4801cf9a",
+        "file_offset": "0x1d19a",
+        "bytes": "dff84844",
+        "instruction": "ldr.w r4, [pc, #0x448]"
+      },
+      {
+        "va": "0x4801cf9e",
+        "file_offset": "0x1d19e",
+        "bytes": "7844",
+        "instruction": "add r0, pc"
+      },
+      {
+        "va": "0x4801cfa0",
+        "file_offset": "0x1d1a0",
+        "bytes": "dff84464",
+        "instruction": "ldr.w r6, [pc, #0x444]"
+      },
+      {
+        "va": "0x4801cfa4",
+        "file_offset": "0x1d1a4",
+        "bytes": "0bf028f8",
+        "instruction": "bl #0x48027ff8"
+      },
+      {
+        "va": "0x4801cfa8",
+        "file_offset": "0x1d1a8",
+        "bytes": "dff84024",
+        "instruction": "ldr.w r2, [pc, #0x440]"
+      },
+      {
+        "va": "0x4801cfac",
+        "file_offset": "0x1d1ac",
+        "bytes": "7c44",
+        "instruction": "add r4, pc"
+      },
+      {
+        "va": "0x4801cfae",
+        "file_offset": "0x1d1ae",
+        "bytes": "dff84004",
+        "instruction": "ldr.w r0, [pc, #0x440]"
+      },
+      {
+        "va": "0x4801cfb2",
+        "file_offset": "0x1d1b2",
+        "bytes": "3b46",
+        "instruction": "mov r3, r7"
+      },
+      {
+        "va": "0x4801cfb4",
+        "file_offset": "0x1d1b4",
+        "bytes": "0b21",
+        "instruction": "movs r1, #0xb"
+      },
+      {
+        "va": "0x4801cfb6",
+        "file_offset": "0x1d1b6",
+        "bytes": "a258",
+        "instruction": "ldr r2, [r4, r2]"
+      },
+      {
+        "va": "0x4801cfb8",
+        "file_offset": "0x1d1b8",
+        "bytes": "7844",
+        "instruction": "add r0, pc"
+      },
+      {
+        "va": "0x4801cfba",
+        "file_offset": "0x1d1ba",
+        "bytes": "1546",
+        "instruction": "mov r5, r2"
+      },
+      {
+        "va": "0x4801cfbc",
+        "file_offset": "0x1d1bc",
+        "bytes": "dff83424",
+        "instruction": "ldr.w r2, [pc, #0x434]"
+      },
+      {
+        "va": "0x4801cfc0",
+        "file_offset": "0x1d1c0",
+        "bytes": "c5f80080",
+        "instruction": "str.w r8, [r5]"
+      },
+      {
+        "va": "0x4801cfc4",
+        "file_offset": "0x1d1c4",
+        "bytes": "a659",
+        "instruction": "ldr r6, [r4, r6]"
+      },
+      {
+        "va": "0x4801cfc6",
+        "file_offset": "0x1d1c6",
+        "bytes": "7a44",
+        "instruction": "add r2, pc"
+      },
+      {
+        "va": "0x4801cfc8",
+        "file_offset": "0x1d1c8",
+        "bytes": "3760",
+        "instruction": "str r7, [r6]"
+      },
+      {
+        "va": "0x4801d1d8",
+        "file_offset": "0x1d3d8",
+        "bytes": "c248",
+        "instruction": "ldr r0, [pc, #0x308]"
+      },
+      {
+        "va": "0x4801d1da",
+        "file_offset": "0x1d3da",
+        "bytes": "c349",
+        "instruction": "ldr r1, [pc, #0x30c]"
+      },
+      {
+        "va": "0x4801d1dc",
+        "file_offset": "0x1d3dc",
+        "bytes": "7844",
+        "instruction": "add r0, pc"
+      },
+      {
+        "va": "0x4801d1de",
+        "file_offset": "0x1d3de",
+        "bytes": "7944",
+        "instruction": "add r1, pc"
+      },
+      {
+        "va": "0x4801d1e0",
+        "file_offset": "0x1d3e0",
+        "bytes": "fff7f0fa",
+        "instruction": "bl #0x4801c7c4"
+      },
+      {
+        "va": "0x4801d238",
+        "file_offset": "0x1d438",
+        "bytes": "b649",
+        "instruction": "ldr r1, [pc, #0x2d8]"
+      },
+      {
+        "va": "0x4801d23a",
+        "file_offset": "0x1d43a",
+        "bytes": "0122",
+        "instruction": "movs r2, #1"
+      },
+      {
+        "va": "0x4801d23c",
+        "file_offset": "0x1d43c",
+        "bytes": "b648",
+        "instruction": "ldr r0, [pc, #0x2d8]"
+      },
+      {
+        "va": "0x4801d23e",
+        "file_offset": "0x1d43e",
+        "bytes": "1346",
+        "instruction": "mov r3, r2"
+      },
+      {
+        "va": "0x4801d240",
+        "file_offset": "0x1d440",
+        "bytes": "6158",
+        "instruction": "ldr r1, [r4, r1]"
+      },
+      {
+        "va": "0x4801d242",
+        "file_offset": "0x1d442",
+        "bytes": "7844",
+        "instruction": "add r0, pc"
+      },
+      {
+        "va": "0x4801d244",
+        "file_offset": "0x1d444",
+        "bytes": "fff7a0fa",
+        "instruction": "bl #0x4801c788"
+      },
+      {
+        "va": "0x4801deb4",
+        "file_offset": "0x1e0b4",
+        "bytes": "2de9f04f",
+        "instruction": "push.w {r4, r5, r6, r7, r8, sb, sl, fp, lr}"
+      },
+      {
+        "va": "0x4801deb8",
+        "file_offset": "0x1e0b8",
+        "bytes": "40f27c60",
+        "instruction": "movw r0, #0x67c"
+      },
+      {
+        "va": "0x4801debc",
+        "file_offset": "0x1e0bc",
+        "bytes": "9db0",
+        "instruction": "sub sp, #0x74"
+      },
+      {
+        "va": "0x4801debe",
+        "file_offset": "0x1e0be",
+        "bytes": "0f46",
+        "instruction": "mov r7, r1"
+      },
+      {
+        "va": "0x4801dec0",
+        "file_offset": "0x1e0c0",
+        "bytes": "9146",
+        "instruction": "mov sb, r2"
+      },
+      {
+        "va": "0x4801dec2",
+        "file_offset": "0x1e0c2",
+        "bytes": "0af0d5fe",
+        "instruction": "bl #0x48028c70"
+      },
+      {
+        "va": "0x4801dec6",
+        "file_offset": "0x1e0c6",
+        "bytes": "0028",
+        "instruction": "cmp r0, #0"
+      },
+      {
+        "va": "0x4801dec8",
+        "file_offset": "0x1e0c8",
+        "bytes": "00f07c81",
+        "instruction": "beq.w #0x4801e1c4"
+      },
+      {
+        "va": "0x4801decc",
+        "file_offset": "0x1e0cc",
+        "bytes": "3946",
+        "instruction": "mov r1, r7"
+      },
+      {
+        "va": "0x4801dece",
+        "file_offset": "0x1e0ce",
+        "bytes": "40f27c62",
+        "instruction": "movw r2, #0x67c"
+      },
+      {
+        "va": "0x4801ded2",
+        "file_offset": "0x1e0d2",
+        "bytes": "0446",
+        "instruction": "mov r4, r0"
+      },
+      {
+        "va": "0x4801ded4",
+        "file_offset": "0x1e0d4",
+        "bytes": "cb4d",
+        "instruction": "ldr r5, [pc, #0x32c]"
+      },
+      {
+        "va": "0x4801ded6",
+        "file_offset": "0x1e0d6",
+        "bytes": "0af0a6ef",
+        "instruction": "blx #0x48028e24"
+      },
+      {
+        "va": "0x4801deda",
+        "file_offset": "0x1e0da",
+        "bytes": "3846",
+        "instruction": "mov r0, r7"
+      },
+      {
+        "va": "0x4801dedc",
+        "file_offset": "0x1e0dc",
+        "bytes": "0026",
+        "instruction": "movs r6, #0"
+      },
+      {
+        "va": "0x4801dede",
+        "file_offset": "0x1e0de",
+        "bytes": "19f02bf8",
+        "instruction": "bl #0x48036f38"
+      },
+      {
+        "va": "0x48019d70",
+        "file_offset": "0x19f70",
+        "bytes": "964d",
+        "instruction": "ldr r5, [pc, #0x258]"
+      },
+      {
+        "va": "0x48019d72",
+        "file_offset": "0x19f72",
+        "bytes": "4ff0f062",
+        "instruction": "mov.w r2, #0x7800000"
+      },
+      {
+        "va": "0x48019d76",
+        "file_offset": "0x19f76",
+        "bytes": "cdf824e0",
+        "instruction": "str.w lr, [sp, #0x24]"
+      },
+      {
+        "va": "0x48019d7a",
+        "file_offset": "0x19f7a",
+        "bytes": "0446",
+        "instruction": "mov r4, r0"
+      },
+      {
+        "va": "0x48019d7c",
+        "file_offset": "0x19f7c",
+        "bytes": "9449",
+        "instruction": "ldr r1, [pc, #0x250]"
+      },
+      {
+        "va": "0x48019d7e",
+        "file_offset": "0x19f7e",
+        "bytes": "4ff08060",
+        "instruction": "mov.w r0, #0x4000000"
+      },
+      {
+        "va": "0x48019d82",
+        "file_offset": "0x19f82",
+        "bytes": "58f805a0",
+        "instruction": "ldr.w sl, [r8, r5]"
+      }
+    ]
+  },
+  "source_paths": {
+    "mkbootimg": "system/core/mkbootimg/mkbootimg.py",
+    "cmd_boot": "vendor/mediatek/proprietary/bootable/bootloader/lk/app/mt_boot/sys_commands.c:611",
+    "decompression": "vendor/mediatek/proprietary/bootable/bootloader/lk/app/mt_boot/mt_boot.c:745",
+    "capacity": "vendor/mediatek/proprietary/bootable/bootloader/lk/platform/mt6765/rules.mk:22",
+    "scratch": "vendor/mediatek/proprietary/bootable/bootloader/lk/target/k62v1_64_bsp/rules.mk:33",
+    "bootinfo": "vendor/mediatek/proprietary/bootable/bootloader/lk/platform/common/boot/boot_info.c:83"
+  },
+  "validation": [
+    "8 boot-container tests passed",
+    "stock payload roundtrip exact before AVB trailer",
+    "independent supplied BSP mkbootimg result matches stock payload"
+  ],
+  "limitations": [
+    "REA inspect_firmware_regions unavailable: caller-supplied Binwalk path not configured; no REA firmware Evidence claimed",
+    "capstone static decode and explicit PIC/GOT arithmetic, not dynamic execution",
+    "download size is dumped LK default, not live getvar",
+    "BSP decompression capacity120MiB; actual LK allocation immediate corroborates size, full decompressor bounds not independently proven",
+    "unsigned temporary image acceptance and kernel handoff untested physically",
+    "new boot container discards prior AVB footer/vbmeta rather than signing it"
+  ]
+}

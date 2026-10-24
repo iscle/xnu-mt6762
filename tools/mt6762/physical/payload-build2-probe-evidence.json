@@ -1,0 +1,148 @@
+{
+  "scope": "exact packaged image under synthetic LK/QEMU handoff; not physical validation",
+  "runs": {
+    "probe-headless": {
+      "delivered_image_sha256": "58b7dcada7dac919ba1d8727718505233c13378108ecdfdd2a9f0318202ffe41",
+      "image_sha256": "1b26aa17cbb890dfe907e45db6054beb5ff3f7cd8b9c70a816a4be0b34e252a8",
+      "runtime_dtb_sha256": "294002bab94fcfd29846d29c9f0f66cc2f92cef824c04588dc2bbb0271a8e337",
+      "static_memory": false,
+      "synthetic_display": false,
+      "initial_registers": {
+        "pc": 0,
+        "cpsr": 1073742789,
+        "x0": 0,
+        "SCTLR_EL1": 12912696,
+        "CNTFRQ_EL0": 13000000
+      },
+      "final_registers": {
+        "pc": 18446744005112130492,
+        "cpsr": 1610613700,
+        "x0": 1,
+        "x1": 18446744056253546288,
+        "x2": 18446744056253546064,
+        "x19": 18446744005119443328,
+        "x20": 18446744005110600304,
+        "sp": 18446744056253546128,
+        "ESR_EL1": 1442840704,
+        "ELR_EL1": 18446744005112118892,
+        "FAR_EL1": 4294983680,
+        "SCTLR_EL1": 877943101,
+        "TCR_EL1": 148798842138,
+        "CNTFRQ_EL0": 13000000
+      },
+      "checks": {
+        "ram": true,
+        "xnu": true,
+        "result": true,
+        "cases": true,
+        "done": true
+      },
+      "passed": true,
+      "serial_sha256": "aa6c401bcaa61c365b367308a5e8176ef9e6ee21b4761d961aee9f200eaf4074",
+      "observed_vm_16k_hw_4k": true
+    },
+    "probe-static-negative": {
+      "delivered_image_sha256": "58b7dcada7dac919ba1d8727718505233c13378108ecdfdd2a9f0318202ffe41",
+      "image_sha256": "1b26aa17cbb890dfe907e45db6054beb5ff3f7cd8b9c70a816a4be0b34e252a8",
+      "runtime_dtb_sha256": "658e181d1a13d930dc09567883e734bdbd4579350c8332ff954a0ecbb2ed08fe",
+      "static_memory": true,
+      "synthetic_display": false,
+      "initial_registers": {
+        "pc": 0,
+        "cpsr": 1073742789,
+        "x0": 0,
+        "SCTLR_EL1": 12912696,
+        "CNTFRQ_EL0": 13000000
+      },
+      "final_registers": {
+        "pc": 1074271764,
+        "cpsr": 2147484613,
+        "x0": 10,
+        "x1": 1200095232,
+        "x2": 1090171584,
+        "x19": 1074286314,
+        "x20": 105,
+        "sp": 1090171408,
+        "ESR_EL1": 0,
+        "ELR_EL1": 0,
+        "FAR_EL1": 0,
+        "SCTLR_EL1": 12912696,
+        "TCR_EL1": 0,
+        "CNTFRQ_EL0": 13000000
+      },
+      "checks": {
+        "refused": true,
+        "no_xnu": true
+      },
+      "passed": true,
+      "serial_sha256": "76bcdd8b690662f749b4d66cd229e72666b097c89d5b8bce45286465d37e272d",
+      "observed_vm_16k_hw_4k": false
+    },
+    "probe-display2": {
+      "delivered_image_sha256": "58b7dcada7dac919ba1d8727718505233c13378108ecdfdd2a9f0318202ffe41",
+      "image_sha256": "1b26aa17cbb890dfe907e45db6054beb5ff3f7cd8b9c70a816a4be0b34e252a8",
+      "runtime_dtb_sha256": "55852ac2342696a4c850b8b5da06a07f17401f7d0d97deae4b3f41e4c62fc903",
+      "static_memory": false,
+      "synthetic_display": true,
+      "initial_registers": {
+        "pc": 0,
+        "cpsr": 1073742789,
+        "x0": 0,
+        "SCTLR_EL1": 12912696,
+        "CNTFRQ_EL0": 13000000
+      },
+      "final_registers": {
+        "pc": 18446744005112130492,
+        "cpsr": 1610613700,
+        "x0": 1,
+        "x1": 18446744056201674544,
+        "x2": 18446744056201674320,
+        "x19": 18446744005119443328,
+        "x20": 18446744005110600304,
+        "sp": 18446744056201674384,
+        "ESR_EL1": 1442840704,
+        "ELR_EL1": 18446744005112118892,
+        "FAR_EL1": 4294983680,
+        "SCTLR_EL1": 877943101,
+        "TCR_EL1": 148798842138,
+        "CNTFRQ_EL0": 13000000
+      },
+      "checks": {
+        "ram": true,
+        "xnu": true,
+        "pages": true,
+        "result": true,
+        "cases": true,
+        "done": true,
+        "display_admitted": true,
+        "display_pixels": true,
+        "no_display_register_writes": true
+      },
+      "passed": true,
+      "serial_sha256": "ec7a32cf417a8dffbae43d54f6493ca47b09e0a6854d706c16ad2821517d9bec",
+      "observed_vm_16k_hw_4k": true,
+      "display_state": {
+        "enabled": true,
+        "synthetic": true,
+        "framebuffer_pa": 2130247680,
+        "fault": 0,
+        "applied_level": 512,
+        "enable": 1,
+        "duty": 512,
+        "pwm_writes": 0,
+        "commits": 0,
+        "rejected_writes": 0,
+        "reads": {
+          "spm": 6,
+          "mmsys": 2,
+          "ovl": 22,
+          "rdma": 2,
+          "dsi": 16,
+          "pwm": 0
+        }
+      },
+      "framebuffer_sha256": "5f97498abb5dc9cbea2ccdfda1453b57edcb34b289dd4a705a4018fa7d008362",
+      "framebuffer_nonzero_bytes": 135903
+    }
+  }
+}

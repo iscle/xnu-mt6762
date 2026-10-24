@@ -1,0 +1,50 @@
+/* Fixed LK destination. All output storage is present in the raw Image. */
+OUTPUT_FORMAT("elf64-littleaarch64")
+OUTPUT_ARCH(aarch64)
+ENTRY(_start)
+PHDRS { image PT_LOAD FLAGS(7); }
+SECTIONS
+{
+    . = 0x40080000;
+    .text : ALIGN(8) {
+        KEEP(*(.text.entry))
+        *(.text .text.*)
+    } :image
+    .rodata : ALIGN(16) {
+        *(.rodata .rodata.*)
+    } :image
+    .data : ALIGN(16) {
+        *(.data .data.*)
+        *(.sdata .sdata.*)
+    } :image
+    .payload : ALIGN(16) {
+        __payload_start = .;
+        KEEP(*(.payload .payload.*))
+        __payload_end = .;
+    } :image
+    /* lld rejects casting NOBITS inputs to PROGBITS. The following PROGBITS
+     * stack forces these bytes into the single segment's file extent and
+     * raw Image as a zero-filled gap; entry explicitly zeroes them as well. */
+    .bss (NOLOAD) : ALIGN(16) {
+        __bss_start = .;
+        *(.bss .bss.* .sbss .sbss.* COMMON)
+        . = ALIGN(16);
+        __bss_end = .;
+    } :image
+    .stack : ALIGN(16) {
+        __stack_start = .;
+        KEEP(*(.stack))
+        . = ALIGN(16);
+        __stack_end = .;
+    } :image
+    . = ALIGN(16);
+    image_end = .;
+    __image_size = image_end - image_start;
+    /DISCARD/ : { *(.comment .note* .eh_frame .eh_frame_hdr .ARM.attributes) }
+}
+ASSERT(_start == 0x40080000, "physical entry load address changed")
+ASSERT(image_start == _start, "Linux Image header is not first")
+ASSERT((physical_vectors & 0x7ff) == 0, "VBAR alignment")
+ASSERT((__bss_start & 15) == 0 && (__bss_end & 15) == 0, "BSS zero alignment")
+ASSERT(__stack_end - __stack_start == 65536, "private stack must be64KiB")
+ASSERT(image_end <= 0x47880000, "Image overlaps stock tags/FDT or exceeds120MiB")

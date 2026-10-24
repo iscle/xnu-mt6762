@@ -1,0 +1,401 @@
+{
+  "synthetic_only": true,
+  "physical_hardware_tested": false,
+  "precompiled_apple_executables_preserved": true,
+  "kernel_sha256": "73de3c79ad2e93b70d5f1d741edea8c66aad918e65d233b19c7486f058462abd",
+  "qemu_binary_sha256": "8ae2e848f1f75ee8512de2ec363c1f04024d710aefd7bd186d545390ca1654ac",
+  "cpu_count": 1,
+  "duration_seconds": 630,
+  "run_completed": true,
+  "panic_observed": false,
+  "home_screen_observed": true,
+  "first_sampled_home_seconds": 400.658,
+  "last_sampled_logo_seconds": 390.623,
+  "final_visual_state": "home screen",
+  "frame_timeline": [
+    {
+      "sample": 39,
+      "file": "gui630-039.png",
+      "png_sha256": "860982503fbd9641439683dc421b082a9964156d6f57e72f435ddb246aa7f57b",
+      "bgra_sha256": "9edd86fe5ffb4b9c457b82cd7ceffd8128f5b5431c5eff1a3f8815d174f66b00",
+      "approximate_elapsed_seconds": 390.623,
+      "visual_observation": "Apple logo",
+      "display_model": {
+        "enabled": true,
+        "synthetic": true,
+        "framebuffer_pa": 3705421824,
+        "fault": 0,
+        "applied_level": 512,
+        "enable": 1,
+        "duty": 512,
+        "pwm_writes": 0,
+        "commits": 0,
+        "rejected_writes": 0,
+        "reads": {
+          "spm": 18,
+          "mmsys": 2,
+          "ovl": 22,
+          "rdma": 2,
+          "dsi": 16,
+          "pwm": 14
+        }
+      }
+    },
+    {
+      "sample": 40,
+      "file": "gui630-040.png",
+      "png_sha256": "5ff9a36f224bae9b65b7cb64dcf5b5debbf1f9f53c4bfc328450eec236a0108f",
+      "bgra_sha256": "c51534ce33413cc2af3b5ca2d0eb81d69fa483342003a16401ab2b325a1c47ad",
+      "approximate_elapsed_seconds": 400.658,
+      "visual_observation": "Home screen with status bar; blank Weather and Calendar widgets",
+      "display_model": {
+        "enabled": true,
+        "synthetic": true,
+        "framebuffer_pa": 3705421824,
+        "fault": 0,
+        "applied_level": 512,
+        "enable": 1,
+        "duty": 512,
+        "pwm_writes": 0,
+        "commits": 0,
+        "rejected_writes": 0,
+        "reads": {
+          "spm": 18,
+          "mmsys": 2,
+          "ovl": 22,
+          "rdma": 2,
+          "dsi": 16,
+          "pwm": 14
+        }
+      }
+    },
+    {
+      "sample": 55,
+      "file": "gui630-055.png",
+      "png_sha256": "eefccb335673f297855cfc234e8736425a8a2bd48c03ac9161269b21f7f55d19",
+      "bgra_sha256": "0f7cfb43327ad082e6362afa8bcb4f762da9c55356e9c002f0b2697f0b6cd138",
+      "approximate_elapsed_seconds": 550.845,
+      "visual_observation": "Black framebuffer, display model PWM zero",
+      "display_model": {
+        "enabled": true,
+        "synthetic": true,
+        "framebuffer_pa": 3705421824,
+        "fault": 0,
+        "applied_level": 0,
+        "enable": 0,
+        "duty": 1,
+        "pwm_writes": 24,
+        "commits": 6,
+        "rejected_writes": 0,
+        "reads": {
+          "spm": 42,
+          "mmsys": 2,
+          "ovl": 22,
+          "rdma": 2,
+          "dsi": 16,
+          "pwm": 58
+        }
+      }
+    },
+    {
+      "sample": 57,
+      "file": "gui630-057.png",
+      "png_sha256": "c2303fc37f3ca987aeae373b2f2b63755ee46b1ac50519a9caaa39d12f5af09c",
+      "bgra_sha256": "e23a40fd892d915a6b2b0fb71d7b134b0d34a5fe9208303414209431a6b6ef57",
+      "approximate_elapsed_seconds": 570.049,
+      "visual_observation": "Lock screen with clock and swipe prompt",
+      "display_model": {
+        "enabled": true,
+        "synthetic": true,
+        "framebuffer_pa": 3705421824,
+        "fault": 0,
+        "applied_level": 512,
+        "enable": 1,
+        "duty": 512,
+        "pwm_writes": 40,
+        "commits": 10,
+        "rejected_writes": 0,
+        "reads": {
+          "spm": 60,
+          "mmsys": 2,
+          "ovl": 22,
+          "rdma": 2,
+          "dsi": 16,
+          "pwm": 90
+        }
+      }
+    },
+    {
+      "sample": 63,
+      "file": "gui630.png",
+      "png_sha256": "b468ccff34697f7c050d73848cbb9b144e76894710f268ca61b0d9c431ebd922",
+      "bgra_sha256": "537f81939d53b17cdc1de9c44f76db70f237b22de248d337a3812f80a38566f7",
+      "approximate_elapsed_seconds": 630.003,
+      "visual_observation": "Home screen with status bar; blank widgets",
+      "display_model": {
+        "enabled": true,
+        "synthetic": true,
+        "framebuffer_pa": 3705421824,
+        "fault": 0,
+        "applied_level": 512,
+        "enable": 1,
+        "duty": 512,
+        "pwm_writes": 40,
+        "commits": 10,
+        "rejected_writes": 0,
+        "reads": {
+          "spm": 60,
+          "mmsys": 2,
+          "ovl": 22,
+          "rdma": 2,
+          "dsi": 16,
+          "pwm": 90
+        }
+      }
+    }
+  ],
+  "native_input_actions": [
+    {
+      "elapsed_seconds": 260.636,
+      "action": {
+        "at": 260,
+        "keys": 1,
+        "hold": 0.15
+      },
+      "completed": true
+    },
+    {
+      "elapsed_seconds": 277.73,
+      "action": {
+        "at": 277,
+        "from": [
+          192,
+          427
+        ],
+        "steps": 2
+      },
+      "completed": true
+    },
+    {
+      "elapsed_seconds": 291.289,
+      "action": {
+        "at": 290,
+        "from": [
+          192,
+          840
+        ],
+        "to": [
+          192,
+          256
+        ],
+        "steps": 24
+      },
+      "completed": true
+    },
+    {
+      "elapsed_seconds": 315.395,
+      "action": {
+        "at": 315,
+        "from": [
+          192,
+          427
+        ],
+        "steps": 2
+      },
+      "completed": true
+    },
+    {
+      "elapsed_seconds": 340.511,
+      "action": {
+        "at": 340,
+        "from": [
+          192,
+          427
+        ],
+        "steps": 2
+      },
+      "completed": true
+    },
+    {
+      "elapsed_seconds": 500.272,
+      "action": {
+        "at": 500,
+        "keys": 2,
+        "hold": 0.15
+      },
+      "completed": true
+    },
+    {
+      "elapsed_seconds": 520.528,
+      "action": {
+        "at": 520,
+        "keys": 4,
+        "hold": 0.15
+      },
+      "completed": true
+    },
+    {
+      "elapsed_seconds": 540.785,
+      "action": {
+        "at": 540,
+        "keys": 1,
+        "hold": 0.15
+      },
+      "completed": true
+    },
+    {
+      "elapsed_seconds": 561.022,
+      "action": {
+        "at": 560,
+        "keys": 1,
+        "hold": 0.15
+      },
+      "completed": true
+    },
+    {
+      "elapsed_seconds": 580.623,
+      "action": {
+        "at": 580,
+        "from": [
+          192,
+          840
+        ],
+        "to": [
+          192,
+          256
+        ],
+        "steps": 24
+      },
+      "completed": true
+    }
+  ],
+  "native_input_schedule_sha256": "128861b49fd09ea08c87940125c692a71504f806c8a86ed192f10d079a89470f",
+  "bounded_serial_evidence": [
+    "MT6762: inherited display requested on result 0 (PWM/copies only)",
+    "com.apple.xpc.launchd|1970-01-01 01:00:34.882735 (user/501/com.apple.mobilegestalt.xpc) <Notice>: laMT6762: backlight numeric key=brightness-nits-cap numberBits=32 integer=65536",
+    "MT6762: backlight numeric key=NitsPhysical numberBits=31 fp64bits=0",
+    "MT6762: backlight numeric key=Brightness numberBits=31 fp64bits=0",
+    "MT6762: backlight numeric key=Nits numberBits=31 fp64bits=0",
+    "MT6762: backlight numeric key=brightness-nits numberBits=32 integer=0",
+    "MT6762: backlight numeric key=DisplayBrightnessSliderPosition numberBits=32 integer=0",
+    "1970-01-01 01:04:23.601339+0100 backboardd[12:339] [Button]  0xC/0x30/1007270300001 began: firstDown:0s ago b0e0u0 destinations:<none>",
+    "1970-01-01 01:04:23.731248+0100 backboardd[12:338] [Button]  0xC/0x30/1007270300001 finished: firstDown:0.13s ago b0e0u1 destinations:<none>",
+    "1970-01-01 01:08:26.139233+0100 backboardd[12:986] [Button]  0xC/0xE9/1007270300001 began: firstDown:0s ago b0e0u0 destinations:<system; display: builtin; pid: 8; token: 0xE1411CCD; dispatchingTarget: <system; pid: 8>>",
+    "1970-01-01 01:08:26.261464+0100 backboardd[12:986] [Button]  0xC/0xE9/1007270300001 finished: firstDown:0.123s ago b0e0u1 destinations:<system; display: builtin; pid: 8; token: 0xE1411CCD; dispatchingTarget: <system; pid: 8>>",
+    "1970-01-01 01:08:47.265656+0100 backboardd[12:1021] [Button]  0xC/0xEA/1007270300001 began: firstDown:0s ago b0e0u0 destinations:<system; display: builtin; pid: 8; token: 0xE1411CCD; dispatchingTarget: <system; pid: 8>>",
+    "1970-01-01 01:08:47.271656+0100 backboardd[12:1021] [Button]  0xC/0xEA/1007270300001 finished: firstDown:0.00627s ago b0e0u1 destinations:<system; display: builtin; pid: 8; token: 0xE1411CCD; dispatchingTarget: <system; pid: 8>>",
+    "1970-01-01 01:09:07.087412+0100 backboardd[12:1000] [Button]  0xC/0x30/1007270300001 began: firstDown:0s ago b0e0u0 destinations:<system; display: builtin; pid: 8; token: 0xE1411CCD; dispatchingTarget: <system; pid: 8>>",
+    "1970-01-01 01:09:07.208535+0100 backboardd[12:1021] [Button]  0xC/0x30/1007270300001 finished: firstDown:0.121s ago b0e0u1 destinations:<system; display: builtin; pid: 8; token: 0xE1411CCD; dispatchingTarget: <system; pid: 8>>",
+    "MT6762: backlight numeric key=FadePeriod numberBits=32 integer=12124",
+    "MT6762: backlight numeric key=brightness numberBits=32 integer=0",
+    "MT6762: inherited display requested off result 0 (PWM/copies only)",
+    "1970-01-01 01:09:27.493435+0100 backboardd[12:1021] [Button]  0xC/0x30/1007270300001 began: firstDown:0s ago b0e0u0 destinations:<system; display: builtin; pid: 8; token: 0xE1411CCD; dispatchingTarget: <system; pid: 8>>",
+    "MT6762: inherited display requested on result 0 (PWM/copies only)",
+    "1970-01-01 01:09:27.799056+0100 backboardd[12:1021] [Button]  0xC/0x30/1007270300001 finished: firstDown:0.306s ago b0e0u1 destinations:<system; display: builtin; pid: 8; token: 0xE1411CCD; dispatchingTarget: <system; pid: 8>>",
+    "MT6762: backlight numeric key=FadePeriod numberBits=32 integer=12124",
+    "MT6762: backlight numeric key=brightness numberBits=32 integer=512"
+  ],
+  "final_model_snapshot": {
+    "elapsed_seconds": 630.003,
+    "states": {
+      "lab-i2c-state": {
+        "enabled": true,
+        "synthetic": true,
+        "i2c0": {
+          "transactions": 63478,
+          "dma_reads": 63477,
+          "rx_bytes": 2031266,
+          "last_status": 1
+        },
+        "i2c5": {
+          "transactions": 2949,
+          "dma_reads": 0,
+          "rx_bytes": 2948,
+          "last_status": 1,
+          "psc_control": 4,
+          "psc_status": 0
+        }
+      },
+      "lab-display-state": {
+        "enabled": true,
+        "synthetic": true,
+        "framebuffer_pa": 3705421824,
+        "fault": 0,
+        "applied_level": 512,
+        "enable": 1,
+        "duty": 512,
+        "pwm_writes": 40,
+        "commits": 10,
+        "rejected_writes": 0,
+        "reads": {
+          "spm": 60,
+          "mmsys": 2,
+          "ovl": 22,
+          "rdma": 2,
+          "dsi": 16,
+          "pwm": 90
+        }
+      },
+      "lab-power-state": {
+        "enabled": true,
+        "synthetic": true,
+        "fault": 0,
+        "key_mask": 0,
+        "fsm": 0,
+        "commands": 57281,
+        "reads": 53571,
+        "writes": 3710,
+        "rejected": 0,
+        "clears": 53571,
+        "key_reads": 70662,
+        "adc_requests": [
+          589,
+          589
+        ],
+        "adc_completions": [
+          589,
+          589
+        ],
+        "thermal_enabled": false,
+        "thermal_calibration_synthetic": false,
+        "thermal_requests": [
+          0,
+          0,
+          0
+        ],
+        "thermal_completions": [
+          0,
+          0,
+          0
+        ],
+        "gauge_enabled": true,
+        "gauge_calibration_synthetic": true,
+        "gauge_control": 0,
+        "gauge_ticks": 1258,
+        "gauge_snapshots": 633,
+        "gauge_commands": 2532,
+        "bif_enabled": false,
+        "bif_config_synthetic": false,
+        "adc_delay_us": 0,
+        "bif_requests": 0,
+        "bif_completions": 0,
+        "bif_tdet_write_attempts": 0
+      }
+    }
+  },
+  "artifact_sha256": {
+    "manifest.json": "75a2588668d302968ca44a97d3f1d503141912cb6a32593a57941f679fdcd1c6",
+    "gui630.serial.log": "ad07cc021f818b6aeddd263ac1127057024646731548056f9268e03bf7a37b25",
+    "gui630.models.json": "a68a99898788366cc190c09a59adae6177791291f338fa3a4547db9c8241229a",
+    "gui630.qmp.json": "45db71b7210c7651c57c1f9a12d8624ffd149f8bce12442a06365e0fca2a440c"
+  },
+  "limits": [
+    "This run uses synthetic MMIO and framebuffer RAM, not physical device peripherals.",
+    "The inherited auto-unlock shim remains; initial home is not attributed solely to touch.",
+    "Volume HID events are recognized; functional audio output is not established.",
+    "Power event precedes modeled display off; later power event precedes modeled on and lockscreen. This is software/PWM behavior, not real panel sleep/wake.",
+    "Battery icon 1 is not a measured state of charge; native SOC remains unavailable.",
+    "Blank widgets and missing services remain.",
+    "This one-core run does not resolve earlier eight-core GUI spinlock timeout."
+  ]
+}
