@@ -53,9 +53,12 @@ when the vbmeta partition itself remains unchanged. The parent separately
 verified the complete32MiB boot partition and8MiB vbmeta against the original
 dump; this audit does not replace that independent comparison.
 
-The initial cause of the hashtree-corruption status is not established. Neither
-the new persistent record nor the failed fastboot command identifies a damaged
-system block. Later retained stock-Linux startup reports a latched EMI MPU read
+The first log-only audit did not establish the cause of the corruption status.
+The subsequent exact-schema analysis in ``lk-runtime-audit.rst`` identifies
+header offset0x10 as this LK's dm-verity status and shows it changed0 to1 during
+unlock, before the temporary boot. Neither the persistent record nor the failed
+fastboot command identifies a damaged system block. Later retained stock-Linux
+startup reports a latched EMI MPU read
 violation at0x47d81b80, in the reserved ATF range; it occurs in a separate normal
 boot and is not evidence that XNU executed. These distinctions must survive
 any recovery narrative.

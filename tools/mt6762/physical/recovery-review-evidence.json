@@ -1,0 +1,434 @@
+{
+  "authority": "Offline exact LK CPU checks and image parser; no phone actions/full boot.",
+  "lk_sha256": "5badc0dc942b0babdca3da13c7e07f3b5f1e57b66d503414b7f80effe8ce891a",
+  "stock_sha256": "470a453801aefddc83810f7b45647ecd581f1cd93a87ff51ab178561e82c2a15",
+  "candidate_sha256": "b57766a667c18e6ba854c81a24346c6582ad02fa31f89a93769c7086275c0005",
+  "partition_size": 33554432,
+  "page_size": 2048,
+  "preserved_parts": {
+    "dtb": {
+      "size": 109780,
+      "sha256": "22a13e40699dbeab82ac14719da7e258b7a5513ce527485d9fd2df4e4005e533"
+    },
+    "recovery_dtbo": {
+      "size": 45228,
+      "sha256": "b9009f10914dcb890b0f9781aaa24d9fbab408664562a59aadcc0eff50b127fd"
+    }
+  },
+  "candidate_part_sizes": {
+    "kernel": 5910127,
+    "ramdisk": 49,
+    "second": 0,
+    "recovery_dtbo": 45228,
+    "dtb": 109780
+  },
+  "vbmeta": {
+    "offset": 6074368,
+    "size": 512,
+    "algorithm": 0,
+    "flags": 0
+  },
+  "exact_verifier_return": 1,
+  "result_name": "OK_NOT_SIGNED, not full acceptance",
+  "allow_error_branch_checks": [
+    {
+      "allow_verification_error": 0,
+      "next_pc": "0x480464b4"
+    },
+    {
+      "allow_verification_error": 1,
+      "next_pc": "0x480465ec"
+    }
+  ],
+  "bounded_code": [
+    {
+      "name": "recovery_slot_flags",
+      "start": "0x48049e18",
+      "end": "0x48049e48",
+      "sha256": "2e48951f27477d2996a4553b80ce6c1ae2adf0fd49c042ba29fe45024ab0bfc6",
+      "instructions": [
+        {
+          "va": "0x48049e18",
+          "instruction": "cmp r4, #0"
+        },
+        {
+          "va": "0x48049e1a",
+          "instruction": "beq #0x48049ec4"
+        },
+        {
+          "va": "0x48049e1c",
+          "instruction": "cmp r4, #1"
+        },
+        {
+          "va": "0x48049e1e",
+          "instruction": "bne.w #0x48049f64"
+        },
+        {
+          "va": "0x48049e22",
+          "instruction": "bl #0x48037d5c"
+        },
+        {
+          "va": "0x48049e26",
+          "instruction": "ldr r7, [sp, #0x4c]"
+        },
+        {
+          "va": "0x48049e28",
+          "instruction": "add r3, sp, #0x40"
+        },
+        {
+          "va": "0x48049e2a",
+          "instruction": "ldr r1, [pc, #0x3e4]"
+        },
+        {
+          "va": "0x48049e2c",
+          "instruction": "mov r2, r0"
+        },
+        {
+          "va": "0x48049e2e",
+          "instruction": "str r3, [sp, #4]"
+        },
+        {
+          "va": "0x48049e30",
+          "instruction": "orr r3, r6, #4"
+        },
+        {
+          "va": "0x48049e34",
+          "instruction": "str r7, [sp]"
+        },
+        {
+          "va": "0x48049e36",
+          "instruction": "ldr r0, [sp, #0x1c]"
+        },
+        {
+          "va": "0x48049e38",
+          "instruction": "add r1, pc"
+        },
+        {
+          "va": "0x48049e3a",
+          "instruction": "bl #0x48047a70"
+        },
+        {
+          "va": "0x48049e3e",
+          "instruction": "lsls r3, r6, #0x1f"
+        },
+        {
+          "va": "0x48049e40",
+          "instruction": "mov r7, r0"
+        },
+        {
+          "va": "0x48049e42",
+          "instruction": "bmi #0x48049ee4"
+        },
+        {
+          "va": "0x48049e44",
+          "instruction": "cmp r7, #0"
+        },
+        {
+          "va": "0x48049e46",
+          "instruction": "beq #0x48049eec"
+        }
+      ]
+    },
+    {
+      "name": "populate_cache",
+      "start": "0x48049f82",
+      "end": "0x48049fc6",
+      "sha256": "474384d6838b046ae0da37e0c9397b10d35fc1f4557bb27eb1d3f0e96ad513e3",
+      "instructions": [
+        {
+          "va": "0x48049f82",
+          "instruction": "ldr.w r2, [r8, #0xc]"
+        },
+        {
+          "va": "0x48049f86",
+          "instruction": "lsl.w fp, r6, #4"
+        },
+        {
+          "va": "0x48049f8a",
+          "instruction": "add.w r1, r2, fp"
+        },
+        {
+          "va": "0x48049f8e",
+          "instruction": "ldr.w r0, [r2, fp]"
+        },
+        {
+          "va": "0x48049f92",
+          "instruction": "ldr r1, [r1, #8]"
+        },
+        {
+          "va": "0x48049f94",
+          "instruction": "bl #0x48037c50"
+        },
+        {
+          "va": "0x48049f98",
+          "instruction": "mov r7, r0"
+        },
+        {
+          "va": "0x48049f9a",
+          "instruction": "cmp r0, #0"
+        },
+        {
+          "va": "0x48049f9c",
+          "instruction": "beq.w #0x4804a1da"
+        },
+        {
+          "va": "0x48049fa0",
+          "instruction": "ldr.w r2, [r8, #0xc]"
+        },
+        {
+          "va": "0x48049fa4",
+          "instruction": "adds r6, #1"
+        },
+        {
+          "va": "0x48049fa6",
+          "instruction": "add fp, r2"
+        },
+        {
+          "va": "0x48049fa8",
+          "instruction": "ldr.w r2, [fp, #8]"
+        },
+        {
+          "va": "0x48049fac",
+          "instruction": "ldr.w r1, [fp, #4]"
+        },
+        {
+          "va": "0x48049fb0",
+          "instruction": "blx #0x48028e24"
+        },
+        {
+          "va": "0x48049fb4",
+          "instruction": "ldr.w r2, [r8, #0x10]"
+        },
+        {
+          "va": "0x48049fb8",
+          "instruction": "cmp r6, r2"
+        },
+        {
+          "va": "0x48049fba",
+          "instruction": "blo #0x48049f82"
+        },
+        {
+          "va": "0x48049fbc",
+          "instruction": "mov r6, r8"
+        },
+        {
+          "va": "0x48049fbe",
+          "instruction": "str r7, [sp, #0x28]"
+        },
+        {
+          "va": "0x48049fc0",
+          "instruction": "ldr r0, [sp, #0x28]"
+        },
+        {
+          "va": "0x48049fc2",
+          "instruction": "bl #0x48036f38"
+        }
+      ]
+    },
+    {
+      "name": "unsigned_policy_branch",
+      "start": "0x480465e2",
+      "end": "0x480465ec",
+      "sha256": "831b118510270caeda804d8ab616fca56472f3280c5fc6f4a963918a426b4efc",
+      "instructions": [
+        {
+          "va": "0x480465e2",
+          "instruction": "ldr.w r3, [sp, #0x568]"
+        },
+        {
+          "va": "0x480465e6",
+          "instruction": "cmp r3, #0"
+        },
+        {
+          "va": "0x480465e8",
+          "instruction": "beq.w #0x480464b4"
+        }
+      ]
+    },
+    {
+      "name": "reboot_recovery",
+      "start": "0x4801db90",
+      "end": "0x4801dbbe",
+      "sha256": "fe804b556a1d8619d3bcfe7bfb72337de6916d6187db8709c1999d5e914f4592",
+      "instructions": [
+        {
+          "va": "0x4801db90",
+          "instruction": "push {r3, lr}"
+        },
+        {
+          "va": "0x4801db92",
+          "instruction": "ldr r3, [pc, #0x2c]"
+        },
+        {
+          "va": "0x4801db94",
+          "instruction": "add r3, pc"
+        },
+        {
+          "va": "0x4801db96",
+          "instruction": "ldr r3, [r3]"
+        },
+        {
+          "va": "0x4801db98",
+          "instruction": "cbz r3, #0x4801dbb2"
+        },
+        {
+          "va": "0x4801db9a",
+          "instruction": "movs r0, #1"
+        },
+        {
+          "va": "0x4801db9c",
+          "instruction": "bl #0x4800839c"
+        },
+        {
+          "va": "0x4801dba0",
+          "instruction": "ldr r0, [pc, #0x20]"
+        },
+        {
+          "va": "0x4801dba2",
+          "instruction": "add r0, pc"
+        },
+        {
+          "va": "0x4801dba4",
+          "instruction": "bl #0x4801cd84"
+        },
+        {
+          "va": "0x4801dba8",
+          "instruction": "movs r0, #1"
+        },
+        {
+          "va": "0x4801dbaa",
+          "instruction": "pop.w {r3, lr}"
+        },
+        {
+          "va": "0x4801dbae",
+          "instruction": "b.w #0x48043274"
+        },
+        {
+          "va": "0x4801dbb2",
+          "instruction": "ldr r0, [pc, #0x14]"
+        },
+        {
+          "va": "0x4801dbb4",
+          "instruction": "pop.w {r3, lr}"
+        },
+        {
+          "va": "0x4801dbb8",
+          "instruction": "add r0, pc"
+        },
+        {
+          "va": "0x4801dbba",
+          "instruction": "b.w #0x4801cbb8"
+        }
+      ]
+    },
+    {
+      "name": "rtc_marker",
+      "start": "0x4800839c",
+      "end": "0x480083e2",
+      "sha256": "2628ea5b29876ff24f4f85b37a731749fa5dbf504ca6501aba48fbaec3fd19bc",
+      "instructions": [
+        {
+          "va": "0x4800839c",
+          "instruction": "push {r4, lr}"
+        },
+        {
+          "va": "0x4800839e",
+          "instruction": "sub sp, #8"
+        },
+        {
+          "va": "0x480083a0",
+          "instruction": "mov r4, r0"
+        },
+        {
+          "va": "0x480083a2",
+          "instruction": "bl #0x48007cc0"
+        },
+        {
+          "va": "0x480083a6",
+          "instruction": "add r1, sp, #8"
+        },
+        {
+          "va": "0x480083a8",
+          "instruction": "movs r3, #0"
+        },
+        {
+          "va": "0x480083aa",
+          "instruction": "str r3, [r1, #-0x4]!"
+        },
+        {
+          "va": "0x480083ae",
+          "instruction": "movw r0, #0x5b4"
+        },
+        {
+          "va": "0x480083b2",
+          "instruction": "bl #0x48005ef0"
+        },
+        {
+          "va": "0x480083b6",
+          "instruction": "ldrh.w r1, [sp, #4]"
+        },
+        {
+          "va": "0x480083ba",
+          "instruction": "cmp r4, #1"
+        },
+        {
+          "va": "0x480083bc",
+          "instruction": "it eq"
+        },
+        {
+          "va": "0x480083be",
+          "instruction": "orreq r1, r1, #0x10"
+        },
+        {
+          "va": "0x480083c2",
+          "instruction": "beq #0x480083ce"
+        },
+        {
+          "va": "0x480083c4",
+          "instruction": "cbnz r4, #0x480083ce"
+        },
+        {
+          "va": "0x480083c6",
+          "instruction": "bic r1, r1, #0x10"
+        },
+        {
+          "va": "0x480083ca",
+          "instruction": "lsls r1, r1, #0x10"
+        },
+        {
+          "va": "0x480083cc",
+          "instruction": "lsrs r1, r1, #0x10"
+        },
+        {
+          "va": "0x480083ce",
+          "instruction": "movw r0, #0x5b4"
+        },
+        {
+          "va": "0x480083d2",
+          "instruction": "bl #0x48005f00"
+        },
+        {
+          "va": "0x480083d6",
+          "instruction": "bl #0x48007c18"
+        },
+        {
+          "va": "0x480083da",
+          "instruction": "ldr r0, [pc, #0xc]"
+        },
+        {
+          "va": "0x480083dc",
+          "instruction": "add r0, pc"
+        },
+        {
+          "va": "0x480083de",
+          "instruction": "bl #0x48027ff8"
+        }
+      ]
+    }
+  ],
+  "remaining_unknowns": [
+    "Current physical recovery authentication-policy result not observed.",
+    "Main vbmeta flags3 do not establish recovery policy; exact recovery requests NO_VBMETA_PARTITION.",
+    "No complete AVB partition I/O, LK boot, RTC reset or XNU execution modeled."
+  ]
+}

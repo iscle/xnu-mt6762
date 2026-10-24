@@ -1,0 +1,86 @@
+{
+  "scope": "source-only, no device commands; payload binaries hashed for inventory only",
+  "mtkclient_commit": "fa97df7df41140e60f215f24eea82cb46faf9ff0",
+  "inputs": {
+    "mtkclient": {
+      "mtkclient/Library/mtk_main.py": {
+        "size": 33752,
+        "sha256": "9ac043bbf770e8389deda4f3648883840588c3ca4fd46a694f48bb2d7362dfce"
+      },
+      "mtkclient/Library/mtk_preloader.py": {
+        "size": 46528,
+        "sha256": "a0ea67a62350ae584b522744186694f305ed9abb4eb8779970d138bd79205b6f"
+      },
+      "mtkclient/Library/mtk_class.py": {
+        "size": 9329,
+        "sha256": "0bdbb0749bca9d865411e0e0ef42bed0e0d3bc709bf83f0f4057528485b7c604"
+      },
+      "mtkclient/Library/DA/mtk_da_handler.py": {
+        "size": 76597,
+        "sha256": "ecc611aed426316ac75b07f6bb76e05918bce8cc574d04d2f407a121f2cdb7c4"
+      },
+      "mtkclient/Library/DA/mtk_daloader.py": {
+        "size": 23680,
+        "sha256": "970df97a91630db91d8fe72b7ce50141216c6e0400d11e4bbf42a11ff1576dea"
+      },
+      "mtkclient/Library/DA/xflash/xflash_lib.py": {
+        "size": 51967,
+        "sha256": "6af1ef9d9a94a711420529b9a4d6885155b30b40069b805eb9c68efc738b4756"
+      },
+      "mtkclient/Library/DA/xflash/extension/xflash.py": {
+        "size": 48654,
+        "sha256": "e617af70d74be10639b31b4565717e6ef5ec8905059b9f954d7e3daae0c7ab9f"
+      },
+      "mtkclient/Library/DA/legacy/dalegacy_lib.py": {
+        "size": 59576,
+        "sha256": "a98753fba05f89e4799728d6d112ca32c2b1cc9304ad06d072354d8b9ff15ff3"
+      },
+      "mtkclient/config/brom_config.py": {
+        "size": 93864,
+        "sha256": "ed68b1616b6490f5caa4037c6b0304fafda336f0034a51994fe126c264f5aa90"
+      },
+      "src/stage1/Makefile": {
+        "size": 1816,
+        "sha256": "1c088538dafadb045f949c2b22d80788b4078affafa57c88f45e4a75e2fba0b1"
+      },
+      "stage2.py": {
+        "size": 32063,
+        "sha256": "fbfadf0c208db297b76b145004347f2d63716d7f958646e57c3664f63dbbfa01"
+      },
+      "mtkclient/payloads/pl.bin": {
+        "size": 18008,
+        "sha256": "330de824646e1f49c4784e2f515fcbb1e47132ea7ecc8ceb034c6c4f42e665ed"
+      },
+      "mtkclient/payloads/stage2.bin": {
+        "size": 15896,
+        "sha256": "94e3e2ffbe1b36e48f7b5a6adb0371c651adba44860af3f4126e6f1091908fdf"
+      },
+      "mtkclient/payloads/da_x.bin": {
+        "size": 16428,
+        "sha256": "b83ebbbff36e330713080e719856241065e51f732658f4b931399df0e17e00fd"
+      }
+    },
+    "bsp_mt6765": {
+      "default.mak": {
+        "size": 6985,
+        "sha256": "80c213078afba2362f0a892a3c4eb452d4c1d1faad9bb29d23906aa0c49f6249"
+      },
+      "src/core/main.c": {
+        "size": 38907,
+        "sha256": "7939595a876ba1f4f2035f0b00e7d9178446363230b258d429d64f848d687cd5"
+      },
+      "src/core/download.c": {
+        "size": 28454,
+        "sha256": "eea906ee872d4d38a9d139f7e0b8411451804b40a9cfb9dacd4fb83b70b957fb"
+      },
+      "src/core/inc/download.h": {
+        "size": 4242,
+        "sha256": "b289ea1fe7355b7cc40b8936ac78564c7282edd95a6b257dea2b3f40cfe67bff"
+      },
+      "src/security/trustzone/tz_init.c": {
+        "size": 17931,
+        "sha256": "2ac18ff81031cd87804d6f31b7513ecff6b589dedef896b6edd871461be44fef"
+      }
+    }
+  }
+}

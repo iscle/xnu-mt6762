@@ -1,0 +1,14 @@
+{
+  "authority": "Offline Unicorn model only; no phone access",
+  "blob_size": 419,
+  "blob_sha256": "8c341fbcc711a177cb02021824f399e287d6e7036cf73df1fad9ceee7d1fd6b1",
+  "lk_sha256": "5badc0dc942b0babdca3da13c7e07f3b5f1e57b66d503414b7f80effe8ce891a",
+  "boot_sha256": "049ed1cb4c825c7606e21aef68fed91a98c6b4638cdeddabc25726c967ad8b05",
+  "test_count": 7,
+  "malformed_subcases": 13,
+  "result": "PASS",
+  "tests_log_sha256": "07ef92fccd878850426f9a5221a97383bb6d8a7c658a367a622a5287620dd298",
+  "test_source_sha256": "1cc461c101f2caeb18b4c4549810763b4b3d8f387d10590b5ac34c240dca7699",
+  "placement_verified": false,
+  "full_boot_tested": false
+}

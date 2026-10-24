@@ -6,7 +6,9 @@ entry. Its caller passes the download pointer to a routine that instead looks
 up an absent cached boot image. The retained log says ``boot image is NULL``
 and ``boot image decapsulate fail!``. See posttrial-audit.rst. Header changes
 alone cannot fix that interface mismatch; the candidate is not a working
-temporary boot route on this stock bootloader. Do not flash it as a workaround.
+temporary boot route on this stock bootloader. Do not flash this boot image as
+a workaround. RECOVERY-TRIAL.rst describes a separately packaged recovery
+candidate and its required write authorization and restoration plan.
 
 This directory builds a self-contained Android boot-v2 image for a temporary
 ``fastboot boot`` trial on the inspected A25/MT6762 phone. It contains XNU and
@@ -86,16 +88,15 @@ and records results. --static-memory checks refusal of the stock placeholder;
 --display-fixture checks a synthetic inherited scanout. These are emulator
 tests, not bootloader authentication or physical display validation.
 
-Temporary physical command
---------------------------
+Historical temporary command (fails on this LK)
+----------------------------------------------
 
-With the inspected phone in unlocked bootloader fastboot mode::
+The attempted command was::
 
     fastboot boot /path/to/new-candidate/mt6762-xnu-diagnostic-boot.img
 
-Use boot, not flash. If fastboot rejects the image, retain the exact error;
-do not change partitions or authentication policy to bypass it. A successful
-fastboot transfer/boot reply establishes handoff acceptance, not XNU success.
-Visible XNU text or the PID1 selftest result is separate evidence. If the
-diagnostic hangs, use the phone's normal hardware power/restart procedure to
-return to the installed system. The host probe never runs this command.
+Do not repeat it unchanged on the inspected LK: the retained failure occurs
+before payload entry. A successful transfer alone does not establish XNU
+execution. Visible XNU text or the PID1 selftest result is separate evidence.
+The host probe never runs this device command. The offline LK cache bridge is
+not yet deployable; its runtime placement and transport remain unverified.
