@@ -20,5 +20,16 @@
     "user_report": "volume key didnt work",
     "meaning": "Command OKAY alone does not establish successful unlock; confirmation diagnosis pending."
   },
-  "physical_peripheral_acceptance": false
+  "physical_peripheral_acceptance": false,
+  "subsequent_unlocked_trial": {
+    "fastboot_unlocked": "yes",
+    "android_ro_boot_flash_locked": "0",
+    "image_sha256": "049ed1cb4c825c7606e21aef68fed91a98c6b4638cdeddabc25726c967ad8b05",
+    "transfer_succeeded": true,
+    "fastboot_final_status": "Status read failed (No such device)",
+    "user_observation": "Returned toward Android, then dmverity corruption/bootloop",
+    "retained_LK_panic": "boot image is NULL; boot image decapsulate fail!",
+    "xnu_entry_observed": false,
+    "evidence_scope": "Expdb records bootloader panic before the XNU loader could execute."
+  }
 }

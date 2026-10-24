@@ -1,0 +1,590 @@
+{
+  "authority": "Offline exact capture and LK; BSP cross-check. No phone actions.",
+  "artifacts": {
+    "seccfg-after.bin": {
+      "size": 8388608,
+      "sha256": "44eee727252a95e361bf959e9ef14848752b8bd6fdae45f9ddd7bc29c12f911e"
+    },
+    "seccfg-posttrial.bin": {
+      "size": 8388608,
+      "sha256": "40af6c1ca065f4e46bdcfc4ca5ea5e8ed66e27a6898d5c48d1022718b5d493e4"
+    },
+    "expdb-posttrial.bin": {
+      "size": 8388608,
+      "sha256": "a366c9961f15c2716dbd389a3a7b9790e383c03774704b4ac8c6a1dbe69537ea"
+    },
+    "expdb-posttrial-complete.bin": {
+      "size": 20971520,
+      "sha256": "febda44f4e7455617a127617c6bc4013dd13e4027f16e558416247a977de6cbc"
+    }
+  },
+  "lk_sha256": "5badc0dc942b0babdca3da13c7e07f3b5f1e57b66d503414b7f80effe8ce891a",
+  "seccfg": {
+    "first512_unchanged": true,
+    "lock_state_before": 3,
+    "lock_state_after": 3,
+    "changed_byte_count": 61,
+    "first_change": "0x240",
+    "last_change": "0x282",
+    "persistent_descriptor": {
+      "offset": "0x240",
+      "magic": "0x90790804",
+      "key": "avb.managed_verity_mode",
+      "key_size": 23,
+      "value_size": 32,
+      "value_not_published": true
+    }
+  },
+  "allowlisted_logs": [
+    {
+      "offset": "0x696651",
+      "text": "RAM_CONSOLE detect abnormal boot exp_type:0x6"
+    },
+    {
+      "offset": "0x69d1d9",
+      "text": "rst from: lk"
+    },
+    {
+      "offset": "0x69d3c5",
+      "text": "kedump: boot_reason(4)"
+    },
+    {
+      "offset": "0x69d4d2",
+      "text": "RAM_CONSOLE. wdt_status 0x6, fiq_step 0x0, exp_type 0x6"
+    },
+    {
+      "offset": "0x69d535",
+      "text": "RAM_CONSOLE detect abnormal boot exp_type:0x6"
+    },
+    {
+      "offset": "0x6af00e",
+      "text": "rst from: lk"
+    },
+    {
+      "offset": "0x6af096",
+      "text": "kedump: boot_reason(4)"
+    },
+    {
+      "offset": "0x6af19f",
+      "text": "RAM_CONSOLE. wdt_status 0x6, fiq_step 0x0, exp_type 0x6"
+    },
+    {
+      "offset": "0x6af200",
+      "text": "RAM_CONSOLE detect abnormal boot exp_type:0x6"
+    },
+    {
+      "offset": "0x128cd6f",
+      "text": "kedump: boot_reason(1)"
+    },
+    {
+      "offset": "0x128ce7c",
+      "text": "RAM_CONSOLE. wdt_status 0x0, fiq_step 0x0, exp_type 0x0"
+    },
+    {
+      "offset": "0x1298780",
+      "text": "[LK]jump to K64 0x40080000"
+    },
+    {
+      "offset": "0x129fd96",
+      "text": "boot linux-64 via EL2, pc=0x40080000, x0=0x47880000, x1=0x0, mode=0x3c5"
+    },
+    {
+      "offset": "0x1328e69",
+      "text": "rst from: lk"
+    },
+    {
+      "offset": "0x1329076",
+      "text": "kedump: boot_reason(4)"
+    },
+    {
+      "offset": "0x1329183",
+      "text": "RAM_CONSOLE. wdt_status 0x2, fiq_step 0x0, exp_type 0x0"
+    },
+    {
+      "offset": "0x1330a0b",
+      "text": "[2340] [fastboot]-[download_base:0x48b00000]-[download_size:0x0]"
+    },
+    {
+      "offset": "0x1330acf",
+      "text": "[2342] [fastboot]-[download_base:0x48b00000]-[download_size:0x0]"
+    },
+    {
+      "offset": "0x1330b9b",
+      "text": "[2343] [fastboot]-[download_base:0x48b00000]-[download_size:0x0]"
+    },
+    {
+      "offset": "0x1330c57",
+      "text": "[92626] [fastboot]-[download_base:0x48b00000]-[download_size:0x0]"
+    },
+    {
+      "offset": "0x1330e73",
+      "text": "[92787] [fastboot: command buf]-[boot]-[len=4]"
+    },
+    {
+      "offset": "0x1330ea3",
+      "text": "[92787] [fastboot]-[download_base:0x48b00000]-[download_size:0x5bf000]"
+    },
+    {
+      "offset": "0x1330fbe",
+      "text": "[145123] [fastboot]-[download_base:0x48b00000]-[download_size:0x5bf000]"
+    },
+    {
+      "offset": "0x133a665",
+      "text": "rst from: lk"
+    },
+    {
+      "offset": "0x133a873",
+      "text": "kedump: boot_reason(4)"
+    },
+    {
+      "offset": "0x133a980",
+      "text": "RAM_CONSOLE. wdt_status 0x2, fiq_step 0x0, exp_type 0x0"
+    },
+    {
+      "offset": "0x13421f0",
+      "text": "[2092] [fastboot]-[download_base:0x48b00000]-[download_size:0x0]"
+    },
+    {
+      "offset": "0x13422b4",
+      "text": "[2094] [fastboot]-[download_base:0x48b00000]-[download_size:0x0]"
+    },
+    {
+      "offset": "0x1342384",
+      "text": "[14739] [fastboot]-[download_base:0x48b00000]-[download_size:0x0]"
+    },
+    {
+      "offset": "0x13425a0",
+      "text": "[14905] [fastboot: command buf]-[boot]-[len=4]"
+    },
+    {
+      "offset": "0x13425d0",
+      "text": "[14905] [fastboot]-[download_base:0x48b00000]-[download_size:0x5bf000]"
+    },
+    {
+      "offset": "0x134267b",
+      "text": "[14906] boot image is NULL"
+    },
+    {
+      "offset": "0x1342697",
+      "text": "[14906] panic (caller 0x4801dee3): boot image decapsulate fail!"
+    },
+    {
+      "offset": "0x134b7ab",
+      "text": "RAM_CONSOLE detect abnormal boot exp_type:0x6"
+    },
+    {
+      "offset": "0x1352333",
+      "text": "rst from: lk"
+    },
+    {
+      "offset": "0x135251f",
+      "text": "kedump: boot_reason(4)"
+    },
+    {
+      "offset": "0x135262c",
+      "text": "RAM_CONSOLE. wdt_status 0x6, fiq_step 0x0, exp_type 0x6"
+    },
+    {
+      "offset": "0x135268f",
+      "text": "RAM_CONSOLE detect abnormal boot exp_type:0x6"
+    },
+    {
+      "offset": "0x136d9ea",
+      "text": "kedump: boot_reason(4)"
+    },
+    {
+      "offset": "0x136daf7",
+      "text": "RAM_CONSOLE. wdt_status 0x800, fiq_step 0x0, exp_type 0x0"
+    },
+    {
+      "offset": "0x136de33",
+      "text": "RAM_CONSOLE. wdt_status 0x800, fiq_step 0x0, exp_type 0x0"
+    },
+    {
+      "offset": "0x136debc",
+      "text": "RAM_CONSOLE. wdt_status 0x6, fiq_step 0x0, exp_type 0x6"
+    },
+    {
+      "offset": "0x136df1f",
+      "text": "RAM_CONSOLE detect abnormal boot exp_type:0x6"
+    },
+    {
+      "offset": "0x137bad4",
+      "text": "kedump: boot_reason(1)"
+    },
+    {
+      "offset": "0x137bbe1",
+      "text": "RAM_CONSOLE. wdt_status 0x0, fiq_step 0x0, exp_type 0x0"
+    },
+    {
+      "offset": "0x137bf21",
+      "text": "RAM_CONSOLE. wdt_status 0x0, fiq_step 0x0, exp_type 0x0"
+    },
+    {
+      "offset": "0x137bfa8",
+      "text": "RAM_CONSOLE. wdt_status 0x6, fiq_step 0x0, exp_type 0x6"
+    },
+    {
+      "offset": "0x137c00b",
+      "text": "RAM_CONSOLE detect abnormal boot exp_type:0x6"
+    },
+    {
+      "offset": "0x1389b9d",
+      "text": "kedump: boot_reason(1)"
+    },
+    {
+      "offset": "0x1389caa",
+      "text": "RAM_CONSOLE. wdt_status 0x0, fiq_step 0x0, exp_type 0x0"
+    },
+    {
+      "offset": "0x1389fed",
+      "text": "RAM_CONSOLE. wdt_status 0x0, fiq_step 0x0, exp_type 0x0"
+    },
+    {
+      "offset": "0x138a074",
+      "text": "RAM_CONSOLE. wdt_status 0x6, fiq_step 0x0, exp_type 0x6"
+    },
+    {
+      "offset": "0x138a0d7",
+      "text": "RAM_CONSOLE detect abnormal boot exp_type:0x6"
+    },
+    {
+      "offset": "0x1397c77",
+      "text": "kedump: boot_reason(1)"
+    },
+    {
+      "offset": "0x1397d84",
+      "text": "RAM_CONSOLE. wdt_status 0x0, fiq_step 0x0, exp_type 0x0"
+    },
+    {
+      "offset": "0x13980c4",
+      "text": "RAM_CONSOLE. wdt_status 0x0, fiq_step 0x0, exp_type 0x0"
+    },
+    {
+      "offset": "0x139814b",
+      "text": "RAM_CONSOLE. wdt_status 0x6, fiq_step 0x0, exp_type 0x6"
+    },
+    {
+      "offset": "0x13981ae",
+      "text": "RAM_CONSOLE detect abnormal boot exp_type:0x6"
+    },
+    {
+      "offset": "0x13a5e4c",
+      "text": "kedump: boot_reason(1)"
+    },
+    {
+      "offset": "0x13a5f59",
+      "text": "RAM_CONSOLE. wdt_status 0x0, fiq_step 0x0, exp_type 0x0"
+    },
+    {
+      "offset": "0x13a629c",
+      "text": "RAM_CONSOLE. wdt_status 0x0, fiq_step 0x0, exp_type 0x0"
+    },
+    {
+      "offset": "0x13a6323",
+      "text": "RAM_CONSOLE. wdt_status 0x6, fiq_step 0x0, exp_type 0x6"
+    },
+    {
+      "offset": "0x13a6386",
+      "text": "RAM_CONSOLE detect abnormal boot exp_type:0x6"
+    },
+    {
+      "offset": "0x13adf36",
+      "text": "[LK]jump to K64 0x40080000"
+    },
+    {
+      "offset": "0x13b5596",
+      "text": "boot linux-64 via EL2, pc=0x40080000, x0=0x47880000, x1=0x0, mode=0x3c5"
+    }
+  ],
+  "bounded_code": [
+    {
+      "name": "fastboot_caller",
+      "start": "0x4801deb4",
+      "end": "0x4801dee2",
+      "sha256": "2611ff8f150191dd224934930cb2313fe5dfbc8f1925c85ba09662303096b560",
+      "instructions": [
+        {
+          "va": "0x4801deb4",
+          "instruction": "push.w {r4, r5, r6, r7, r8, sb, sl, fp, lr}"
+        },
+        {
+          "va": "0x4801deb8",
+          "instruction": "movw r0, #0x67c"
+        },
+        {
+          "va": "0x4801debc",
+          "instruction": "sub sp, #0x74"
+        },
+        {
+          "va": "0x4801debe",
+          "instruction": "mov r7, r1"
+        },
+        {
+          "va": "0x4801dec0",
+          "instruction": "mov sb, r2"
+        },
+        {
+          "va": "0x4801dec2",
+          "instruction": "bl #0x48028c70"
+        },
+        {
+          "va": "0x4801dec6",
+          "instruction": "cmp r0, #0"
+        },
+        {
+          "va": "0x4801dec8",
+          "instruction": "beq.w #0x4801e1c4"
+        },
+        {
+          "va": "0x4801decc",
+          "instruction": "mov r1, r7"
+        },
+        {
+          "va": "0x4801dece",
+          "instruction": "movw r2, #0x67c"
+        },
+        {
+          "va": "0x4801ded2",
+          "instruction": "mov r4, r0"
+        },
+        {
+          "va": "0x4801ded4",
+          "instruction": "ldr r5, [pc, #0x32c]"
+        },
+        {
+          "va": "0x4801ded6",
+          "instruction": "blx #0x48028e24"
+        },
+        {
+          "va": "0x4801deda",
+          "instruction": "mov r0, r7"
+        },
+        {
+          "va": "0x4801dedc",
+          "instruction": "movs r6, #0"
+        },
+        {
+          "va": "0x4801dede",
+          "instruction": "bl #0x48036f38"
+        }
+      ]
+    },
+    {
+      "name": "decapsulator_entry_ignores_argument",
+      "start": "0x48036f38",
+      "end": "0x48036f66",
+      "sha256": "d898885884ac05dcc82e069c36d859825071c3a89e90e341976c436b33391cf3",
+      "instructions": [
+        {
+          "va": "0x48036f38",
+          "instruction": "push {r4, r5, r6, r7, lr}"
+        },
+        {
+          "va": "0x48036f3a",
+          "instruction": "subw sp, sp, #0x6a4"
+        },
+        {
+          "va": "0x48036f3e",
+          "instruction": "ldr.w r5, [pc, #0x420]"
+        },
+        {
+          "va": "0x48036f42",
+          "instruction": "mov r7, lr"
+        },
+        {
+          "va": "0x48036f44",
+          "instruction": "ldr.w r0, [pc, #0x41c]"
+        },
+        {
+          "va": "0x48036f48",
+          "instruction": "add r5, pc"
+        },
+        {
+          "va": "0x48036f4a",
+          "instruction": "add r0, pc"
+        },
+        {
+          "va": "0x48036f4c",
+          "instruction": "bl #0x48037d24"
+        },
+        {
+          "va": "0x48036f50",
+          "instruction": "mov r4, r0"
+        },
+        {
+          "va": "0x48036f52",
+          "instruction": "mov r0, r5"
+        },
+        {
+          "va": "0x48036f54",
+          "instruction": "bl #0x48037d24"
+        },
+        {
+          "va": "0x48036f58",
+          "instruction": "mov r6, r0"
+        },
+        {
+          "va": "0x48036f5a",
+          "instruction": "mov r0, r5"
+        },
+        {
+          "va": "0x48036f5c",
+          "instruction": "bl #0x48037d24"
+        },
+        {
+          "va": "0x48036f60",
+          "instruction": "cmp r4, #0"
+        },
+        {
+          "va": "0x48036f62",
+          "instruction": "beq.w #0x48037270"
+        }
+      ]
+    },
+    {
+      "name": "decapsulator_null_branch",
+      "start": "0x48037270",
+      "end": "0x48037282",
+      "sha256": "4c6d6248e8f365f12e922764b7d873967809f974e845856854f047c1469e6d48",
+      "instructions": [
+        {
+          "va": "0x48037270",
+          "instruction": "bl #0x480175dc"
+        },
+        {
+          "va": "0x48037274",
+          "instruction": "cmp r0, #0"
+        },
+        {
+          "va": "0x48037276",
+          "instruction": "beq #0x480371bc"
+        },
+        {
+          "va": "0x48037278",
+          "instruction": "ldr r0, [pc, #0x124]"
+        },
+        {
+          "va": "0x4803727a",
+          "instruction": "add r0, pc"
+        },
+        {
+          "va": "0x4803727c",
+          "instruction": "bl #0x48027ff8"
+        },
+        {
+          "va": "0x48037280",
+          "instruction": "b #0x480371bc"
+        }
+      ]
+    },
+    {
+      "name": "decapsulator_panic",
+      "start": "0x480371bc",
+      "end": "0x480371c6",
+      "sha256": "da53711e97b3562f4b92d7c7908ed4e0c347616626a9d70681426059c0636d36",
+      "instructions": [
+        {
+          "va": "0x480371bc",
+          "instruction": "ldr r1, [pc, #0x1d0]"
+        },
+        {
+          "va": "0x480371be",
+          "instruction": "mov r0, r7"
+        },
+        {
+          "va": "0x480371c0",
+          "instruction": "add r1, pc"
+        },
+        {
+          "va": "0x480371c2",
+          "instruction": "bl #0x4802814c"
+        }
+      ]
+    },
+    {
+      "name": "cached_image_lookup",
+      "start": "0x48037d24",
+      "end": "0x48037d30",
+      "sha256": "cf258646f9033e5bc46c5c7861066cfee9d087333ec7b9d022ef85e7b1321c22",
+      "instructions": [
+        {
+          "va": "0x48037d24",
+          "instruction": "push {r3, lr}"
+        },
+        {
+          "va": "0x48037d26",
+          "instruction": "bl #0x48037b48"
+        },
+        {
+          "va": "0x48037d2a",
+          "instruction": "cbz r0, #0x48037d2e"
+        },
+        {
+          "va": "0x48037d2c",
+          "instruction": "ldr r0, [r0, #0xc]"
+        },
+        {
+          "va": "0x48037d2e",
+          "instruction": "pop {r3, pc}"
+        }
+      ]
+    }
+  ],
+  "resolved_literals": [
+    {
+      "load_va": "0x48036f3e",
+      "add_pc_va": "0x48036f48",
+      "pool_va": "0x48037360",
+      "target_va": "0x4807c1c8",
+      "text": "vendor_boot"
+    },
+    {
+      "load_va": "0x48036f44",
+      "add_pc_va": "0x48036f4a",
+      "pool_va": "0x48037364",
+      "target_va": "0x480703f4",
+      "text": "boot"
+    },
+    {
+      "load_va": "0x48037278",
+      "add_pc_va": "0x4803727a",
+      "pool_va": "0x480373a0",
+      "target_va": "0x4807c1d4",
+      "text": "boot image is NULL\n"
+    }
+  ],
+  "source_files": [
+    {
+      "path": "vendor/mediatek/proprietary/bootable/bootloader/lk/app/mt_boot/sys_commands.c",
+      "sha256": "e539bca1b22c2ce640daff5bd04287dc01abb7a2bb725802e96de2dece8f8385"
+    },
+    {
+      "path": "vendor/mediatek/proprietary/bootable/bootloader/lk/platform/common/boot/boot_info.c",
+      "sha256": "c21d2d6f212453aeb60b5d4a06fb1022c04c389e342a07e6646022a4a609d311"
+    },
+    {
+      "path": "vendor/mediatek/proprietary/bootable/bootloader/lk/platform/common/boot/avb20/load_vfy_boot.c",
+      "sha256": "417795c63ac8d74ab4959e0e644616c7ddfb5de640f9ae38c106426f8f56ca85"
+    },
+    {
+      "path": "vendor/mediatek/proprietary/bootable/bootloader/lk/platform/common/boot/avb20/dm_verity.c",
+      "sha256": "e2cccc8e1e1b1ca57ac09d3be5958415800d83640cd9ebb04f18ef900ae18a16"
+    },
+    {
+      "path": "vendor/mediatek/proprietary/bootable/bootloader/lk/platform/common/include/avb_persist.h",
+      "sha256": "537d5a2001c5cd874073e1116aa2d55442430c54bf822ceceadb23be266708f6"
+    },
+    {
+      "path": "vendor/mediatek/proprietary/bootable/bootloader/lk/platform/common/avb/libavb/avb_slot_verify.c",
+      "sha256": "f3dc205f92d96bbb64f057cd9815119fefaa951c890e38d877ca5d07f8f2e182"
+    }
+  ],
+  "conclusions": [
+    "Fastboot attempt with5bf000 bytes panics in LK before XNU entry.",
+    "Caller passes download address; shipped callee replaces it with boot/vendor_boot cache lookups; boot lookup NULL triggers observed panic.",
+    "Unlock header unchanged; new AVB managed-verity record explains persistent EIO warning per supplied BSP.",
+    "Initial cause of dm-verity status is not established by this bounded capture.",
+    "Later normal Linux entry/MPU observation is distinct from the failed fastboot transfer."
+  ]
+}

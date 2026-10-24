@@ -1,6 +1,13 @@
 Temporary physical XNU diagnostic
 =================================
 
+Physical trial status: the dumped LK's fastboot boot path panics before XNU
+entry. Its caller passes the download pointer to a routine that instead looks
+up an absent cached boot image. The retained log says ``boot image is NULL``
+and ``boot image decapsulate fail!``. See posttrial-audit.rst. Header changes
+alone cannot fix that interface mismatch; the candidate is not a working
+temporary boot route on this stock bootloader. Do not flash it as a workaround.
+
 This directory builds a self-contained Android boot-v2 image for a temporary
 ``fastboot boot`` trial on the inspected A25/MT6762 phone. It contains XNU and
 a small project-built PID1 observer, not a full iOS installation. The selected

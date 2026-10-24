@@ -1,0 +1,20 @@
+{
+  "utc": "2026-10-24T01:19:58.732640+00:00",
+  "user_explicitly_requested_full_stock_android_unlock_flow": true,
+  "formatted_partitions": [
+    "userdata",
+    "metadata",
+    "md_udc",
+    "cache"
+  ],
+  "format_success_reported_for_each": true,
+  "vbmeta_before_sha256": "d4d1b364a5efedba3c892c9ebea91fd23c53888214884a53208c8ee34b0eb003",
+  "vbmeta_after_sha256": "2f3fb6474d7ff35ac4c48ab2bef71247ba50de4a94de2474b7d1b60cd6654f51",
+  "vbmeta_bytes": 8388608,
+  "vbmeta_flags_before": 0,
+  "vbmeta_flags_after": 3,
+  "only_vbmeta_flags_changed": true,
+  "stock_boot_sha256": "95f362d6c5e018fb588ce1101a75120157079571e8749e349141a5a906f09296",
+  "stock_boot_entire_partition_matches_original_dump": true,
+  "android_boot_verification_pending": true
+}
