@@ -1,0 +1,101 @@
+{
+  "format": 1,
+  "scope": "Single genuine diagnostic IIG440 IOUserClient output versus SDK13.3 IIG256 header and xnu8796 source; read-only",
+  "files": {
+    "old_header": {
+      "path": "/home/iscle/mt6762-ios-port/toolchain/hackios-build/xnu-deps/MacOSX13.3.sdk/System/Library/Frameworks/Kernel.framework/Headers/DriverKit/IOUserClient.h",
+      "sha256": "dfc21ec05937f6bfc3afbe3280cda87cbca167311736243c64efc2bcea98b438"
+    },
+    "new_header": {
+      "path": "/home/iscle/mt6762-ios-port/toolchain/iig-diagnostic-smoke/DriverKit/IOUserClient.h",
+      "sha256": "abf7589bb8010825e082c91d810c483f14e684a16aee0065f9d7880d6276fbce"
+    },
+    "new_implementation": {
+      "path": "/home/iscle/mt6762-ios-port/toolchain/iig-diagnostic-smoke/DriverKit/IOUserClient.iig.cpp",
+      "sha256": "cd08da46e0c2add86dd1231f4925d56f00ae34614feee4fa981abb7a37734ab7"
+    },
+    "source_interface": {
+      "path": "/home/iscle/mt6762-ios-port/xnu/iokit/DriverKit/IOUserClient.iig",
+      "sha256": "313e814c5203bcb7c7390e87ae00845d45765039204ff628be9c98a3f6ee5a7f"
+    },
+    "iorpc_header": {
+      "path": "/home/iscle/mt6762-ios-port/xnu/iokit/IOKit/IORPC.h",
+      "sha256": "2876c631f84240faf655fad1c06d2fcec4abfd5b777c2d297cb0aaf0b8715c49"
+    },
+    "arm_types": {
+      "path": "/home/iscle/mt6762-ios-port/xnu/bsd/arm/_types.h",
+      "sha256": "ad7a22ae6c61d7ce8e99c1b61438b99cefca9cf34a1a502c9e9e191d67027d55"
+    },
+    "stdint": {
+      "path": "/home/iscle/mt6762-ios-port/xnu/EXTERNAL_HEADERS/stdint.h",
+      "sha256": "4e2a54baec4860212bfc76553598cff70e5f1e87483f97e2221c733c82ecf9d0"
+    },
+    "old_transport_source": {
+      "path": "/home/iscle/mt6762-ios-port/xnu/iokit/Kernel/IOUserServer.cpp",
+      "sha256": "2a3c7e5e45c0c943e9bba0689e25ce6b13897ae2e69a3d63bc4a0efbf670bc2f"
+    }
+  },
+  "old_ids": {
+    "IOUserClient_AsyncCompletion_ID": "0xdbc5b2e5d2b446f4",
+    "IOUserClient_CopyClientMemoryForType_ID": "0x8399bdb3d0b4f474",
+    "IOUserClient_CreateMemoryDescriptorFromClient_ID": "0xf2fa2faa5cc11191",
+    "IOUserClient_CopyClientEntitlements_ID": "0xcaf3bd8932c8486f",
+    "IOUserClient__ExternalMethod_ID": "0xcfe0c99e739d92f9",
+    "IOUserClient_KernelCompletion_ID": "0xf609f134c9046444"
+  },
+  "new_ids": {
+    "IOUserClient_AsyncCompletion_ID": "0xdbc5b2e5d2b446f4",
+    "IOUserClient_CopyClientMemoryForType_ID": "0x8399bdb3d0b4f474",
+    "IOUserClient_CreateMemoryDescriptorFromClient_ID": "0xf2fa2faa5cc11191",
+    "IOUserClient_CopyClientEntitlements_ID": "0xcaf3bd8932c8486f",
+    "IOUserClient__ExternalMethod_ID": "0xcfe0c99e739d92f9",
+    "IOUserClient_KernelCompletion_ID": "0xf609f134c9046444"
+  },
+  "id_count": 6,
+  "all_ids_equal": true,
+  "methods_added": [],
+  "methods_removed": [],
+  "methods_changed": [],
+  "wrapper_definitions": [
+    "AsyncCompletion_Invoke",
+    "CopyClientEntitlements_Invoke",
+    "CopyClientMemoryForType_Invoke",
+    "CreateMemoryDescriptorFromClient_Invoke",
+    "_ExternalMethod_Invoke"
+  ],
+  "transport_version_tokens": [
+    "kIORPCVersion190615",
+    "kIORPCVersion190615Reply"
+  ],
+  "generated_kernel_content_lines": [
+    88,
+    149,
+    215,
+    277,
+    369,
+    503,
+    555,
+    613,
+    658,
+    731,
+    791,
+    889,
+    967,
+    1008,
+    1049,
+    1096,
+    1138,
+    1325,
+    1353
+  ],
+  "old_iorpc_struct": "struct IORPC {\n\tIORPCMessageMach * message;\n\tIORPCMessageMach * reply;\n\tuint32_t           sendSize;\n\tuint32_t           replySize;\n};",
+  "old_inbound_initializer_lines": [
+    3212
+  ],
+  "known_incompatibility": "Generated KERNEL dispatch/Invoke code requires IORPC.kernelContent; current source has only message,reply,sendSize,replySize.",
+  "full_wire_layout_equivalence_proven": false,
+  "generated_code_compiled": false,
+  "generated_code_imported": false,
+  "replay_policy_changed": false,
+  "original_apple_userspace_modified": false
+}

@@ -230,6 +230,15 @@ The [export audit](../tools/mt6762/build-audit/README.rst) traces these failures
 to absent DriverKit generation and Apple hardware-private implementations.
 Build21 supplies two MT6762 capability queries with their actual unsupported
 semantics, leaving 129 missing exports and the full checks still failing.
+Build23 replaces the IIG aggregate stand-in with all 17 genuine Apple-generated
+implementations, adapted to the original 24-byte IORPC ABI. All 94 missing
+DriverKit exports are now present; 35 Apple hardware-private entries remain
+missing. Its 205-case actual generated-handler test passes on one and eight
+emulated cores, and the eight-core read-only MSDC regression passes. The
+[build23 record](../tools/mt6762/build-audit/build23.json) pins the generated
+source manifests and kernel identity. This does not establish complete
+DriverKit compatibility or satisfy the physical acceptance criteria.
+
 `tools/mt6762/boot/prepare.py --native-lab-i2c` opts into the controller fixture;
 `--native-lab-touch-events` separately enables synthetic AXS contacts. These
 options must not be used to construct a physical handoff. `--native-lab-display`

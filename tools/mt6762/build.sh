@@ -17,6 +17,28 @@ export MACHINE=MT6762 JOBS=${MTK_BUILD_JOBS:-12}
 LOGDIR="$WORK/evidence/builds/$(date -u +%Y%m%dT%H%M%SZ)-$$"
 mkdir -p "$LOGDIR"
 python3 "$XNU_TREE/tools/mt6762/source_snapshot.py" "$XNU_TREE" "$LOGDIR/source-before.json"
+python3 "$XNU_TREE/tools/mt6762/iig_snapshot.py" "$HELPER/xnu-deps/host/bin/iig" "$LOGDIR/iig-before.json"
+python3 - "$XNU_TREE/BUILD" "$LOGDIR/iig-before.json" <<'PY'
+import json, pathlib, sys
+build, inputs = map(pathlib.Path, sys.argv[1:])
+build.mkdir(exist_ok=True)
+marker = build/'.mt6762-iig-inputs.json'
+current = json.loads(inputs.read_text())
+if marker.exists():
+    if json.loads(marker.read_text()) != current:
+        raise SystemExit('IIG mode/inputs changed: preserve the existing BUILD directory and create a fresh BUILD before rebuilding.')
+elif any(build.iterdir()):
+    raise SystemExit('Existing BUILD has no IIG provenance marker: preserve it and create a fresh BUILD before rebuilding.')
+else:
+    marker.write_text(inputs.read_text())
+PY
+# Revalidate current header/interface inputs even when make would reuse every
+# generated pair. A stable prior build marker cannot prove source equivalence.
+if [[ -n ${MTK_IIG_GENERATED:-} ]]; then
+  "${IIG:?Explicit IIG replay command required}" verify > "$LOGDIR/iig-verify.log" 2>&1 || {
+    cat "$LOGDIR/iig-verify.log" >&2; exit 1;
+  }
+fi
 "$HELPER/xnu-deps/setup.sh" --rebuild-libs > "$LOGDIR/dependencies.log" 2>&1 || {
   cat "$LOGDIR/dependencies.log" >&2; exit 1;
 }
@@ -30,6 +52,7 @@ set +e
 result=$?
 set -e
 python3 "$XNU_TREE/tools/mt6762/source_snapshot.py" "$XNU_TREE" "$LOGDIR/source-after.json"
+python3 "$XNU_TREE/tools/mt6762/iig_snapshot.py" "$HELPER/xnu-deps/host/bin/iig" "$LOGDIR/iig-after.json"
 python3 - "$ARTIFACT" "$LOGDIR" "$result" "$XNU_TREE" <<'PY'
 import hashlib, json, pathlib, re, struct, subprocess, sys
 artifact, logs, rc, source = pathlib.Path(sys.argv[1]), pathlib.Path(sys.argv[2]), int(sys.argv[3]), sys.argv[4]
@@ -57,13 +80,20 @@ before = json.loads((logs/'source-before.json').read_text())
 after = json.loads((logs/'source-after.json').read_text())
 changed = sorted(name for name in before['files'].keys() | after['files'].keys()
                  if before['files'].get(name) != after['files'].get(name))
-accepted = bool(linked and valid_header and not changed and (rc == 0 or known_postlink))
+iig_before = json.loads((logs/'iig-before.json').read_text())
+iig_after = json.loads((logs/'iig-after.json').read_text())
+iig_stable = iig_before == iig_after
+accepted = bool(linked and valid_header and not changed and iig_stable and (rc == 0 or known_postlink))
 report = {
     'artifact_ready': accepted, 'artifact': str(artifact), 'make_exit_code': rc,
     'all_checks_passed': rc == 0, 'known_postlink_export_failures_only': bool(known_postlink),
     'new_link_observed': linked, 'macho_arm64_executable': valid_header,
     'kernel_source_sha256': after['sha256'], 'source_unchanged_during_build': not changed,
     'source_files_changed_during_build': changed,
+    'iig_inputs_unchanged_during_build': iig_stable,
+    'iig_inputs_sha256': iig_after['sha256'],
+    'iig_executable': iig_after['executable'],
+    'iig_selected_environment': iig_after['selected_environment'],
     'sha256': hashlib.sha256(artifact.read_bytes()).hexdigest() if linked else None,
     'source_head': subprocess.check_output(['git','-C',source,'rev-parse','HEAD'],text=True).strip(),
     'source_status': subprocess.check_output(['git','-C',source,'status','--porcelain'],text=True),

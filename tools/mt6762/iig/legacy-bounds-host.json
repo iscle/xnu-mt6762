@@ -1,0 +1,27 @@
+{
+  "scope": "Host execution of the bounded contiguous IORPC parser using xnu8796 standalone ABI declarations; not generated handler execution.",
+  "helper_sha256": "6ee8d216af964e4be043908e07afcf6285ac58c6cc4537c63f911490846651ca",
+  "test_sha256": "cc9434de870f31b628be05c8d422d32cf0ba87563212177291d4f36a93d69c22",
+  "compiler": "c++ (GCC) 16.1.1 20260515 (Red Hat 16.1.1-2)",
+  "command": [
+    "c++",
+    "-std=c++17",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-I",
+    "iokit",
+    "tools/mt6762/iig/test_legacy_bounds.cpp",
+    "-o",
+    "/tmp/mt6762-iig-bounds"
+  ],
+  "output": "PASS legacy24 bounds: request=116 content_offset=68; truncation, guard-page, descriptor, version, alignment, reply-buffer checks",
+  "passed": true,
+  "sanitizers_executed": false,
+  "sanitizer_unavailable": "Linker cannot find /usr/lib64/libasan.so.8.0.0",
+  "limitations": [
+    "Parser assumes caller-owned accessible buffers without concurrent mutation.",
+    "No physical hardware or Apple userspace tested.",
+    "Generated Invoke runtime tests are separate."
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "format": 1,
+  "passed": true,
+  "errors": [],
+  "synthetic_only": true,
+  "physical_hardware_tested": false,
+  "apple_userspace_tested": false,
+  "expected_cases": 205,
+  "expected_disabled": false,
+  "observations": [
+    [
+      "1",
+      "mt6762_iig_test_result",
+      "1",
+      "0",
+      "4"
+    ],
+    [
+      "1",
+      "mt6762_iig_test_cases",
+      "205",
+      "0",
+      "4"
+    ],
+    [
+      "2",
+      "mt6762_iig_test_result",
+      "1",
+      "0",
+      "4"
+    ],
+    [
+      "2",
+      "mt6762_iig_test_cases",
+      "205",
+      "0",
+      "4"
+    ]
+  ],
+  "kernel_sha256": "73de3c79ad2e93b70d5f1d741edea8c66aad918e65d233b19c7486f058462abd",
+  "manifest_sha256": "ac99e659aeab690f7c1067f9a515650d7d46ced1491ee2665519e2f27ff466ac",
+  "qemu_sha256": "8ae2e848f1f75ee8512de2ec363c1f04024d710aefd7bd186d545390ca1654ac",
+  "serial_sha256": "4bf350f45bba89d98ca0580ca73b58507179b2db2f59eeffb97acd234d214512",
+  "cpu_count": 8,
+  "result_sha256": "1cd76bb76865403b76af56ac7694f1b03a1ca10dd51d9319deddb24a24244300"
+}

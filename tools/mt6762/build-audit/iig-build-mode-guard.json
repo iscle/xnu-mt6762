@@ -1,0 +1,7 @@
+{
+  "test": "Refuse default inherited shim against experimental IIG build tree before exporthdrs or dependency rebuild",
+  "passed": true,
+  "returncode": 1,
+  "output": "IIG mode/inputs changed: preserve the existing BUILD directory and create a fresh BUILD before rebuilding.\n",
+  "kernel_sha256_before_after": "65116f48b6585b31e86bfea23fd8555c1aed669b3f5f3d81856cd5754c5b1f5d"
+}

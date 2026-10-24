@@ -1,0 +1,480 @@
+{
+  "build_log_sha256": "4c3d5a43be72291715c755c16237058818ce878e0c54b28707c86539fb348248",
+  "kernel_sha256": "73de3c79ad2e93b70d5f1d741edea8c66aad918e65d233b19c7486f058462abd",
+  "repaired_interleaved_diagnostics": [],
+  "actual_nm_names": 22793,
+  "import_names": 22793,
+  "import_missing_actual": [],
+  "import_extra": [],
+  "missing_count": 35,
+  "categories": {
+    "apple_iommu_ppl_hardware_exports_missing_implementation": 18,
+    "apple_uat_missing_open_source_implementation": 17
+  },
+  "missing_exports": [
+    {
+      "name": "_pmap_iommu_init",
+      "mangled": "_pmap_iommu_init",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_pmap_iommu_iovmalloc",
+      "mangled": "_pmap_iommu_iovmalloc",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_pmap_iommu_map",
+      "mangled": "_pmap_iommu_map",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_pmap_iommu_unmap",
+      "mangled": "_pmap_iommu_unmap",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_pmap_iommu_iovmfree",
+      "mangled": "_pmap_iommu_iovmfree",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_pmap_iommu_ioctl",
+      "mangled": "_pmap_iommu_ioctl",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_pmap_iommu_alloc_contiguous_pages",
+      "mangled": "_pmap_iommu_alloc_contiguous_pages",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_nvme_ppl_get_desc",
+      "mangled": "_nvme_ppl_get_desc",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_sart_get_desc",
+      "mangled": "_sart_get_desc",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_t8020dart_get_desc",
+      "mangled": "_t8020dart_get_desc",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_t8020dart_vo_tte",
+      "mangled": "_t8020dart_vo_tte",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_t6000dart_get_desc",
+      "mangled": "_t6000dart_get_desc",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_t6000dart_vo_tte",
+      "mangled": "_t6000dart_vo_tte",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_t8110dart_get_desc",
+      "mangled": "_t8110dart_get_desc",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_t8110dart_max_translation_levels",
+      "mangled": "_t8110dart_max_translation_levels",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_t8110dart_vo_tte",
+      "mangled": "_t8110dart_vo_tte",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_t8110dart_vo_tt_index",
+      "mangled": "_t8110dart_vo_tt_index",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_uat_get_desc",
+      "mangled": "_uat_get_desc",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::gMetaClass",
+      "mangled": "__ZN26IOUnifiedAddressTranslator10gMetaClassE",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::superClass",
+      "mangled": "__ZN26IOUnifiedAddressTranslator10superClassE",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::getPageTableEntry(unsigned long long)",
+      "mangled": "__ZN26IOUnifiedAddressTranslator17getPageTableEntryEy",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::setClientContextID(unsigned int, bool)",
+      "mangled": "__ZN26IOUnifiedAddressTranslator18setClientContextIDEjb",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::removeClientContextID()",
+      "mangled": "__ZN26IOUnifiedAddressTranslator21removeClientContextIDEv",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::isPageFaultExpected(unsigned long long, unsigned int)",
+      "mangled": "__ZN26IOUnifiedAddressTranslator19isPageFaultExpectedEyj",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::registerTaskForService(task*, IOService*)",
+      "mangled": "__ZN26IOUnifiedAddressTranslator22registerTaskForServiceEP4taskP9IOService",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::createMappingInAperture(unsigned int, IOMemoryDescriptor*, unsigned int, unsigned long long, unsigned long)",
+      "mangled": "__ZN26IOUnifiedAddressTranslator23createMappingInApertureEjP18IOMemoryDescriptorjym",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::getTotalPageTableMemory()",
+      "mangled": "__ZN26IOUnifiedAddressTranslator23getTotalPageTableMemoryEv",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::map(IOMemoryMap*, unsigned int)",
+      "mangled": "__ZN26IOUnifiedAddressTranslator3mapEP11IOMemoryMapj",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::doMap(IOMemoryDescriptor*, unsigned long long, unsigned long long, unsigned int)",
+      "mangled": "__ZN26IOUnifiedAddressTranslator5doMapEP18IOMemoryDescriptoryyj",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::unmap(IOMemoryMap*)",
+      "mangled": "__ZN26IOUnifiedAddressTranslator5unmapEP11IOMemoryMap",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::doUnmap(IOMemoryDescriptor*, unsigned long long, unsigned long long)",
+      "mangled": "__ZN26IOUnifiedAddressTranslator7doUnmapEP18IOMemoryDescriptoryy",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::taskDied()",
+      "mangled": "__ZN26IOUnifiedAddressTranslator8taskDiedEv",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::commitUnmaps()",
+      "mangled": "__ZN26IOUnifiedAddressTranslator12commitUnmapsEv",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::prepareFWUnmap(unsigned long long, unsigned long long)",
+      "mangled": "__ZN26IOUnifiedAddressTranslator14prepareFWUnmapEyy",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "vtable for IOUnifiedAddressTranslator",
+      "mangled": "__ZTV26IOUnifiedAddressTranslator",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    }
+  ],
+  "generated_objects": [
+    {
+      "path": "BUILD/obj/DEVELOPMENT_ARM64_MT6762/iokit/DEVELOPMENT/IOBufferMemoryDescriptor.iig.cpo",
+      "sha256": "e3dd960ab8d2bb9144ccb2736d497c72f48c290cb947f926f9cfa72f48684642",
+      "bytes": 86040,
+      "global_definitions": 7
+    },
+    {
+      "path": "BUILD/obj/DEVELOPMENT_ARM64_MT6762/iokit/DEVELOPMENT/IODMACommand.iig.cpo",
+      "sha256": "c95b81fffd9198bb0497b3e6e26362dd3200e6b4e227e27ef1767a1ad6fb200f",
+      "bytes": 179240,
+      "global_definitions": 13
+    },
+    {
+      "path": "BUILD/obj/DEVELOPMENT_ARM64_MT6762/iokit/DEVELOPMENT/IODataQueueDispatchSource.iig.cpo",
+      "sha256": "751726ca65936176798f572cdc7fca6717b982f9ea587b14d12a176f40b8b000",
+      "bytes": 145152,
+      "global_definitions": 39
+    },
+    {
+      "path": "BUILD/obj/DEVELOPMENT_ARM64_MT6762/iokit/DEVELOPMENT/IODispatchQueue.iig.cpo",
+      "sha256": "1b7c0b19dff0af84d45e591fef29c6e093975cf4cb515c5c00bce7b897014b51",
+      "bytes": 51576,
+      "global_definitions": 25
+    },
+    {
+      "path": "BUILD/obj/DEVELOPMENT_ARM64_MT6762/iokit/DEVELOPMENT/IODispatchSource.iig.cpo",
+      "sha256": "11b38b970785d274e5350bf811c37ff31ef1c1ca6944b3d44796aaa94f09be46",
+      "bytes": 66728,
+      "global_definitions": 29
+    },
+    {
+      "path": "BUILD/obj/DEVELOPMENT_ARM64_MT6762/iokit/DEVELOPMENT/IOEventLink.iig.cpo",
+      "sha256": "27f0158f6b93046396e30fb542f21c1d68fa96ba4c41f1390afaafe9e07e27d7",
+      "bytes": 220784,
+      "global_definitions": 27
+    },
+    {
+      "path": "BUILD/obj/DEVELOPMENT_ARM64_MT6762/iokit/DEVELOPMENT/IOInterruptDispatchSource.iig.cpo",
+      "sha256": "33f9a6ebbe0c45c11a89c0223ab3d250e023e76571744786e446bb1884172565",
+      "bytes": 194824,
+      "global_definitions": 32
+    },
+    {
+      "path": "BUILD/obj/DEVELOPMENT_ARM64_MT6762/iokit/DEVELOPMENT/IOMemoryDescriptor.iig.cpo",
+      "sha256": "38934c482555f32ad80427c912792d8d88824426f0276845d1ffe80fc4906d82",
+      "bytes": 163480,
+      "global_definitions": 11
+    },
+    {
+      "path": "BUILD/obj/DEVELOPMENT_ARM64_MT6762/iokit/DEVELOPMENT/IOMemoryMap.iig.cpo",
+      "sha256": "9d73349c69c0f68f3bca9e360a301d8103d200a7fdc8de32b524ee2d08635fe7",
+      "bytes": 71032,
+      "global_definitions": 5
+    },
+    {
+      "path": "BUILD/obj/DEVELOPMENT_ARM64_MT6762/iokit/DEVELOPMENT/IOService.iig.cpo",
+      "sha256": "c3e5c2e34084a161087fac8bddff7263886792e2c03abccaaf994274edd447a9",
+      "bytes": 417408,
+      "global_definitions": 75
+    },
+    {
+      "path": "BUILD/obj/DEVELOPMENT_ARM64_MT6762/iokit/DEVELOPMENT/IOServiceNotificationDispatchSource.iig.cpo",
+      "sha256": "9abdf3019ca091b03599531ee994d82a58d28d03e83c2ad8a6f576bf881d181d",
+      "bytes": 189864,
+      "global_definitions": 30
+    },
+    {
+      "path": "BUILD/obj/DEVELOPMENT_ARM64_MT6762/iokit/DEVELOPMENT/IOServiceStateNotificationDispatchSource.iig.cpo",
+      "sha256": "35366c222699510cfb9de7fdeea492e7c0509ec3c0610e5658c1ca8acfdc6638",
+      "bytes": 188856,
+      "global_definitions": 30
+    },
+    {
+      "path": "BUILD/obj/DEVELOPMENT_ARM64_MT6762/iokit/DEVELOPMENT/IOUserClient.iig.cpo",
+      "sha256": "89929f70f7f75367d247bb16ebbbf775da5c053444eb9ff55f3682411e3f6fe6",
+      "bytes": 241120,
+      "global_definitions": 36
+    },
+    {
+      "path": "BUILD/obj/DEVELOPMENT_ARM64_MT6762/iokit/DEVELOPMENT/IOUserServer.iig.cpo",
+      "sha256": "883c863cdb31778a204e66a902f4c88e3827dc86f1d3b74d3a70bd46dc324ebc",
+      "bytes": 225192,
+      "global_definitions": 9
+    },
+    {
+      "path": "BUILD/obj/DEVELOPMENT_ARM64_MT6762/iokit/DEVELOPMENT/IOWorkGroup.iig.cpo",
+      "sha256": "c5b413794989bfc2adec5313ece2b370c7f44db2b21b401bf89e89565de69467",
+      "bytes": 216904,
+      "global_definitions": 27
+    },
+    {
+      "path": "BUILD/obj/DEVELOPMENT_ARM64_MT6762/iokit/DEVELOPMENT/OSAction.iig.cpo",
+      "sha256": "335067340d6026d2433857b5951e7fd3fc8c4aeaef52704df427b84b7193e528",
+      "bytes": 59208,
+      "global_definitions": 27
+    },
+    {
+      "path": "BUILD/obj/DEVELOPMENT_ARM64_MT6762/iokit/DEVELOPMENT/OSObject.iig.cpo",
+      "sha256": "7c22e69f6385b5f1923043f5c29dd5874c4cd1aca1f80fc3d329c622fb3a9a4f",
+      "bytes": 42640,
+      "global_definitions": 7
+    }
+  ],
+  "source_sha256": {
+    "config/Makefile": "ee873b440cb1fdbdc7c79d6e2b0c08a2efa47326d599fabbbbbafb19713682c9",
+    "config/Private.exports": "3e9935c5360a60c496d2b4de542d77e2f66374b4050b47c2aeabd27b43f8fb8e",
+    "config/Private.arm64.exports": "00e242d4bb226e76c5d759be06606722bcd006dba267cfc5b5e42a0b44ea9dc9",
+    "iokit/DriverKit/Makefile": "e47aa8b27a5245d755fbe84afa82aad3366b48d7b97e25eb5c21268593e0e90a",
+    "osfmk/vm/pmap.h": "2fcea83f826ed21eab303d80a902b8f81060519398f98d7c3508c1c58d185a14",
+    "osfmk/vm/pmap_cs.h": "21a8de14ff91b162030fb154e57ce714cfc0a605710015253133b93a7a3c10bf",
+    "osfmk/arm/pmap/pmap.c": "05a644b3eae389249feb0ceaf122c470d27dfe83784938b5bc121981dacd82af",
+    "osfmk/x86_64/pmap.c": "610f6011eb8fc4f461dc103cb1537e924b1589cb54ec2ed18a4712e1d4f65235",
+    "pexpert/pexpert/arm64/MT6762.h": "83a9cd78ea3804faf2f261b8672f231163aa9003942ec0faaf705c02c4302240",
+    "pexpert/pexpert/arm64/board_config.h": "fc72bbe688d86e647854f9ab8d806a5bdd7bb1d4aea3daaaa6e811f7a1bbfd8f"
+  },
+  "toolchain_files": [
+    {
+      "path": "/home/iscle/mt6762-ios-port/toolchain/hackios-build/xnu-deps/host/bin/iig",
+      "sha256": "eba76514150af1a2865d5da3a35c8eeb3bae088ba9758f770c1de029fb74c1d6"
+    },
+    {
+      "path": "/home/iscle/mt6762-ios-port/toolchain/hackios-build/xnu-deps/gen-iig-stubs.py",
+      "sha256": "113f6e12e2223a2416bc3536f517edb0b177345757a18b70a32f1d355cba656e"
+    },
+    {
+      "path": "/home/iscle/mt6762-ios-port/toolchain/hackios-build/xnu-deps/iig-impl/OSObject.iig.cpp",
+      "sha256": "bdf53bf258e6b9e45bfac904ec3610c334befaa41b5d04bd2d897bf598c3f5f8"
+    }
+  ],
+  "aggregate_shim_unsupported_bodies": 44,
+  "query_source_occurrences": {
+    "_pmap_cs_configuration": [
+      "config/Private.exports:780",
+      "osfmk/vm/pmap.h:902",
+      "osfmk/arm/pmap/pmap.c:12371",
+      "osfmk/x86_64/pmap.c:3405"
+    ],
+    "_pmap_has_iofilter_protected_write": [
+      "config/Private.exports:776",
+      "osfmk/vm/pmap.h:856",
+      "osfmk/vm/pmap.h:861",
+      "osfmk/arm/pmap/pmap.c:12363",
+      "osfmk/x86_64/pmap.c:3419"
+    ]
+  },
+  "arm_callers_in_supplied_source": [],
+  "caller_audit_scope": "rg of both exact names through source tree excluding BUILD/tools; no ARM or IOKit call sites; external binary consumers not audited",
+  "conclusion": "Required methods absent before linking; nm/import list match exactly. No exports deleted and no ABI stubs added."
+}

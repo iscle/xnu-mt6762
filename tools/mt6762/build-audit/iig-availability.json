@@ -1,0 +1,70 @@
+{
+  "scope": "Bounded local references/toolchain and official Apple target-version/DeveloperTools metadata; no install, SDK download or kernel change",
+  "local_source_hashes": [
+    {
+      "path": "references/hackios-xnu-kernel/xnu-deps/host/bin/iig",
+      "sha256": "eba76514150af1a2865d5da3a35c8eeb3bae088ba9758f770c1de029fb74c1d6"
+    },
+    {
+      "path": "toolchain/hackios-build/xnu-deps/host/bin/iig",
+      "sha256": "eba76514150af1a2865d5da3a35c8eeb3bae088ba9758f770c1de029fb74c1d6"
+    },
+    {
+      "path": "references/ios-sailfish/tools/xnu-build-local.sh",
+      "sha256": "2cfacfc08d792e877f568e592c83d7db0a0558cfd8b1bab24660421d64ac9d17"
+    },
+    {
+      "path": "references/ios-sailfish/.github/workflows/xnu.yml",
+      "sha256": "5718ed207c0a0706794a056d121565b61bd90fef0476d93151118015d63a5782"
+    }
+  ],
+  "local_path_commands": {
+    "iig": null,
+    "darling": null,
+    "xcrun": null
+  },
+  "sailfish_reference_commit": "6f27e41ff249f2680540ebe8ee5ab982c5e641c9",
+  "sailfish_research_directories_present": false,
+  "local_generated_cpp_counts": {
+    "references": {
+      "aggregate_stand_in": 1
+    },
+    "stale_iphoneos_objects": {
+      "empty_shim": 32,
+      "aggregate_stand_in": 2
+    }
+  },
+  "github_reference_api": {
+    "repository": "joranv1/ios-sailfish",
+    "actions_artifacts_total": 0,
+    "workflow_runs_total": 0,
+    "releases_returned": 0
+  },
+  "official_target_tree": {
+    "repository": "apple-oss-distributions/xnu",
+    "tag": "xnu-8796.121.2",
+    "recursive_tree_truncated": false,
+    "iig_input_count": 17,
+    "generated_iig_cpp_count": 0,
+    "iig_generator_path_count": 0
+  },
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/apple-oss-distributions/xnu/xnu-8796.121.2/iokit/DriverKit/Makefile",
+      "supports": "17sourceinterfaces generateheaders/implementation through external IIG invocation"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apple-oss-distributions/xnu/xnu-8796.121.2/makedefs/MakeInc.cmd",
+      "supports": "IIG resolved withxcrun SDK findiig"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apple-oss-distributions/distribution-Developer_Tools/main/.gitmodules",
+      "supports": "Listed public DeveloperTools projects containnoIIGproject"
+    },
+    {
+      "url": "https://developer.apple.com/documentation/driverkit/creating-a-driver-using-the-driverkit-sdk",
+      "supports": "OfficialXcode DriverKit template includes.iig interface source"
+    }
+  ],
+  "result": "No genuine runnable IIG or complete generated kernel RPC implementation found incheckedlocalinputs/officialtargettree. No globalclaimthatunsearchedarchivescannotexist. Referencepoints toMac/Xcode15generation; generatedsources canbe returned forLinuxkernelbuild whileAppleuserspace staysprecompiled."
+}

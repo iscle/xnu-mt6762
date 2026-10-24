@@ -17,9 +17,12 @@ def snapshot(root):
     files = {}
     for name in sorted(set(names)):
         path = Path(name)
-        # Native drivers also include small shared, host-testable protocol headers.
+        # Native drivers include shared protocol headers; IIG replay/transform
+        # sources and profiles also determine compiled generated implementations.
         if not name or not (path.parts[0] in source_dirs or name == 'Makefile' or
-                            (name.startswith('tools/mt6762/hardware/') and path.suffix == '.h')):
+                            (name.startswith('tools/mt6762/hardware/') and path.suffix == '.h') or
+                            (name.startswith('tools/mt6762/iig/') and
+                             path.suffix in ('.h', '.py', '.json'))):
             continue
         full = root / path
         if full.is_file():

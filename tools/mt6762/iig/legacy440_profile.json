@@ -1,0 +1,213 @@
+{
+  "format": 1,
+  "generator": "DriverKit-440",
+  "scope": "Pristine 17-class diagnostic output only; shape profile, not compatibility approval",
+  "classes": [
+    "IOBufferMemoryDescriptor",
+    "IODMACommand",
+    "IODataQueueDispatchSource",
+    "IODispatchQueue",
+    "IODispatchSource",
+    "IOEventLink",
+    "IOInterruptDispatchSource",
+    "IOMemoryDescriptor",
+    "IOMemoryMap",
+    "IOService",
+    "IOServiceNotificationDispatchSource",
+    "IOServiceStateNotificationDispatchSource",
+    "IOUserClient",
+    "IOUserServer",
+    "IOWorkGroup",
+    "OSAction",
+    "OSObject"
+  ],
+  "files": {
+    "IOBufferMemoryDescriptor.h": {
+      "sha256": "5a1763c741675125db28741bc4a2be8f785cb95eb6679d4e30763dc5c7cb2dc9"
+    },
+    "IOBufferMemoryDescriptor.iig.cpp": {
+      "sha256": "10eaf0c60fd31eda15b3f562a1c4c15b4740441466ac2ce7e2f2e9e895134920",
+      "class": "IOBufferMemoryDescriptor",
+      "invocations": 2,
+      "reply_required": 2,
+      "dispatch": 2,
+      "kernelContent": 8
+    },
+    "IODMACommand.h": {
+      "sha256": "dc3ae31495892f94ef89955e9edcd346f6aa28c02c2bb1fd1a073becd1d3a70f"
+    },
+    "IODMACommand.iig.cpp": {
+      "sha256": "70495276b395d56aba52374e2e704c56d917bc5ad8dbb79bffc5ca3922fe2413",
+      "class": "IODMACommand",
+      "invocations": 5,
+      "reply_required": 5,
+      "dispatch": 2,
+      "kernelContent": 17
+    },
+    "IODataQueueDispatchSource.h": {
+      "sha256": "dea10f522e62b00e1bfe1d5498f6ca0ed80ae657b1a7b06240f667206cbc9df9"
+    },
+    "IODataQueueDispatchSource.iig.cpp": {
+      "sha256": "b487ee502f324a7ed02bc00831754df9e1ed86004de7f6f08d51a387f4057cff",
+      "class": "IODataQueueDispatchSource",
+      "invocations": 8,
+      "reply_required": 6,
+      "dispatch": 2,
+      "kernelContent": 26
+    },
+    "IODispatchQueue.h": {
+      "sha256": "9370fc74a1cd8b045d5b483a3f50eb9a8bbf74ffa500c2ca54319bad0b9a5652"
+    },
+    "IODispatchQueue.iig.cpp": {
+      "sha256": "398e788d4c1bfd53304d20dac7f775faa2e50419bdbb7a219f9fd680982efe2a",
+      "class": "IODispatchQueue",
+      "invocations": 2,
+      "reply_required": 2,
+      "dispatch": 2,
+      "kernelContent": 8
+    },
+    "IODispatchSource.h": {
+      "sha256": "b527b4ae5f66e9ef1575ba24d0691236127c811df7f4641ec1c8a9c0d43e23c6"
+    },
+    "IODispatchSource.iig.cpp": {
+      "sha256": "c4a9a615214973ec778d0b3fdfb8793deaaf0c4a3720e84565d1179bfa6ca477",
+      "class": "IODispatchSource",
+      "invocations": 4,
+      "reply_required": 4,
+      "dispatch": 2,
+      "kernelContent": 16
+    },
+    "IOEventLink.h": {
+      "sha256": "004820803ef805b16c2d22405bd91bc1465c2864651f8c3d9f07856f7cf1762c"
+    },
+    "IOEventLink.iig.cpp": {
+      "sha256": "f0a8a11e74b035d8d362280c1ed2bd50e0dd5317a16ace179f754d4f2b24f1d4",
+      "class": "IOEventLink",
+      "invocations": 3,
+      "reply_required": 3,
+      "dispatch": 2,
+      "kernelContent": 11
+    },
+    "IOInterruptDispatchSource.h": {
+      "sha256": "3e0d633e083baacc6f932fd96d08f6b441ba13686a3e89c6170ba515cb534584"
+    },
+    "IOInterruptDispatchSource.iig.cpp": {
+      "sha256": "99babc37287cbc621ff47d5b1768d0a31779c1f162b63fa88a612ea4aae7ce7c",
+      "class": "IOInterruptDispatchSource",
+      "invocations": 5,
+      "reply_required": 4,
+      "dispatch": 2,
+      "kernelContent": 17
+    },
+    "IOMemoryDescriptor.h": {
+      "sha256": "d7f0f003267a841dff6a0fb3839d735873e36e23d88e097271b6811fe9f7fe57"
+    },
+    "IOMemoryDescriptor.iig.cpp": {
+      "sha256": "f346e79dbc413ffae4985b428ac0e9b945771a75d9a1cc085d9902a4508be71e",
+      "class": "IOMemoryDescriptor",
+      "invocations": 4,
+      "reply_required": 4,
+      "dispatch": 2,
+      "kernelContent": 14
+    },
+    "IOMemoryMap.h": {
+      "sha256": "6ef8f7b33cf4b4bbfd1021fbad2ea7c73bec53ed80109074ce98a076f6a299a6"
+    },
+    "IOMemoryMap.iig.cpp": {
+      "sha256": "b08a72c84dfc643fe5607f260560b7e8bedae6f8e0e2cd2f8d9082ae8d1e57f1",
+      "class": "IOMemoryMap",
+      "invocations": 1,
+      "reply_required": 1,
+      "dispatch": 2,
+      "kernelContent": 5
+    },
+    "IOService.h": {
+      "sha256": "9629cff4feef2f9e439ef3c5bb7aac683adb3ed99c10426ca04a1cd21d1bb3c5"
+    },
+    "IOService.iig.cpp": {
+      "sha256": "545f474f40231b75626d2a42ca0387085c87f864dfe691ae85082e0d7996033b",
+      "class": "IOService",
+      "invocations": 36,
+      "reply_required": 35,
+      "dispatch": 2,
+      "kernelContent": 110
+    },
+    "IOServiceNotificationDispatchSource.h": {
+      "sha256": "4ea8ea486a4667c5e5009461f5029619576a1f8ad0bd8c705c202818005bed63"
+    },
+    "IOServiceNotificationDispatchSource.iig.cpp": {
+      "sha256": "d376cd496877954a69c2f8a965d3708375c64d023da4fdd5d56c574abe973e2c",
+      "class": "IOServiceNotificationDispatchSource",
+      "invocations": 4,
+      "reply_required": 3,
+      "dispatch": 2,
+      "kernelContent": 14
+    },
+    "IOServiceStateNotificationDispatchSource.h": {
+      "sha256": "953e17e7596bd0c0a9d471dc778dcae1a3392224a88fc8c9ec3dedfbf791c830"
+    },
+    "IOServiceStateNotificationDispatchSource.iig.cpp": {
+      "sha256": "cc75a8f26328d93209dd1b16b2652db6f0a8b5c9ae0b07093eba11e03e67a111",
+      "class": "IOServiceStateNotificationDispatchSource",
+      "invocations": 4,
+      "reply_required": 3,
+      "dispatch": 2,
+      "kernelContent": 14
+    },
+    "IOUserClient.h": {
+      "sha256": "abf7589bb8010825e082c91d810c483f14e684a16aee0065f9d7880d6276fbce"
+    },
+    "IOUserClient.iig.cpp": {
+      "sha256": "cd08da46e0c2add86dd1231f4925d56f00ae34614feee4fa981abb7a37734ab7",
+      "class": "IOUserClient",
+      "invocations": 5,
+      "reply_required": 4,
+      "dispatch": 4,
+      "kernelContent": 19
+    },
+    "IOUserServer.h": {
+      "sha256": "090c39add3434a97121e68dfea01f930ce255328ceca117013147ef18a63ebc0"
+    },
+    "IOUserServer.iig.cpp": {
+      "sha256": "14f02205040715b1886990eb1b5f236cbbbf276311b44de904ceff899b763416",
+      "class": "IOUserServer",
+      "invocations": 3,
+      "reply_required": 3,
+      "dispatch": 2,
+      "kernelContent": 11
+    },
+    "IOWorkGroup.h": {
+      "sha256": "7d0e6dfe922fd99bcb8810459f1836ddff68e1a38e8043c750fa660afee3df6d"
+    },
+    "IOWorkGroup.iig.cpp": {
+      "sha256": "ba03932fce0b4a98b6bf59e62fb0086955bf7cf481931b666c31e8fc43f0c220",
+      "class": "IOWorkGroup",
+      "invocations": 3,
+      "reply_required": 3,
+      "dispatch": 2,
+      "kernelContent": 11
+    },
+    "OSAction.h": {
+      "sha256": "6d00cce7bc5ad7eb804e0c982a738caf5fd8354060ce1e12899b3fe3e6b26ee9"
+    },
+    "OSAction.iig.cpp": {
+      "sha256": "ce104198e54ae0444a42d39b14a1431357fd5c22347748aeb1da21c66cf15029",
+      "class": "OSAction",
+      "invocations": 3,
+      "reply_required": 2,
+      "dispatch": 2,
+      "kernelContent": 11
+    },
+    "OSObject.h": {
+      "sha256": "49dcb513190f2627651ce0be4a27998cac6415798fba49491e9bf140e634a8d5"
+    },
+    "OSObject.iig.cpp": {
+      "sha256": "b4e722fe1aba289d11551ced0ce741b3389e15a4f93e3063266b20c5dc7cd1ac",
+      "class": "OSObject",
+      "invocations": 2,
+      "reply_required": 2,
+      "dispatch": 2,
+      "kernelContent": 8
+    }
+  }
+}

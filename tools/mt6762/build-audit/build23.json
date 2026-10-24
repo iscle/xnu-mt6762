@@ -1,0 +1,32 @@
+{
+  "artifact": "/home/iscle/mt6762-ios-port/xnu/BUILD/obj/DEVELOPMENT_ARM64_MT6762/mach.development.mt6762",
+  "make_exit_code": 2,
+  "all_checks_passed": false,
+  "known_postlink_export_failures_only": true,
+  "new_link_observed": true,
+  "macho_arm64_executable": true,
+  "kernel_source_sha256": "ba49ebc8325c23db14ae65f842f527821be8b749c0022115d0f93d992d324f36",
+  "source_unchanged_during_build": true,
+  "source_files_changed_during_build": [],
+  "iig_inputs_unchanged_during_build": true,
+  "iig_inputs_sha256": "943f6fdd328af1c7bdde195ee8e42ba95a36c1029b6edaa21777145e3fc6e4f1",
+  "iig_executable": "/home/iscle/mt6762-ios-port/xnu/tools/mt6762/iig/experimental_legacy_replay.py",
+  "iig_selected_environment": {
+    "MTK_IIG_CANDIDATE": "/home/iscle/mt6762-ios-port/toolchain/iig-legacy-candidate26c-2",
+    "MTK_IIG_CANDIDATE_SHA256": "7fb212a3a7494bc8e3186d23b83e2e8487e01bf4edc4b35ff22faa23386398de",
+    "MTK_IIG_GENERATED": "/home/iscle/mt6762-ios-port/toolchain/iig-generated-diagnostic26c",
+    "MTK_IIG_GENERATION_SHA256": "e7a5ada653deb73c997d22994fc0db0db39aef2268297c3cb6b1a407f9d402cf",
+    "MTK_IIG_INPUTS": "/home/iscle/mt6762-ios-port/toolchain/iig-inputs-8796-build21-diagnostic26c",
+    "MTK_IIG_INPUT_SHA256": "52f15cab4e8194b2cd5e5195be4f3c4e9dc0b24bc5c077beaa05be7ff4137799",
+    "MTK_IIG_OUTPUT_ROOT": "/home/iscle/mt6762-ios-port/xnu/BUILD",
+    "MTK_IIG_XNU": "/home/iscle/mt6762-ios-port/xnu"
+  },
+  "sha256": "73de3c79ad2e93b70d5f1d741edea8c66aad918e65d233b19c7486f058462abd",
+  "source_head": "ec6791b48e131754268880847833d246d4173c2a",
+  "build_log": "/home/iscle/mt6762-ios-port/evidence/builds/20261024T002824Z-1760949/make.log",
+  "scope": "Fresh full BUILD with CheckForWork logical object reference checks and full replay dependency fingerprint; no Apple userspace compilation.",
+  "build_log_sha256": "4c3d5a43be72291715c755c16237058818ce878e0c54b28707c86539fb348248",
+  "remaining_missing_exports": 35,
+  "resolved_driverkit_exports": 94,
+  "full_build_accepted_for_lab_only": true
+}

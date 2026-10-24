@@ -85,6 +85,7 @@ iokit/Kernel/MiniIOMobileFramebuffer.cpp		optional iokitcpp
 iokit/Kernel/RedwoodGPU.cpp				optional iokitcpp
 iokit/Kernel/RedwoodWLAN.cpp			optional iokitcpp
 iokit/Kernel/RedwoodBattery.cpp			optional iokitcpp
+iokit/Kernel/MTKIIGLegacySelfTest.cpp		optional iokitcpp
 iokit/Kernel/MiniAppleKeyStore.cpp			optional iokitcpp
 iokit/Kernel/MiniIONetworkStack.cpp			optional iokitcpp
 iokit/Kernel/IOPlatformIO.cpp				optional iokitcpp

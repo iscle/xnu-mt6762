@@ -1,0 +1,691 @@
+{
+  "format": 1,
+  "scope": "All 17 IIG440 diagnostic interfaces versus SDK13.3 generated headers",
+  "classes": [
+    {
+      "class_name": "IOBufferMemoryDescriptor",
+      "old_header_sha256": "b03b47e3fd8ca827319152c6db4a5811da24a7cdfa6371d21fadbd254e76a700",
+      "new_header_sha256": "5a1763c741675125db28741bc4a2be8f785cb95eb6679d4e30763dc5c7cb2dc9",
+      "implementation_sha256": "10eaf0c60fd31eda15b3f562a1c4c15b4740441466ac2ce7e2f2e9e895134920",
+      "source_interface_sha256": "688feb80ce5f2438a7f2789ecf10544aa9c107d2d17fd21ee759ee90191e5983",
+      "old_generator": "/* iig(DriverKit-256.100.8) generated from IOBufferMemoryDescriptor.iig */",
+      "new_generator": "/* iig(DriverKit-440) generated from IOBufferMemoryDescriptor.iig */",
+      "old_ids": {
+        "IOBufferMemoryDescriptor_Create_ID": "0xb78de684e17d5a4b",
+        "IOBufferMemoryDescriptor_SetLength_ID": "0xc115230c191a6a9a"
+      },
+      "new_ids": {
+        "IOBufferMemoryDescriptor_Create_ID": "0xb78de684e17d5a4b",
+        "IOBufferMemoryDescriptor_SetLength_ID": "0xc115230c191a6a9a"
+      },
+      "all_ids_equal": true,
+      "added": [],
+      "removed": [],
+      "changed": [],
+      "invoke_definitions": [
+        "Create_Invoke",
+        "SetLength_Invoke"
+      ],
+      "transport_version_tokens": [
+        "kIORPCVersion190615",
+        "kIORPCVersion190615Reply"
+      ]
+    },
+    {
+      "class_name": "IODMACommand",
+      "old_header_sha256": "f0fa23cc341a00efecec8d8e6ad7d03bf43160b9af3420fe2545a39e6baf0ab8",
+      "new_header_sha256": "dc3ae31495892f94ef89955e9edcd346f6aa28c02c2bb1fd1a073becd1d3a70f",
+      "implementation_sha256": "70495276b395d56aba52374e2e704c56d917bc5ad8dbb79bffc5ca3922fe2413",
+      "source_interface_sha256": "0f0e3e01d07ef058e4e97226b0657d1acb36ce74ec9e31b34c2b6dbee05fdaf1",
+      "old_generator": "/* iig(DriverKit-256.100.8) generated from IODMACommand.iig */",
+      "new_generator": "/* iig(DriverKit-440) generated from IODMACommand.iig */",
+      "old_ids": {
+        "IODMACommand_Create_ID": "0xf296a92bb435af2e",
+        "IODMACommand_PrepareForDMA_ID": "0xf88a8c08b75b1110",
+        "IODMACommand_CompleteDMA_ID": "0xae15e446c7041259",
+        "IODMACommand_GetPreparation_ID": "0xcb1908ddf3b73cde",
+        "IODMACommand_PerformOperation_ID": "0xc41cd97d9b3042ee"
+      },
+      "new_ids": {
+        "IODMACommand_Create_ID": "0xf296a92bb435af2e",
+        "IODMACommand_PrepareForDMA_ID": "0xf88a8c08b75b1110",
+        "IODMACommand_CompleteDMA_ID": "0xae15e446c7041259",
+        "IODMACommand_GetPreparation_ID": "0xcb1908ddf3b73cde",
+        "IODMACommand_PerformOperation_ID": "0xc41cd97d9b3042ee"
+      },
+      "all_ids_equal": true,
+      "added": [],
+      "removed": [],
+      "changed": [],
+      "invoke_definitions": [
+        "CompleteDMA_Invoke",
+        "Create_Invoke",
+        "GetPreparation_Invoke",
+        "PerformOperation_Invoke",
+        "PrepareForDMA_Invoke"
+      ],
+      "transport_version_tokens": [
+        "kIORPCVersion190615",
+        "kIORPCVersion190615Reply"
+      ]
+    },
+    {
+      "class_name": "IODataQueueDispatchSource",
+      "old_header_sha256": "5184df32630f5c07e3e7ed0ed4c1ded4cfe8e5e242cd0f909946b19d9d9234a2",
+      "new_header_sha256": "dea10f522e62b00e1bfe1d5498f6ca0ed80ae657b1a7b06240f667206cbc9df9",
+      "implementation_sha256": "b487ee502f324a7ed02bc00831754df9e1ed86004de7f6f08d51a387f4057cff",
+      "source_interface_sha256": "0d1479c4843867a12ac84494624f8ef5dcd06ffa4482165b55425cb6e31ba701",
+      "old_generator": "/* iig(DriverKit-256.100.8) generated from IODataQueueDispatchSource.iig */",
+      "new_generator": "/* iig(DriverKit-440) generated from IODataQueueDispatchSource.iig */",
+      "old_ids": {
+        "IODataQueueDispatchSource_Create_ID": "0xe8544306a54d09e0",
+        "IODataQueueDispatchSource_SetDataAvailableHandler_ID": "0xd2c1d8cc6ec3a591",
+        "IODataQueueDispatchSource_SetDataServicedHandler_ID": "0xd0aac29bba67b644",
+        "IODataQueueDispatchSource_CopyMemory_ID": "0x9be617ec7d8cd728",
+        "IODataQueueDispatchSource_CopyDataAvailableHandler_ID": "0xc856b17471f65d99",
+        "IODataQueueDispatchSource_CopyDataServicedHandler_ID": "0xd8759c8da406b3fc",
+        "IODataQueueDispatchSource_DataAvailable_ID": "0xf799c876baf566f3",
+        "IODataQueueDispatchSource_DataServiced_ID": "0x8daa79f78047d8d8"
+      },
+      "new_ids": {
+        "IODataQueueDispatchSource_Create_ID": "0xe8544306a54d09e0",
+        "IODataQueueDispatchSource_SetDataAvailableHandler_ID": "0xd2c1d8cc6ec3a591",
+        "IODataQueueDispatchSource_SetDataServicedHandler_ID": "0xd0aac29bba67b644",
+        "IODataQueueDispatchSource_CopyMemory_ID": "0x9be617ec7d8cd728",
+        "IODataQueueDispatchSource_CopyDataAvailableHandler_ID": "0xc856b17471f65d99",
+        "IODataQueueDispatchSource_CopyDataServicedHandler_ID": "0xd8759c8da406b3fc",
+        "IODataQueueDispatchSource_DataAvailable_ID": "0xf799c876baf566f3",
+        "IODataQueueDispatchSource_DataServiced_ID": "0x8daa79f78047d8d8"
+      },
+      "all_ids_equal": true,
+      "added": [],
+      "removed": [],
+      "changed": [],
+      "invoke_definitions": [
+        "CopyDataAvailableHandler_Invoke",
+        "CopyDataServicedHandler_Invoke",
+        "CopyMemory_Invoke",
+        "Create_Invoke",
+        "DataAvailable_Invoke",
+        "DataServiced_Invoke",
+        "SetDataAvailableHandler_Invoke",
+        "SetDataServicedHandler_Invoke"
+      ],
+      "transport_version_tokens": [
+        "kIORPCVersion190615",
+        "kIORPCVersion190615Reply"
+      ]
+    },
+    {
+      "class_name": "IODispatchQueue",
+      "old_header_sha256": "042804730cb86c3f82960c2760e2a9c3caa40078fe050978e162216addd6c9e7",
+      "new_header_sha256": "9370fc74a1cd8b045d5b483a3f50eb9a8bbf74ffa500c2ca54319bad0b9a5652",
+      "implementation_sha256": "398e788d4c1bfd53304d20dac7f775faa2e50419bdbb7a219f9fd680982efe2a",
+      "source_interface_sha256": "c117da6edd587b9bd43fe65ddf1c21a7bb3db40ef5d6ce96f767c4dcd5df271a",
+      "old_generator": "/* iig(DriverKit-256.100.8) generated from IODispatchQueue.iig */",
+      "new_generator": "/* iig(DriverKit-440) generated from IODispatchQueue.iig */",
+      "old_ids": {
+        "IODispatchQueue_SetPort_ID": "0xc437e970b5609767",
+        "IODispatchQueue_Create_ID": "0xac000428df2a91d0"
+      },
+      "new_ids": {
+        "IODispatchQueue_SetPort_ID": "0xc437e970b5609767",
+        "IODispatchQueue_Create_ID": "0xac000428df2a91d0"
+      },
+      "all_ids_equal": true,
+      "added": [],
+      "removed": [],
+      "changed": [],
+      "invoke_definitions": [
+        "Create_Invoke",
+        "SetPort_Invoke"
+      ],
+      "transport_version_tokens": [
+        "kIORPCVersion190615",
+        "kIORPCVersion190615Reply"
+      ]
+    },
+    {
+      "class_name": "IODispatchSource",
+      "old_header_sha256": "a6b97b725d13b48214fa9d433a54cc8f90c6928a177cf745b8bebc9decba6840",
+      "new_header_sha256": "b527b4ae5f66e9ef1575ba24d0691236127c811df7f4641ec1c8a9c0d43e23c6",
+      "implementation_sha256": "c4a9a615214973ec778d0b3fdfb8793deaaf0c4a3720e84565d1179bfa6ca477",
+      "source_interface_sha256": "b8e7c08fc4817e4e124bcf85cfd0fe6c53486037850582cdd385462a9fda31f0",
+      "old_generator": "/* iig(DriverKit-256.100.8) generated from IODispatchSource.iig */",
+      "new_generator": "/* iig(DriverKit-440) generated from IODispatchSource.iig */",
+      "old_ids": {
+        "IODispatchSource_Cancel_ID": "0xd963bb196f70bb93",
+        "IODispatchSource_SetEnableWithCompletion_ID": "0xbb42c489fe4dee8e",
+        "IODispatchSource_CheckForWork_ID": "0xef19d38d4f945fd0",
+        "IODispatchSource_SetEnable_ID": "0xbbc036b4c2a26c45"
+      },
+      "new_ids": {
+        "IODispatchSource_Cancel_ID": "0xd963bb196f70bb93",
+        "IODispatchSource_SetEnableWithCompletion_ID": "0xbb42c489fe4dee8e",
+        "IODispatchSource_CheckForWork_ID": "0xef19d38d4f945fd0",
+        "IODispatchSource_SetEnable_ID": "0xbbc036b4c2a26c45"
+      },
+      "all_ids_equal": true,
+      "added": [],
+      "removed": [],
+      "changed": [],
+      "invoke_definitions": [
+        "Cancel_Invoke",
+        "CheckForWork_Invoke",
+        "SetEnableWithCompletion_Invoke",
+        "SetEnable_Invoke"
+      ],
+      "transport_version_tokens": [
+        "kIORPCVersion190615",
+        "kIORPCVersion190615Reply"
+      ]
+    },
+    {
+      "class_name": "IOEventLink",
+      "old_header_sha256": "a7ff11f82c8d979a4f96970edd54e4149647364773e089716a7fcf873ca2b3cc",
+      "new_header_sha256": "004820803ef805b16c2d22405bd91bc1465c2864651f8c3d9f07856f7cf1762c",
+      "implementation_sha256": "f0a8a11e74b035d8d362280c1ed2bd50e0dd5317a16ace179f754d4f2b24f1d4",
+      "source_interface_sha256": "972a0b8a6675155cbd03fca24f39a1a0a0a15a4bc8499e9c184329dbe518507d",
+      "old_generator": "/* iig(DriverKit-256.100.8) generated from IOEventLink.iig */",
+      "new_generator": "/* iig(DriverKit-440) generated from IOEventLink.iig */",
+      "old_ids": {
+        "IOEventLink_Create_ID": "0xaac47fec2232263f",
+        "IOEventLink_SetEventlinkPort_ID": "0xab7c21cf2602e225",
+        "IOEventLink_InvalidateKernel_ID": "0xe4e11bd235016fd8"
+      },
+      "new_ids": {
+        "IOEventLink_Create_ID": "0xaac47fec2232263f",
+        "IOEventLink_SetEventlinkPort_ID": "0xab7c21cf2602e225",
+        "IOEventLink_InvalidateKernel_ID": "0xe4e11bd235016fd8"
+      },
+      "all_ids_equal": true,
+      "added": [],
+      "removed": [],
+      "changed": [],
+      "invoke_definitions": [
+        "Create_Invoke",
+        "InvalidateKernel_Invoke",
+        "SetEventlinkPort_Invoke"
+      ],
+      "transport_version_tokens": [
+        "kIORPCVersion190615",
+        "kIORPCVersion190615Reply"
+      ]
+    },
+    {
+      "class_name": "IOInterruptDispatchSource",
+      "old_header_sha256": "45f6f81f0db04827f37ff552e53a0b66fc9ec99a6a750cd00dd45ce86fe3a428",
+      "new_header_sha256": "3e0d633e083baacc6f932fd96d08f6b441ba13686a3e89c6170ba515cb534584",
+      "implementation_sha256": "99babc37287cbc621ff47d5b1768d0a31779c1f162b63fa88a612ea4aae7ce7c",
+      "source_interface_sha256": "fa110ff11ff90c6d0639d11101631510283440976bf76d84cc76fcfed238f9a8",
+      "old_generator": "/* iig(DriverKit-256.100.8) generated from IOInterruptDispatchSource.iig */",
+      "new_generator": "/* iig(DriverKit-440) generated from IOInterruptDispatchSource.iig */",
+      "old_ids": {
+        "IOInterruptDispatchSource_Create_ID": "0xb6a948b1585fc259",
+        "IOInterruptDispatchSource_GetInterruptType_ID": "0x846d2df6b6bef33b",
+        "IOInterruptDispatchSource_SetHandler_ID": "0xfcc79b0928501bb1",
+        "IOInterruptDispatchSource_GetLastInterrupt_ID": "0x9b89e0dea24a143b",
+        "IOInterruptDispatchSource_InterruptOccurred_ID": "0xce0513291cfa1ee1"
+      },
+      "new_ids": {
+        "IOInterruptDispatchSource_Create_ID": "0xb6a948b1585fc259",
+        "IOInterruptDispatchSource_GetInterruptType_ID": "0x846d2df6b6bef33b",
+        "IOInterruptDispatchSource_SetHandler_ID": "0xfcc79b0928501bb1",
+        "IOInterruptDispatchSource_GetLastInterrupt_ID": "0x9b89e0dea24a143b",
+        "IOInterruptDispatchSource_InterruptOccurred_ID": "0xce0513291cfa1ee1"
+      },
+      "all_ids_equal": true,
+      "added": [],
+      "removed": [],
+      "changed": [],
+      "invoke_definitions": [
+        "Create_Invoke",
+        "GetInterruptType_Invoke",
+        "GetLastInterrupt_Invoke",
+        "InterruptOccurred_Invoke",
+        "SetHandler_Invoke"
+      ],
+      "transport_version_tokens": [
+        "kIORPCVersion190615",
+        "kIORPCVersion190615Reply"
+      ]
+    },
+    {
+      "class_name": "IOMemoryDescriptor",
+      "old_header_sha256": "919cf97a4a04aabc2c09acf2e91f7ffea0379ac182728dad0aeba737b44b6ac7",
+      "new_header_sha256": "d7f0f003267a841dff6a0fb3839d735873e36e23d88e097271b6811fe9f7fe57",
+      "implementation_sha256": "f346e79dbc413ffae4985b428ac0e9b945771a75d9a1cc085d9902a4508be71e",
+      "source_interface_sha256": "4ed4ed39fcfa89f9ff70b7a7a7889f457cd9cf98054d2a0cf54e0c8446bd3fdd",
+      "old_generator": "/* iig(DriverKit-256.100.8) generated from IOMemoryDescriptor.iig */",
+      "new_generator": "/* iig(DriverKit-440) generated from IOMemoryDescriptor.iig */",
+      "old_ids": {
+        "IOMemoryDescriptor__CopyState_ID": "0xa2c0861d4118ce5e",
+        "IOMemoryDescriptor_CreateMapping_ID": "0xc5e69b0414ff6ee5",
+        "IOMemoryDescriptor_CreateSubMemoryDescriptor_ID": "0xb085b5ee60ac732f",
+        "IOMemoryDescriptor_CreateWithMemoryDescriptors_ID": "0xba1530c996c4febc"
+      },
+      "new_ids": {
+        "IOMemoryDescriptor__CopyState_ID": "0xa2c0861d4118ce5e",
+        "IOMemoryDescriptor_CreateMapping_ID": "0xc5e69b0414ff6ee5",
+        "IOMemoryDescriptor_CreateSubMemoryDescriptor_ID": "0xb085b5ee60ac732f",
+        "IOMemoryDescriptor_CreateWithMemoryDescriptors_ID": "0xba1530c996c4febc"
+      },
+      "all_ids_equal": true,
+      "added": [],
+      "removed": [],
+      "changed": [],
+      "invoke_definitions": [
+        "CreateMapping_Invoke",
+        "CreateSubMemoryDescriptor_Invoke",
+        "CreateWithMemoryDescriptors_Invoke",
+        "_CopyState_Invoke"
+      ],
+      "transport_version_tokens": [
+        "kIORPCVersion190615",
+        "kIORPCVersion190615Reply"
+      ]
+    },
+    {
+      "class_name": "IOMemoryMap",
+      "old_header_sha256": "019c69e0c3a906501c816040e9ef1b5e58e18fe0e6c8728c4383f7a1e9ea5c40",
+      "new_header_sha256": "6ef8f7b33cf4b4bbfd1021fbad2ea7c73bec53ed80109074ce98a076f6a299a6",
+      "implementation_sha256": "b08a72c84dfc643fe5607f260560b7e8bedae6f8e0e2cd2f8d9082ae8d1e57f1",
+      "source_interface_sha256": "335655b5e7d7b160cc9be9494279911a89ce73f9d35257381815caddad98a6fc",
+      "old_generator": "/* iig(DriverKit-256.100.8) generated from IOMemoryMap.iig */",
+      "new_generator": "/* iig(DriverKit-440) generated from IOMemoryMap.iig */",
+      "old_ids": {
+        "IOMemoryMap__CopyState_ID": "0xfc92b3d7f2d48ec7"
+      },
+      "new_ids": {
+        "IOMemoryMap__CopyState_ID": "0xfc92b3d7f2d48ec7"
+      },
+      "all_ids_equal": true,
+      "added": [],
+      "removed": [],
+      "changed": [],
+      "invoke_definitions": [
+        "_CopyState_Invoke"
+      ],
+      "transport_version_tokens": [
+        "kIORPCVersion190615",
+        "kIORPCVersion190615Reply"
+      ]
+    },
+    {
+      "class_name": "IOService",
+      "old_header_sha256": "80ff3610152d9c811ed9dff45f344116c3d927301db9d9bc595d62486f802f80",
+      "new_header_sha256": "9629cff4feef2f9e439ef3c5bb7aac683adb3ed99c10426ca04a1cd21d1bb3c5",
+      "implementation_sha256": "545f474f40231b75626d2a42ca0387085c87f864dfe691ae85082e0d7996033b",
+      "source_interface_sha256": "d8756d78a1be18561e999949e9508a4f5ed700b99359d4efe3cd88fe1470f621",
+      "old_generator": "/* iig(DriverKit-256.100.8) generated from IOService.iig */",
+      "new_generator": "/* iig(DriverKit-440) generated from IOService.iig */",
+      "old_ids": {
+        "IOService_Start_ID": "0xab6f76dde6d693f2",
+        "IOService_Stop_ID": "0x98e715041c459fa5",
+        "IOService_ClientCrashed_ID": "0xf608d8d479c824a3",
+        "IOService_GetRegistryEntryID_ID": "0x8a6f522f3894a0d7",
+        "IOService_SetName_ID": "0xff378dd57615eb9f",
+        "IOService_RegisterService_ID": "0xe9722c2bb1347c28",
+        "IOService_CreateDefaultDispatchQueue_ID": "0x805bb452f0b44ef7",
+        "IOService_CopyProperties_ID": "0x833ec8f92f8b5362",
+        "IOService_SearchProperty_ID": "0xad751cdb94c8dcc8",
+        "IOService_SetProperties_ID": "0xd8a753ea156f9162",
+        "IOService_JoinPMTree_ID": "0xf26c46526735efff",
+        "IOService_SetPowerState_ID": "0xd200fde7d57ecca6",
+        "IOService_ChangePowerState_ID": "0xdb75cfc3395484a0",
+        "IOService_NewUserClient_ID": "0xf669efffcb89ed9c",
+        "IOService_Create_ID": "0xe1a46dbd68bbe09c",
+        "IOService_Terminate_ID": "0xf7a595d9927810c8",
+        "IOService_CopyProviderProperties_ID": "0xc2a554959002c8e7",
+        "IOService_RequireMaxBusStall_ID": "0xc21228652ff536af",
+        "IOService_AdjustBusy_ID": "0xde9f5ab8cc9758eb",
+        "IOService_GetBusyState_ID": "0xf5e47b685861dee5",
+        "IOService_CoreAnalyticsSendEvent_ID": "0xedf64411b90d31ca",
+        "IOService_UpdateReport_ID": "0x8509eed786c7ff1a",
+        "IOService_ConfigureReport_ID": "0x85d9def59e3f02be",
+        "IOService_SetLegend_ID": "0xa32ee5222548afa2",
+        "IOService_CopyName_ID": "0xfe0617febc5b2cc4",
+        "IOService_StringFromReturn_ID": "0xf62cec3df59db769",
+        "IOService__ClaimSystemWakeEvent_ID": "0x845c18dfe6f75305",
+        "IOService_UserSetProperties_ID": "0xad8461d6bb5e656d",
+        "IOService_SendIOMessageServicePropertyChange_ID": "0xf26f1c63c935e672",
+        "IOService_RemoveProperty_ID": "0xdadeb06419d321b0",
+        "IOService_CopySystemStateNotificationService_ID": "0x9165d1fce9b2ca5a",
+        "IOService_StateNotificationItemCreate_ID": "0xb35947bdab354e9e",
+        "IOService_StateNotificationItemSet_ID": "0xb318c8fa26b5b891",
+        "IOService_StateNotificationItemCopy_ID": "0xad2e6404fde4b615",
+        "IOService_Stop_async_ID": "0xa8c93137712a16a2",
+        "IOService__NewUserClient_ID": "0x80b22dd60ee3abb6"
+      },
+      "new_ids": {
+        "IOService_Start_ID": "0xab6f76dde6d693f2",
+        "IOService_Stop_ID": "0x98e715041c459fa5",
+        "IOService_ClientCrashed_ID": "0xf608d8d479c824a3",
+        "IOService_GetRegistryEntryID_ID": "0x8a6f522f3894a0d7",
+        "IOService_SetName_ID": "0xff378dd57615eb9f",
+        "IOService_RegisterService_ID": "0xe9722c2bb1347c28",
+        "IOService_CreateDefaultDispatchQueue_ID": "0x805bb452f0b44ef7",
+        "IOService_CopyProperties_ID": "0x833ec8f92f8b5362",
+        "IOService_SearchProperty_ID": "0xad751cdb94c8dcc8",
+        "IOService_SetProperties_ID": "0xd8a753ea156f9162",
+        "IOService_JoinPMTree_ID": "0xf26c46526735efff",
+        "IOService_SetPowerState_ID": "0xd200fde7d57ecca6",
+        "IOService_ChangePowerState_ID": "0xdb75cfc3395484a0",
+        "IOService_NewUserClient_ID": "0xf669efffcb89ed9c",
+        "IOService_Create_ID": "0xe1a46dbd68bbe09c",
+        "IOService_Terminate_ID": "0xf7a595d9927810c8",
+        "IOService_CopyProviderProperties_ID": "0xc2a554959002c8e7",
+        "IOService_RequireMaxBusStall_ID": "0xc21228652ff536af",
+        "IOService_AdjustBusy_ID": "0xde9f5ab8cc9758eb",
+        "IOService_GetBusyState_ID": "0xf5e47b685861dee5",
+        "IOService_CoreAnalyticsSendEvent_ID": "0xedf64411b90d31ca",
+        "IOService_UpdateReport_ID": "0x8509eed786c7ff1a",
+        "IOService_ConfigureReport_ID": "0x85d9def59e3f02be",
+        "IOService_SetLegend_ID": "0xa32ee5222548afa2",
+        "IOService_CopyName_ID": "0xfe0617febc5b2cc4",
+        "IOService_StringFromReturn_ID": "0xf62cec3df59db769",
+        "IOService__ClaimSystemWakeEvent_ID": "0x845c18dfe6f75305",
+        "IOService_UserSetProperties_ID": "0xad8461d6bb5e656d",
+        "IOService_SendIOMessageServicePropertyChange_ID": "0xf26f1c63c935e672",
+        "IOService_RemoveProperty_ID": "0xdadeb06419d321b0",
+        "IOService_CopySystemStateNotificationService_ID": "0x9165d1fce9b2ca5a",
+        "IOService_StateNotificationItemCreate_ID": "0xb35947bdab354e9e",
+        "IOService_StateNotificationItemSet_ID": "0xb318c8fa26b5b891",
+        "IOService_StateNotificationItemCopy_ID": "0xad2e6404fde4b615",
+        "IOService_Stop_async_ID": "0xa8c93137712a16a2",
+        "IOService__NewUserClient_ID": "0x80b22dd60ee3abb6"
+      },
+      "all_ids_equal": true,
+      "added": [],
+      "removed": [],
+      "changed": [],
+      "invoke_definitions": [
+        "AdjustBusy_Invoke",
+        "ChangePowerState_Invoke",
+        "ClientCrashed_Invoke",
+        "ConfigureReport_Invoke",
+        "CopyName_Invoke",
+        "CopyProperties_Invoke",
+        "CopyProviderProperties_Invoke",
+        "CopySystemStateNotificationService_Invoke",
+        "CoreAnalyticsSendEvent_Invoke",
+        "CreateDefaultDispatchQueue_Invoke",
+        "Create_Invoke",
+        "GetBusyState_Invoke",
+        "GetRegistryEntryID_Invoke",
+        "JoinPMTree_Invoke",
+        "NewUserClient_Invoke",
+        "RegisterService_Invoke",
+        "RemoveProperty_Invoke",
+        "RequireMaxBusStall_Invoke",
+        "SearchProperty_Invoke",
+        "SendIOMessageServicePropertyChange_Invoke",
+        "SetLegend_Invoke",
+        "SetName_Invoke",
+        "SetPowerState_Invoke",
+        "SetProperties_Invoke",
+        "Start_Invoke",
+        "StateNotificationItemCopy_Invoke",
+        "StateNotificationItemCreate_Invoke",
+        "StateNotificationItemSet_Invoke",
+        "Stop_Invoke",
+        "Stop_async_Invoke",
+        "StringFromReturn_Invoke",
+        "Terminate_Invoke",
+        "UpdateReport_Invoke",
+        "UserSetProperties_Invoke",
+        "_ClaimSystemWakeEvent_Invoke",
+        "_NewUserClient_Invoke"
+      ],
+      "transport_version_tokens": [
+        "kIORPCVersion190615",
+        "kIORPCVersion190615Reply"
+      ]
+    },
+    {
+      "class_name": "IOServiceNotificationDispatchSource",
+      "old_header_sha256": "de9e053acf868cc5dd438f63b7ff595e3d37eacf578ffa2369d07968ced94664",
+      "new_header_sha256": "4ea8ea486a4667c5e5009461f5029619576a1f8ad0bd8c705c202818005bed63",
+      "implementation_sha256": "d376cd496877954a69c2f8a965d3708375c64d023da4fdd5d56c574abe973e2c",
+      "source_interface_sha256": "d4d443fb1b75a26c2e2d6da92d875d5317dff5759d94e18dac065a2a84eae643",
+      "old_generator": "/* iig(DriverKit-256.100.8) generated from IOServiceNotificationDispatchSource.iig */",
+      "new_generator": "/* iig(DriverKit-440) generated from IOServiceNotificationDispatchSource.iig */",
+      "old_ids": {
+        "IOServiceNotificationDispatchSource_Create_ID": "0xb40d274e974e946a",
+        "IOServiceNotificationDispatchSource_SetHandler_ID": "0xca55c48f95fc6f8e",
+        "IOServiceNotificationDispatchSource_ServiceNotificationReady_ID": "0xfbaa85f2cdb990b4",
+        "IOServiceNotificationDispatchSource_CopyNextNotification_ID": "0xca420abbda782780"
+      },
+      "new_ids": {
+        "IOServiceNotificationDispatchSource_Create_ID": "0xb40d274e974e946a",
+        "IOServiceNotificationDispatchSource_SetHandler_ID": "0xca55c48f95fc6f8e",
+        "IOServiceNotificationDispatchSource_ServiceNotificationReady_ID": "0xfbaa85f2cdb990b4",
+        "IOServiceNotificationDispatchSource_CopyNextNotification_ID": "0xca420abbda782780"
+      },
+      "all_ids_equal": true,
+      "added": [],
+      "removed": [],
+      "changed": [],
+      "invoke_definitions": [
+        "CopyNextNotification_Invoke",
+        "Create_Invoke",
+        "ServiceNotificationReady_Invoke",
+        "SetHandler_Invoke"
+      ],
+      "transport_version_tokens": [
+        "kIORPCVersion190615",
+        "kIORPCVersion190615Reply"
+      ]
+    },
+    {
+      "class_name": "IOServiceStateNotificationDispatchSource",
+      "old_header_sha256": "9f5c0062ac1bb9401ec84a60ebc682f6a86a4e3f89ce311a6cb16063e6c17090",
+      "new_header_sha256": "953e17e7596bd0c0a9d471dc778dcae1a3392224a88fc8c9ec3dedfbf791c830",
+      "implementation_sha256": "cc75a8f26328d93209dd1b16b2652db6f0a8b5c9ae0b07093eba11e03e67a111",
+      "source_interface_sha256": "6bff4922ed765ea3fb11ec742d86e1ee220b715254a37551729628684cb78163",
+      "old_generator": "/* iig(DriverKit-256.100.8) generated from IOServiceStateNotificationDispatchSource.iig */",
+      "new_generator": "/* iig(DriverKit-440) generated from IOServiceStateNotificationDispatchSource.iig */",
+      "old_ids": {
+        "IOServiceStateNotificationDispatchSource_Create_ID": "0xddfc03b5eb685059",
+        "IOServiceStateNotificationDispatchSource_SetHandler_ID": "0x91981670bc7b5188",
+        "IOServiceStateNotificationDispatchSource_StateNotificationBegin_ID": "0xe0940d907a5fc5dc",
+        "IOServiceStateNotificationDispatchSource_StateNotificationReady_ID": "0xda6f23bbb0b49076"
+      },
+      "new_ids": {
+        "IOServiceStateNotificationDispatchSource_Create_ID": "0xddfc03b5eb685059",
+        "IOServiceStateNotificationDispatchSource_SetHandler_ID": "0x91981670bc7b5188",
+        "IOServiceStateNotificationDispatchSource_StateNotificationBegin_ID": "0xe0940d907a5fc5dc",
+        "IOServiceStateNotificationDispatchSource_StateNotificationReady_ID": "0xda6f23bbb0b49076"
+      },
+      "all_ids_equal": true,
+      "added": [],
+      "removed": [],
+      "changed": [],
+      "invoke_definitions": [
+        "Create_Invoke",
+        "SetHandler_Invoke",
+        "StateNotificationBegin_Invoke",
+        "StateNotificationReady_Invoke"
+      ],
+      "transport_version_tokens": [
+        "kIORPCVersion190615",
+        "kIORPCVersion190615Reply"
+      ]
+    },
+    {
+      "class_name": "IOUserClient",
+      "old_header_sha256": "dfc21ec05937f6bfc3afbe3280cda87cbca167311736243c64efc2bcea98b438",
+      "new_header_sha256": "abf7589bb8010825e082c91d810c483f14e684a16aee0065f9d7880d6276fbce",
+      "implementation_sha256": "cd08da46e0c2add86dd1231f4925d56f00ae34614feee4fa981abb7a37734ab7",
+      "source_interface_sha256": "313e814c5203bcb7c7390e87ae00845d45765039204ff628be9c98a3f6ee5a7f",
+      "old_generator": "/* iig(DriverKit-256.100.8) generated from IOUserClient.iig */",
+      "new_generator": "/* iig(DriverKit-440) generated from IOUserClient.iig */",
+      "old_ids": {
+        "IOUserClient_AsyncCompletion_ID": "0xdbc5b2e5d2b446f4",
+        "IOUserClient_CopyClientMemoryForType_ID": "0x8399bdb3d0b4f474",
+        "IOUserClient_CreateMemoryDescriptorFromClient_ID": "0xf2fa2faa5cc11191",
+        "IOUserClient_CopyClientEntitlements_ID": "0xcaf3bd8932c8486f",
+        "IOUserClient__ExternalMethod_ID": "0xcfe0c99e739d92f9",
+        "IOUserClient_KernelCompletion_ID": "0xf609f134c9046444"
+      },
+      "new_ids": {
+        "IOUserClient_AsyncCompletion_ID": "0xdbc5b2e5d2b446f4",
+        "IOUserClient_CopyClientMemoryForType_ID": "0x8399bdb3d0b4f474",
+        "IOUserClient_CreateMemoryDescriptorFromClient_ID": "0xf2fa2faa5cc11191",
+        "IOUserClient_CopyClientEntitlements_ID": "0xcaf3bd8932c8486f",
+        "IOUserClient__ExternalMethod_ID": "0xcfe0c99e739d92f9",
+        "IOUserClient_KernelCompletion_ID": "0xf609f134c9046444"
+      },
+      "all_ids_equal": true,
+      "added": [],
+      "removed": [],
+      "changed": [],
+      "invoke_definitions": [
+        "AsyncCompletion_Invoke",
+        "CopyClientEntitlements_Invoke",
+        "CopyClientMemoryForType_Invoke",
+        "CreateMemoryDescriptorFromClient_Invoke",
+        "_ExternalMethod_Invoke"
+      ],
+      "transport_version_tokens": [
+        "kIORPCVersion190615",
+        "kIORPCVersion190615Reply"
+      ]
+    },
+    {
+      "class_name": "IOUserServer",
+      "old_header_sha256": "4ad2998901ab97dfa438647ad8b06bfe4621d7ee4e4a866e453352d7181f84c7",
+      "new_header_sha256": "090c39add3434a97121e68dfea01f930ce255328ceca117013147ef18a63ebc0",
+      "implementation_sha256": "14f02205040715b1886990eb1b5f236cbbbf276311b44de904ceff899b763416",
+      "source_interface_sha256": "94e6842addf0097f46a9deb8810b5642d90a0afb0d790e00a208f26c16b8df04",
+      "old_generator": "/* iig(DriverKit-256.100.8) generated from IOUserServer.iig */",
+      "new_generator": "/* iig(DriverKit-440) generated from IOUserServer.iig */",
+      "old_ids": {
+        "IOUserServer_Create_ID": "0xc1dbaee5e75e22b9",
+        "IOUserServer_Exit_ID": "0xe949d58832ebe980",
+        "IOUserServer_LoadModule_ID": "0xd96f074a91a53982"
+      },
+      "new_ids": {
+        "IOUserServer_Create_ID": "0xc1dbaee5e75e22b9",
+        "IOUserServer_Exit_ID": "0xe949d58832ebe980",
+        "IOUserServer_LoadModule_ID": "0xd96f074a91a53982"
+      },
+      "all_ids_equal": true,
+      "added": [],
+      "removed": [],
+      "changed": [],
+      "invoke_definitions": [
+        "Create_Invoke",
+        "Exit_Invoke",
+        "LoadModule_Invoke"
+      ],
+      "transport_version_tokens": [
+        "kIORPCVersion190615",
+        "kIORPCVersion190615Reply"
+      ]
+    },
+    {
+      "class_name": "IOWorkGroup",
+      "old_header_sha256": "a2b1c4cfa95f8a7f83d059fe82a1ce945ecace9d151d699893769712df27bc61",
+      "new_header_sha256": "7d0e6dfe922fd99bcb8810459f1836ddff68e1a38e8043c750fa660afee3df6d",
+      "implementation_sha256": "ba03932fce0b4a98b6bf59e62fb0086955bf7cf481931b666c31e8fc43f0c220",
+      "source_interface_sha256": "afe77e23460b87de542227172f528774f82911bbdd5eb10da8443d50ad849e77",
+      "old_generator": "/* iig(DriverKit-256.100.8) generated from IOWorkGroup.iig */",
+      "new_generator": "/* iig(DriverKit-440) generated from IOWorkGroup.iig */",
+      "old_ids": {
+        "IOWorkGroup_Create_ID": "0xff6c673bb6df71e7",
+        "IOWorkGroup_SetWorkGroupPort_ID": "0x8ffac48189cbd31b",
+        "IOWorkGroup_InvalidateKernel_ID": "0xae2ae4397e9f08a1"
+      },
+      "new_ids": {
+        "IOWorkGroup_Create_ID": "0xff6c673bb6df71e7",
+        "IOWorkGroup_SetWorkGroupPort_ID": "0x8ffac48189cbd31b",
+        "IOWorkGroup_InvalidateKernel_ID": "0xae2ae4397e9f08a1"
+      },
+      "all_ids_equal": true,
+      "added": [],
+      "removed": [],
+      "changed": [],
+      "invoke_definitions": [
+        "Create_Invoke",
+        "InvalidateKernel_Invoke",
+        "SetWorkGroupPort_Invoke"
+      ],
+      "transport_version_tokens": [
+        "kIORPCVersion190615",
+        "kIORPCVersion190615Reply"
+      ]
+    },
+    {
+      "class_name": "OSAction",
+      "old_header_sha256": "85f07cfa75c916948d2f1a10ce9c0b6eec5f33563f1fe794fe0a0d2afe73d599",
+      "new_header_sha256": "6d00cce7bc5ad7eb804e0c982a738caf5fd8354060ce1e12899b3fe3e6b26ee9",
+      "implementation_sha256": "ce104198e54ae0444a42d39b14a1431357fd5c22347748aeb1da21c66cf15029",
+      "source_interface_sha256": "d1f61a6e9db58d34a3a77880e6262d92e514968d4b1f60be736fe830b90f4f2e",
+      "old_generator": "/* iig(DriverKit-256.100.8) generated from OSAction.iig */",
+      "new_generator": "/* iig(DriverKit-440) generated from OSAction.iig */",
+      "old_ids": {
+        "OSAction_Create_ID": "0xaa1fc3ce85ce5497",
+        "OSAction_CreateWithTypeName_ID": "0xa0c5b3ed5a8ea283",
+        "OSAction_Aborted_ID": "0xbfb95094c657d68f"
+      },
+      "new_ids": {
+        "OSAction_Create_ID": "0xaa1fc3ce85ce5497",
+        "OSAction_CreateWithTypeName_ID": "0xa0c5b3ed5a8ea283",
+        "OSAction_Aborted_ID": "0xbfb95094c657d68f"
+      },
+      "all_ids_equal": true,
+      "added": [],
+      "removed": [],
+      "changed": [],
+      "invoke_definitions": [
+        "Aborted_Invoke",
+        "CreateWithTypeName_Invoke",
+        "Create_Invoke"
+      ],
+      "transport_version_tokens": [
+        "kIORPCVersion190615",
+        "kIORPCVersion190615Reply"
+      ]
+    },
+    {
+      "class_name": "OSObject",
+      "old_header_sha256": "4ba8db399d26c2df117fab119b9621c6637f064ba56cdf23ec677b47e88c35d9",
+      "new_header_sha256": "49dcb513190f2627651ce0be4a27998cac6415798fba49491e9bf140e634a8d5",
+      "implementation_sha256": "b4e722fe1aba289d11551ced0ce741b3389e15a4f93e3063266b20c5dc7cd1ac",
+      "source_interface_sha256": "2e7f15edaf527123f7366980f838e8c368f16cd0f2478cc6ef3f4d105f3678d3",
+      "old_generator": "/* iig(DriverKit-256.100.8) generated from OSObject.iig */",
+      "new_generator": "/* iig(DriverKit-440) generated from OSObject.iig */",
+      "old_ids": {
+        "OSObject_SetDispatchQueue_ID": "0xe608ae8273dae1bc",
+        "OSObject_CopyDispatchQueue_ID": "0x95115b48fd29f7c9"
+      },
+      "new_ids": {
+        "OSObject_SetDispatchQueue_ID": "0xe608ae8273dae1bc",
+        "OSObject_CopyDispatchQueue_ID": "0x95115b48fd29f7c9"
+      },
+      "all_ids_equal": true,
+      "added": [],
+      "removed": [],
+      "changed": [],
+      "invoke_definitions": [
+        "CopyDispatchQueue_Invoke",
+        "SetDispatchQueue_Invoke"
+      ],
+      "transport_version_tokens": [
+        "kIORPCVersion190615",
+        "kIORPCVersion190615Reply"
+      ]
+    }
+  ],
+  "method_id_count": 95,
+  "all_method_ids_equal": true,
+  "generation_manifest_sha256": "e7a5ada653deb73c997d22994fc0db0db39aef2268297c3cb6b1a407f9d402cf",
+  "full_wire_layout_equivalence_proven": false,
+  "limitations": [
+    "Old generated implementation/wire-struct definitions are unavailable in the SDK headers.",
+    "Method ID agreement does not establish argument offsets, ownership or dispatch behavior.",
+    "Compilation, export audit and actual handler execution are separate checks.",
+    "No Apple userspace changed or physical hardware tested."
+  ]
+}

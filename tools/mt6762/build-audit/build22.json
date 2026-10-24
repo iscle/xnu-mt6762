@@ -1,0 +1,33 @@
+{
+  "artifact": "/home/iscle/mt6762-ios-port/xnu/BUILD/obj/DEVELOPMENT_ARM64_MT6762/mach.development.mt6762",
+  "make_exit_code": 2,
+  "all_checks_passed": false,
+  "known_postlink_export_failures_only": true,
+  "new_link_observed": true,
+  "macho_arm64_executable": true,
+  "kernel_source_sha256": "7a48a28e6a1b1d7d6ebc844823cabcd2b1f7712cd9476ae6f96105d7e117c522",
+  "source_unchanged_during_build": true,
+  "source_files_changed_during_build": [],
+  "iig_inputs_unchanged_during_build": true,
+  "iig_inputs_sha256": "fec8f3c3fe9076107098edcdccdabc15b252718c8d16542c58049d6d916aeabb",
+  "iig_executable": "/home/iscle/mt6762-ios-port/xnu/tools/mt6762/iig/experimental_legacy_replay.py",
+  "iig_selected_environment": {
+    "MTK_IIG_CANDIDATE": "/home/iscle/mt6762-ios-port/toolchain/iig-legacy-candidate26c-1",
+    "MTK_IIG_CANDIDATE_SHA256": "e79586cda656f2c18438dcb40033e469f457ba0dd2571d20ac5dfc9a0f5f2fee",
+    "MTK_IIG_GENERATED": "/home/iscle/mt6762-ios-port/toolchain/iig-generated-diagnostic26c",
+    "MTK_IIG_GENERATION_SHA256": "e7a5ada653deb73c997d22994fc0db0db39aef2268297c3cb6b1a407f9d402cf",
+    "MTK_IIG_INPUTS": "/home/iscle/mt6762-ios-port/toolchain/iig-inputs-8796-build21-diagnostic26c",
+    "MTK_IIG_INPUT_SHA256": "52f15cab4e8194b2cd5e5195be4f3c4e9dc0b24bc5c077beaa05be7ff4137799",
+    "MTK_IIG_OUTPUT_ROOT": "/home/iscle/mt6762-ios-port/xnu/BUILD",
+    "MTK_IIG_XNU": "/home/iscle/mt6762-ios-port/xnu"
+  },
+  "sha256": "65116f48b6585b31e86bfea23fd8555c1aed669b3f5f3d81856cd5754c5b1f5d",
+  "source_head": "ec6791b48e131754268880847833d246d4173c2a",
+  "build_log": "/home/iscle/mt6762-ios-port/evidence/builds/20261024T002021Z-1724898/make.log",
+  "scope": "Fresh full BUILD using genuine DriverKit440 outputs adapted to24-byteIORPC; no Apple userspace compilation.",
+  "build_log_sha256": "98ade412049fea11097d6249674df0e886bf8379742a9b4588b28667dc00f21f",
+  "source_snapshot_before_sha256": "265292b62419ae6692d773740f78d0933102e8ac349eeb0ac7aec35779e521c0",
+  "full_build_accepted_for_lab_only": true,
+  "remaining_missing_exports": 35,
+  "resolved_driverkit_exports": 94
+}

@@ -108,3 +108,42 @@ and cxxfilt; it writes one JSON report. Re-running after a new build produces
 evidence for that build and must not be mistaken for reproducing the original
 binary hash. Full symbol-set verification remains failing until the actual
 missing implementations/contracts are resolved.
+
+Build22 genuine IIG integration
+-------------------------------
+
+The fresh build22 uses all17 implementations produced by Apple's signed
+DriverKit440 IIG from the exact source bundle, with the separately pinned
+legacy24-byte IORPC adaptation. The complete previous BUILD and dependency
+libraries were preserved. No shim translation unit was reused. All17 generated
+objects compile, the kernel links, and exports-build22.json records only35
+remaining Apple hardware-private names: all94 missing DriverKit exports were
+resolved without deleting exports. The import list still matches the kernel.
+
+The kernel includes an opt-in DEVELOPMENT-only generated-method test. Real
+IOMemoryMap::_CopyState_Invoke and OSAction::Aborted_Invoke run193 cases, covering
+normal/overlapping/4-byte-aligned buffers, one-way calls, all truncated request
+and reply capacities, malformed headers/references, and reply canaries. Both
+one-core and eight-core native boots passed; repeated sysctl reads retained
+the one-shot result. Without mt6762_iig_selftest=1, both read-only sysctls return
+ENOTSUP. An eight-core native MSDC read-only smoke also passed. These bounded
+tests do not exercise every generated method or prove full wire compatibility.
+The precompiled Apple userspace GUI regression is recorded separately.
+
+The normal Xcode15 replay gate remains strict. Experimental generation requires
+the explicit experimental_legacy_replay.py command and pinned input, pristine
+generation and transform manifests; neither diagnostic nor transformed status
+is rewritten as normal acceptance. build.sh records selected IIG sources before
+and after compilation and refuses a different generator/input set in an existing
+BUILD tree. iig-build-mode-guard.json demonstrates that reverting implicitly to
+the inherited shim is rejected before dependency/header rebuilding.
+
+Build23 closes the reviewed CheckForWork zero-object-reference hole in both
+its outgoing wrapper and Invoke reply checks. A bounded header alone does not
+authorize objects[0]. Its205-case real-handler suite adds12 CheckForWork cases
+and passes on one/eight cores; disabled mode and the eight-core MSDC regression
+also pass. The normal generator gate remains unchanged. Build-mode fingerprints
+now cover imported replay/transform/profile/helper sources, and every selected
+replay build revalidates the complete current input closure before dependencies
+even if make could reuse all generated pairs. Build22 artifacts and its
+intentionally interrupted GUI run remain retained under their original hashes.
