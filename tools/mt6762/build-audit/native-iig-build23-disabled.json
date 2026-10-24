@@ -42,5 +42,6 @@
   "qemu_sha256": "8ae2e848f1f75ee8512de2ec363c1f04024d710aefd7bd186d545390ca1654ac",
   "serial_sha256": "deef7ae7c42f4695d550a8818ea8e237c408b2f7f18bc2c149be99dfd8ffc1e7",
   "cpu_count": 1,
-  "result_sha256": "db54d5cf8939b8f7e3944b3406c26426de69962a0caed7d7679e8e872b8d91d9"
+  "result_sha256": "db54d5cf8939b8f7e3944b3406c26426de69962a0caed7d7679e8e872b8d91d9",
+  "secondary_cpus_online": []
 }

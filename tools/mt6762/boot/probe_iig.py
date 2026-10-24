@@ -52,6 +52,9 @@ def main():
     rows = re.findall(r'MT6762_IIG_SYSCTL pass=(\d+) (mt6762_iig_test_\w+)=(-?\d+) error=(-?\d+) size=(\d+)', log)
     values = {(int(run), key): (int(value), int(error), int(size)) for run, key, value, error, size in rows}
     errors = []
+    online = sorted(set(int(n) for n in re.findall(r'arm_cpu_init\(\): cpu (\d+) online', log)))
+    if online != list(range(1, m['cpu_count'])):
+        errors.append('secondary CPU online proof incomplete')
     if 'MT6762_IIG_PROBE_DONE' not in log or 'panic(' in log:
         errors.append('guest did not complete without panic')
     if len(rows) != 4 or len(values) != 4:
@@ -67,7 +70,7 @@ def main():
         expected_cases=a.expected_cases, expected_disabled=a.expect_disabled,
         observations=rows, kernel_sha256=m['kernel_sha256'],
         manifest_sha256=sha(a.manifest), qemu_sha256=sha(Path(m['command'][0])),
-        serial_sha256=sha(serial_path), cpu_count=m['cpu_count'])
+        serial_sha256=sha(serial_path), cpu_count=m['cpu_count'], secondary_cpus_online=online)
     result_path.write_text(json.dumps(result, indent=2) + '\n')
     print(json.dumps(result, indent=2))
     return int(bool(errors))

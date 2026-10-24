@@ -58,7 +58,9 @@ if retained as required ABI. A separate, explicitly justified MT6762 export
 contract could be considered only after auditing actual consumers and platform
 requirements; deleting names merely because verification fails is not justified.
 MediaTek IOMMU support cannot truthfully pretend to implement Apple DART/UAT
-hardware descriptors. This audit has not performed a shipped-kext import audit.
+hardware descriptors. The later bounded shipped-kext import audit is documented
+in consumers/README.rst; its missing donor-kernelcache coverage prevents a
+complete consumer claim.
 
 The two pmap queries have a narrower potential correction:
 
@@ -147,3 +149,16 @@ now cover imported replay/transform/profile/helper sources, and every selected
 replay build revalidates the complete current input closure before dependencies
 even if make could reuse all generated pairs. Build22 artifacts and its
 intentionally interrupted GUI run remain retained under their original hashes.
+
+Retained consumer follow-up
+--------------------------
+
+The independently parsed import tables of11 retained donor Mach-O images
+contain no references to the35 remaining names; LLVM agrees with all11
+inventories. Five are actual kext images and six are userspace plugins. The
+donor kernelcache and eight standalone bundle executables are absent from
+this inspected inventory, so it cannot establish that no donor consumer exists.
+The current loader supplies one linked kernel and RAM disks, with no external
+Driver- entries or prelinked collection. Frozen build22's PRELINK segments are
+empty. See consumers/README.rst for hashes, scanner tests and limits; no export
+was removed and no Apple hardware descriptor was replaced by an MTK stub.

@@ -1,0 +1,1420 @@
+{
+  "target_audit_sha256": "e3ed0068432b1155c6d1c47081fc05ad18030a20b2143720ff9c71cb7ea2fea1",
+  "target_count": 35,
+  "targets": [
+    {
+      "name": "_pmap_iommu_init",
+      "mangled": "_pmap_iommu_init",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_pmap_iommu_iovmalloc",
+      "mangled": "_pmap_iommu_iovmalloc",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_pmap_iommu_map",
+      "mangled": "_pmap_iommu_map",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_pmap_iommu_unmap",
+      "mangled": "_pmap_iommu_unmap",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_pmap_iommu_iovmfree",
+      "mangled": "_pmap_iommu_iovmfree",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_pmap_iommu_ioctl",
+      "mangled": "_pmap_iommu_ioctl",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_pmap_iommu_alloc_contiguous_pages",
+      "mangled": "_pmap_iommu_alloc_contiguous_pages",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_nvme_ppl_get_desc",
+      "mangled": "_nvme_ppl_get_desc",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_sart_get_desc",
+      "mangled": "_sart_get_desc",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_t8020dart_get_desc",
+      "mangled": "_t8020dart_get_desc",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_t8020dart_vo_tte",
+      "mangled": "_t8020dart_vo_tte",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_t6000dart_get_desc",
+      "mangled": "_t6000dart_get_desc",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_t6000dart_vo_tte",
+      "mangled": "_t6000dart_vo_tte",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_t8110dart_get_desc",
+      "mangled": "_t8110dart_get_desc",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_t8110dart_max_translation_levels",
+      "mangled": "_t8110dart_max_translation_levels",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_t8110dart_vo_tte",
+      "mangled": "_t8110dart_vo_tte",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_t8110dart_vo_tt_index",
+      "mangled": "_t8110dart_vo_tt_index",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "_uat_get_desc",
+      "mangled": "_uat_get_desc",
+      "category": "apple_iommu_ppl_hardware_exports_missing_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::gMetaClass",
+      "mangled": "__ZN26IOUnifiedAddressTranslator10gMetaClassE",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::superClass",
+      "mangled": "__ZN26IOUnifiedAddressTranslator10superClassE",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::getPageTableEntry(unsigned long long)",
+      "mangled": "__ZN26IOUnifiedAddressTranslator17getPageTableEntryEy",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::setClientContextID(unsigned int, bool)",
+      "mangled": "__ZN26IOUnifiedAddressTranslator18setClientContextIDEjb",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::removeClientContextID()",
+      "mangled": "__ZN26IOUnifiedAddressTranslator21removeClientContextIDEv",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::isPageFaultExpected(unsigned long long, unsigned int)",
+      "mangled": "__ZN26IOUnifiedAddressTranslator19isPageFaultExpectedEyj",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::registerTaskForService(task*, IOService*)",
+      "mangled": "__ZN26IOUnifiedAddressTranslator22registerTaskForServiceEP4taskP9IOService",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::createMappingInAperture(unsigned int, IOMemoryDescriptor*, unsigned int, unsigned long long, unsigned long)",
+      "mangled": "__ZN26IOUnifiedAddressTranslator23createMappingInApertureEjP18IOMemoryDescriptorjym",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::getTotalPageTableMemory()",
+      "mangled": "__ZN26IOUnifiedAddressTranslator23getTotalPageTableMemoryEv",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::map(IOMemoryMap*, unsigned int)",
+      "mangled": "__ZN26IOUnifiedAddressTranslator3mapEP11IOMemoryMapj",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::doMap(IOMemoryDescriptor*, unsigned long long, unsigned long long, unsigned int)",
+      "mangled": "__ZN26IOUnifiedAddressTranslator5doMapEP18IOMemoryDescriptoryyj",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::unmap(IOMemoryMap*)",
+      "mangled": "__ZN26IOUnifiedAddressTranslator5unmapEP11IOMemoryMap",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::doUnmap(IOMemoryDescriptor*, unsigned long long, unsigned long long)",
+      "mangled": "__ZN26IOUnifiedAddressTranslator7doUnmapEP18IOMemoryDescriptoryy",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::taskDied()",
+      "mangled": "__ZN26IOUnifiedAddressTranslator8taskDiedEv",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::commitUnmaps()",
+      "mangled": "__ZN26IOUnifiedAddressTranslator12commitUnmapsEv",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "IOUnifiedAddressTranslator::prepareFWUnmap(unsigned long long, unsigned long long)",
+      "mangled": "__ZN26IOUnifiedAddressTranslator14prepareFWUnmapEyy",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    },
+    {
+      "name": "vtable for IOUnifiedAddressTranslator",
+      "mangled": "__ZTV26IOUnifiedAddressTranslator",
+      "category": "apple_uat_missing_open_source_implementation",
+      "export_files": [
+        "config/Private.arm64.exports"
+      ],
+      "present_in_kernel": false
+    }
+  ],
+  "llvm_nm": {
+    "path": "/home/iscle/mt6762-ios-port/toolchain/bin/llvm-nm",
+    "sha256": "a1b66eee7f8aa74885860fa40c757410bdb3bc67d2deadac3dcb79b8fe1ded5e",
+    "version": "llvm-nm, compatible with GNU nm\nLLVM (http://llvm.org/):\n  LLVM version 21.0.0\n  Optimized build."
+  },
+  "scope": {
+    "extensions": "/home/iscle/mt6762-ios-port/runtime/ios165/rootfs/System/Library/Extensions",
+    "kernelcache_search": [
+      {
+        "root": "/home/iscle/mt6762-ios-port",
+        "command": "rg --files --hidden --no-ignore ROOT -g *kernelcache* -g *prelinked* -g *.kc -g *.ipsw",
+        "returncode": 0,
+        "stderr": "",
+        "candidates": [
+          "xnu/tests/vm_kern_count_wired_kernelcache.c"
+        ],
+        "limitation": "Filename inventory; renamed, encrypted or separately mounted caches are not excluded."
+      }
+    ],
+    "explicit_kernelcache_count": 0
+  },
+  "inventory": [
+    {
+      "path": "AGXGPURawCounterBundle.bundle/Info.plist",
+      "kind": "file",
+      "bytes": 783,
+      "sha256": "35804dbf8e0e1aed2e357023824c52c66504f7be1ff6b4f9848cd634d8a33f0c"
+    },
+    {
+      "path": "AGXGPURawCounterBundle.bundle/_CodeSignature/CodeResources",
+      "kind": "file",
+      "bytes": 2467,
+      "sha256": "3c727b0f043e463c0227db49cef54c5567715986d08a46c98923c9bb73585e5a"
+    },
+    {
+      "path": "AGXMetalA11.bundle/0_0.bin",
+      "kind": "file",
+      "bytes": 21196,
+      "sha256": "591e1ca1a14ee2518eff0b45799c5ad21d87d73af3e33746c7d5c31955dcd37f"
+    },
+    {
+      "path": "AGXMetalA11.bundle/0_1.bin",
+      "kind": "file",
+      "bytes": 32250,
+      "sha256": "f4f36ad891c339c623fdaa59794e6228af3f41f923cc90044f6baa8ca15640d0"
+    },
+    {
+      "path": "AGXMetalA11.bundle/0_2.bin",
+      "kind": "file",
+      "bytes": 5440,
+      "sha256": "72d2e1da15a21306a5cb6374c3a53b4762e5df46975ef8b90ea7aaf9e9d324db"
+    },
+    {
+      "path": "AGXMetalA11.bundle/0_3.bin",
+      "kind": "file",
+      "bytes": 272,
+      "sha256": "98fe6b6f5f601471e4e6b2f89439db303b37ddb0f9a10e774f5cc34ddb860cb2"
+    },
+    {
+      "path": "AGXMetalA11.bundle/1_0.bin",
+      "kind": "file",
+      "bytes": 48276,
+      "sha256": "477b30abd461d181f2e4f898b8c6f4c952d418f21ce0159d2001d8bef4d5c1b1"
+    },
+    {
+      "path": "AGXMetalA11.bundle/1_1.bin",
+      "kind": "file",
+      "bytes": 95382,
+      "sha256": "69b6d6961f330343b44e29d66bbe422bea7c8e8a2b7aae72592bdb6a14cbe516"
+    },
+    {
+      "path": "AGXMetalA11.bundle/1_2.bin",
+      "kind": "file",
+      "bytes": 7840,
+      "sha256": "703b56977ef43aa9a6bd9688418e3fa9efbc65d9c5bbd5511d67502927042a4d"
+    },
+    {
+      "path": "AGXMetalA11.bundle/1_3.bin",
+      "kind": "file",
+      "bytes": 392,
+      "sha256": "c9bc474eb2103596d9213b79d23d67b671486c2d8c28165e8db87646c37fa9aa"
+    },
+    {
+      "path": "AGXMetalA11.bundle/2_0.bin",
+      "kind": "file",
+      "bytes": 13304,
+      "sha256": "40dd5c177c74d494fef575658874b2b54c21603dafeeb9d87b1fd3f5c20662f6"
+    },
+    {
+      "path": "AGXMetalA11.bundle/2_1.bin",
+      "kind": "file",
+      "bytes": 11184,
+      "sha256": "0a528ed28ad456c5d3d989d0122aa32ae7a01b00f190deb447534352af12644b"
+    },
+    {
+      "path": "AGXMetalA11.bundle/2_2.bin",
+      "kind": "file",
+      "bytes": 1440,
+      "sha256": "f9e590a36e0f85f347791e45442cd79b1efe1b4acd70525b40177ad4c43319af"
+    },
+    {
+      "path": "AGXMetalA11.bundle/2_3.bin",
+      "kind": "file",
+      "bytes": 72,
+      "sha256": "48bbbb84367d7cfcc7ffaefd263a6042d7572c3cf2c77d076fb42cac7c421ae8"
+    },
+    {
+      "path": "AGXMetalA11.bundle/3_0.bin",
+      "kind": "file",
+      "bytes": 27808,
+      "sha256": "d98334a52a6be48888503d2bc0532e23ec0df6fa7054d1513ddcf8694aff490f"
+    },
+    {
+      "path": "AGXMetalA11.bundle/3_1.bin",
+      "kind": "file",
+      "bytes": 28320,
+      "sha256": "24b25e232834b2f31f6b5fd8b9e1d0ab32eb846b44928bd650207e455cab8db8"
+    },
+    {
+      "path": "AGXMetalA11.bundle/3_2.bin",
+      "kind": "file",
+      "bytes": 2000,
+      "sha256": "4f4465998ba8ec7129b72d37b843cdb90d9938dc9a651f408124126340269470"
+    },
+    {
+      "path": "AGXMetalA11.bundle/3_3.bin",
+      "kind": "file",
+      "bytes": 100,
+      "sha256": "a4b692f79ae6692571b85321f9cb84ba8f135089dd8e410f72697eddfee8b79b"
+    },
+    {
+      "path": "AGXMetalA11.bundle/4_0.bin",
+      "kind": "file",
+      "bytes": 11560,
+      "sha256": "b27266dcb9d3e1f37bbbc40fb7bba5d0bb02aaa0c321f640ce539a9b721af72d"
+    },
+    {
+      "path": "AGXMetalA11.bundle/4_1.bin",
+      "kind": "file",
+      "bytes": 9456,
+      "sha256": "8ea6cc44d5145a56c5141dc0583fe62d9b65de22720b47501ce5d21c71266dad"
+    },
+    {
+      "path": "AGXMetalA11.bundle/4_2.bin",
+      "kind": "file",
+      "bytes": 1440,
+      "sha256": "8508a2021f98790496960a35ce8fc77bc69196ef80b115fe21e21a2711905547"
+    },
+    {
+      "path": "AGXMetalA11.bundle/4_3.bin",
+      "kind": "file",
+      "bytes": 72,
+      "sha256": "62af8ccd1bb0e1644eaa69079987fd88eeec5216fc5dd6597abce28ff915a267"
+    },
+    {
+      "path": "AGXMetalA11.bundle/5_0.bin",
+      "kind": "file",
+      "bytes": 23888,
+      "sha256": "1df16b4f24bc478a060badb0000eb58b31d5840ad262e46349e518699a911fe5"
+    },
+    {
+      "path": "AGXMetalA11.bundle/5_1.bin",
+      "kind": "file",
+      "bytes": 23112,
+      "sha256": "3b6a1481bdc730ef0e27b05de39f6dbfe43d08634629e8db19c8f891a6812c44"
+    },
+    {
+      "path": "AGXMetalA11.bundle/5_2.bin",
+      "kind": "file",
+      "bytes": 2000,
+      "sha256": "7fe1cf86bdd6591025a7369f767df5a0e5e7d348badf6bb5b509cb513454a64d"
+    },
+    {
+      "path": "AGXMetalA11.bundle/5_3.bin",
+      "kind": "file",
+      "bytes": 100,
+      "sha256": "95ee2c98c7dc29e142e8826fdb8e5e69468d5e3b1969e9ed1136ac087407dc9f"
+    },
+    {
+      "path": "AGXMetalA11.bundle/6_0.bin",
+      "kind": "file",
+      "bytes": 2112,
+      "sha256": "7d886750898deeaa7171d745224f6aaf685c08f65641cb54a4340f38a311e9e3"
+    },
+    {
+      "path": "AGXMetalA11.bundle/6_1.bin",
+      "kind": "file",
+      "bytes": 3714,
+      "sha256": "44ed9329a0ee00e37e5a3f1c387023a738da37fcd742908aeabd587d27326af6"
+    },
+    {
+      "path": "AGXMetalA11.bundle/6_2.bin",
+      "kind": "file",
+      "bytes": 600,
+      "sha256": "33012b652c19b4196c0490436e7d9412bc3415d4e14371d8973949f3b8fa8666"
+    },
+    {
+      "path": "AGXMetalA11.bundle/6_3.bin",
+      "kind": "file",
+      "bytes": 30,
+      "sha256": "07a8c8bdd84ca81699906336b91ad8890917b886bda62fee6285374904daaf46"
+    },
+    {
+      "path": "AGXMetalA11.bundle/7_0.bin",
+      "kind": "file",
+      "bytes": 3080,
+      "sha256": "d288a547e6a789d2e4186d712963f3cb9ecb3e97e60b0cde15518d9a61be6b3d"
+    },
+    {
+      "path": "AGXMetalA11.bundle/7_1.bin",
+      "kind": "file",
+      "bytes": 5916,
+      "sha256": "7f05e2c02366a2729c41fa33c763090a6f8cd63592113c0ad9bc35052853ac42"
+    },
+    {
+      "path": "AGXMetalA11.bundle/7_2.bin",
+      "kind": "file",
+      "bytes": 800,
+      "sha256": "d9899bf1b862c877eb441b241e7bb6635bbb4ac69b0f71266ab19f6174246bac"
+    },
+    {
+      "path": "AGXMetalA11.bundle/7_3.bin",
+      "kind": "file",
+      "bytes": 40,
+      "sha256": "609cdcdd43a3d5d4da69383545e2643b718d7f14070b1e4d64a478a564b20c2a"
+    },
+    {
+      "path": "AGXMetalA11.bundle/AGXMetalPerfCountersExternal.plist",
+      "kind": "file",
+      "bytes": 197682,
+      "sha256": "80de42993285852ac524a33aa7f683403a1473c5c33491f476ccb24245e0dcae"
+    },
+    {
+      "path": "AGXMetalA11.bundle/AGXMetalStatisticsExternalA11-counters.plist",
+      "kind": "file",
+      "bytes": 45030,
+      "sha256": "68f450991c46d603e2908106ed1633a6fa1d0af16dd8bf1005d45efc61e02479"
+    },
+    {
+      "path": "AGXMetalA11.bundle/AGXMetalStatisticsExternalA11-derived.js",
+      "kind": "file",
+      "bytes": 75473,
+      "sha256": "ac91c88172b03649d4f521d24d6cdfc7acc537329220a34e58542edb650f3861"
+    },
+    {
+      "path": "AGXMetalA11.bundle/Info.plist",
+      "kind": "file",
+      "bytes": 841,
+      "sha256": "185293855897080e28672aa2e51e9b315de7166a2c75ecc64814efcf5b27eeb4"
+    },
+    {
+      "path": "AGXMetalA11.bundle/_CodeSignature/CodeResources",
+      "kind": "file",
+      "bytes": 2467,
+      "sha256": "3c727b0f043e463c0227db49cef54c5567715986d08a46c98923c9bb73585e5a"
+    },
+    {
+      "path": "AGXMetalA11.bundle/ds.g10p",
+      "kind": "file",
+      "bytes": 1156640,
+      "sha256": "f40d461a113615303cbd6bab08a3a7c5d698df12c5166e507adffc4a5e78d982"
+    },
+    {
+      "path": "AGXMetalA11.bundle/ei_rt.metallib",
+      "kind": "file",
+      "bytes": 127874,
+      "sha256": "fb1423019cd844e583aa193cab4429f74d67b6062c49719f42d5cfc1b7366279"
+    },
+    {
+      "path": "AGXMetalA11.bundle/metal_rt.metallib",
+      "kind": "file",
+      "bytes": 1231472,
+      "sha256": "cf05eda024a105a0bd89cf2eb3725683bac19531f0b9dc2e0da67be31fb29ded"
+    },
+    {
+      "path": "AGXMetalA11.bundle/metal_rt_precise.metallib",
+      "kind": "file",
+      "bytes": 60882,
+      "sha256": "25534b7519406d94a8eaa46858b8dbcfc23690e7ead44911c2024acb36f55a48"
+    },
+    {
+      "path": "AGXMetalA11.bundle/raytracing_rt.metallib",
+      "kind": "file",
+      "bytes": 36841,
+      "sha256": "b36497eb37734efa9dc89cb9977e986a7fece4d947adec278c1b81fae0de0f12"
+    },
+    {
+      "path": "AGXMetalA11.bundle/vft_rt.metallib",
+      "kind": "file",
+      "bytes": 17305,
+      "sha256": "3ce12ed0426cf165388d27834b3ca0d5ed8dcaca0be6d8e68e06bb47ddec7635"
+    },
+    {
+      "path": "ASIOKit.kext/ASIOKit",
+      "kind": "file",
+      "bytes": 362400,
+      "sha256": "3e5e38f7f19af4c6bfef9928d24a4c8049be44bb2cf7b8731a833739759b2d03"
+    },
+    {
+      "path": "ASIOKit.kext/Info.plist",
+      "kind": "file",
+      "bytes": 3648,
+      "sha256": "a2200dc88a64f43908be926b2bfa289b9ed6ec818119a88530c5944b5f695d36"
+    },
+    {
+      "path": "ASIOKit.kext/_CodeSignature/CodeResources",
+      "kind": "file",
+      "bytes": 2090,
+      "sha256": "a9317c4f5e22d8d8cd7840b504334ea7025f04143f62798bb0a4a81a76c5fd41"
+    },
+    {
+      "path": "AppleBiometricSensor.kext/PlugIns/AppleMesaLib.plugin/AppleMesaLib",
+      "kind": "file",
+      "bytes": 84256,
+      "sha256": "04c2e0e0634413d8474f5863b86fd6ac053d870e160747f9c614bcd90bc8f25a"
+    },
+    {
+      "path": "AppleBiometricSensor.kext/PlugIns/AppleMesaLib.plugin/Info.plist",
+      "kind": "file",
+      "bytes": 965,
+      "sha256": "c64e7e4f44be56b9c5f0724c020bff442c7b79c2102918447f6f0732fed55ea5"
+    },
+    {
+      "path": "AppleBiometricSensor.kext/PlugIns/AppleMesaLib.plugin/InfoPlist.loctable",
+      "kind": "file",
+      "bytes": 85,
+      "sha256": "015ccc22c7dd97a41481c29426779912908980b81bcf371f14ec54245aa5af54"
+    },
+    {
+      "path": "AppleBiometricSensor.kext/PlugIns/AppleMesaLib.plugin/_CodeSignature/CodeResources",
+      "kind": "file",
+      "bytes": 2467,
+      "sha256": "3c727b0f043e463c0227db49cef54c5567715986d08a46c98923c9bb73585e5a"
+    },
+    {
+      "path": "AppleGameControllerPersonality.kext/AppleGameControllerPersonality",
+      "kind": "file",
+      "bytes": 102912,
+      "sha256": "1810f3538243d3514815b80b468b80ff1f5385e3c8a8d030a3dba5d86d93ddd0"
+    },
+    {
+      "path": "AppleGameControllerPersonality.kext/Info.plist",
+      "kind": "file",
+      "bytes": 22956,
+      "sha256": "939da0da6ac4ce4b0fcf6f3d99dbf58d8d934b5e48d5903cb46689b547335ced"
+    },
+    {
+      "path": "AppleGameControllerPersonality.kext/_CodeSignature/CodeResources",
+      "kind": "file",
+      "bytes": 1798,
+      "sha256": "54ad9d448aad06cbe15a4187cfec5a1517252aabc772cdd6e82b735b85d991c6"
+    },
+    {
+      "path": "AppleHDQGasGaugeControl.kext/PlugIns/AppleHDQGasGaugeHID.plugin/Info.plist",
+      "kind": "file",
+      "bytes": 1013,
+      "sha256": "d7d3391d069096df40bfbbed3391dad80f4f97504f61b3542cd29b79eb82f7fb"
+    },
+    {
+      "path": "AppleHDQGasGaugeControl.kext/PlugIns/AppleHDQGasGaugeHID.plugin/_CodeSignature/CodeResources",
+      "kind": "file",
+      "bytes": 2467,
+      "sha256": "3c727b0f043e463c0227db49cef54c5567715986d08a46c98923c9bb73585e5a"
+    },
+    {
+      "path": "AppleHPM.kext/PlugIns/AppleHPMLib.plugin/AppleHPMLib",
+      "kind": "file",
+      "bytes": 72192,
+      "sha256": "16bca6edc48894813f5c4d929e41ba143601109e13f131a88b5842b57ec151a7"
+    },
+    {
+      "path": "AppleHPM.kext/PlugIns/AppleHPMLib.plugin/Info.plist",
+      "kind": "file",
+      "bytes": 1189,
+      "sha256": "9778fb581b921953d4d7d8e26f755a58a99a1831b82c6c143a74473632042b76"
+    },
+    {
+      "path": "AppleHPM.kext/PlugIns/AppleHPMLib.plugin/_CodeSignature/CodeResources",
+      "kind": "file",
+      "bytes": 2467,
+      "sha256": "3c727b0f043e463c0227db49cef54c5567715986d08a46c98923c9bb73585e5a"
+    },
+    {
+      "path": "AppleMetalGLRenderer.bundle/default.metallib",
+      "kind": "file",
+      "bytes": 1111748,
+      "sha256": "3f6b6efe502e3201450b97d64ec233d79b68615055b1c5cb81ebbc34a299b58a"
+    },
+    {
+      "path": "AppleMultitouchSPI.kext/PlugIns/MultitouchHID.plugin/Info.plist",
+      "kind": "file",
+      "bytes": 1115,
+      "sha256": "beeede6f56122ff9bc07720ce5b0f7add8b6d0dca6d7687a1505c7fc3eb3bb64"
+    },
+    {
+      "path": "AppleMultitouchSPI.kext/PlugIns/MultitouchHID.plugin/_CodeSignature/CodeResources",
+      "kind": "file",
+      "bytes": 2467,
+      "sha256": "3c727b0f043e463c0227db49cef54c5567715986d08a46c98923c9bb73585e5a"
+    },
+    {
+      "path": "AppleSPU.kext/PlugIns/AppleSPULib.plugin/Info.plist",
+      "kind": "file",
+      "bytes": 1003,
+      "sha256": "83fb230314b9d183e89f0fbbbba8c83d06d293d97c9b82ad51bb1563fd3c7ac4"
+    },
+    {
+      "path": "AppleSPU.kext/PlugIns/AppleSPULib.plugin/InfoPlist.loctable",
+      "kind": "file",
+      "bytes": 85,
+      "sha256": "015ccc22c7dd97a41481c29426779912908980b81bcf371f14ec54245aa5af54"
+    },
+    {
+      "path": "AppleSPU.kext/PlugIns/AppleSPULib.plugin/_CodeSignature/CodeResources",
+      "kind": "file",
+      "bytes": 2467,
+      "sha256": "3c727b0f043e463c0227db49cef54c5567715986d08a46c98923c9bb73585e5a"
+    },
+    {
+      "path": "AppleSPU.kext/PlugIns/FastpathLib.plugin/FastpathLib",
+      "kind": "file",
+      "bytes": 71728,
+      "sha256": "02396d6d6708cd355460d116e2f07236e0d7f84e6e0f6ff6841a5feac4a93c1a"
+    },
+    {
+      "path": "AppleSPU.kext/PlugIns/FastpathLib.plugin/Info.plist",
+      "kind": "file",
+      "bytes": 956,
+      "sha256": "f3766e0f05e8e2d8fea6d1c036d4769bf7db6e7f724eb297cd4c0f0df9989b83"
+    },
+    {
+      "path": "AppleSPU.kext/PlugIns/FastpathLib.plugin/InfoPlist.loctable",
+      "kind": "file",
+      "bytes": 85,
+      "sha256": "015ccc22c7dd97a41481c29426779912908980b81bcf371f14ec54245aa5af54"
+    },
+    {
+      "path": "AppleSPU.kext/PlugIns/FastpathLib.plugin/_CodeSignature/CodeResources",
+      "kind": "file",
+      "bytes": 2467,
+      "sha256": "3c727b0f043e463c0227db49cef54c5567715986d08a46c98923c9bb73585e5a"
+    },
+    {
+      "path": "AppleSPU.kext/PlugIns/GNSSPassthroughLib.plugin/Info.plist",
+      "kind": "file",
+      "bytes": 979,
+      "sha256": "c6976cf4990edfa9fec4da63093e7cd72997803481b13497ae9d8342893eb21f"
+    },
+    {
+      "path": "AppleSPU.kext/PlugIns/GNSSPassthroughLib.plugin/_CodeSignature/CodeResources",
+      "kind": "file",
+      "bytes": 2467,
+      "sha256": "3c727b0f043e463c0227db49cef54c5567715986d08a46c98923c9bb73585e5a"
+    },
+    {
+      "path": "AppleUserConsent.kext/AppleUserConsent",
+      "kind": "file",
+      "bytes": 86752,
+      "sha256": "7ebf08e216ed4894e2461336a712139da046d870d9c92875ac49bf87df3b6382"
+    },
+    {
+      "path": "AppleUserConsent.kext/AppleUserConsent_development",
+      "kind": "file",
+      "bytes": 86768,
+      "sha256": "3410082c8682f26504db7ce7f5ea5238a8e0fd3e531d07f5994ca47173e7d319"
+    },
+    {
+      "path": "AppleUserConsent.kext/Info.plist",
+      "kind": "file",
+      "bytes": 2150,
+      "sha256": "88bcf8eb4dc20694293047d4ccfde1911a026e2e5f3588575744a26992a54097"
+    },
+    {
+      "path": "AppleUserConsent.kext/_CodeSignature/CodeResources",
+      "kind": "file",
+      "bytes": 2422,
+      "sha256": "6d8ddbfc73119cca044bd17b865a4f408487bd9b0d4891ca82b5f1eb71c4d222"
+    },
+    {
+      "path": "EAP-RSA.ppp/EAP-RSA",
+      "kind": "file",
+      "bytes": 55360,
+      "sha256": "9e7d91d38c3e955bf97027d683818d61c60a59beede5655c2bda94f763951b3a"
+    },
+    {
+      "path": "EAP-RSA.ppp/Info-EAP-RSA.plist",
+      "kind": "file",
+      "bytes": 653,
+      "sha256": "ebdfa85416fe80885487162792359615725c8b7f42405d1a81532329ef6ada65"
+    },
+    {
+      "path": "EAP-RSA.ppp/Info.plist",
+      "kind": "file",
+      "bytes": 1060,
+      "sha256": "0e622d3f9c49d2adee966dd4715072c319dd05d6a0e0eda1bf4d8b4be687e7f7"
+    },
+    {
+      "path": "EAP-RSA.ppp/InfoPlist.loctable",
+      "kind": "file",
+      "bytes": 1105,
+      "sha256": "1e3ac7512c3164fa0ae9a5a3d48b69cb71fe4b21db73e1b73af814603c01cb3f"
+    },
+    {
+      "path": "EAP-RSA.ppp/Localizable.loctable",
+      "kind": "file",
+      "bytes": 38389,
+      "sha256": "e101ba6bf21cfe28a94b36e6ae90b841461e20e1470abd8ba7312136a42f4c4b"
+    },
+    {
+      "path": "EAP-RSA.ppp/_CodeSignature/CodeResources",
+      "kind": "file",
+      "bytes": 2467,
+      "sha256": "3c727b0f043e463c0227db49cef54c5567715986d08a46c98923c9bb73585e5a"
+    },
+    {
+      "path": "IOHIDFamily.kext/PlugIns/IOHIDLib.plugin/Info.plist",
+      "kind": "file",
+      "bytes": 1400,
+      "sha256": "c18881afa7b97c1a0b528080649672671035af443570a45e17cc68328e5c0c08"
+    },
+    {
+      "path": "IOHIDFamily.kext/PlugIns/IOHIDLib.plugin/_CodeSignature/CodeResources",
+      "kind": "file",
+      "bytes": 2467,
+      "sha256": "3c727b0f043e463c0227db49cef54c5567715986d08a46c98923c9bb73585e5a"
+    },
+    {
+      "path": "IOHIDFamily.kext/PlugIns/IOHIDLib.plugin/hiddtraceutil",
+      "kind": "file",
+      "bytes": 5792,
+      "sha256": "f11d7c237b73b764052cfd74aa6c3ed18c0f4312213334bb36301c7ff8da7077"
+    },
+    {
+      "path": "IOStreamFamily.kext/PlugIns/IOStreamLib.plugin/IOStreamLib",
+      "kind": "file",
+      "bytes": 80304,
+      "sha256": "0b15ffba29485baa9d5d53d7214aa8c09401c0ae325adb92230829355f56c77c"
+    },
+    {
+      "path": "IOStreamFamily.kext/PlugIns/IOStreamLib.plugin/Info.plist",
+      "kind": "file",
+      "bytes": 1104,
+      "sha256": "c3909cb7dc87e2c6bb47e612e063415d58119cff06b489f827f43422e76f6624"
+    },
+    {
+      "path": "IOStreamFamily.kext/PlugIns/IOStreamLib.plugin/_CodeSignature/CodeResources",
+      "kind": "file",
+      "bytes": 2467,
+      "sha256": "3c727b0f043e463c0227db49cef54c5567715986d08a46c98923c9bb73585e5a"
+    },
+    {
+      "path": "IOUSBDeviceFamily.kext/PlugIns/IOUSBDeviceLib.plugin/Info.plist",
+      "kind": "file",
+      "bytes": 1046,
+      "sha256": "1bf44edbd588a1796c0fd528c27de6c7dfbe23525cb4aaa6638e2ce5759a2c4b"
+    },
+    {
+      "path": "IOUSBDeviceFamily.kext/PlugIns/IOUSBDeviceLib.plugin/_CodeSignature/CodeResources",
+      "kind": "file",
+      "bytes": 2467,
+      "sha256": "3c727b0f043e463c0227db49cef54c5567715986d08a46c98923c9bb73585e5a"
+    },
+    {
+      "path": "IOUSBHostFamily.kext/PlugIns/IOUSBLib.bundle/IOUSBLib",
+      "kind": "file",
+      "bytes": 139552,
+      "sha256": "93783a1e63794d02292a44d6e21c7230d10d4ff5de8a4728fd055aeb90b7525a"
+    },
+    {
+      "path": "IOUSBHostFamily.kext/PlugIns/IOUSBLib.bundle/Info.plist",
+      "kind": "file",
+      "bytes": 1290,
+      "sha256": "633f210605bebcf93c8183a512ec54e460a39a25c3ab5b4fecce5480043904dd"
+    },
+    {
+      "path": "lifs.kext/Info.plist",
+      "kind": "file",
+      "bytes": 2550,
+      "sha256": "0b0482e73625ef05e8329c4859fc4c2a5671fcff1e6561379a4e3763a6903e51"
+    },
+    {
+      "path": "lifs.kext/_CodeSignature/CodeResources",
+      "kind": "file",
+      "bytes": 2646,
+      "sha256": "6708cf762d494f66ed50252a25366c36de5137cba974392a68deb153bcd0f552"
+    },
+    {
+      "path": "lifs.kext/lifs",
+      "kind": "file",
+      "bytes": 280592,
+      "sha256": "b10b516ca72dae6233bc9ddeb2633ed83c25afce5e7253cabfe360700964f671"
+    },
+    {
+      "path": "lifs.kext/lifs.codes",
+      "kind": "file",
+      "bytes": 1579,
+      "sha256": "2fb09616d3934d19ee99267405ef73eeba8e0c9eb646e4822dc11cf573d7b266"
+    }
+  ],
+  "bundles": [
+    {
+      "path": "AGXGPURawCounterBundle.bundle/Info.plist",
+      "bundle_id": "com.apple.AGXGPURawCounterBundle",
+      "executable": "AGXGPURawCounterBundle",
+      "dependencies": {},
+      "standalone_executable_present": false
+    },
+    {
+      "path": "AGXMetalA11.bundle/Info.plist",
+      "bundle_id": "com.apple.AGXMetalA11",
+      "executable": "AGXMetalA11",
+      "dependencies": {},
+      "standalone_executable_present": false
+    },
+    {
+      "path": "ASIOKit.kext/Info.plist",
+      "bundle_id": "com.apple.driver.ASIOKit",
+      "executable": "ASIOKit",
+      "dependencies": {
+        "com.apple.kec.corecrypto": "1",
+        "com.apple.kpi.bsd": "8.0.0",
+        "com.apple.kpi.iokit": "8.0.0",
+        "com.apple.kpi.libkern": "8.0.0",
+        "com.apple.kpi.mach": "8.0.0",
+        "com.apple.kpi.private": "8.0.0",
+        "com.apple.kpi.unsupported": "9.3.1"
+      },
+      "standalone_executable_present": true
+    },
+    {
+      "path": "AppleBiometricSensor.kext/PlugIns/AppleMesaLib.plugin/Info.plist",
+      "bundle_id": "com.apple.internal.AppleMesaLib",
+      "executable": "AppleMesaLib",
+      "dependencies": {},
+      "standalone_executable_present": true
+    },
+    {
+      "path": "AppleGameControllerPersonality.kext/Info.plist",
+      "bundle_id": "com.apple.driver.AppleGameControllerPersonality",
+      "executable": "AppleGameControllerPersonality",
+      "dependencies": {
+        "com.apple.iokit.IOHIDFamily": "2.0",
+        "com.apple.kpi.iokit": "22.0",
+        "com.apple.kpi.libkern": "12.0",
+        "com.apple.kpi.private": "22.0"
+      },
+      "standalone_executable_present": true
+    },
+    {
+      "path": "AppleHDQGasGaugeControl.kext/PlugIns/AppleHDQGasGaugeHID.plugin/Info.plist",
+      "bundle_id": "com.apple.driver.plugin.GasGaugeHID",
+      "executable": "AppleHDQGasGaugeHID",
+      "dependencies": {},
+      "standalone_executable_present": false
+    },
+    {
+      "path": "AppleHPM.kext/PlugIns/AppleHPMLib.plugin/Info.plist",
+      "bundle_id": "com.apple.driver.AppleHPMLib",
+      "executable": "AppleHPMLib",
+      "dependencies": {},
+      "standalone_executable_present": true
+    },
+    {
+      "path": "AppleMultitouchSPI.kext/PlugIns/MultitouchHID.plugin/Info.plist",
+      "bundle_id": "com.apple.iokit.plugin.MultitouchHID",
+      "executable": "MultitouchHID",
+      "dependencies": {},
+      "standalone_executable_present": false
+    },
+    {
+      "path": "AppleSPU.kext/PlugIns/AppleSPULib.plugin/Info.plist",
+      "bundle_id": "com.apple.AppleSPULib",
+      "executable": "AppleSPULib",
+      "dependencies": {},
+      "standalone_executable_present": false
+    },
+    {
+      "path": "AppleSPU.kext/PlugIns/FastpathLib.plugin/Info.plist",
+      "bundle_id": "com.apple.FastpathLib",
+      "executable": "FastpathLib",
+      "dependencies": {},
+      "standalone_executable_present": true
+    },
+    {
+      "path": "AppleSPU.kext/PlugIns/GNSSPassthroughLib.plugin/Info.plist",
+      "bundle_id": "com.apple.GNSSPassthroughLib",
+      "executable": "GNSSPassthroughLib",
+      "dependencies": {},
+      "standalone_executable_present": false
+    },
+    {
+      "path": "AppleUserConsent.kext/Info.plist",
+      "bundle_id": "com.apple.security.AppleUserConsent",
+      "executable": "AppleUserConsent",
+      "dependencies": {
+        "com.apple.kpi.bsd": "10.0.0d2",
+        "com.apple.kpi.dsep": "10.0.0d2",
+        "com.apple.kpi.libkern": "10.0.0d2",
+        "com.apple.kpi.mach": "10.0.0d2",
+        "com.apple.kpi.private": "10.0.0d2",
+        "com.apple.kpi.unsupported": "10.0.0d2"
+      },
+      "standalone_executable_present": true
+    },
+    {
+      "path": "EAP-RSA.ppp/Info.plist",
+      "bundle_id": "com.apple.eap.rsa",
+      "executable": "EAP-RSA",
+      "dependencies": {},
+      "standalone_executable_present": true
+    },
+    {
+      "path": "IOHIDFamily.kext/PlugIns/IOHIDLib.plugin/Info.plist",
+      "bundle_id": "com.apple.iokit.IOHIDLib",
+      "executable": "IOHIDLib",
+      "dependencies": {},
+      "standalone_executable_present": false
+    },
+    {
+      "path": "IOStreamFamily.kext/PlugIns/IOStreamLib.plugin/Info.plist",
+      "bundle_id": "com.apple.IOStreamLib",
+      "executable": "IOStreamLib",
+      "dependencies": {},
+      "standalone_executable_present": true
+    },
+    {
+      "path": "IOUSBDeviceFamily.kext/PlugIns/IOUSBDeviceLib.plugin/Info.plist",
+      "bundle_id": "com.apple.IOUSBDeviceLib",
+      "executable": "IOUSBDeviceLib",
+      "dependencies": {},
+      "standalone_executable_present": false
+    },
+    {
+      "path": "IOUSBHostFamily.kext/PlugIns/IOUSBLib.bundle/Info.plist",
+      "bundle_id": "com.apple.iokit.IOUSBLib",
+      "executable": "IOUSBLib",
+      "dependencies": {},
+      "standalone_executable_present": true
+    },
+    {
+      "path": "lifs.kext/Info.plist",
+      "bundle_id": "com.apple.filesystems.lifs",
+      "executable": "lifs",
+      "dependencies": {
+        "com.apple.kpi.bsd": "14.1",
+        "com.apple.kpi.iokit": "14.1",
+        "com.apple.kpi.libkern": "14.1",
+        "com.apple.kpi.mach": "8.0.0",
+        "com.apple.kpi.private": "14.1",
+        "com.apple.kpi.unsupported": "14.1"
+      },
+      "standalone_executable_present": true
+    }
+  ],
+  "missing_standalone_executables": [
+    "AGXGPURawCounterBundle.bundle/AGXGPURawCounterBundle",
+    "AGXMetalA11.bundle/AGXMetalA11",
+    "AppleHDQGasGaugeControl.kext/PlugIns/AppleHDQGasGaugeHID.plugin/AppleHDQGasGaugeHID",
+    "AppleMultitouchSPI.kext/PlugIns/MultitouchHID.plugin/MultitouchHID",
+    "AppleSPU.kext/PlugIns/AppleSPULib.plugin/AppleSPULib",
+    "AppleSPU.kext/PlugIns/GNSSPassthroughLib.plugin/GNSSPassthroughLib",
+    "IOHIDFamily.kext/PlugIns/IOHIDLib.plugin/IOHIDLib",
+    "IOUSBDeviceFamily.kext/PlugIns/IOUSBDeviceLib.plugin/IOUSBDeviceLib"
+  ],
+  "images": [
+    {
+      "path": "ASIOKit.kext/ASIOKit",
+      "sha256": "3e5e38f7f19af4c6bfef9928d24a4c8049be44bb2cf7b8731a833739759b2d03",
+      "cpu_type": "0x100000c",
+      "cpu_subtype": "0x0",
+      "filetype": 11,
+      "load_commands": 11,
+      "import_tables": [
+        {
+          "command": "LC_SYMTAB",
+          "symbol_count": 599,
+          "undefined_count": 235
+        }
+      ],
+      "coverage_gaps": [],
+      "unique_imports": 235,
+      "matched_imports": {},
+      "llvm_nm": {
+        "returncode": 0,
+        "stderr": "",
+        "undefined_count": 235,
+        "matched_targets": [],
+        "stdout_sha256": "2f487e485099287fa558933e6f8a8402b76a537ca3be7d373776be39598966fc"
+      },
+      "symtab_nm_agree": true
+    },
+    {
+      "path": "AppleBiometricSensor.kext/PlugIns/AppleMesaLib.plugin/AppleMesaLib",
+      "sha256": "04c2e0e0634413d8474f5863b86fd6ac053d870e160747f9c614bcd90bc8f25a",
+      "cpu_type": "0x100000c",
+      "cpu_subtype": "0x0",
+      "filetype": 8,
+      "load_commands": 18,
+      "import_tables": [
+        {
+          "command": "LC_DYLD_CHAINED_FIXUPS",
+          "import_count": 36,
+          "imports_format": 1
+        },
+        {
+          "command": "LC_SYMTAB",
+          "symbol_count": 405,
+          "undefined_count": 36
+        }
+      ],
+      "coverage_gaps": [],
+      "unique_imports": 36,
+      "matched_imports": {},
+      "llvm_nm": {
+        "returncode": 0,
+        "stderr": "",
+        "undefined_count": 36,
+        "matched_targets": [],
+        "stdout_sha256": "4a6940b7dd75d72673b1c7dbdddb1ced2ca0533c59a12ce84159f1bb3e743c0b"
+      },
+      "symtab_nm_agree": true
+    },
+    {
+      "path": "AppleGameControllerPersonality.kext/AppleGameControllerPersonality",
+      "sha256": "1810f3538243d3514815b80b468b80ff1f5385e3c8a8d030a3dba5d86d93ddd0",
+      "cpu_type": "0x100000c",
+      "cpu_subtype": "0x0",
+      "filetype": 11,
+      "load_commands": 11,
+      "import_tables": [
+        {
+          "command": "LC_SYMTAB",
+          "symbol_count": 240,
+          "undefined_count": 238
+        }
+      ],
+      "coverage_gaps": [],
+      "unique_imports": 238,
+      "matched_imports": {},
+      "llvm_nm": {
+        "returncode": 0,
+        "stderr": "",
+        "undefined_count": 238,
+        "matched_targets": [],
+        "stdout_sha256": "fe289eca27efc2ed436263461a2c0b48abe05d12774e111caf51a4c7ac1f4c4b"
+      },
+      "symtab_nm_agree": true
+    },
+    {
+      "path": "AppleHPM.kext/PlugIns/AppleHPMLib.plugin/AppleHPMLib",
+      "sha256": "16bca6edc48894813f5c4d929e41ba143601109e13f131a88b5842b57ec151a7",
+      "cpu_type": "0x100000c",
+      "cpu_subtype": "0x0",
+      "filetype": 8,
+      "load_commands": 18,
+      "import_tables": [
+        {
+          "command": "LC_DYLD_CHAINED_FIXUPS",
+          "import_count": 26,
+          "imports_format": 1
+        },
+        {
+          "command": "LC_SYMTAB",
+          "symbol_count": 55,
+          "undefined_count": 26
+        }
+      ],
+      "coverage_gaps": [],
+      "unique_imports": 26,
+      "matched_imports": {},
+      "llvm_nm": {
+        "returncode": 0,
+        "stderr": "",
+        "undefined_count": 26,
+        "matched_targets": [],
+        "stdout_sha256": "ff5e8d3bfa1fd9c07149a36970f7c74d285e450d756a84df7a1268971a9a78e0"
+      },
+      "symtab_nm_agree": true
+    },
+    {
+      "path": "AppleSPU.kext/PlugIns/FastpathLib.plugin/FastpathLib",
+      "sha256": "02396d6d6708cd355460d116e2f07236e0d7f84e6e0f6ff6841a5feac4a93c1a",
+      "cpu_type": "0x100000c",
+      "cpu_subtype": "0x0",
+      "filetype": 8,
+      "load_commands": 18,
+      "import_tables": [
+        {
+          "command": "LC_DYLD_CHAINED_FIXUPS",
+          "import_count": 25,
+          "imports_format": 1
+        },
+        {
+          "command": "LC_SYMTAB",
+          "symbol_count": 52,
+          "undefined_count": 25
+        }
+      ],
+      "coverage_gaps": [],
+      "unique_imports": 25,
+      "matched_imports": {},
+      "llvm_nm": {
+        "returncode": 0,
+        "stderr": "",
+        "undefined_count": 25,
+        "matched_targets": [],
+        "stdout_sha256": "ab4428b897ae11790130f451cb0b0aa9b457cbe80e2f15172b0cced1a665afba"
+      },
+      "symtab_nm_agree": true
+    },
+    {
+      "path": "AppleUserConsent.kext/AppleUserConsent",
+      "sha256": "7ebf08e216ed4894e2461336a712139da046d870d9c92875ac49bf87df3b6382",
+      "cpu_type": "0x100000c",
+      "cpu_subtype": "0x0",
+      "filetype": 11,
+      "load_commands": 11,
+      "import_tables": [
+        {
+          "command": "LC_SYMTAB",
+          "symbol_count": 40,
+          "undefined_count": 2
+        }
+      ],
+      "coverage_gaps": [],
+      "unique_imports": 2,
+      "matched_imports": {},
+      "llvm_nm": {
+        "returncode": 0,
+        "stderr": "",
+        "undefined_count": 2,
+        "matched_targets": [],
+        "stdout_sha256": "a81fc25a7454da06caef38d52456fe82273e74f5407ea4ec15ba12569844af79"
+      },
+      "symtab_nm_agree": true
+    },
+    {
+      "path": "AppleUserConsent.kext/AppleUserConsent_development",
+      "sha256": "3410082c8682f26504db7ce7f5ea5238a8e0fd3e531d07f5994ca47173e7d319",
+      "cpu_type": "0x100000c",
+      "cpu_subtype": "0x0",
+      "filetype": 11,
+      "load_commands": 11,
+      "import_tables": [
+        {
+          "command": "LC_SYMTAB",
+          "symbol_count": 40,
+          "undefined_count": 2
+        }
+      ],
+      "coverage_gaps": [],
+      "unique_imports": 2,
+      "matched_imports": {},
+      "llvm_nm": {
+        "returncode": 0,
+        "stderr": "",
+        "undefined_count": 2,
+        "matched_targets": [],
+        "stdout_sha256": "a81fc25a7454da06caef38d52456fe82273e74f5407ea4ec15ba12569844af79"
+      },
+      "symtab_nm_agree": true
+    },
+    {
+      "path": "EAP-RSA.ppp/EAP-RSA",
+      "sha256": "9e7d91d38c3e955bf97027d683818d61c60a59beede5655c2bda94f763951b3a",
+      "cpu_type": "0x100000c",
+      "cpu_subtype": "0x0",
+      "filetype": 8,
+      "load_commands": 18,
+      "import_tables": [
+        {
+          "command": "LC_DYLD_CHAINED_FIXUPS",
+          "import_count": 52,
+          "imports_format": 1
+        },
+        {
+          "command": "LC_SYMTAB",
+          "symbol_count": 59,
+          "undefined_count": 52
+        }
+      ],
+      "coverage_gaps": [],
+      "unique_imports": 52,
+      "matched_imports": {},
+      "llvm_nm": {
+        "returncode": 0,
+        "stderr": "",
+        "undefined_count": 52,
+        "matched_targets": [],
+        "stdout_sha256": "f8382bfe086a81ee0f246204f2863bd8dad936ad6c265756de378427e81b2313"
+      },
+      "symtab_nm_agree": true
+    },
+    {
+      "path": "IOStreamFamily.kext/PlugIns/IOStreamLib.plugin/IOStreamLib",
+      "sha256": "0b15ffba29485baa9d5d53d7214aa8c09401c0ae325adb92230829355f56c77c",
+      "cpu_type": "0x100000c",
+      "cpu_subtype": "0x0",
+      "filetype": 8,
+      "load_commands": 18,
+      "import_tables": [
+        {
+          "command": "LC_DYLD_CHAINED_FIXUPS",
+          "import_count": 39,
+          "imports_format": 1
+        },
+        {
+          "command": "LC_SYMTAB",
+          "symbol_count": 128,
+          "undefined_count": 39
+        }
+      ],
+      "coverage_gaps": [],
+      "unique_imports": 39,
+      "matched_imports": {},
+      "llvm_nm": {
+        "returncode": 0,
+        "stderr": "",
+        "undefined_count": 39,
+        "matched_targets": [],
+        "stdout_sha256": "b0c765dfb020eae9f803eb47a89b162133ffe74a3162c9662856f7f0e510627f"
+      },
+      "symtab_nm_agree": true
+    },
+    {
+      "path": "IOUSBHostFamily.kext/PlugIns/IOUSBLib.bundle/IOUSBLib",
+      "sha256": "93783a1e63794d02292a44d6e21c7230d10d4ff5de8a4728fd055aeb90b7525a",
+      "cpu_type": "0x100000c",
+      "cpu_subtype": "0x0",
+      "filetype": 8,
+      "load_commands": 18,
+      "import_tables": [
+        {
+          "command": "LC_DYLD_CHAINED_FIXUPS",
+          "import_count": 76,
+          "imports_format": 1
+        },
+        {
+          "command": "LC_SYMTAB",
+          "symbol_count": 369,
+          "undefined_count": 76
+        }
+      ],
+      "coverage_gaps": [],
+      "unique_imports": 76,
+      "matched_imports": {},
+      "llvm_nm": {
+        "returncode": 0,
+        "stderr": "",
+        "undefined_count": 76,
+        "matched_targets": [],
+        "stdout_sha256": "86f8334a298ae6299b82ca3c5d34da67e2934760ef2c97b32fcd8e23e95e1e8b"
+      },
+      "symtab_nm_agree": true
+    },
+    {
+      "path": "lifs.kext/lifs",
+      "sha256": "b10b516ca72dae6233bc9ddeb2633ed83c25afce5e7253cabfe360700964f671",
+      "cpu_type": "0x100000c",
+      "cpu_subtype": "0x0",
+      "filetype": 11,
+      "load_commands": 11,
+      "import_tables": [
+        {
+          "command": "LC_SYMTAB",
+          "symbol_count": 2455,
+          "undefined_count": 452
+        }
+      ],
+      "coverage_gaps": [],
+      "unique_imports": 452,
+      "matched_imports": {},
+      "llvm_nm": {
+        "returncode": 0,
+        "stderr": "",
+        "undefined_count": 452,
+        "matched_targets": [],
+        "stdout_sha256": "bdb2877c453e4e31e061649e3d17caa271aea17e4fd593d3f39cb6e8caf54464"
+      },
+      "symtab_nm_agree": true
+    }
+  ],
+  "actual_import_hits": [],
+  "counts": {
+    "files": 96,
+    "mach_o_images": 11,
+    "filetypes": {
+      "11": 5,
+      "8": 6
+    },
+    "hits": 0
+  },
+  "limitations": [
+    "No live or donor kernelcache completeness claim.",
+    "Missing executable may be resident in a dyld shared cache; shared caches are outside this directory audit.",
+    "Chained import-table presence is a declared dependency; dynamic reachability is not proved.",
+    "String-only matches, object selectors and indirect runtime symbol construction are not treated as static imports.",
+    "No exports, kernel inputs or proprietary binaries changed or published."
+  ]
+}

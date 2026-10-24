@@ -1,0 +1,351 @@
+{
+  "export_audit_sha256": "e3ed0068432b1155c6d1c47081fc05ad18030a20b2143720ff9c71cb7ea2fea1",
+  "kernel_sha256": "65116f48b6585b31e86bfea23fd8555c1aed669b3f5f3d81856cd5754c5b1f5d",
+  "kernel_filetype": 2,
+  "prelink_segments": [
+    {
+      "name": "__PRELINK_TEXT",
+      "vmsize": 0,
+      "filesize": 0
+    },
+    {
+      "name": "__PRELINK_INFO",
+      "vmsize": 0,
+      "filesize": 0
+    },
+    {
+      "name": "__PRELINK_DATA",
+      "vmsize": 0,
+      "filesize": 0
+    }
+  ],
+  "has_fileset_entries": false,
+  "contains_no_kxld_refusal_diagnostic": true,
+  "nm_kxld_names": [],
+  "nm_stdout_sha256": "3e5c62e84e4d400ee2067bbd79383c61467ab2494eff827fd0dcab3d7981d06b",
+  "static_source_search": {
+    "pattern": "\\b(?:pmap_iommu_init|pmap_iommu_iovmalloc|pmap_iommu_map|pmap_iommu_unmap|pmap_iommu_iovmfree|pmap_iommu_ioctl|pmap_iommu_alloc_contiguous_pages|nvme_ppl_get_desc|sart_get_desc|t8020dart_get_desc|t8020dart_vo_tte|t6000dart_get_desc|t6000dart_vo_tte|t8110dart_get_desc|t8110dart_max_translation_levels|t8110dart_vo_tte|t8110dart_vo_tt_index|uat_get_desc|IOUnifiedAddressTranslator)\\b",
+    "roots": [
+      "bsd",
+      "osfmk",
+      "iokit",
+      "libkern",
+      "libsa",
+      "pexpert"
+    ],
+    "suffixes": [
+      ".c",
+      ".cpp",
+      ".h",
+      ".s"
+    ],
+    "matches": [],
+    "scope": "Exact C identifiers and UAT class in selected implementation roots; export files and generated BUILD intentionally separate."
+  },
+  "sources": [
+    {
+      "path": "libsa/bootstrap.cpp",
+      "sha256": "12b0df9a60ce3381989fda1454aec3860763a3f6bf5fb230b1289569f80ba0a7",
+      "selected_lines": [
+        {
+          "line": 136,
+          "text": "void readPrelinkedExtensions(kernel_mach_header_t *mh, kc_kind_t type);"
+        },
+        {
+          "line": 137,
+          "text": "void readBooterExtensions(void);"
+        },
+        {
+          "line": 139,
+          "text": "OSReturn loadKernelComponentKexts(void);"
+        },
+        {
+          "line": 140,
+          "text": "void     loadKernelExternalComponents(void);"
+        },
+        {
+          "line": 141,
+          "text": "void     readBuiltinPersonalities(void);"
+        },
+        {
+          "line": 206,
+          "text": "readPrelinkedExtensions(mh, KCKindPrimary);"
+        },
+        {
+          "line": 208,
+          "text": "readBooterExtensions();"
+        },
+        {
+          "line": 214,
+          "text": "readPrelinkedExtensions(akc_mh, KCKindAuxiliary);"
+        },
+        {
+          "line": 217,
+          "text": "loadKernelComponentKexts();"
+        },
+        {
+          "line": 218,
+          "text": "loadKernelExternalComponents();"
+        },
+        {
+          "line": 219,
+          "text": "readBuiltinPersonalities();"
+        },
+        {
+          "line": 228,
+          "text": "KLDBootstrap::readPrelinkedExtensions(kernel_mach_header_t *mh, kc_kind_t type)"
+        },
+        {
+          "line": 367,
+          "text": "#define BOOTER_KEXT_PREFIX   \"Driver-\""
+        },
+        {
+          "line": 375,
+          "text": "KLDBootstrap::readBooterExtensions(void)"
+        },
+        {
+          "line": 441,
+          "text": "BOOTER_KEXT_PREFIX,"
+        },
+        {
+          "line": 442,
+          "text": "CONST_STRLEN(BOOTER_KEXT_PREFIX))) {"
+        },
+        {
+          "line": 572,
+          "text": "KLDBootstrap::loadKernelComponentKexts(void)"
+        },
+        {
+          "line": 608,
+          "text": "KLDBootstrap::loadKernelExternalComponents(void)"
+        },
+        {
+          "line": 669,
+          "text": "KLDBootstrap::readBuiltinPersonalities(void)"
+        }
+      ]
+    },
+    {
+      "path": "libkern/c++/OSKext.cpp",
+      "sha256": "4cf0c03620d0f9bed90660bb44f5525f65c17381533f46d9cf72f8272a202e43",
+      "selected_lines": [
+        {
+          "line": 153,
+          "text": "#if CONFIG_KXLD"
+        },
+        {
+          "line": 165,
+          "text": "* fake an entry (see libsa/bootstrap.cpp:readPrelinkedExtensions()) does"
+        },
+        {
+          "line": 338,
+          "text": "#if CONFIG_KXLD"
+        },
+        {
+          "line": 479,
+          "text": "#if CONFIG_KXLD"
+        },
+        {
+          "line": 481,
+          "text": "#endif // CONFIG_KXLD"
+        },
+        {
+          "line": 597,
+          "text": "#if CONFIG_KXLD"
+        },
+        {
+          "line": 713,
+          "text": "#endif // CONFIG_KXLD"
+        },
+        {
+          "line": 1284,
+          "text": "#if CONFIG_KXLD"
+        },
+        {
+          "line": 1377,
+          "text": "#else /* !CONFIG_KXLD */"
+        },
+        {
+          "line": 1411,
+          "text": "#endif /* CONFIG_KXLD */"
+        },
+        {
+          "line": 3226,
+          "text": "#if CONFIG_KXLD"
+        },
+        {
+          "line": 4046,
+          "text": "#endif // CONFIG_KXLD"
+        },
+        {
+          "line": 4623,
+          "text": "#define BOOTER_KEXT_PREFIX   \"Driver-\""
+        },
+        {
+          "line": 4664,
+          "text": "if (strncmp(devTreeNameCString, BOOTER_KEXT_PREFIX,"
+        },
+        {
+          "line": 4665,
+          "text": "(sizeof(BOOTER_KEXT_PREFIX) - 1)) != 0) {"
+        },
+        {
+          "line": 4892,
+          "text": "#if CONFIG_KXLD"
+        },
+        {
+          "line": 4934,
+          "text": "#endif // CONFIG_KXLD"
+        },
+        {
+          "line": 6363,
+          "text": "#if XNU_TARGET_OS_OSX && !CONFIG_KXLD"
+        },
+        {
+          "line": 6464,
+          "text": "#if CONFIG_KXLD"
+        },
+        {
+          "line": 6480,
+          "text": "#endif // CONFIG_KXLD"
+        },
+        {
+          "line": 6679,
+          "text": "#if CONFIG_KXLD"
+        },
+        {
+          "line": 6704,
+          "text": "#endif // CONFIG_KXLD"
+        },
+        {
+          "line": 7006,
+          "text": "#if CONFIG_KXLD"
+        },
+        {
+          "line": 7014,
+          "text": "#endif // CONFIG_KXLD"
+        },
+        {
+          "line": 7099,
+          "text": "#if CONFIG_KXLD"
+        },
+        {
+          "line": 7237,
+          "text": "#else // !CONFIG_KXLD"
+        },
+        {
+          "line": 7239,
+          "text": "\"Refusing to link non-prelinked kext: %s (no kxld support)\", getIdentifierCString());"
+        },
+        {
+          "line": 7242,
+          "text": "#endif // CONFIG_KXLD"
+        },
+        {
+          "line": 7371,
+          "text": "#if CONFIG_KXLD"
+        },
+        {
+          "line": 7389,
+          "text": "#endif // CONFIG_KXLD"
+        },
+        {
+          "line": 8816,
+          "text": "#if CONFIG_KXLD"
+        },
+        {
+          "line": 8898,
+          "text": "#else // !CONFIG_KXLD"
+        },
+        {
+          "line": 8907,
+          "text": "#endif // CONFIG_KXLD"
+        },
+        {
+          "line": 9148,
+          "text": "#ifdef CONFIG_KXLD"
+        },
+        {
+          "line": 9270,
+          "text": "#else /* !CONFIG_KXLD */"
+        },
+        {
+          "line": 9279,
+          "text": "#endif /* CONFIG_KXLD */"
+        },
+        {
+          "line": 9303,
+          "text": "#if CONFIG_KXLD"
+        },
+        {
+          "line": 9306,
+          "text": "#endif // CONFIG_KXLD"
+        },
+        {
+          "line": 9616,
+          "text": "#if CONFIG_KXLD"
+        },
+        {
+          "line": 9653,
+          "text": "#endif // CONFIG_KXLD"
+        },
+        {
+          "line": 14579,
+          "text": "#if CONFIG_KXLD"
+        },
+        {
+          "line": 14605,
+          "text": "#endif /* CONFIG_KXLD */"
+        }
+      ]
+    },
+    {
+      "path": "iokit/Kernel/IOCatalogue.cpp",
+      "sha256": "f31ba5b5f2d1593516e6a38e15d0f0f23e73ea925c116609cdbbb554d2ef516a",
+      "selected_lines": []
+    },
+    {
+      "path": "config/MASTER",
+      "sha256": "00eabfc8c3a3b3e190f1273fb1e4b95e6ee17c1ec6229a94ef40d42b2961a5a5",
+      "selected_lines": [
+        {
+          "line": 525,
+          "text": "options\t\tCONFIG_KXLD\t\t# kxld/runtime linking of kexts # <config_kxld>"
+        }
+      ]
+    },
+    {
+      "path": "config/Private.arm64.exports",
+      "sha256": "00e242d4bb226e76c5d759be06606722bcd006dba267cfc5b5e42a0b44ea9dc9",
+      "selected_lines": []
+    },
+    {
+      "path": "boot/prepare.py",
+      "sha256": "577c4bf3189695187aea3a02da7731ed990aacfb8775fce0a86db12ef8cebde8",
+      "selected_lines": [
+        {
+          "line": 38,
+          "text": "def parse_macho(data):"
+        },
+        {
+          "line": 203,
+          "text": "chosen_children = [node('memory-map', [('RAMDisk' + (str(i) if i else ''), u64(*disk))"
+        },
+        {
+          "line": 468,
+          "text": "m = parse_macho(data)"
+        },
+        {
+          "line": 471,
+          "text": "for i, seg in enumerate(m['segments']):"
+        },
+        {
+          "line": 494,
+          "text": "region = dict(name='RAMDisk' + (str(index) if index else ''), addr=cursor, size=size,"
+        }
+      ]
+    }
+  ],
+  "interpretation": "Frozen linked image has empty prelink segments, no fileset entries or kxld names; current loader supplies one linked Mach-O and RAMDisk memory-map entries. Source retains prelinked/booter-kext machinery, but the current producer does not supply Driver- kext entries. This does not prove absence of future/external consumers or disable all OSKext machinery.",
+  "changes_made_to_kernel_or_exports": false
+}
