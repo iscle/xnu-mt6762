@@ -5,7 +5,17 @@ The shipped LK fastboot download handler fails before entering XNU; see
 posttrial-audit.rst. Repacking the same kernel for the recovery partition is a
 different boot route. It requires a persistent partition write followed by
 restoration, even for a single trial. It is not a RAM-only fastboot boot image.
-No recovery write has been authorized or performed as of candidate build1.
+The user subsequently authorized the recovery trial and restoration. Build1
+was written on 2026-10-24 and its complete32MiB readback matched the candidate.
+The authenticated unlocked state and complete seccfg contents were preserved;
+dm-verity status was0. The DA acknowledged a mode2 fastboot request, but USB
+did not enumerate within30 polls and the user reported a black screen. Physical
+XNU entry is not established. After the user pressed Power, Android booted
+normally and ADB returned with flash.locked=0. No recovery reboot command had
+yet been issued. Current recovery contents after Android startup have not been
+read back, so automatic restoration cannot yet be excluded. Stock recovery
+restoration remains mandatory; see recovery-trial-install-evidence.json and
+the in-progress private record hardware/recovery-trial-20261024.
 
 Build locally, without device access::
 

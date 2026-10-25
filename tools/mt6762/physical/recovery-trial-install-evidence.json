@@ -1,0 +1,22 @@
+{
+  "status": "installed-and-readback-verified; recovery boot not yet attempted",
+  "authorization": "Explicit user approval for recovery trial and stock restoration",
+  "partition": "recovery",
+  "address": 1081344,
+  "size": 33554432,
+  "before_sha256": "470a453801aefddc83810f7b45647ecd581f1cd93a87ff51ab178561e82c2a15",
+  "after_sha256": "b57766a667c18e6ba854c81a24346c6582ad02fa31f89a93769c7086275c0005",
+  "full_readback_verified": true,
+  "complete_seccfg_preserved": true,
+  "authenticated_lock_state": 3,
+  "dm_verity_status_at_install": 0,
+  "da_fastboot_request_acknowledged": true,
+  "fastboot_enumeration_observed": false,
+  "user_observation_after_request": "black screen",
+  "user_observation_after_power_press": "Android booted",
+  "subsequent_adb_flash_locked": "0",
+  "physical_xnu_execution": "not established",
+  "recovery_contents_after_android_boot": "not read back",
+  "stock_recovery_restoration": "required, pending device connection and trial",
+  "mtkclient_commit": "fa97df7df41140e60f215f24eea82cb46faf9ff0"
+}
