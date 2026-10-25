@@ -39,12 +39,23 @@ physical_entry:
     tbnz    x9, #0, physical_halt  /* MMU must already be off */
     tbnz    x9, #2, physical_halt  /* data cache must already be off */
     tbnz    x9, #25, physical_halt /* big-endian entry is unsupported */
+    /* Only now is writing our own physically addressed Image safe. */
+    adrp    x12, physical_trace
+    add     x12, x12, :lo12:physical_trace
+    str     x20, [x12, #96]
+    str     x19, [x12, #104]
+    str     x9, [x12, #192]
+    mrs     x10, mpidr_el1
+    str     x10, [x12, #200]
+    mov     x0, #1                /* safe entry, before further admission */
+    mov     x1, xzr
+    bl      loader_trace_commit
     mrs     x10, mpidr_el1
     tst     x10, #0xffff           /* only boot CPU Aff1=0/Aff0=0 */
-    b.ne    physical_halt
-    cbz     x19, physical_halt
+    b.ne    .Lbad_mpidr
+    cbz     x19, .Lbad_fdt
     tst     x19, #7
-    b.ne    physical_halt
+    b.ne    .Lbad_fdt_alignment
 
     /* From here memory is addressed physically, with validated LE state. */
     msr     spsel, #1
@@ -79,7 +90,7 @@ physical_entry:
     msr     S3_4_C12_C9_5, x9
     isb
     mrs     x9, S3_4_C12_C9_5
-    tbz     x9, #0, physical_halt
+    tbz     x9, #0, .Lbad_gic
     msr     S3_4_C12_C11_0, xzr    /* ICH_HCR_EL2 */
 .Lgic_done:
     mrs     x9, midr_el1
@@ -134,19 +145,25 @@ physical_entry:
     ic      iallu
     dsb     sy
     isb
+    mov     x0, #2
+    mov     x1, xzr
+    bl      loader_trace_commit
     mov     x0, x19
     mov     x1, x20
     bl      loader_main
-    cbz     x0, physical_halt
+    cbz     x0, .Lbad_result
     tst     x0, #7
-    b.ne    physical_halt
+    b.ne    .Lbad_result
     ldp     x9, x16, [x0]          /* {boot_args physical pointer, entry} */
-    cbz     x9, physical_halt
+    cbz     x9, .Lbad_result
     tst     x9, #7
-    b.ne    physical_halt
-    cbz     x16, physical_halt
+    b.ne    .Lbad_result
+    cbz     x16, .Lbad_result
     tst     x16, #3
-    b.ne    physical_halt
+    b.ne    .Lbad_result
+    mov     x0, #10               /* reached branch preparation, NOT XNU entry */
+    mov     x1, xzr
+    bl      loader_trace_commit   /* preserves x9 and x16 */
     dsb     sy
     ic      iallu
     dsb     sy
@@ -156,7 +173,62 @@ physical_entry:
     mov     x2, xzr
     mov     x3, xzr
     br      x16
+
+.Lbad_mpidr:
+    mov     x1, #4
+    b       .Ltrace_refused
+.Lbad_fdt:
+    mov     x1, #2
+    b       .Ltrace_refused
+.Lbad_fdt_alignment:
+    mov     x1, #5
+    b       .Ltrace_refused
+.Lbad_gic:
+    mov     x1, #6
+    b       .Ltrace_refused
+.Lbad_result:
+    mov     x1, #7
+.Ltrace_refused:
+    mov     x0, #254
+    bl      loader_trace_commit
+    b       physical_halt
 .size _start, . - _start
+
+/* Leaf; no stack. Commit inverse pairs last, then clean this owned record to
+ * PoC using the architectural minimum data-cache line size. No other RAM is
+ * written. MMU/cache/endianness admission precedes every ordinary call. */
+.global loader_trace_commit
+.type loader_trace_commit, %function
+loader_trace_commit:
+    adrp    x12, physical_trace
+    add     x12, x12, :lo12:physical_trace
+    str     xzr, [x12, #56]       /* invalid during update */
+    ldr     x13, [x12, #48]
+    str     x13, [x12, #80]
+    str     x1, [x12, #88]
+    ldr     x13, [x12, #64]
+    add     x13, x13, #1
+    mvn     x14, x13
+    stp     x13, x14, [x12, #64]
+    str     x0, [x12, #48]
+    dsb     sy
+    mvn     x14, x0
+    str     x14, [x12, #56]
+    mrs     x17, ctr_el0
+    ubfx    x17, x17, #16, #4
+    mov     x13, #4
+    lsl     x17, x13, x17
+    sub     x14, x17, #1
+    bic     x15, x12, x14
+    add     x13, x12, #256
+.Ltrace_clean:
+    dc      cvac, x15
+    add     x15, x15, x17
+    cmp     x15, x13
+    b.lo    .Ltrace_clean
+    dsb     sy
+    ret
+.size loader_trace_commit, . - loader_trace_commit
 
 /* No stack accesses in exception paths. A UART abort re-enters with x28=1
  * and immediately halts instead of recursively attempting another diagnostic.
@@ -178,9 +250,27 @@ physical_exception:
     cmp     x23, #8
     b.eq    .Lesr_el2
     mrs     x25, esr_el1
-    b       .Lprint_esr
+    mrs     x24, far_el1
+    mrs     x26, elr_el1
+    mrs     x22, spsr_el1
+    b       .Lsave_exception
 .Lesr_el2:
     mrs     x25, esr_el2
+    mrs     x24, far_el2
+    mrs     x26, elr_el2
+    mrs     x22, spsr_el2
+.Lsave_exception:
+    adrp    x12, physical_trace
+    add     x12, x12, :lo12:physical_trace
+    str     x25, [x12, #152]
+    str     x24, [x12, #160]
+    str     x26, [x12, #168]
+    str     x22, [x12, #176]
+    lsr     x13, x23, #2
+    str     x13, [x12, #184]
+    mov     x0, #255
+    mov     x1, xzr
+    bl      loader_trace_commit
 .Lprint_esr:
     mov     w0, #'!'
     bl      .Luart_character

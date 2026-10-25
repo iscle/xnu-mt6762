@@ -8,7 +8,7 @@ and ``boot image decapsulate fail!``. See posttrial-audit.rst. Header changes
 alone cannot fix that interface mismatch; the candidate is not a working
 temporary boot route on this stock bootloader. Do not flash this boot image as
 a workaround. RECOVERY-TRIAL.rst describes a separately packaged recovery
-candidate and its required write authorization and restoration plan.
+candidate, the authorized installation and the user's instruction to retain it.
 
 This directory builds a self-contained Android boot-v2 image for a temporary
 ``fastboot boot`` trial on the inspected A25/MT6762 phone. It contains XNU and

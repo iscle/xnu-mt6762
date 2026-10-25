@@ -1,0 +1,285 @@
+{
+  "passed": true,
+  "manifest": {
+    "loader_sha256": "aef234190ccb8145d2e3b8459741e9adb70f2caa8481aa216c1b25152afaca1f",
+    "entry_index_zero_based": 22,
+    "hwcode": "0x6765",
+    "original_da2_sha256": "658ff869c301fadc1a84a9409a55b5b5bdcf01524a1f904aad29a89a07ef2dec",
+    "after_existing_patcher_sha256": "658ff869c301fadc1a84a9409a55b5b5bdcf01524a1f904aad29a89a07ef2dec",
+    "reserved_da2_sha256": "b648ba0e1b65085c6c73623da9fdc3077d46d49024edd72fdf2cbf7e3e14e93d",
+    "length": 332172,
+    "patches": [
+      {
+        "offset": "0xa340",
+        "runtime_literal_address": "0x4000a340",
+        "before": "0x4005e2a0",
+        "after": "0x40090000"
+      },
+      {
+        "offset": "0xadf8",
+        "runtime_literal_address": "0x4000adf8",
+        "before": "0x4005e2a0",
+        "after": "0x40090000"
+      }
+    ],
+    "changed_byte_offsets": [
+      "0xa340",
+      "0xa341",
+      "0xa342",
+      "0xadf8",
+      "0xadf9",
+      "0xadfa"
+    ],
+    "heap_before": [
+      "0x4005e2a0",
+      "0x68000000"
+    ],
+    "heap_after": [
+      "0x40090000",
+      "0x68000000"
+    ],
+    "bss_unchanged": [
+      "0x40051090",
+      "0x4005e2a0"
+    ],
+    "trace": [
+      "0x40084000",
+      "0x40084100"
+    ],
+    "removed_heap_bytes": 204128,
+    "scope": "Volatile DA2 allocation parameter only; no new code, callback, physical writes or flash image.",
+    "unknown_retention": [
+      "Preloader DRAM initialization",
+      "DA1 and BROM use",
+      "non-heap DMA and fixed buffers",
+      "reset/power retention"
+    ]
+  },
+  "reference_scan": {
+    "old_base_word_occurrences": [
+      "0x120",
+      "0xa340",
+      "0xadf8"
+    ],
+    "pc_relative_references": [
+      {
+        "instruction": "0x400000d8",
+        "literal": "0x40000120"
+      },
+      {
+        "instruction": "0x4000a338",
+        "literal": "0x4000a340"
+      },
+      {
+        "instruction": "0x4000a33a",
+        "literal": "0x4000a344"
+      },
+      {
+        "instruction": "0x4000add6",
+        "literal": "0x4000adf8"
+      }
+    ],
+    "scope": "Every aligned ARM/Thumb single-instruction PC-relative LDR candidate in pinned region; not whole-program indirect dataflow proof."
+  },
+  "original_code_execution": [
+    {
+      "heap_base": "0x4005e2a0",
+      "heap_size": 670702944,
+      "exact_fit": false,
+      "allocations": [
+        {
+          "start": "0x4005e2ac",
+          "bytes": 100,
+          "end_exclusive": "0x4005e310",
+          "contains_trace": false
+        },
+        {
+          "start": "0x4005e31c",
+          "bytes": 1048576,
+          "end_exclusive": "0x4015e31c",
+          "contains_trace": true
+        },
+        {
+          "start": "0x4015e328",
+          "bytes": 8192,
+          "end_exclusive": "0x40160328",
+          "contains_trace": false
+        },
+        {
+          "start": "0x40160334",
+          "bytes": 1048576,
+          "end_exclusive": "0x40260334",
+          "contains_trace": false
+        }
+      ],
+      "trace_writes_in_executed_snippets": 0,
+      "passed": true
+    },
+    {
+      "heap_base": "0x4005e2a0",
+      "heap_size": 670702944,
+      "exact_fit": true,
+      "allocations": [
+        {
+          "start": "0x4005e2ac",
+          "bytes": 670702932,
+          "end_exclusive": "0x68000000",
+          "contains_trace": true
+        }
+      ],
+      "trace_writes_in_executed_snippets": 0,
+      "passed": true
+    },
+    {
+      "heap_base": "0x40090000",
+      "heap_size": 670498816,
+      "exact_fit": false,
+      "allocations": [
+        {
+          "start": "0x4009000c",
+          "bytes": 100,
+          "end_exclusive": "0x40090070",
+          "contains_trace": false
+        },
+        {
+          "start": "0x4009007c",
+          "bytes": 1048576,
+          "end_exclusive": "0x4019007c",
+          "contains_trace": false
+        },
+        {
+          "start": "0x40190088",
+          "bytes": 8192,
+          "end_exclusive": "0x40192088",
+          "contains_trace": false
+        },
+        {
+          "start": "0x40192094",
+          "bytes": 1048576,
+          "end_exclusive": "0x40292094",
+          "contains_trace": false
+        }
+      ],
+      "trace_writes_in_executed_snippets": 0,
+      "passed": true
+    },
+    {
+      "heap_base": "0x40090000",
+      "heap_size": 670498816,
+      "exact_fit": true,
+      "allocations": [
+        {
+          "start": "0x4009000c",
+          "bytes": 670498804,
+          "end_exclusive": "0x68000000",
+          "contains_trace": false
+        }
+      ],
+      "trace_writes_in_executed_snippets": 0,
+      "passed": true
+    }
+  ],
+  "negative_cases_rejected": [
+    "wrong_original",
+    "truncated",
+    "already_reserved",
+    "protected_span_0x0",
+    "protected_span_0x7e8",
+    "protected_span_0xb84",
+    "protected_span_0xbfc",
+    "protected_span_0xe74",
+    "protected_span_0xa338",
+    "protected_span_0xac18"
+  ],
+  "wrapper_order": [
+    "existing_patcher",
+    "manifest"
+  ],
+  "scope": "Model OS critical sections only. Original getter, heap initialization, free-list allocation and BSS-clear code execute. No DA USB/DRAM/DMA path executes.",
+  "retention_claim": "The reserved interval is excluded from this allocator only. Overall trace survival remains unproven.",
+  "existing_mtkclient_patcher": {
+    "passed": true,
+    "reviewed_source_methods": [
+      {
+        "path": "mtkclient/Library/utils.py",
+        "sha256": "31f90a6ed8e64b684ce0d4cca487fdab850559925346c978e4e3dd5ac3449041",
+        "method": "find_binary"
+      },
+      {
+        "path": "mtkclient/Library/mtk_class.py",
+        "sha256": "0bdbb0749bca9d865411e0e0ef42bed0e0d3bc709bf83f0f4057528485b7c604",
+        "method": "patch_preloader_security_da2"
+      },
+      {
+        "path": "mtkclient/Library/DA/xflash/extension/xflash.py",
+        "sha256": "e617af70d74be10639b31b4565717e6ef5ec8905059b9f954d7e3daae0c7ab9f",
+        "method": "patch_da2"
+      }
+    ],
+    "patcher_messages": [
+      "Patched \"Patched loader msg\" in preloader",
+      "Patched \"get_vfy_policy\" in preloader",
+      "Patching da2 ...",
+      "Security check patched",
+      "DA version anti-rollback patched",
+      "SBC patched to be disabled",
+      "Register read/write not allowed patched"
+    ],
+    "manifest": {
+      "loader_sha256": "aef234190ccb8145d2e3b8459741e9adb70f2caa8481aa216c1b25152afaca1f",
+      "entry_index_zero_based": 22,
+      "hwcode": "0x6765",
+      "original_da2_sha256": "658ff869c301fadc1a84a9409a55b5b5bdcf01524a1f904aad29a89a07ef2dec",
+      "after_existing_patcher_sha256": "c10e62b2d0b2c255a7030a568676a554659276c4b63a824fe42e5cac028c769e",
+      "reserved_da2_sha256": "04a293ab057fed8278e12cbde385f2ad732aebcd9d0878fe16691212c8cdca84",
+      "length": 332172,
+      "patches": [
+        {
+          "offset": "0xa340",
+          "runtime_literal_address": "0x4000a340",
+          "before": "0x4005e2a0",
+          "after": "0x40090000"
+        },
+        {
+          "offset": "0xadf8",
+          "runtime_literal_address": "0x4000adf8",
+          "before": "0x4005e2a0",
+          "after": "0x40090000"
+        }
+      ],
+      "changed_byte_offsets": [
+        "0xa340",
+        "0xa341",
+        "0xa342",
+        "0xadf8",
+        "0xadf9",
+        "0xadfa"
+      ],
+      "heap_before": [
+        "0x4005e2a0",
+        "0x68000000"
+      ],
+      "heap_after": [
+        "0x40090000",
+        "0x68000000"
+      ],
+      "bss_unchanged": [
+        "0x40051090",
+        "0x4005e2a0"
+      ],
+      "trace": [
+        "0x40084000",
+        "0x40084100"
+      ],
+      "removed_heap_bytes": 204128,
+      "scope": "Volatile DA2 allocation parameter only; no new code, callback, physical writes or flash image.",
+      "unknown_retention": [
+        "Preloader DRAM initialization",
+        "DA1 and BROM use",
+        "non-heap DMA and fixed buffers",
+        "reset/power retention"
+      ]
+    },
+    "scope": "Executed original pure methods with log collector; no client, module initialization or transport."
+  }
+}

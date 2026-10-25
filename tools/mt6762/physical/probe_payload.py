@@ -17,6 +17,7 @@ import time
 import xml.etree.ElementTree as ET
 
 import bootimg
+import trace_record
 
 
 def digest(data):
@@ -224,6 +225,8 @@ def main():
     parser.add_argument('--visible-console', action='store_true',
                         help='capture video-console diagnostic; requires separate visual result review')
     parser.add_argument('--seconds', type=float, default=40)
+    parser.add_argument('--exception-at', type=lambda value:int(value, 0),
+                        help='QEMU-only hardware breakpoint at loader_main, then execute owned zero padding to test fatal trace')
     args = parser.parse_args()
     if args.visible_console and (not args.display_fixture or args.static_memory):
         parser.error('--visible-console requires positive --display-fixture')
@@ -231,6 +234,11 @@ def main():
     image = bootimg.parse(args.image.read_bytes())
     bootimg.kernel_gzip_info(image.parts['kernel'])
     raw = gzip.decompress(image.parts['kernel'])
+    if args.exception_at is not None:
+        if args.static_memory or args.display_fixture or not 0x40084100 <= args.exception_at < 0x40200000:
+            parser.error('exception test requires a bounded loader_main address and no other fixtures')
+        if raw[0x3ffc:0x4000] != bytes(4):
+            raise ValueError('Expected undefined instruction in owned pre-trace padding')
     entries = bootimg.dt_table(image.parts['dtb'])['entries']
     if len(entries) != 1 or image.address('kernel') != 0x40080000 or image.address('dtb') != 0x47880000:
         raise ValueError('unsupported physical image addresses/DT selection')
@@ -249,6 +257,11 @@ def main():
                   synthetic_display=args.display_fixture,
                   manual_visible_console_review_required=args.visible_console,
                   external_payloads=['image-derived Image', 'image-derived runtime FDT'])
+    trace_bytes = raw[trace_record.OFFSET:trace_record.OFFSET + trace_record.SIZE]
+    traced = trace_bytes[:8] == trace_record.MAGIC
+    if traced:
+        identity = trace_bytes[16:48]
+        report['trace_file'] = trace_record.decode(trace_bytes, identity)
     with tempfile.TemporaryDirectory(prefix='mtk-physical-') as tmp:
         gdb = Path(tmp) / 'gdb'
         qmp_path = Path(tmp) / 'qmp'
@@ -270,6 +283,14 @@ def main():
                         raise RuntimeError('QEMU GDB startup failed')
                     time.sleep(.02)
                 rsp = RSP(gdb)
+                qmp = QMP(qmp_path)
+                if traced:
+                    before = args.output / 'trace-before.bin'
+                    qmp.command('human-monitor-command', {'command-line':
+                        f'pmemsave {trace_record.ADDRESS:#x} {trace_record.SIZE:#x} "{before.resolve()}"'})
+                    report['trace_before'] = trace_record.decode(before.read_bytes(), identity)
+                    if before.read_bytes() != trace_bytes:
+                        raise RuntimeError('QEMU physical trace differs from loaded initialized Image')
                 report['gdb_capabilities'] = rsp.packet('qSupported:multiprocess+;qXfer:features:read+')
                 regs = rsp.registers(args.output)
                 report['registers'] = regs
@@ -279,11 +300,23 @@ def main():
                     raise RuntimeError('unexpected initial EL')
                 for name, value in [('pc', 0x40080000), ('x0', 0x47880000), ('x1', 0), ('x2', 0), ('x3', 0)]:
                     rsp.write(regs[name], value)
+                if args.exception_at is not None:
+                    if not traced or rsp.packet(f'Z1,{args.exception_at:x},4') != 'OK':
+                        raise RuntimeError('Cannot install explicit QEMU exception-test breakpoint')
+                    rsp.packet('c', response=False)
+                    report['exception_break_reply'] = rsp.receive()
+                    if rsp.read(regs['pc']) != args.exception_at:
+                        raise RuntimeError('Exception-test breakpoint not reached')
+                    if rsp.packet(f'z1,{args.exception_at:x},4') != 'OK':
+                        raise RuntimeError('Cannot remove exception-test breakpoint')
+                    rsp.write(regs['pc'], 0x40083ffc)
+                    report['exception_injection'] = dict(pc=0x40083ffc,
+                        method='QEMU register-only diversion into owned Image zero padding')
                 rsp.packet('c', response=False)
                 deadline = time.monotonic() + args.seconds
                 while time.monotonic() < deadline and proc.poll() is None:
                     text = (args.output / 'serial.log').read_text(errors='replace')
-                    if 'MT6762_IIG_PROBE_DONE' in text or 'Watchdog policy unchanged; no XNU entry.' in text:
+                    if 'MT6762_IIG_PROBE_DONE' in text or 'Watchdog policy unchanged; no XNU entry.' in text or (args.exception_at is not None and '!1:' in text):
                         break
                     time.sleep(.1)
                 rsp.sock.sendall(b'\x03')
@@ -292,8 +325,13 @@ def main():
                     ['pc', 'cpsr', 'x0', 'x1', 'x2', 'x19', 'x20', 'sp',
                      'ESR_EL1', 'ELR_EL1', 'FAR_EL1', 'SCTLR_EL1', 'TCR_EL1', 'CNTFRQ_EL0']}
                 rsp.sock.close()
+                if traced:
+                    after = args.output / 'trace-after.bin'
+                    qmp.command('human-monitor-command', {'command-line':
+                        f'pmemsave {trace_record.ADDRESS:#x} {trace_record.SIZE:#x} "{after.resolve()}"'})
+                    report['trace_after'] = trace_record.decode(after.read_bytes(), identity)
+                    report['trace_after_sha256'] = digest(after.read_bytes())
                 if args.display_fixture:
-                    qmp = QMP(qmp_path)
                     report['display_state'] = json.loads(qmp.command('qom-get',
                         {'path':'/machine', 'property':'lab-display-state'}))
                     framebuffer = args.output / 'framebuffer.bgra'
@@ -304,7 +342,7 @@ def main():
                     report['framebuffer_nonzero_bytes'] = sum(byte != 0 for byte in pixels)
                     from PIL import Image
                     Image.frombytes('RGBA', (384, 854), pixels[:384*854*4], 'raw', 'BGRA').convert('RGB').save(args.output / 'framebuffer.png')
-                    qmp.stream.close(); qmp.sock.close()
+                qmp.stream.close(); qmp.sock.close()
             finally:
                 proc.terminate()
                 try:
@@ -317,7 +355,10 @@ def main():
         result=text.count('mt6762_iig_test_result=1 error=0 size=4') == 2,
         cases=text.count('mt6762_iig_test_cases=205 error=0 size=4') == 2,
         done='MT6762_IIG_PROBE_DONE' in text)
-    if args.static_memory:
+    if args.exception_at is not None:
+        report['checks'] = dict(exception_uart='!1:' in text,
+                                no_xnu='Entering XNU:' not in text and 'Darwin Kernel' not in text)
+    elif args.static_memory:
         report['checks'] = dict(refused='MT6762 PHYSICAL REFUSED: no-window' in text,
                                 no_xnu='Entering XNU:' not in text and 'Darwin Kernel' not in text)
     else:
@@ -338,6 +379,17 @@ def main():
             # The page-size log is emitted by XNU before console selection.
             report['checks']['xnu'] = report['checks']['pages']
     report['automated_checks_passed'] = all(report['checks'].values())
+    if traced:
+        final = report['trace_after']
+        report['checks']['trace_initialized_before_execution'] = not report['trace_before']['executed']
+        report['checks']['trace_executed'] = final['executed']
+        if args.exception_at is not None:
+            report['checks']['trace_exception'] = final['phase'] == 255 and final['exception_el'] == 1 and final['elr'] == 0x40083ffc
+        elif args.static_memory:
+            report['checks']['trace_refused_no_window'] = final['phase'] == 254 and final['detail'] == 0x208
+        else:
+            report['checks']['trace_jump_ready'] = final['phase'] == 10 and final['entry'] >= 0xd0000000
+        report['automated_checks_passed'] = all(report['checks'].values())
     report['passed'] = None if args.visible_console else report['automated_checks_passed']
     (args.output / 'report.json').write_text(json.dumps(report, indent=2) + '\n')
     print(json.dumps(dict(output=str(args.output), passed=report['passed'], checks=report['checks'])))

@@ -17,6 +17,6 @@
   "subsequent_adb_flash_locked": "0",
   "physical_xnu_execution": "not established",
   "recovery_contents_after_android_boot": "not read back",
-  "stock_recovery_restoration": "required, pending device connection and trial",
+  "stock_recovery_restoration": "not performed; later user direction was to retain diagnostic and focus on iOS boot",
   "mtkclient_commit": "fa97df7df41140e60f215f24eea82cb46faf9ff0"
 }

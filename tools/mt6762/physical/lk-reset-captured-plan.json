@@ -1,0 +1,77 @@
+{
+  "purpose": "Declarative offline plan for parent-reported register snapshot; no execution interface.",
+  "authority": "Exact LK reset instructions tested by audit_lk_reset.py. Snapshot supplied by parent, not acquired by this script.",
+  "mode_argument": 1,
+  "expected_preconditions": {
+    "0x10007000": "0x64",
+    "0x1000700c": "0x0",
+    "0x10007024": "0x20002000",
+    "0x10007048": "0x0",
+    "0x1000d004": "0x1"
+  },
+  "ordered_plan": [
+    {
+      "write32": "0x10007008",
+      "value": "0x1971"
+    },
+    {
+      "read_compare": "0x10007000",
+      "value": "0x64"
+    },
+    {
+      "read_compare": "0x10007024",
+      "value": "0x20002000"
+    },
+    {
+      "write32": "0x10007000",
+      "value": "0x22000024",
+      "formula": "(old_mode & ~0x58) | 0x22000004"
+    },
+    {
+      "write32": "0x10007024",
+      "value": "0x20002000",
+      "formula": "(old_nonrst2 & ~0x2000) | 0x2000"
+    },
+    {
+      "read_compare": "0x1000700c",
+      "value": "0x0"
+    },
+    {
+      "read_compare": "0x10007048",
+      "value": "0x0"
+    },
+    {
+      "write32": "0x10007048",
+      "value": "0x95000000",
+      "formula": "(old_latch & ~0x20000) | 0x95000000"
+    },
+    {
+      "delay_us": 100
+    },
+    {
+      "read": "0x10007000",
+      "purpose": "stock diagnostic read, no fixed keyed readback assumed"
+    },
+    {
+      "write32": "0x1000d004",
+      "value": "0x0",
+      "phase_boundary": "PWRAP disabled: no subsequent PMIC transaction assumed safe"
+    },
+    {
+      "delay_us": 10
+    },
+    {
+      "write32": "0x10007014",
+      "value": "0x1209",
+      "phase_boundary": "AP reset requested; transport reply not guaranteed"
+    }
+  ],
+  "conditions": [
+    "Revalidate all captured preconditions before beginning; do not silently substitute stale values.",
+    "Abort before writes if snapshot or DA ownership/quiescence assumptions do not hold.",
+    "No automatic retry, rollback after PWRAP disable, security change, BCB change or download-flag modification.",
+    "Low nibble0 avoids known LK selector2 branch, but does not establish preloader routing.",
+    "SECURITY_AO download flag0x1001a080 is outside this exact LK reset routine and remains untouched.",
+    "No proof of physical reset success or equivalence of DA transaction timing to original LK delays."
+  ]
+}

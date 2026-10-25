@@ -4,6 +4,7 @@ import argparse
 import gzip
 import hashlib
 import json
+import os
 from pathlib import Path
 import struct
 import subprocess
@@ -12,6 +13,7 @@ import sys
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent / 'boot'))
 import prepare
+import trace_record
 
 
 def sha(data):
@@ -56,11 +58,14 @@ def main():
     if out.exists():
         parser.error('output must be new')
     source_paths = [HERE/name for name in ('start.S','loader.c','loader.ld',
-        'fdt_handoff.c','fdt_handoff.h','diagnostic_console.h','build_payload.py','bootimg.py')]
+        'fdt_handoff.c','fdt_handoff.h','diagnostic_console.h','loader_trace.h',
+        'trace_record.py','build_payload.py','bootimg.py')]
     source_paths += [Path(prepare.__file__), HERE.parent/'hardware/display-touch/mt6762_display_core.h']
     sources_before = {str(p.relative_to(HERE.parent)):sha(p.read_bytes()) for p in source_paths}
     original_kernel = args.kernel.read_bytes()
     original_diagnostic = args.diagnostic.read_bytes()
+    trace_identity = hashlib.sha256(os.urandom(32) + original_kernel +
+        json.dumps(sources_before, sort_keys=True).encode()).digest()
     template_sha = sha(args.template.read_bytes())
     kernel = bytearray(original_kernel)
     macho = prepare.parse_macho(kernel)
@@ -128,20 +133,27 @@ def main():
             raise ValueError('unsupported assembly input path')
         assembly += f'.balign 16\n.global {name}_blob\n{name}_blob:\n.incbin "{path}"\n'
     (out/'payload.S').write_text(assembly)
+    (out/'trace.bin').write_bytes(trace_record.initialized(trace_identity))
+    trace_assembly = '.section .trace,"aw"\n.balign 64\n.global physical_trace\nphysical_trace:\n'
+    trace_assembly += '.incbin "' + str(out/'trace.bin') + '"\n'
+    (out/'trace.S').write_text(trace_assembly)
     clang = str(args.llvm/'clang')
     common = [clang,'--target=aarch64-none-elf','-mcpu=cortex-a53','-mgeneral-regs-only',
               '-mstrict-align','-ffixed-x28',
               '-ffreestanding','-fno-builtin','-fno-stack-protector','-fno-pic','-O2',
               '-Wall','-Wextra','-Werror','-I'+str(HERE),'-I'+str(out)]
     commands = []
-    for source in (HERE/'start.S',HERE/'loader.c',HERE/'fdt_handoff.c',out/'payload.S'):
+    for source in (HERE/'start.S',HERE/'loader.c',HERE/'fdt_handoff.c',out/'payload.S',out/'trace.S'):
         command_line = common+['-c',str(source),'-o',str(out/(source.stem+'.o'))]
         commands.append(command_line);subprocess.run(command_line,check=True)
     command_line = [str(args.llvm/'ld.lld'),'-T',str(HERE/'loader.ld'),'-o',str(out/'loader.elf')]
-    command_line += [str(out/(name+'.o')) for name in ('start','loader','fdt_handoff','payload')]
+    command_line += [str(out/(name+'.o')) for name in ('start','loader','fdt_handoff','payload','trace')]
     commands.append(command_line);subprocess.run(command_line,check=True)
     command_line = [str(args.llvm/'llvm-objcopy'),'-O','binary',str(out/'loader.elf'),str(out/'Image')]
     commands.append(command_line);subprocess.run(command_line,check=True)
+    raw_image = (out/'Image').read_bytes()
+    if raw_image[trace_record.OFFSET:trace_record.OFFSET + trace_record.SIZE] != trace_record.initialized(trace_identity):
+        raise ValueError('trace record does not match fixed source Image offset')
     # Empty newc archive; XNU's diagnostic executable is embedded in Image.
     name=b'TRAILER!!!\0'; fields=[0,0,0,0,1,0,0,0,0,0,0,len(name),0]
     cpio=b'070701'+b''.join(f'{field:08x}'.encode() for field in fields)+name
@@ -164,6 +176,10 @@ def main():
         verified_framebuffer_boot_override='serial=0 retains video console through PID1',
         vm_page_size=16384,hardware_page_size=4096,native_peripheral_ownership=False,
         watchdog_modified=False,storage_writes=False,usb_adb_available=False,
+        trace=dict(identity=trace_identity.hex(), offset=trace_record.OFFSET,
+                   physical_address=trace_record.ADDRESS, size=trace_record.SIZE,
+                   initialized_sha256=sha(trace_record.initialized(trace_identity)),
+                   physical_retention_proven=False, final_marker_proves_xnu_entry=False),
         framebuffer='Conditional strict live scanout admission; otherwise no display writes',
         limitations=['No full iOS GUI, charging, touch or button acceptance.',
                      'Stock AP watchdog policy remains; exact reset timing/routing is unverified.',

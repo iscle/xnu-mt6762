@@ -1,0 +1,110 @@
+{
+  "date_utc": "2026-10-25",
+  "purpose": "Restart retained trace recovery through audited LK register sequence from an existing DA session",
+  "recovery_sha256": "2a4d62a60690c59e26a0004b6efaea56f433059a6f84b6109d113c1d7a364173",
+  "before_reset": {
+    "registers": {
+      "0x10007000": "0x64",
+      "0x1000700c": "0x0",
+      "0x10007024": "0x20002000",
+      "0x10007048": "0x0",
+      "0x1000d004": "0x1",
+      "0x1001a080": "0x444cfffc"
+    },
+    "partitions": {
+      "recovery": "2a4d62a60690c59e26a0004b6efaea56f433059a6f84b6109d113c1d7a364173",
+      "para": "67bef7ae449f68b9be4c8bb2ff77d559135730ced20cf9e8013d4fa2716cf310",
+      "seccfg": "bb95c846d18259d48c89ae93540dc2fe438f8ca9c07dd812b3c76555f0744b4e"
+    },
+    "timing": "Host-paced minimum delays; physical equivalence unproven",
+    "mtkclient_commit": "fa97df7df41140e60f215f24eea82cb46faf9ff0",
+    "seccfg_source_sha256": "274743b51dd3b8a648fb0cc96bd872205d8f892ac88082a7b3737671b05a0be7"
+  },
+  "reset_script_sha256": "f534a49d34164e64e97080ffaa0abe764a0555fa2f6175c0b886ad4cfe50d71c",
+  "journal": [
+    {
+      "event": "guards-passed"
+    },
+    {
+      "event": "write-intent",
+      "address": "0x10007008",
+      "value": "0x1971"
+    },
+    {
+      "event": "write-result",
+      "address": "0x10007008",
+      "acknowledged": true
+    },
+    {
+      "event": "write-intent",
+      "address": "0x10007000",
+      "value": "0x22000024"
+    },
+    {
+      "event": "write-result",
+      "address": "0x10007000",
+      "acknowledged": true
+    },
+    {
+      "event": "write-intent",
+      "address": "0x10007024",
+      "value": "0x20002000"
+    },
+    {
+      "event": "write-result",
+      "address": "0x10007024",
+      "acknowledged": true
+    },
+    {
+      "event": "write-intent",
+      "address": "0x10007048",
+      "value": "0x95000000"
+    },
+    {
+      "event": "write-result",
+      "address": "0x10007048",
+      "acknowledged": true
+    },
+    {
+      "event": "diagnostic-mode",
+      "value": "0x24"
+    },
+    {
+      "event": "terminal-sequence-intent",
+      "writes": [
+        [
+          "0x1000d004",
+          "0x0"
+        ],
+        [
+          "0x10007014",
+          "0x1209"
+        ]
+      ]
+    },
+    {
+      "event": "terminal-sequence-result",
+      "pwrap_acknowledged": true,
+      "reset_acknowledged": true,
+      "pwrap_error": null,
+      "reset_error": null,
+      "interpretation": "Command attempt only; reset/boot success requires observation"
+    }
+  ],
+  "observations": [
+    "BROM USB VID0e8d PID0003 enumerated within7seconds after terminal reset command",
+    "First fresh reader opened USB but pinned mtkclient connect path skipped preloader initialization when no state file existed; no DA uploaded",
+    "USB subsequently disappeared; exact cause not established",
+    "Revised fresh reader waits for connection, with explicit initialization and completed-capture requirement"
+  ],
+  "new_partition_writes_in_reset_attempt": false,
+  "download_flag_modified_by_reset_script": false,
+  "stock_restoration_performed": false,
+  "physical_xnu_execution_proven": false,
+  "trace_capture_completed": false,
+  "limitations": [
+    "Host-paced register operations do not prove timing equivalence to original LK",
+    "DA autonomous PMIC activity and reset retention unproved",
+    "USB enumeration is not evidence of recovery/kernel entry"
+  ]
+}

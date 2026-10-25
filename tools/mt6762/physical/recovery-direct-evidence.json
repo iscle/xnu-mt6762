@@ -1,5 +1,5 @@
 {
-  "status": "direct recovery request armed and reset; post-trial capture/restoration pending",
+  "status": "direct recovery request retained; post-trial capture complete; trace build2 installed",
   "date_utc": "2026-10-25",
   "recovery_sha256_before_and_after": "b57766a667c18e6ba854c81a24346c6582ad02fa31f89a93769c7086275c0005",
   "para_before_sha256": "ac736de13809ea303d20d4c10e5c62bb83b6451ead15ae32569a445ee85814a1",
@@ -15,5 +15,19 @@
   "dm_verity_status": 0,
   "user_screen_observation": "black",
   "xnu_execution": "not established",
-  "restoration": "required and pending connection; do not treat as completed"
+  "restoration": "not performed; user explicitly requested retaining diagnostic and focusing on iOS boot",
+  "next_device_operation": "guarded software reset and volatile-DA RAM trace capture",
+  "post_trial": {
+    "recovery_and_para_unchanged": true,
+    "seccfg_unchanged": true,
+    "expdb_changed_bytes": 3,
+    "new_retained_lk_or_kernel_text": false,
+    "preloader_current_log": "download-agent entry; no retained LK log",
+    "physical_xnu_execution_proven": false
+  },
+  "trace_upgrade": {
+    "recovery_sha256": "2a4d62a60690c59e26a0004b6efaea56f433059a6f84b6109d113c1d7a364173",
+    "full_readback_verified": true,
+    "para_and_seccfg_unchanged": true
+  }
 }

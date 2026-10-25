@@ -1,0 +1,732 @@
+{
+  "lk_sha256": "5badc0dc942b0babdca3da13c7e07f3b5f1e57b66d503414b7f80effe8ce891a",
+  "bounded_original_code": [
+    {
+      "name": "mtk_arch_reset",
+      "start": "0x48043274",
+      "end_exclusive": "0x4804333e",
+      "sha256": "1081417c3a6ab5419a9d528962eb764701affa0ec9a1a1b3644565bfae409144",
+      "instructions": [
+        {
+          "va": "0x48043274",
+          "instruction": "push {r4, lr}"
+        },
+        {
+          "va": "0x48043276",
+          "instruction": "mov r4, r0"
+        },
+        {
+          "va": "0x48043278",
+          "instruction": "ldr r0, [pc, #0xc4]"
+        },
+        {
+          "va": "0x4804327a",
+          "instruction": "add r0, pc"
+        },
+        {
+          "va": "0x4804327c",
+          "instruction": "bl #0x48027ff8"
+        },
+        {
+          "va": "0x48043280",
+          "instruction": "ldr r0, [pc, #0xc0]"
+        },
+        {
+          "va": "0x48043282",
+          "instruction": "ldr r1, [pc, #0xc4]"
+        },
+        {
+          "va": "0x48043284",
+          "instruction": "add r0, pc"
+        },
+        {
+          "va": "0x48043286",
+          "instruction": "add r1, pc"
+        },
+        {
+          "va": "0x48043288",
+          "instruction": "bl #0x48027ff8"
+        },
+        {
+          "va": "0x4804328c",
+          "instruction": "movw r2, #0x7008"
+        },
+        {
+          "va": "0x48043290",
+          "instruction": "mov.w r3, #0x7000"
+        },
+        {
+          "va": "0x48043294",
+          "instruction": "movt r2, #0x1000"
+        },
+        {
+          "va": "0x48043298",
+          "instruction": "movw r1, #0x1971"
+        },
+        {
+          "va": "0x4804329c",
+          "instruction": "movt r3, #0x1000"
+        },
+        {
+          "va": "0x480432a0",
+          "instruction": "str r1, [r2]"
+        },
+        {
+          "va": "0x480432a2",
+          "instruction": "movw r2, #0x7024"
+        },
+        {
+          "va": "0x480432a6",
+          "instruction": "ldr r3, [r3]"
+        },
+        {
+          "va": "0x480432a8",
+          "instruction": "movt r2, #0x1000"
+        },
+        {
+          "va": "0x480432ac",
+          "instruction": "ldr r2, [r2]"
+        },
+        {
+          "va": "0x480432ae",
+          "instruction": "bic r3, r3, #0x58"
+        },
+        {
+          "va": "0x480432b2",
+          "instruction": "orr r3, r3, #0x22000000"
+        },
+        {
+          "va": "0x480432b6",
+          "instruction": "orr r3, r3, #4"
+        },
+        {
+          "va": "0x480432ba",
+          "instruction": "bic r2, r2, #0x2000"
+        },
+        {
+          "va": "0x480432be",
+          "instruction": "cbz r4, #0x480432c4"
+        },
+        {
+          "va": "0x480432c0",
+          "instruction": "orr r2, r2, #0x2000"
+        },
+        {
+          "va": "0x480432c4",
+          "instruction": "mov.w r4, #0x7000"
+        },
+        {
+          "va": "0x480432c8",
+          "instruction": "movw r0, #0x7024"
+        },
+        {
+          "va": "0x480432cc",
+          "instruction": "movw r1, #0x700c"
+        },
+        {
+          "va": "0x480432d0",
+          "instruction": "movt r4, #0x1000"
+        },
+        {
+          "va": "0x480432d4",
+          "instruction": "movt r0, #0x1000"
+        },
+        {
+          "va": "0x480432d8",
+          "instruction": "movt r1, #0x1000"
+        },
+        {
+          "va": "0x480432dc",
+          "instruction": "str r3, [r4]"
+        },
+        {
+          "va": "0x480432de",
+          "instruction": "str r2, [r0]"
+        },
+        {
+          "va": "0x480432e0",
+          "instruction": "ldr r3, [r1]"
+        },
+        {
+          "va": "0x480432e2",
+          "instruction": "cbnz r3, #0x480432f8"
+        },
+        {
+          "va": "0x480432e4",
+          "instruction": "movw r2, #0x7048"
+        },
+        {
+          "va": "0x480432e8",
+          "instruction": "movt r2, #0x1000"
+        },
+        {
+          "va": "0x480432ec",
+          "instruction": "ldr r3, [r2]"
+        },
+        {
+          "va": "0x480432ee",
+          "instruction": "bic r3, r3, #0x20000"
+        },
+        {
+          "va": "0x480432f2",
+          "instruction": "orr r3, r3, #0x95000000"
+        },
+        {
+          "va": "0x480432f6",
+          "instruction": "str r3, [r2]"
+        },
+        {
+          "va": "0x480432f8",
+          "instruction": "movs r0, #0x64"
+        },
+        {
+          "va": "0x480432fa",
+          "instruction": "ldr r4, [pc, #0x50]"
+        },
+        {
+          "va": "0x480432fc",
+          "instruction": "bl #0x48042a1c"
+        },
+        {
+          "va": "0x48043300",
+          "instruction": "ldr r0, [pc, #0x4c]"
+        },
+        {
+          "va": "0x48043302",
+          "instruction": "mov.w r3, #0x7000"
+        },
+        {
+          "va": "0x48043306",
+          "instruction": "movt r3, #0x1000"
+        },
+        {
+          "va": "0x4804330a",
+          "instruction": "add r4, pc"
+        },
+        {
+          "va": "0x4804330c",
+          "instruction": "ldr r2, [r3]"
+        },
+        {
+          "va": "0x4804330e",
+          "instruction": "mov r1, r4"
+        },
+        {
+          "va": "0x48043310",
+          "instruction": "add r0, pc"
+        },
+        {
+          "va": "0x48043312",
+          "instruction": "bl #0x48027ff8"
+        },
+        {
+          "va": "0x48043316",
+          "instruction": "ldr r0, [pc, #0x3c]"
+        },
+        {
+          "va": "0x48043318",
+          "instruction": "mov r1, r4"
+        },
+        {
+          "va": "0x4804331a",
+          "instruction": "add r0, pc"
+        },
+        {
+          "va": "0x4804331c",
+          "instruction": "bl #0x48027ff8"
+        },
+        {
+          "va": "0x48043320",
+          "instruction": "ldr r0, [pc, #0x34]"
+        },
+        {
+          "va": "0x48043322",
+          "instruction": "mov r1, r4"
+        },
+        {
+          "va": "0x48043324",
+          "instruction": "add r0, pc"
+        },
+        {
+          "va": "0x48043326",
+          "instruction": "bl #0x48027ff8"
+        },
+        {
+          "va": "0x4804332a",
+          "instruction": "bl #0x48005f50"
+        },
+        {
+          "va": "0x4804332e",
+          "instruction": "movw r3, #0x7014"
+        },
+        {
+          "va": "0x48043332",
+          "instruction": "movw r2, #0x1209"
+        },
+        {
+          "va": "0x48043336",
+          "instruction": "movt r3, #0x1000"
+        },
+        {
+          "va": "0x4804333a",
+          "instruction": "str r2, [r3]"
+        },
+        {
+          "va": "0x4804333c",
+          "instruction": "b #0x4804333c"
+        }
+      ]
+    },
+    {
+      "name": "pwrap_disable",
+      "start": "0x48005f50",
+      "end_exclusive": "0x48005f70",
+      "sha256": "637181277f99bdbea292e86ce4c0a114e9b896a67d0ea1325d0965b5afb268ff",
+      "instructions": [
+        {
+          "va": "0x48005f50",
+          "instruction": "ldr r0, [pc, #0x1c]"
+        },
+        {
+          "va": "0x48005f52",
+          "instruction": "push {r3, lr}"
+        },
+        {
+          "va": "0x48005f54",
+          "instruction": "add r0, pc"
+        },
+        {
+          "va": "0x48005f56",
+          "instruction": "bl #0x48027ff8"
+        },
+        {
+          "va": "0x48005f5a",
+          "instruction": "movw r3, #0xd004"
+        },
+        {
+          "va": "0x48005f5e",
+          "instruction": "movs r2, #0"
+        },
+        {
+          "va": "0x48005f60",
+          "instruction": "movt r3, #0x1000"
+        },
+        {
+          "va": "0x48005f64",
+          "instruction": "movs r0, #0xa"
+        },
+        {
+          "va": "0x48005f66",
+          "instruction": "str r2, [r3]"
+        },
+        {
+          "va": "0x48005f68",
+          "instruction": "pop.w {r3, lr}"
+        },
+        {
+          "va": "0x48005f6c",
+          "instruction": "b.w #0x48042a90"
+        }
+      ]
+    },
+    {
+      "name": "udelay_thunk",
+      "start": "0x48042a90",
+      "end_exclusive": "0x48042a94",
+      "sha256": "c30e8bd8e6ad74513c2af86c170323ba1d9c79b9f92f778105151f71b485ee32",
+      "instructions": [
+        {
+          "va": "0x48042a90",
+          "instruction": "b.w #0x48042a1c"
+        }
+      ]
+    },
+    {
+      "name": "us_to_13MHz_ticks",
+      "start": "0x4804290c",
+      "end_exclusive": "0x48042926",
+      "sha256": "795d8c8dba7a6fbd74b8fa0e74577d945dbde630a8012a90c620af5100dcbae6",
+      "instructions": [
+        {
+          "va": "0x4804290c",
+          "instruction": "movw r3, #0x3b13"
+        },
+        {
+          "va": "0x48042910",
+          "instruction": "movt r3, #0x13b1"
+        },
+        {
+          "va": "0x48042914",
+          "instruction": "cmp r0, r3"
+        },
+        {
+          "va": "0x48042916",
+          "instruction": "ittte ls"
+        },
+        {
+          "va": "0x48042918",
+          "instruction": "lslls r3, r0, #4"
+        },
+        {
+          "va": "0x4804291a",
+          "instruction": "subls.w r3, r3, r0, lsl #2"
+        },
+        {
+          "va": "0x4804291e",
+          "instruction": "addls r0, r0, r3"
+        },
+        {
+          "va": "0x48042920",
+          "instruction": "movhi.w r0, #-1"
+        },
+        {
+          "va": "0x48042924",
+          "instruction": "bx lr"
+        }
+      ]
+    }
+  ],
+  "bsp_reference": [
+    {
+      "path": "vendor/mediatek/proprietary/bootable/bootloader/lk/platform/mt6765/mtk_wdt.c",
+      "sha256": "3f8a1bc74d40a6ebfcd198919bb9455d397fe804fa71fcf566242691a353a9f4"
+    },
+    {
+      "path": "vendor/mediatek/proprietary/bootable/bootloader/lk/platform/mt6765/include/platform/mtk_wdt.h",
+      "sha256": "c86b5e60fa925d022a3aa41602fb0a9efb7eee1d45580449118dc8185ae1093e"
+    }
+  ],
+  "cases": [
+    {
+      "mode": 0,
+      "status": "0x0",
+      "initial_mode": "0x0",
+      "initial_nonrst2": "0x0",
+      "initial_latch_ctl2": "0x0",
+      "passed": true,
+      "ordered_trace": [
+        {
+          "address": "0x10007008",
+          "value": "0x1971"
+        },
+        {
+          "address": "0x10007000",
+          "value": "0x22000004"
+        },
+        {
+          "address": "0x10007024",
+          "value": "0x0"
+        },
+        {
+          "address": "0x10007048",
+          "value": "0x95000000"
+        },
+        {
+          "delay": "us",
+          "amount": 100
+        },
+        {
+          "address": "0x1000d004",
+          "value": "0x0"
+        },
+        {
+          "delay": "us",
+          "amount": 10
+        },
+        {
+          "address": "0x10007014",
+          "value": "0x1209"
+        }
+      ]
+    },
+    {
+      "mode": 0,
+      "status": "0x0",
+      "initial_mode": "0xa5a5ffff",
+      "initial_nonrst2": "0xa5a5ffff",
+      "initial_latch_ctl2": "0xa5a5ffff",
+      "passed": true,
+      "ordered_trace": [
+        {
+          "address": "0x10007008",
+          "value": "0x1971"
+        },
+        {
+          "address": "0x10007000",
+          "value": "0xa7a5ffa7"
+        },
+        {
+          "address": "0x10007024",
+          "value": "0xa5a5dfff"
+        },
+        {
+          "address": "0x10007048",
+          "value": "0xb5a5ffff"
+        },
+        {
+          "delay": "us",
+          "amount": 100
+        },
+        {
+          "address": "0x1000d004",
+          "value": "0x0"
+        },
+        {
+          "delay": "us",
+          "amount": 10
+        },
+        {
+          "address": "0x10007014",
+          "value": "0x1209"
+        }
+      ]
+    },
+    {
+      "mode": 0,
+      "status": "0x40000000",
+      "initial_mode": "0x0",
+      "initial_nonrst2": "0x0",
+      "initial_latch_ctl2": "0x0",
+      "passed": true,
+      "ordered_trace": [
+        {
+          "address": "0x10007008",
+          "value": "0x1971"
+        },
+        {
+          "address": "0x10007000",
+          "value": "0x22000004"
+        },
+        {
+          "address": "0x10007024",
+          "value": "0x0"
+        },
+        {
+          "delay": "us",
+          "amount": 100
+        },
+        {
+          "address": "0x1000d004",
+          "value": "0x0"
+        },
+        {
+          "delay": "us",
+          "amount": 10
+        },
+        {
+          "address": "0x10007014",
+          "value": "0x1209"
+        }
+      ]
+    },
+    {
+      "mode": 0,
+      "status": "0x40000000",
+      "initial_mode": "0xa5a5ffff",
+      "initial_nonrst2": "0xa5a5ffff",
+      "initial_latch_ctl2": "0xa5a5ffff",
+      "passed": true,
+      "ordered_trace": [
+        {
+          "address": "0x10007008",
+          "value": "0x1971"
+        },
+        {
+          "address": "0x10007000",
+          "value": "0xa7a5ffa7"
+        },
+        {
+          "address": "0x10007024",
+          "value": "0xa5a5dfff"
+        },
+        {
+          "delay": "us",
+          "amount": 100
+        },
+        {
+          "address": "0x1000d004",
+          "value": "0x0"
+        },
+        {
+          "delay": "us",
+          "amount": 10
+        },
+        {
+          "address": "0x10007014",
+          "value": "0x1209"
+        }
+      ]
+    },
+    {
+      "mode": 1,
+      "status": "0x0",
+      "initial_mode": "0x0",
+      "initial_nonrst2": "0x0",
+      "initial_latch_ctl2": "0x0",
+      "passed": true,
+      "ordered_trace": [
+        {
+          "address": "0x10007008",
+          "value": "0x1971"
+        },
+        {
+          "address": "0x10007000",
+          "value": "0x22000004"
+        },
+        {
+          "address": "0x10007024",
+          "value": "0x2000"
+        },
+        {
+          "address": "0x10007048",
+          "value": "0x95000000"
+        },
+        {
+          "delay": "us",
+          "amount": 100
+        },
+        {
+          "address": "0x1000d004",
+          "value": "0x0"
+        },
+        {
+          "delay": "us",
+          "amount": 10
+        },
+        {
+          "address": "0x10007014",
+          "value": "0x1209"
+        }
+      ]
+    },
+    {
+      "mode": 1,
+      "status": "0x0",
+      "initial_mode": "0xa5a5ffff",
+      "initial_nonrst2": "0xa5a5ffff",
+      "initial_latch_ctl2": "0xa5a5ffff",
+      "passed": true,
+      "ordered_trace": [
+        {
+          "address": "0x10007008",
+          "value": "0x1971"
+        },
+        {
+          "address": "0x10007000",
+          "value": "0xa7a5ffa7"
+        },
+        {
+          "address": "0x10007024",
+          "value": "0xa5a5ffff"
+        },
+        {
+          "address": "0x10007048",
+          "value": "0xb5a5ffff"
+        },
+        {
+          "delay": "us",
+          "amount": 100
+        },
+        {
+          "address": "0x1000d004",
+          "value": "0x0"
+        },
+        {
+          "delay": "us",
+          "amount": 10
+        },
+        {
+          "address": "0x10007014",
+          "value": "0x1209"
+        }
+      ]
+    },
+    {
+      "mode": 1,
+      "status": "0x40000000",
+      "initial_mode": "0x0",
+      "initial_nonrst2": "0x0",
+      "initial_latch_ctl2": "0x0",
+      "passed": true,
+      "ordered_trace": [
+        {
+          "address": "0x10007008",
+          "value": "0x1971"
+        },
+        {
+          "address": "0x10007000",
+          "value": "0x22000004"
+        },
+        {
+          "address": "0x10007024",
+          "value": "0x2000"
+        },
+        {
+          "delay": "us",
+          "amount": 100
+        },
+        {
+          "address": "0x1000d004",
+          "value": "0x0"
+        },
+        {
+          "delay": "us",
+          "amount": 10
+        },
+        {
+          "address": "0x10007014",
+          "value": "0x1209"
+        }
+      ]
+    },
+    {
+      "mode": 1,
+      "status": "0x40000000",
+      "initial_mode": "0xa5a5ffff",
+      "initial_nonrst2": "0xa5a5ffff",
+      "initial_latch_ctl2": "0xa5a5ffff",
+      "passed": true,
+      "ordered_trace": [
+        {
+          "address": "0x10007008",
+          "value": "0x1971"
+        },
+        {
+          "address": "0x10007000",
+          "value": "0xa7a5ffa7"
+        },
+        {
+          "address": "0x10007024",
+          "value": "0xa5a5ffff"
+        },
+        {
+          "delay": "us",
+          "amount": 100
+        },
+        {
+          "address": "0x1000d004",
+          "value": "0x0"
+        },
+        {
+          "delay": "us",
+          "amount": 10
+        },
+        {
+          "address": "0x10007014",
+          "value": "0x1209"
+        }
+      ]
+    }
+  ],
+  "modeled_callbacks": [
+    "dprintf noop",
+    "gpt_busy_wait_us records requested delay",
+    "udelay thunk records requested delay"
+  ],
+  "limitations": [
+    "Only original LK AP instruction sequence executes; no reset, DA or peripheral is executed.",
+    "Model does not prove WDT acceptance or PMIC/DRAM retention from DA state.",
+    "Exact preloader consumption of NONRST2 bit13 and resulting boot reason not established here.",
+    "This script produces evidence only and contains no phone connection or write interface."
+  ]
+}

@@ -1,10 +1,16 @@
 Recovery-path diagnostic candidate
 ==================================
 
+Current user direction (2026-10-25): retain the diagnostic installation and
+focus on iOS boot; do not automatically restore stock. The saved restoration
+procedure below remains available, but it is no longer the selected next
+action. A retained
+boot-recovery command continues to select recovery on applicable boots.
+
 The shipped LK fastboot download handler fails before entering XNU; see
 posttrial-audit.rst. Repacking the same kernel for the recovery partition is a
-different boot route. It requires a persistent partition write followed by
-restoration, even for a single trial. It is not a RAM-only fastboot boot image.
+different boot route. It requires a persistent partition write. It is not a
+RAM-only fastboot boot image.
 The user subsequently authorized the recovery trial and restoration. Build1
 was written on 2026-10-24 and its complete32MiB readback matched the candidate.
 The authenticated unlocked state and complete seccfg contents were preserved;
@@ -12,9 +18,9 @@ dm-verity status was0. The DA acknowledged a mode2 fastboot request, but USB
 did not enumerate within30 polls and the user reported a black screen. Physical
 XNU entry is not established. After the user pressed Power, Android booted
 normally and ADB returned with flash.locked=0. No recovery reboot command had
-yet been issued. Current recovery contents after Android startup have not been
-read back, so automatic restoration cannot yet be excluded. Stock recovery
-restoration remains mandatory; see recovery-trial-install-evidence.json and
+yet been issued. A subsequent full readback confirmed build1 remained installed.
+Stock recovery
+restoration was initially planned; see recovery-trial-install-evidence.json and
 the in-progress private record hardware/recovery-trial-20261024.
 
 On2026-10-25 a new full readback found build1 still on recovery and the repaired
@@ -23,8 +29,25 @@ command and empty recovery arguments. The approved direct trial replaced only
 that32-byte command with ``boot-recovery`` and verified the entire para and
 recovery partitions afterward. Security state remained unchanged. After a
 normal DA reset the user reported a black screen; physical XNU execution is
-not established. Post-trial log capture and stock recovery/command restoration
-are pending the next download-agent connection. See recovery-direct-evidence.json.
+not established. Post-trial capture found recovery and para unchanged; expdb
+changed in only three bytes and contained no new retained LK/kernel text.
+The current preloader log describes entry to the download agent, without a
+retained LK log. These observations do not establish a recovery boot.
+The user subsequently requested retaining the diagnostic rather
+than restoring stock. See recovery-direct-evidence.json.
+
+Build2 adds the build-bound RAM trace documented in RAM-TRACE.rst. It was
+written to recovery and all32MiB read back with SHA256
+``2a4d62a60690c59e26a0004b6efaea56f433059a6f84b6109d113c1d7a364173``;
+para and seccfg remained unchanged. It uses the same frozen kernel as build1.
+Its installation does not establish physical execution.
+
+A subsequent guarded software reset replayed the audited LK register sequence
+from the active DA. All writes, including SWRST, were acknowledged. USB
+enumerated as BootROM within seven seconds, then later disappeared; recovery
+entry remains unproved. The first capture process encountered a host connection
+initialization bug before any DA upload. A revised fresh reader is waiting for
+reconnection. See trace-reset-trial-evidence.json and lk-reset-review.rst.
 
 Build locally, without device access::
 
@@ -60,11 +83,12 @@ one CPU, 16KiB VM pages over 4KiB translations, no native peripheral ownership,
 no USB ADB, and no full iOS userspace. A screen result depends on admitting the
 actual inherited framebuffer. The stock watchdog remains running.
 
-Controlled trial and restoration plan
-------------------------------------
+Historical initial trial and optional restoration procedure
+----------------------------------------------------------
 
-Before writing, obtain approval for replacing recovery temporarily and restoring
-it afterward. Verify the candidate and backup hashes again, the device identity,
+The initial trial was authorized, including restoration. The user's later
+instruction cancels automatic restoration. For any admitted write, verify the
+candidate and backup hashes again, the device identity,
 unlocked state and exact live recovery GPT extent. Read recovery again and
 require equality to the backup. Stop on any mismatch.
 
@@ -79,7 +103,7 @@ diagnostic text; an unchanged
 logo or reboot alone does not establish XNU execution. No other firmware
 partition or verification setting is part of this trial.
 
-After success or failure, reconnect the established DA, restore the complete
+If restoration is subsequently selected, reconnect the established DA, restore the complete
 original recovery backup, then read back all 32MiB and require its original
 hash before returning to Android. If the readback differs, retain the DA
 session and investigate before reset. Keep both local backup copies available

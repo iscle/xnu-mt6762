@@ -6,6 +6,7 @@
 #include <stddef.h>
 #include "fdt_handoff.h"
 #include "payload_layout.h"
+#include "loader_trace.h"
 #include "diagnostic_console.h"
 #include "../hardware/display-touch/mt6762_display_core.h"
 
@@ -51,8 +52,9 @@ static void hex(uint64_t value)
     text("0x");
     for (int n = 60; n >= 0; n -= 4) uart_char("0123456789abcdef"[(value >> n) & 15]);
 }
-__attribute__((noreturn)) static void stop(const char *reason)
+__attribute__((noreturn)) static void stop(const char *reason, uint64_t code)
 {
+    loader_trace_commit(TRACE_REFUSED, code);
     text("\r\nMT6762 PHYSICAL REFUSED: "); text(reason);
     text("\r\nWatchdog policy unchanged; no XNU entry.\r\n");
     for (;;) __asm__ volatile("wfe");
@@ -62,7 +64,9 @@ __attribute__((noreturn)) void loader_exception(uint64_t esr, uint64_t far, uint
 {
     text("\r\nMT6762 loader exception ESR="); hex(esr);
     text(" FAR="); hex(far); text(" ELR="); hex(elr);
-    stop("exception");
+    physical_trace.esr = esr; physical_trace.far = far; physical_trace.elr = elr;
+    loader_trace_commit(TRACE_EXCEPTION, 0);
+    for (;;) __asm__ volatile("wfe");
 }
 /* An optional console, admitted by actual scanout readback. Tag metadata is
  * only a candidate. No register writes or native-driver ownership is granted. */
@@ -99,25 +103,32 @@ static void put64(unsigned char *base, size_t offset, uint64_t value)
 const struct entry_result *loader_main(uint64_t fdt_address, uint64_t original_el)
 {
     uint64_t midr, frequency;
+    loader_trace_commit(TRACE_C_ENTRY, 0);
     __asm__ volatile("mrs %0, midr_el1" : "=r"(midr));
     __asm__ volatile("mrs %0, cntfrq_el0" : "=r"(frequency));
+    physical_trace.midr = midr; physical_trace.frequency = frequency;
     text("\r\nMT6762 physical XNU diagnostic: EL="); hex(original_el);
     text(" MIDR="); hex(midr); text(" DTB="); hex(fdt_address); text("\r\n");
     if (((midr >> 24) & 255) != 0x41 || ((midr >> 4) & 4095) != 0xd03 || frequency != 13000000)
-        stop("CPU/timer identity");
+        stop("CPU/timer identity", TRACE_BAD_CPU);
+    loader_trace_commit(TRACE_IDENTITY, 0);
     /* Exact stock header/tag allocation: 512KiB. No arbitrary pointer reads. */
-    if (fdt_address != UINT64_C(0x47880000)) stop("unexpected DTB placement");
+    if (fdt_address != UINT64_C(0x47880000)) stop("unexpected DTB placement", TRACE_BAD_FDT_POINTER);
     int error = mtk_fdt_parse((void *)(uintptr_t)fdt_address, 0x80000, &fdt);
-    if (error) stop(mtk_fdt_error_string(error));
-    if (!fdt.board_compatible) stop("unsupported root compatible");
+    if (error) stop(mtk_fdt_error_string(error), TRACE_FDT_ERROR - error);
+    if (!fdt.board_compatible) stop("unsupported root compatible", TRACE_BAD_COMPATIBLE);
+    loader_trace_commit(TRACE_FDT, 0);
     uint64_t framebuffer = validated_console();
     console.pixels = (void *)(uintptr_t)framebuffer;
     if (framebuffer) text("XNU DIAGNOSTIC\r\nBOOTLOADER DISPLAY VERIFIED\r\n");
     else text("Framebuffer unverified; UART diagnostics only\r\n");
+    loader_trace_commit(TRACE_CONSOLE, 0);
     struct mtk_fdt_range source = {(uintptr_t)image_start, (uintptr_t)image_end-(uintptr_t)image_start};
     uint64_t physical;
     error = mtk_fdt_select_window(&fdt, fdt_address, &source, 1, &physical);
-    if (error) stop(mtk_fdt_error_string(error));
+    if (error) stop(mtk_fdt_error_string(error), TRACE_WINDOW_ERROR - error);
+    physical_trace.ram = physical;
+    loader_trace_commit(TRACE_WINDOW, 0);
     text("Validated RAM window "); hex(physical); text(" +512MiB; reservations="); hex(fdt.reserved_count); text("\r\n");
     for (unsigned n = 0; n < PAYLOAD_SEGMENT_COUNT; ++n) {
         const struct payload_segment *segment = &payload_segments[n];
@@ -125,6 +136,7 @@ const struct entry_result *loader_main(uint64_t fdt_address, uint64_t original_e
         memcpy(destination, xnu_blob + segment->fileoff, segment->filesize);
         memset(destination + segment->filesize, 0, segment->vmsize - segment->filesize);
     }
+    loader_trace_commit(TRACE_KERNEL_COPIED, 0);
     unsigned char *adt = (void *)(uintptr_t)(physical + PAYLOAD_ADT_OFFSET);
     unsigned char *args = (void *)(uintptr_t)(physical + PAYLOAD_ARGS_OFFSET);
     memcpy((void *)(uintptr_t)(physical + PAYLOAD_RAMDISK_OFFSET), diagnostic_blob, PAYLOAD_RAMDISK_SIZE);
@@ -143,6 +155,8 @@ const struct entry_result *loader_main(uint64_t fdt_address, uint64_t original_e
     }
     result.args = physical + PAYLOAD_ARGS_OFFSET;
     result.entry = physical + PAYLOAD_ENTRY_OFFSET;
+    physical_trace.args = result.args; physical_trace.entry = result.entry;
+    loader_trace_commit(TRACE_ARGUMENTS, 0);
     text("Entering XNU: args="); hex(result.args); text(" entry="); hex(result.entry);
     text("\r\nNative peripheral ownership absent; watchdog unchanged.\r\n");
     __asm__ volatile("dsb sy\n\tic iallu\n\tdsb sy\n\tisb" ::: "memory");

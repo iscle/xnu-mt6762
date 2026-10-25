@@ -1,0 +1,481 @@
+{
+  "preloader_sha256": "7e62da99110271864c330cffcef5237e20ca03881b933263af828561d963f674",
+  "original_read_whitelist": [
+    {
+      "start": "0x10007000",
+      "bytes": "0x1000"
+    },
+    {
+      "start": "0x1001a080",
+      "bytes": "0x4"
+    },
+    {
+      "start": "0x11c50000",
+      "bytes": "0x1000"
+    }
+  ],
+  "cases": [
+    {
+      "address": "0x40084000",
+      "bytes": 256,
+      "permitted": false,
+      "status": "0x105006"
+    },
+    {
+      "address": "0x40084000",
+      "bytes": 4,
+      "permitted": false,
+      "status": "0x105006"
+    },
+    {
+      "address": "0x40200000",
+      "bytes": 4,
+      "permitted": false,
+      "status": "0x105006"
+    },
+    {
+      "address": "0x10007000",
+      "bytes": 4096,
+      "permitted": true,
+      "status": "0x0"
+    },
+    {
+      "address": "0x10007ffc",
+      "bytes": 8,
+      "permitted": false,
+      "status": "0x105006"
+    },
+    {
+      "address": "0x1001a080",
+      "bytes": 4,
+      "permitted": true,
+      "status": "0x0"
+    },
+    {
+      "address": "0x1001a080",
+      "bytes": 8,
+      "permitted": false,
+      "status": "0x105006"
+    },
+    {
+      "address": "0x11c50000",
+      "bytes": 4096,
+      "permitted": true,
+      "status": "0x0"
+    },
+    {
+      "address": "0xfffffff0",
+      "bytes": 32,
+      "permitted": false,
+      "status": "0x105002"
+    }
+  ],
+  "bounded_code": [
+    {
+      "name": "read32_dispatch",
+      "start": "0x202f9e",
+      "end_exclusive": "0x202fe0",
+      "sha256": "98b7e8d79f68839a10ee5d90a8cfa2bab00ba8c6cb16548aeba7ffd72d74044d",
+      "instructions": [
+        {
+          "va": "0x202f9e",
+          "instruction": "movs r0, #0"
+        },
+        {
+          "va": "0x202fa0",
+          "instruction": "strd r0, r0, [sp, #0x14]"
+        },
+        {
+          "va": "0x202fa4",
+          "instruction": "add r0, sp, #0x18"
+        },
+        {
+          "va": "0x202fa6",
+          "instruction": "bl #0x20337c"
+        },
+        {
+          "va": "0x202faa",
+          "instruction": "ldr r4, [sp, #0x18]"
+        },
+        {
+          "va": "0x202fac",
+          "instruction": "mov r0, r4"
+        },
+        {
+          "va": "0x202fae",
+          "instruction": "bl #0x20334c"
+        },
+        {
+          "va": "0x202fb2",
+          "instruction": "add r0, sp, #0x14"
+        },
+        {
+          "va": "0x202fb4",
+          "instruction": "bl #0x20337c"
+        },
+        {
+          "va": "0x202fb8",
+          "instruction": "ldr r6, [sp, #0x14]"
+        },
+        {
+          "va": "0x202fba",
+          "instruction": "mov r0, r6"
+        },
+        {
+          "va": "0x202fbc",
+          "instruction": "bl #0x20334c"
+        },
+        {
+          "va": "0x202fc0",
+          "instruction": "lsls r0, r4, #0x1e"
+        },
+        {
+          "va": "0x202fc2",
+          "instruction": "bne #0x202fd2"
+        },
+        {
+          "va": "0x202fc4",
+          "instruction": "cmp r6, #0"
+        },
+        {
+          "va": "0x202fc6",
+          "instruction": "bne.w #0x2030d0"
+        },
+        {
+          "va": "0x202fca",
+          "instruction": "movw r0, #0xfffd"
+        },
+        {
+          "va": "0x202fce",
+          "instruction": "adds r0, #1"
+        },
+        {
+          "va": "0x202fd0",
+          "instruction": "b #0x202fd8"
+        },
+        {
+          "va": "0x202fd2",
+          "instruction": "movw r0, #0xfffd"
+        },
+        {
+          "va": "0x202fd6",
+          "instruction": "adds r0, #2"
+        },
+        {
+          "va": "0x202fd8",
+          "instruction": "uxth r0, r0"
+        },
+        {
+          "va": "0x202fda",
+          "instruction": "bl #0x2031fc"
+        },
+        {
+          "va": "0x202fde",
+          "instruction": "b #0x202c90"
+        }
+      ]
+    },
+    {
+      "name": "read32_check_and_load",
+      "start": "0x2030d0",
+      "end_exclusive": "0x2030fa",
+      "sha256": "f50e0ff110a391e939b2fcc431201f76bc1ecc90b1f577192d311690aa34ebe2",
+      "instructions": [
+        {
+          "va": "0x2030d0",
+          "instruction": "cmp.w r6, r6, lsl #2"
+        },
+        {
+          "va": "0x2030d4",
+          "instruction": "movw r0, #0xfffd"
+        },
+        {
+          "va": "0x2030d8",
+          "instruction": "bhs.w #0x202fd8"
+        },
+        {
+          "va": "0x2030dc",
+          "instruction": "lsls r1, r6, #2"
+        },
+        {
+          "va": "0x2030de",
+          "instruction": "mov r0, r4"
+        },
+        {
+          "va": "0x2030e0",
+          "instruction": "movs r2, #1"
+        },
+        {
+          "va": "0x2030e2",
+          "instruction": "bl #0x227910"
+        },
+        {
+          "va": "0x2030e6",
+          "instruction": "cbnz r0, #0x203122"
+        },
+        {
+          "va": "0x2030e8",
+          "instruction": "movs r0, #0"
+        },
+        {
+          "va": "0x2030ea",
+          "instruction": "bl #0x2031fc"
+        },
+        {
+          "va": "0x2030ee",
+          "instruction": "cbz r6, #0x203118"
+        },
+        {
+          "va": "0x2030f0",
+          "instruction": "ldm r4!, {r0}"
+        },
+        {
+          "va": "0x2030f2",
+          "instruction": "bl #0x20334c"
+        },
+        {
+          "va": "0x2030f6",
+          "instruction": "subs r6, #1"
+        },
+        {
+          "va": "0x2030f8",
+          "instruction": "b #0x2030ee"
+        }
+      ]
+    },
+    {
+      "name": "region_check",
+      "start": "0x227888",
+      "end_exclusive": "0x227906",
+      "sha256": "0eb871b25009bc0ad5441f99a9c2e2762ad2adf004498605a8aa5ccb414746da",
+      "instructions": [
+        {
+          "va": "0x227888",
+          "instruction": "push {r4, r6, r7, lr}"
+        },
+        {
+          "va": "0x22788a",
+          "instruction": "add r7, sp, #8"
+        },
+        {
+          "va": "0x22788c",
+          "instruction": "ldr r2, [r1]"
+        },
+        {
+          "va": "0x22788e",
+          "instruction": "ldr r4, [r0]"
+        },
+        {
+          "va": "0x227890",
+          "instruction": "cmp r4, r2"
+        },
+        {
+          "va": "0x227892",
+          "instruction": "blo #0x2278aa"
+        },
+        {
+          "va": "0x227894",
+          "instruction": "ldr r0, [r0, #4]"
+        },
+        {
+          "va": "0x227896",
+          "instruction": "adds r3, r0, r4"
+        },
+        {
+          "va": "0x227898",
+          "instruction": "cmp r3, r4"
+        },
+        {
+          "va": "0x22789a",
+          "instruction": "bls #0x2278aa"
+        },
+        {
+          "va": "0x22789c",
+          "instruction": "ldr r0, [r1, #4]"
+        },
+        {
+          "va": "0x22789e",
+          "instruction": "adds r1, r0, r2"
+        },
+        {
+          "va": "0x2278a0",
+          "instruction": "movs r0, #0"
+        },
+        {
+          "va": "0x2278a2",
+          "instruction": "cmp r3, r1"
+        },
+        {
+          "va": "0x2278a4",
+          "instruction": "it ls"
+        },
+        {
+          "va": "0x2278a6",
+          "instruction": "movls r0, #1"
+        },
+        {
+          "va": "0x2278a8",
+          "instruction": "pop {r4, r6, r7, pc}"
+        },
+        {
+          "va": "0x2278aa",
+          "instruction": "movs r0, #0"
+        },
+        {
+          "va": "0x2278ac",
+          "instruction": "pop {r4, r6, r7, pc}"
+        },
+        {
+          "va": "0x2278ae",
+          "instruction": "bmi #0x22785a"
+        },
+        {
+          "va": "0x2278b0",
+          "instruction": "push {r4, r5, r6, r7, lr}"
+        },
+        {
+          "va": "0x2278b2",
+          "instruction": "add r7, sp, #0xc"
+        },
+        {
+          "va": "0x2278b4",
+          "instruction": "str fp, [sp, #-0x4]!"
+        },
+        {
+          "va": "0x2278b8",
+          "instruction": "strd r0, r1, [sp, #-0x8]!"
+        },
+        {
+          "va": "0x2278bc",
+          "instruction": "movs r0, #0"
+        },
+        {
+          "va": "0x2278be",
+          "instruction": "cbz r2, #0x2278dc"
+        },
+        {
+          "va": "0x2278c0",
+          "instruction": "ldr r5, [pc, #0x44]"
+        },
+        {
+          "va": "0x2278c2",
+          "instruction": "mov r4, sp"
+        },
+        {
+          "va": "0x2278c4",
+          "instruction": "add.w r6, r0, #8"
+        },
+        {
+          "va": "0x2278c8",
+          "instruction": "cmp r6, #0x20"
+        },
+        {
+          "va": "0x2278ca",
+          "instruction": "beq #0x2278fa"
+        },
+        {
+          "va": "0x2278cc",
+          "instruction": "adds r1, r5, r0"
+        },
+        {
+          "va": "0x2278ce",
+          "instruction": "mov r0, r4"
+        },
+        {
+          "va": "0x2278d0",
+          "instruction": "bl #0x227888"
+        },
+        {
+          "va": "0x2278d4",
+          "instruction": "cmp r0, #1"
+        },
+        {
+          "va": "0x2278d6",
+          "instruction": "mov r0, r6"
+        },
+        {
+          "va": "0x2278d8",
+          "instruction": "bne #0x2278c4"
+        },
+        {
+          "va": "0x2278da",
+          "instruction": "b #0x2278f6"
+        },
+        {
+          "va": "0x2278dc",
+          "instruction": "ldr r5, [pc, #0x2c]"
+        },
+        {
+          "va": "0x2278de",
+          "instruction": "mov r4, sp"
+        },
+        {
+          "va": "0x2278e0",
+          "instruction": "add.w r6, r0, #8"
+        },
+        {
+          "va": "0x2278e4",
+          "instruction": "cmp r6, #0x18"
+        },
+        {
+          "va": "0x2278e6",
+          "instruction": "beq #0x2278fa"
+        },
+        {
+          "va": "0x2278e8",
+          "instruction": "adds r1, r5, r0"
+        },
+        {
+          "va": "0x2278ea",
+          "instruction": "mov r0, r4"
+        },
+        {
+          "va": "0x2278ec",
+          "instruction": "bl #0x227888"
+        },
+        {
+          "va": "0x2278f0",
+          "instruction": "cmp r0, #1"
+        },
+        {
+          "va": "0x2278f2",
+          "instruction": "mov r0, r6"
+        },
+        {
+          "va": "0x2278f4",
+          "instruction": "bne #0x2278e0"
+        },
+        {
+          "va": "0x2278f6",
+          "instruction": "movs r0, #0"
+        },
+        {
+          "va": "0x2278f8",
+          "instruction": "b #0x2278fe"
+        },
+        {
+          "va": "0x2278fa",
+          "instruction": "mov.w r0, #-1"
+        },
+        {
+          "va": "0x2278fe",
+          "instruction": "add sp, #8"
+        },
+        {
+          "va": "0x227900",
+          "instruction": "ldr fp, [sp], #4"
+        },
+        {
+          "va": "0x227904",
+          "instruction": "pop {r4, r5, r6, r7, pc}"
+        }
+      ]
+    }
+  ],
+  "scope": "Only original range comparisons execute; test addresses are never dereferenced. No USB command or MMIO.",
+  "conclusion": "Exact stock preloader READ32 rejects trace DRAM before data transfer.",
+  "unknowns": [
+    "BROM READ32 policy is a different implementation and not audited here.",
+    "DRAM initialization/preservation before the USB loop is not proven."
+  ]
+}
