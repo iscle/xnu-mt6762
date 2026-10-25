@@ -19,6 +19,7 @@ import xml.etree.ElementTree as ET
 import bootimg
 import trace_record
 import display_record
+import pwm_record
 
 
 def digest(data):
@@ -272,6 +273,10 @@ def main():
     display_traced = traced and display_bytes[:8] == display_record.MAGIC
     if display_traced:
         report['display_file'] = display_record.decode(display_bytes, identity)
+    pwm_bytes = raw[pwm_record.OFFSET:pwm_record.OFFSET + pwm_record.SIZE]
+    pwm_traced = traced and pwm_bytes[:8] == pwm_record.MAGIC
+    if pwm_traced:
+        report['pwm_file'] = pwm_record.decode(pwm_bytes, identity)
     with tempfile.TemporaryDirectory(prefix='mtk-physical-') as tmp:
         gdb = Path(tmp) / 'gdb'
         qmp_path = Path(tmp) / 'qmp'
@@ -309,6 +314,12 @@ def main():
                         f'pmemsave {display_record.ADDRESS:#x} {display_record.SIZE:#x} "{before.resolve()}"'})
                     if before.read_bytes() != display_bytes:
                         raise RuntimeError('QEMU display record differs from loaded Image')
+                if pwm_traced:
+                    before = args.output / 'pwm-before.bin'
+                    qmp.command('human-monitor-command', {'command-line':
+                        f'pmemsave {pwm_record.ADDRESS:#x} {pwm_record.SIZE:#x} "{before.resolve()}"'})
+                    if before.read_bytes() != pwm_bytes:
+                        raise RuntimeError('QEMU PWM record differs from loaded Image')
                 report['gdb_capabilities'] = rsp.packet('qSupported:multiprocess+;qXfer:features:read+')
                 regs = rsp.registers(args.output)
                 report['registers'] = regs
@@ -355,6 +366,12 @@ def main():
                         f'pmemsave {display_record.ADDRESS:#x} {display_record.SIZE:#x} "{after.resolve()}"'})
                     report['display_after'] = display_record.decode(after.read_bytes(), identity)
                     report['display_after_sha256'] = digest(after.read_bytes())
+                if pwm_traced:
+                    after = args.output / 'pwm-after.bin'
+                    qmp.command('human-monitor-command', {'command-line':
+                        f'pmemsave {pwm_record.ADDRESS:#x} {pwm_record.SIZE:#x} "{after.resolve()}"'})
+                    report['pwm_after'] = pwm_record.decode(after.read_bytes(), identity)
+                    report['pwm_after_sha256'] = digest(after.read_bytes())
                 if args.display_fixture:
                     report['display_state'] = json.loads(qmp.command('qom-get',
                         {'path':'/machine', 'property':'lab-display-state'}))
@@ -423,6 +440,11 @@ def main():
     if display_traced:
         expected = 0 if args.exception_at is not None else 8 if args.display_fixture else 1
         report['checks']['display_record_expected_state'] = report['display_after']['state'] == expected
+        report['automated_checks_passed'] = all(report['checks'].values())
+        report['passed'] = None if args.visible_console else report['automated_checks_passed']
+    if pwm_traced:
+        expected_states = (2,3) if args.display_fixture else (0,)
+        report['checks']['pwm_record_finished'] = report['pwm_after']['state'] in expected_states
         report['automated_checks_passed'] = all(report['checks'].values())
         report['passed'] = None if args.visible_console else report['automated_checks_passed']
     (args.output / 'report.json').write_text(json.dumps(report, indent=2) + '\n')

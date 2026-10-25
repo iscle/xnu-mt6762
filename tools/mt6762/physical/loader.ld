@@ -16,6 +16,9 @@ SECTIONS
     .display_trace : ALIGN(64) {
         KEEP(*(.display_trace))
     } :image
+    .pwm_trace : ALIGN(64) {
+        KEEP(*(.pwm_trace))
+    } :image
     .text : ALIGN(8) {
         *(.text .text.*)
     } :image
@@ -56,6 +59,8 @@ ASSERT(image_start == _start, "Linux Image header is not first")
 ASSERT(SIZEOF(.entry) <= 0x4000, "entry overlaps fixed trace record")
 ASSERT(physical_trace == 0x40084000 && SIZEOF(.trace) == 256, "fixed trace layout")
 ASSERT(physical_display == 0x40084100 && SIZEOF(.display_trace) == 512, "fixed display record layout")
+ASSERT(physical_pwm == 0x40084300 && SIZEOF(.pwm_trace) == 256, "fixed PWM record layout")
+ASSERT(physical_pwm + SIZEOF(.pwm_trace) <= 0x40090000, "PWM record outside reserved DA prefix")
 ASSERT(physical_display + SIZEOF(.display_trace) <= 0x40090000, "display record outside reserved DA prefix")
 ASSERT(physical_trace + SIZEOF(.trace) <= 0x40200000, "trace outside bounded source-image read range")
 ASSERT((physical_vectors & 0x7ff) == 0, "VBAR alignment")

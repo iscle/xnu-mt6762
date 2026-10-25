@@ -9,6 +9,7 @@
 #include "loader_trace.h"
 #include "diagnostic_console.h"
 #include "display_probe.h"
+#include "pwm_probe.h"
 
 extern unsigned char image_start[], image_end[];
 extern const unsigned char xnu_blob[], diagnostic_blob[], adt_blob[], args_blob[];
@@ -107,6 +108,8 @@ const struct entry_result *loader_main(uint64_t fdt_address, uint64_t original_e
     if (framebuffer) text("XNU DIAGNOSTIC\r\nBOOTLOADER DISPLAY VERIFIED\r\n");
     else text("Framebuffer unverified; UART diagnostics only\r\n");
     loader_trace_commit(TRACE_CONSOLE, 0);
+    const struct display_probe_io pwm_io = {0, display_read, display_barrier};
+    if (framebuffer) pwm_probe_capture(&pwm_io, &physical_pwm);
     struct mtk_fdt_range source = {(uintptr_t)image_start, (uintptr_t)image_end-(uintptr_t)image_start};
     uint64_t physical;
     error = mtk_fdt_select_window(&fdt, fdt_address, &source, 1, &physical);

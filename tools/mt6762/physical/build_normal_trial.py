@@ -22,6 +22,7 @@ DIAGNOSTICS = (
     '27636a723cc0d449d82442260238968aa839b719e8d15dabf7d360353bdd93ef', # Image8: retained display readback
     'df3d9afc328cc1809e1d2e15551bf24ac5a897db6780096a1ed959c0ed5a08f8', # Image9: measured LK menu console
     'f3249887751e115413399f0c94dbe605f67f5bad20714f087c1f36c99c37b74a', # Image10: preserve measured datapath profile
+    'b970c02b9d289bc67ee2b006112689ddbca04f22f44a98cac4e8a6e4efd4ff39', # Image12: passive PWM only after display admission
 )
 VBMETA_FLAGS3 = '2f3fb6474d7ff35ac4c48ab2bef71247ba50de4a94de2474b7d1b60cd6654f51'
 

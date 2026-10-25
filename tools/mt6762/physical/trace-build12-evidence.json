@@ -1,0 +1,124 @@
+{
+  "purpose": "Read-only inherited PWM snapshot after display admission",
+  "kernel_sha256": "a1f0de1cfb7b04b335d9163b093bba69fa0bb99db1734c11dd430264910f8c4b",
+  "image_sha256": "b970c02b9d289bc67ee2b006112689ddbca04f22f44a98cac4e8a6e4efd4ff39",
+  "normal_boot_sha256": "b83d110d964b21af151e7589bd8597f4052b922993b6860df81c49da54c8cd55",
+  "physical_manifest_sha256": "b4dd7b3ad9c407f08ad7348fd1726910b05060da15b4af612e6a96d0f0f0a364",
+  "trace_identity": "a4d62c0516297855404e4bd831340e4e5bf70f7527fb6f307407b3a7ee23b809",
+  "pwm_trace": {
+    "offset": 17152,
+    "physical_address": 1074283264,
+    "size": 256,
+    "initialized_sha256": "e37565ce917ca691eea9245176368f1240d09b5a077976824ac47f81ca8e893e",
+    "register_writes": false,
+    "native_ownership": false
+  },
+  "probes": {
+    "probe-positive": {
+      "checks": {
+        "ram": true,
+        "xnu": true,
+        "pages": true,
+        "result": true,
+        "cases": true,
+        "done": true,
+        "trace_initialized_before_execution": true,
+        "trace_executed": true,
+        "trace_jump_ready": true,
+        "display_record_expected_state": true,
+        "pwm_record_finished": true
+      },
+      "automated_checks_passed": true,
+      "pwm_after": {
+        "state": 0,
+        "state_name": "untouched",
+        "pass_number": 0,
+        "identity": "a4d62c0516297855404e4bd831340e4e5bf70f7527fb6f307407b3a7ee23b809",
+        "snapshots": [],
+        "stable_complete": false,
+        "native_ownership": false,
+        "register_writes": false
+      },
+      "delivered_image_sha256": "b83d110d964b21af151e7589bd8597f4052b922993b6860df81c49da54c8cd55",
+      "report_sha256": "b713aa9773212d3357c0ca4dcfbd65e4083510c182697453854ff38e4a8195a0"
+    },
+    "probe-menu": {
+      "checks": {
+        "ram": true,
+        "xnu": true,
+        "pages": true,
+        "display_admitted": true,
+        "display_pixels": true,
+        "no_display_register_writes": true,
+        "opaque_console_pixels": true,
+        "trace_initialized_before_execution": true,
+        "trace_executed": true,
+        "trace_jump_ready": true,
+        "display_record_expected_state": true,
+        "pwm_record_finished": true
+      },
+      "automated_checks_passed": true,
+      "pwm_after": {
+        "state": 2,
+        "state_name": "unavailable",
+        "pass_number": 1,
+        "identity": "a4d62c0516297855404e4bd831340e4e5bf70f7527fb6f307407b3a7ee23b809",
+        "snapshots": [
+          {
+            "read_mask": 15,
+            "power0": 8,
+            "power1": 8,
+            "power_control": 13,
+            "top": 50331648,
+            "infra": 0,
+            "gpio": 0,
+            "ulposc": 0,
+            "parent_selector": 3,
+            "gpio43_mode": 0
+          }
+        ],
+        "stable_complete": false,
+        "native_ownership": false,
+        "register_writes": false
+      },
+      "delivered_image_sha256": "b83d110d964b21af151e7589bd8597f4052b922993b6860df81c49da54c8cd55",
+      "report_sha256": "a076bd9aa0cf2b5b3817fcfcc085355c2ff0b3a63c88a30b1b752cb4c3f67610",
+      "framebuffer_sha256": "c18a4e6058b8d3ee4fad5617175b617ef7de32bcd1a3d9d31339f16d04a83605",
+      "framebuffer_alpha_opaque": true,
+      "visual_review": "Original-resolution console shows both diagnostic rounds, 205cases each, result1 and PROBE_DONE"
+    }
+  },
+  "host_tests": {
+    "passed": true,
+    "count": 61,
+    "skipped": 0,
+    "output_sha256": "c2f511c80d3b9e7534d5b795b70689d6a20b582980cc9abb42a8996e0c5ec2e4"
+  },
+  "installation": {
+    "boot_sha256": "b83d110d964b21af151e7589bd8597f4052b922993b6860df81c49da54c8cd55",
+    "full_readback_verified": true,
+    "preserved_sha256": {
+      "lk": "8b94cdf939ee6318c5d47b8e4feacef2d3ea0a3b1d37f292752bd6d4875c6849",
+      "lk2": "5badc0dc942b0babdca3da13c7e07f3b5f1e57b66d503414b7f80effe8ce891a",
+      "para": "5744b4afa6da419c0c5382034ab3757a6627d0ff9ca3778398313cf10f1e80d8",
+      "recovery": "2a4d62a60690c59e26a0004b6efaea56f433059a6f84b6109d113c1d7a364173",
+      "seccfg": "bb95c846d18259d48c89ae93540dc2fe438f8ca9c07dd812b3c76555f0744b4e",
+      "vbmeta": "2f3fb6474d7ff35ac4c48ab2bef71247ba50de4a94de2474b7d1b60cd6654f51"
+    },
+    "persistent_write_extents": [
+      {
+        "address": "0x1c600000",
+        "bytes": 33554432
+      }
+    ],
+    "bcb_written": false,
+    "reset_requested": false,
+    "mtkclient_commit": "fa97df7df41140e60f215f24eea82cb46faf9ff0",
+    "seccfg_source_sha256": "274743b51dd3b8a648fb0cc96bd872205d8f892ac88082a7b3737671b05a0be7"
+  },
+  "physical_execution_of_image12_proven": false,
+  "brightness_control_proven": false,
+  "native_peripheral_ownership": false,
+  "full_ios_userspace_proven": false,
+  "next_action": "Power-button restart; capture13 reader after startup window; inspect retained PWM record before native brightness activation"
+}

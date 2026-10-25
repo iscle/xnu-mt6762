@@ -15,6 +15,7 @@ sys.path.insert(0, str(HERE.parent / 'boot'))
 import prepare
 import trace_record
 import display_record
+import pwm_record
 
 
 def sha(data):
@@ -60,7 +61,8 @@ def main():
         parser.error('output must be new')
     source_paths = [HERE/name for name in ('start.S','loader.c','loader.ld',
         'fdt_handoff.c','fdt_handoff.h','diagnostic_console.h','loader_trace.h',
-        'trace_record.py','display_probe.h','display_record.py','build_payload.py','bootimg.py')]
+        'trace_record.py','display_probe.h','display_record.py','pwm_probe.h','pwm_record.py',
+        'build_payload.py','bootimg.py')]
     source_paths += [Path(prepare.__file__), HERE.parent/'hardware/display-touch/mt6762_display_core.h']
     sources_before = {str(p.relative_to(HERE.parent)):sha(p.read_bytes()) for p in source_paths}
     original_kernel = args.kernel.read_bytes()
@@ -140,6 +142,9 @@ def main():
     (out/'display.bin').write_bytes(display_record.initialized(trace_identity))
     trace_assembly += '.section .display_trace,"aw"\n.balign 64\n.global physical_display\nphysical_display:\n'
     trace_assembly += '.incbin "' + str(out/'display.bin') + '"\n'
+    (out/'pwm.bin').write_bytes(pwm_record.initialized(trace_identity))
+    trace_assembly += '.section .pwm_trace,"aw"\n.balign 64\n.global physical_pwm\nphysical_pwm:\n'
+    trace_assembly += '.incbin "' + str(out/'pwm.bin') + '"\n'
     (out/'trace.S').write_text(trace_assembly)
     clang = str(args.llvm/'clang')
     common = [clang,'--target=aarch64-none-elf','-mcpu=cortex-a53','-mgeneral-regs-only',
@@ -160,6 +165,8 @@ def main():
         raise ValueError('trace record does not match fixed source Image offset')
     if raw_image[display_record.OFFSET:display_record.OFFSET + display_record.SIZE] != display_record.initialized(trace_identity):
         raise ValueError('display record does not match fixed source Image offset')
+    if raw_image[pwm_record.OFFSET:pwm_record.OFFSET + pwm_record.SIZE] != pwm_record.initialized(trace_identity):
+        raise ValueError('PWM record does not match fixed source Image offset')
     # Empty newc archive; XNU's diagnostic executable is embedded in Image.
     name=b'TRAILER!!!\0'; fields=[0,0,0,0,1,0,0,0,0,0,0,len(name),0]
     cpio=b'070701'+b''.join(f'{field:08x}'.encode() for field in fields)+name
@@ -190,6 +197,9 @@ def main():
         display_trace=dict(offset=display_record.OFFSET, physical_address=display_record.ADDRESS,
             size=display_record.SIZE, initialized_sha256=sha(display_record.initialized(trace_identity)),
             register_writes=False, physical_retention_proven=False),
+        pwm_trace=dict(offset=pwm_record.OFFSET, physical_address=pwm_record.ADDRESS,
+            size=pwm_record.SIZE, initialized_sha256=sha(pwm_record.initialized(trace_identity)),
+            register_writes=False, native_ownership=False),
         limitations=['No full iOS GUI, charging, touch or button acceptance.',
                      'Stock AP watchdog policy remains; exact reset timing/routing is unverified.',
                      'FDT and processor-state mismatch halt before XNU; no guessed RAM fallback.'])
