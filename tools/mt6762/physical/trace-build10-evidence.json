@@ -181,11 +181,11 @@
     "mtkclient_commit": "fa97df7df41140e60f215f24eea82cb46faf9ff0",
     "seccfg_source_sha256": "274743b51dd3b8a648fb0cc96bd872205d8f892ac88082a7b3737671b05a0be7"
   },
-  "next_action": "Await visible panel report; native brightness/input/power/clock/DMA ownership remains incomplete",
+  "next_action": "Integrate brightness and native input handoff, then charging/clocks/PMIC/DMA",
   "physical_diagnostic_pid1_proven": true,
   "physical_inherited_console_admitted": true,
   "physical_console_pixels_recovered": true,
-  "physical_panel_output_proven": false,
+  "physical_panel_output_proven": true,
   "physical_capture11": {
     "trace_sha256": "15bf65704d3da5256a97ea31042f0c77250727481041a741fa4a22a22cf82741",
     "display": {
@@ -286,5 +286,6 @@
     },
     "framebuffer_png_sha256": "e48de7a5ba2bb50e7ec28819f1a7cd107f5b800045b008e5395e00af8b48021b",
     "visual_review": "Recovered physical RAM shows XNU/BSD console text; not a photograph or panel observation; dirty cache tail may be lost across reset"
-  }
+  },
+  "user_panel_observation": "screen showed the log"
 }

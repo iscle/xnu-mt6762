@@ -1,0 +1,74 @@
+{
+  "candidate_sha256": "8b94cdf939ee6318c5d47b8e4feacef2d3ea0a3b1d37f292752bd6d4875c6849",
+  "original_sha256": "5badc0dc942b0babdca3da13c7e07f3b5f1e57b66d503414b7f80effe8ce891a",
+  "patched_file_offset": "0x37b9a",
+  "changed_bytes": 4,
+  "target": "lk",
+  "lk2_preserved": true,
+  "reset_requested": false,
+  "mtkclient_commit": "fa97df7df41140e60f215f24eea82cb46faf9ff0",
+  "full_readback_verified": true,
+  "preserved_sha256": {
+    "gpt": "b2c84ab00210b2635a5701f776fe184dde621afe045ce1dd6b1b5e5a9fdcaf94",
+    "lk2": "5badc0dc942b0babdca3da13c7e07f3b5f1e57b66d503414b7f80effe8ce891a",
+    "boot": "8ca0238e2fadc54755ffa0cc2116b5229256da1e75422931837b93f3dc2d1283",
+    "para": "5744b4afa6da419c0c5382034ab3757a6627d0ff9ca3778398313cf10f1e80d8",
+    "seccfg": "bb95c846d18259d48c89ae93540dc2fe438f8ca9c07dd812b3c76555f0744b4e",
+    "vbmeta": "2f3fb6474d7ff35ac4c48ab2bef71247ba50de4a94de2474b7d1b60cd6654f51"
+  },
+  "persistent_write_extents": [
+    {
+      "address": "0x1c400000",
+      "length": 1048576
+    }
+  ],
+  "physical_boot_verified": true,
+  "physical_delay_removal_observed": false,
+  "private_backup": "hardware/lk-orange-delay-20261025/install/lk-before.bin",
+  "postboot": {
+    "read_only": true,
+    "reset_requested": false,
+    "gpt_sha256": "b2c84ab00210b2635a5701f776fe184dde621afe045ce1dd6b1b5e5a9fdcaf94",
+    "gpt_crc_verified": true,
+    "trace_sha256": "15bf65704d3da5256a97ea31042f0c77250727481041a741fa4a22a22cf82741",
+    "partitions": {
+      "lk": {
+        "address": "0x1c400000",
+        "length": 1048576,
+        "sha256": "8b94cdf939ee6318c5d47b8e4feacef2d3ea0a3b1d37f292752bd6d4875c6849",
+        "matches_original_dump": false
+      },
+      "lk2": {
+        "address": "0x1c500000",
+        "length": 1048576,
+        "sha256": "5badc0dc942b0babdca3da13c7e07f3b5f1e57b66d503414b7f80effe8ce891a",
+        "matches_original_dump": true
+      }
+    },
+    "retained_lk_function": {
+      "address": "0x48037964",
+      "bytes": 68,
+      "sha256": "aa2f532428c7beb664bc8e56d9d01e45ac5c09586a4c7fe2db700f3f9d1628f7",
+      "matches_patched_function": true,
+      "patch_site": "00bf00bf",
+      "execution_not_established_by_RAM_bytes_alone": true
+    }
+  },
+  "xnu_after_boot": {
+    "kernel_sha256": "a1f0de1cfb7b04b335d9163b093bba69fa0bb99db1734c11dd430264910f8c4b",
+    "log_address": "0xd3bb49a0",
+    "log_length": 3523,
+    "retained_cache_may_be_incomplete": true,
+    "log_sha256": "6f667519156dc2adc905a5e5a56c4942ae283ef74c6e66a7d7c710cb2978997c",
+    "memory_globals": [
+      "0xd0000000",
+      "0x20000000",
+      "0xfffffff004000000",
+      "0xe"
+    ],
+    "diagnostic_rounds": 2,
+    "iig_cases_per_round": 205,
+    "result": 1
+  },
+  "evidence_limit": "Retained RAM and normal boot sequence prove patched code loaded and diagnostic XNU ran; no instruction trace or direct elapsed-time measurement."
+}

@@ -1,0 +1,151 @@
+{
+  "pass": true,
+  "candidate_sha256": "8b94cdf939ee6318c5d47b8e4feacef2d3ea0a3b1d37f292752bd6d4875c6849",
+  "dispatcher_states": [
+    {
+      "state": 0,
+      "original": {
+        "events": [],
+        "return": 0
+      },
+      "patched": {
+        "events": [],
+        "return": 0
+      }
+    },
+    {
+      "state": 1,
+      "original": {
+        "events": [
+          [
+            "other_warning"
+          ]
+        ],
+        "return": 4294967295
+      },
+      "patched": {
+        "events": [
+          [
+            "other_warning"
+          ]
+        ],
+        "return": 4294967295
+      }
+    },
+    {
+      "state": 2,
+      "original": {
+        "events": [
+          [
+            "clean"
+          ],
+          [
+            "rows"
+          ],
+          [
+            "cursor",
+            12,
+            0
+          ],
+          [
+            "printf",
+            "Orange State\n\n"
+          ],
+          [
+            "printf",
+            "Your device has been unlocked and can't be trusted\n"
+          ],
+          [
+            "printf",
+            "Your device will boot in 5 seconds\n"
+          ],
+          [
+            "watchdog"
+          ],
+          [
+            "delay_ms",
+            5000
+          ],
+          [
+            "watchdog"
+          ]
+        ],
+        "return": 0
+      },
+      "patched": {
+        "events": [
+          [
+            "clean"
+          ],
+          [
+            "rows"
+          ],
+          [
+            "cursor",
+            12,
+            0
+          ],
+          [
+            "printf",
+            "Orange State\n\n"
+          ],
+          [
+            "printf",
+            "Your device has been unlocked and can't be trusted\n"
+          ],
+          [
+            "printf",
+            "Your device will boot in 5 seconds\n"
+          ],
+          [
+            "watchdog"
+          ],
+          [
+            "watchdog"
+          ]
+        ],
+        "return": 0
+      }
+    },
+    {
+      "state": 3,
+      "original": {
+        "events": [
+          [
+            "other_warning"
+          ]
+        ],
+        "return": 4294967295
+      },
+      "patched": {
+        "events": [
+          [
+            "other_warning"
+          ]
+        ],
+        "return": 4294967295
+      }
+    },
+    {
+      "state": 4,
+      "original": {
+        "events": [],
+        "return": 0
+      },
+      "patched": {
+        "events": [],
+        "return": 0
+      }
+    }
+  ],
+  "rejected_bad_inputs": 4,
+  "checks": [
+    "Exact four-byte replacement and no other differences",
+    "BL target and two NOP instruction widths",
+    "States0..4 keep dispatcher behavior",
+    "Orange only loses delay(5000), keeps3prints+2watchdog calls",
+    "Direct and dispatched paths match",
+    "Return value, SP, r4..r11 preserved, external-call SP8aligned"
+  ],
+  "limits": "Callees mocked; no timing, full boot, display, watchdog, authentication or phone execution proof"
+}

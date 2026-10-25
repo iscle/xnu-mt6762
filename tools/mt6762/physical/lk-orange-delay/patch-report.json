@@ -1,0 +1,59 @@
+{
+  "authority": "Offline exact-stock instruction replacement; no physical execution or authentication proof",
+  "input_sha256": "5badc0dc942b0babdca3da13c7e07f3b5f1e57b66d503414b7f80effe8ce891a",
+  "output_sha256": "8b94cdf939ee6318c5d47b8e4feacef2d3ea0a3b1d37f292752bd6d4875c6849",
+  "partition_bytes": 1048576,
+  "patch": {
+    "virtual_address": "0x4803799a",
+    "file_offset": "0x37b9a",
+    "before": "0bf077f8",
+    "after": "00bf00bf",
+    "old_instruction": "bl #0x48042a8c",
+    "new_instructions": [
+      "nop",
+      "nop"
+    ]
+  },
+  "byte_diffs": [
+    {
+      "offset": "0x37b9a",
+      "before": 11,
+      "after": 0
+    },
+    {
+      "offset": "0x37b9b",
+      "before": 240,
+      "after": 191
+    },
+    {
+      "offset": "0x37b9c",
+      "before": 119,
+      "after": 0
+    },
+    {
+      "offset": "0x37b9d",
+      "before": 248,
+      "after": 191
+    }
+  ],
+  "header": {
+    "bytes": 512,
+    "declared_payload_bytes": 705980,
+    "declared_payload_end": "0xac7bc",
+    "unchanged": true
+  },
+  "unchanged": [
+    "Every byte outside the four-byte call",
+    "Warning strings, including original 5 seconds wording",
+    "State dispatcher and security policy",
+    "Both watchdog refreshes",
+    "All other delay calls",
+    "Partition header, embedded DT and trailer"
+  ],
+  "limitations": [
+    "No signature recomputation",
+    "No proof that the normal preloader accepts modified LK",
+    "BootROM acceptance of a DA does not establish normal LK verification policy",
+    "No phone operation or flashing mechanism"
+  ]
+}

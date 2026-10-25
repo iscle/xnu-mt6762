@@ -18,8 +18,8 @@ Image10 also passes the inherited display validator on the phone, on both
 readback passes. Capture11 recovers XNU console pixels from the selected upper
 menu framebuffer at0x7f0d4000 and a3560-byte kernel log with serial0, that
 framebuffer address, and both successful205-case diagnostic rounds. This
-establishes physical framebuffer rendering; it is not an observation of light
-from the panel. User confirmation of visible output remains pending. Brightness,
+establishes physical framebuffer rendering. The user subsequently confirmed
+"screen showed the log", establishing visible console output too. Brightness,
 touch, charging, buttons, coordinated clocks/PMIC/DMA ownership and full Apple
 userspace on the phone are still unfinished. See trace-build10-evidence.json.
 
