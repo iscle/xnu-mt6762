@@ -14,6 +14,15 @@ controlled emulator regression support the fix. The framebuffer remains
 unadmitted, with no Video fields, and mandatory peripherals are still unfinished.
 See trace-build7-evidence.json for the build-bound trace and retained-log hashes.
 
+Image10 also passes the inherited display validator on the phone, on both
+readback passes. Capture11 recovers XNU console pixels from the selected upper
+menu framebuffer at0x7f0d4000 and a3560-byte kernel log with serial0, that
+framebuffer address, and both successful205-case diagnostic rounds. This
+establishes physical framebuffer rendering; it is not an observation of light
+from the panel. User confirmation of visible output remains pending. Brightness,
+touch, charging, buttons, coordinated clocks/PMIC/DMA ownership and full Apple
+userspace on the phone are still unfinished. See trace-build10-evidence.json.
+
 Earlier Image6 evidence
 -----------------------
 

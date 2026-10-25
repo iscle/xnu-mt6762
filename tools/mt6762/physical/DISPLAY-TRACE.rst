@@ -114,3 +114,13 @@ The precise color transfer function is unknown; colorimetric accuracy is
 not claimed. The matching explicit QEMU fixture and all59 host tests pass;
 its rendered bytes match the previously reviewed completed diagnostic.
 Physical Image10 results are recorded separately in trace-build10-evidence.json.
+
+Capture11 subsequently confirms Image10 accepted the actual two-layer profile
+on both passes. The kernel selected serial0 and framebuffer0x7f0d4000, then
+completed both205-case diagnostic rounds. A bounded read of the upper buffer
+recovered XNU/BSD console text. Its raw SHA256 is
+33a5395b29e3dff492e8b8daecea1c3f2657e16b69ac89687e4dae88bccc546f.
+This is a rendering observation from retained physical RAM, not a photograph
+or proof of panel/backlight output. Visible-panel confirmation and native
+brightness/power/input/DMA acceptance remain outstanding. Cached tail pixels
+can be lost across reset, as with the retained kernel log.

@@ -157,7 +157,7 @@
     "skipped": 0,
     "output_sha256": "c98dfc65c31d0269a2238bf292b4d1486df8ca54c3acb0ad77f75cde46bfbd98"
   },
-  "physical_execution_of_image10_proven": false,
+  "physical_execution_of_image10_proven": true,
   "installation_pending": false,
   "full_ios_userspace_proven": false,
   "native_peripheral_ownership": false,
@@ -181,5 +181,110 @@
     "mtkclient_commit": "fa97df7df41140e60f215f24eea82cb46faf9ff0",
     "seccfg_source_sha256": "274743b51dd3b8a648fb0cc96bd872205d8f892ac88082a7b3737671b05a0be7"
   },
-  "next_action": "Power restart with reader stopped, then bounded capture11"
+  "next_action": "Await visible panel report; native brightness/input/power/clock/DMA ownership remains incomplete",
+  "physical_diagnostic_pid1_proven": true,
+  "physical_inherited_console_admitted": true,
+  "physical_console_pixels_recovered": true,
+  "physical_panel_output_proven": false,
+  "physical_capture11": {
+    "trace_sha256": "15bf65704d3da5256a97ea31042f0c77250727481041a741fa4a22a22cf82741",
+    "display": {
+      "sha256": "85faf0f48ca53df9d3c1b4df92a24b1147020d41accd0a5ef33826537d3c932d",
+      "version": 2,
+      "state": 8,
+      "state_name": "accepted",
+      "pass_number": 2,
+      "read_mask": 63,
+      "identity": "dca3067c49139bbf826605677c3c16eeb9450539a1bc0a8a78a0fe979b3beff7",
+      "accepted": true,
+      "native_ownership": false,
+      "physical_retention_proven": false,
+      "tag": {
+        "base": 2130247680,
+        "size": 4653056,
+        "present": 17,
+        "found": 1
+      },
+      "power": [
+        17228,
+        17228,
+        3597
+      ],
+      "gates": 3481537151,
+      "sources": 3,
+      "layer": 1,
+      "scanout": {
+        "0": {
+          "en": 1,
+          "sources": 3,
+          "ext_sources": 0,
+          "roi": 55968128,
+          "con": 8703,
+          "address": 2130247680,
+          "pitch": 1536,
+          "size": 55968128,
+          "offset": 0,
+          "clip": 0,
+          "rdma": 7471105,
+          "downstream_rdma": 257,
+          "dsi_start": 1,
+          "dsi_mode": 2,
+          "dsi_lanes": 65564,
+          "dsi_active": 854,
+          "dsi_ps": 738395264,
+          "dsi_vsa": 2,
+          "dsi_vbp": 20,
+          "dsi_vfp": 170
+        },
+        "1": {
+          "en": 1,
+          "sources": 3,
+          "ext_sources": 0,
+          "roi": 55968128,
+          "con": 8703,
+          "address": 2131574784,
+          "pitch": 1536,
+          "size": 55968128,
+          "offset": 0,
+          "clip": 0,
+          "rdma": 6881281,
+          "downstream_rdma": 257,
+          "dsi_start": 1,
+          "dsi_mode": 2,
+          "dsi_lanes": 65564,
+          "dsi_active": 854,
+          "dsi_ps": 738395264,
+          "dsi_vsa": 2,
+          "dsi_vbp": 20,
+          "dsi_vfp": 170
+        }
+      },
+      "datapath": 2164260865,
+      "sbch": 0
+    },
+    "retained_xnu": {
+      "kernel_sha256": "a1f0de1cfb7b04b335d9163b093bba69fa0bb99db1734c11dd430264910f8c4b",
+      "log_address": "0xd3bb49a0",
+      "log_length": 3560,
+      "retained_cache_may_be_incomplete": true,
+      "log_sha256": "b1b08ef2efe7e1dc162e29cd90daa0bedfa0041c87abd7251284df9317fd6e85",
+      "memory_globals": [
+        "0xd0000000",
+        "0x20000000",
+        "0xfffffff004000000",
+        "0xe"
+      ]
+    },
+    "diagnostic_rounds": 2,
+    "iig_cases": 205,
+    "framebuffer": {
+      "address": "0x7f0d4000",
+      "size": 1327104,
+      "sha256": "33a5395b29e3dff492e8b8daecea1c3f2657e16b69ac89687e4dae88bccc546f",
+      "retained_after_reset": true,
+      "physical_panel_output_proven": false
+    },
+    "framebuffer_png_sha256": "e48de7a5ba2bb50e7ec28819f1a7cd107f5b800045b008e5395e00af8b48021b",
+    "visual_review": "Recovered physical RAM shows XNU/BSD console text; not a photograph or panel observation; dirty cache tail may be lost across reset"
+  }
 }
