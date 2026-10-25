@@ -223,12 +223,16 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--static-memory', action='store_true')
     parser.add_argument('--display-fixture', action='store_true')
+    parser.add_argument('--two-layer-display', action='store_true',
+                        help='explicit QEMU LK menu-layer fixture; requires --display-fixture')
     parser.add_argument('--visible-console', action='store_true',
                         help='capture video-console diagnostic; requires separate visual result review')
     parser.add_argument('--seconds', type=float, default=40)
     parser.add_argument('--exception-at', type=lambda value:int(value, 0),
                         help='QEMU-only hardware breakpoint at loader_main, then execute owned zero padding to test fatal trace')
     args = parser.parse_args()
+    if args.two_layer_display and not args.display_fixture:
+        parser.error('--two-layer-display requires --display-fixture')
     if args.visible_console and (not args.display_fixture or args.static_memory):
         parser.error('--visible-console requires positive --display-fixture')
     args.output.mkdir(parents=True, exist_ok=False)
@@ -256,6 +260,7 @@ def main():
                   stock_dtb_sha256=digest(stock), runtime_dtb_sha256=digest(fdt),
                   changed_memory_size_offset=patch, static_memory=args.static_memory,
                   synthetic_display=args.display_fixture,
+                  synthetic_two_layer_display=args.two_layer_display,
                   manual_visible_console_review_required=args.visible_console,
                   external_payloads=['image-derived Image', 'image-derived runtime FDT'])
     trace_bytes = raw[trace_record.OFFSET:trace_record.OFFSET + trace_record.SIZE]
@@ -271,6 +276,8 @@ def main():
         gdb = Path(tmp) / 'gdb'
         qmp_path = Path(tmp) / 'qmp'
         machine = 'mt6762' + (',lab-i2c=on,lab-display=on,lab-display-fb=0x7ef90000' if args.display_fixture else '')
+        if args.two_layer_display:
+            machine += ',lab-display-two-layer=on'
         cmd = [str(args.qemu.resolve()), '-M', machine, '-cpu', 'cortex-a53', '-smp', '1',
                '-m', '4096M', '-dtb', str(fdtpath.resolve()), '-display', 'none',
                '-serial', 'file:' + str((args.output / 'serial.log').resolve()), '-monitor', 'none',
@@ -352,11 +359,14 @@ def main():
                     report['display_state'] = json.loads(qmp.command('qom-get',
                         {'path':'/machine', 'property':'lab-display-state'}))
                     framebuffer = args.output / 'framebuffer.bgra'
+                    framebuffer_base = 0x7f0d4000 if args.two_layer_display else 0x7ef90000
                     qmp.command('human-monitor-command', {'command-line':
-                        f'pmemsave 0x7ef90000 0x144000 "{framebuffer.resolve()}"'})
+                        f'pmemsave {framebuffer_base:#x} 0x144000 "{framebuffer.resolve()}"'})
                     pixels = framebuffer.read_bytes()
                     report['framebuffer_sha256'] = digest(pixels)
                     report['framebuffer_nonzero_bytes'] = sum(byte != 0 for byte in pixels)
+                    report['framebuffer_base'] = framebuffer_base
+                    report['framebuffer_alpha_opaque'] = all(v == 255 for v in pixels[3:384*854*4:4])
                     from PIL import Image
                     Image.frombytes('RGBA', (384, 854), pixels[:384*854*4], 'raw', 'BGRA').convert('RGB').save(args.output / 'framebuffer.png')
                 qmp.stream.close(); qmp.sock.close()
@@ -390,6 +400,8 @@ def main():
                                     display_pixels=report['framebuffer_nonzero_bytes'] > 1000,
                                     no_display_register_writes=report['display_state']['pwm_writes'] == 0 and
                                         report['display_state']['rejected_writes'] == 0)
+            if args.two_layer_display:
+                report['checks']['opaque_console_pixels'] = report['framebuffer_alpha_opaque']
         if args.visible_console:
             for key in ['result', 'cases', 'done']:
                 del report['checks'][key]

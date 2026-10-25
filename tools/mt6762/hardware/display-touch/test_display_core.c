@@ -38,7 +38,7 @@ int main(void)
         .en=1, .sources=1, .roi=384 | 854u<<16, .con=0x20ff,
         .address=0x7ef90000, .pitch=1536, .size=384 | 854u<<16,
         .rdma=1, .downstream_rdma=1, .dsi_start=1, .dsi_mode=2,
-        .dsi_lanes=7u<<2, .dsi_active=854, .dsi_ps=(2u<<16)|1152,
+        .dsi_lanes=7u<<2, .dsi_active=854, .dsi_ps=(3u<<16)|1152,
         .dsi_vsa=2, .dsi_vbp=20, .dsi_vfp=170
     };
     assert(mt6762_ovl_matches(&f, &s));
@@ -49,6 +49,17 @@ int main(void)
     s.ext_sources=1; assert(!mt6762_ovl_matches(&f, &s)); s.ext_sources=0;
     s.address+=4096; assert(!mt6762_ovl_matches(&f, &s)); s.address-=4096;
     s.downstream_rdma=3; assert(!mt6762_ovl_matches(&f, &s)); s.downstream_rdma=1;
+    s.dsi_ps=(2u<<16)|1152; assert(!mt6762_ovl_matches(&f,&s));
+    s.dsi_ps=(3u<<16)|1152;
+    s.pitch|=1u<<16; assert(!mt6762_ovl_matches(&f,&s)); s.pitch=1536;
+    struct mt6762_ovl_snapshot menu[2]={s,s};
+    menu[0].sources=menu[1].sources=3; menu[0].con=menu[1].con=0x21ff;
+    menu[1].address+=0x144000;
+    assert(mt6762_boot_menu_buffer(f.physical,f.reserved_size,menu)==0x7f0d4000);
+    assert(!mt6762_boot_menu_buffer(f.physical,0x144000,menu));
+    menu[1].address+=0x4000; assert(!mt6762_boot_menu_buffer(f.physical,f.reserved_size,menu));
+    menu[1].address-=0x4000;
+    menu[0].sources=7; assert(!mt6762_boot_menu_buffer(f.physical,f.reserved_size,menu));
     s.dsi_lanes=3u<<2; assert(!mt6762_ovl_matches(&f, &s));
     assert(mt6762_pwm_configured(3u<<16, 1023, 3u<<24, 0));
     assert(!mt6762_pwm_configured(3u<<16, 1023, 0, 0));

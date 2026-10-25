@@ -1,7 +1,7 @@
 Reproducing the local MT6762 QEMU experiment
 ==========================================
 
-These twelve patches reproduce the local research machine used for MT6762
+These thirteen patches reproduce the local research machine used for MT6762
 bring-up. They contain source code and documentation only: no phone firmware,
 iOS files, credentials, personal partitions, or built binaries.
 
@@ -22,7 +22,7 @@ Source provenance
   ``49d41542f0ccfed448d90c9ad4397a592292d027``,
   ``20e020a98f55679572ad7d18e1c4897b9951a1b5`` and
   ``0f9a62cb5b983e7d9d2a93d90a2c18eb46e0cf1a``.
-* Resulting Git tree: ``32feba878a84cf50d098bda6f12d24278c712045``.
+* Resulting Git tree: ``4b52a43a15bafb73e526dafe2b0dffed2cf8c423``.
 
 ``apply.sh`` verifies the patch SHA-256 hashes, fetches that exact upstream
 commit, applies the patch series in order, and verifies the final tree.
@@ -176,3 +176,12 @@ The twelfth patch (local commit ``b4eafc7a7a76c906c4b6b6843573f783f33745f7``) ex
 read-only synthetic PMIC identity/trim words for BIF diagnostics, with an
 isolated ``bif-trim`` fault and counters. No calibration transfer, hardware
 protection or OTP operation is modeled.
+
+The thirteenth patch corrects the explicit display fixture's hardware RGB888
+selector to3 and adds opt-in ``lab-display-two-layer=on``. This requires the
+existing lab-display/lab-i2c opt-ins, framebuffer base0x7ef90000 and RAM covering
+the second full frame. It reproduces capture9's two-layer register values and
+provides explicit zero DATAPATH_CON/SBCH fixtures. These are synthetic readback
+values, with no panel, compositor or DMA emulation. Register writes remain
+rejected. Readback, mode immutability, RAM bounds and write rejection are tested;
+see display-patch13-evidence.json. The patch replay matches the recorded tree.

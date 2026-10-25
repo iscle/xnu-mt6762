@@ -1809,6 +1809,14 @@ vc_update_color(int color, boolean_t fore)
 	} else {
 		vc_color_back = vc_colors[color][vc_color_index_table[vinfo.v_depth]];
 	}
+#if defined(ARM64_BOARD_CONFIG_MT6762)
+	/* The inherited LK menu layer consumes BGRA alpha. Keep text and erased
+	 * cells opaque without changing OVL blending or rebuilding userspace. */
+	if (vinfo.v_depth == 32) {
+		vc_color_fore |= 0xff000000;
+		vc_color_back |= 0xff000000;
+	}
+#endif
 }
 
 /*

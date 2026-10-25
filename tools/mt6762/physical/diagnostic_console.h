@@ -20,6 +20,12 @@ static const uint8_t diagnostic_font[36][7] = {
  {17,17,10,4,4,4,4},{31,1,2,4,8,16,31}
 };
 struct diagnostic_console { volatile uint32_t *pixels; unsigned column, row; };
+static void diagnostic_clear(struct diagnostic_console *c)
+{
+    if (!c->pixels) return;
+    for (unsigned n = 0; n < 384u * 854u; ++n) c->pixels[n] = 0xff001c28u;
+    c->column = c->row = 0;
+}
 static void diagnostic_character(struct diagnostic_console *c, char ch)
 {
     if (!c->pixels) return;

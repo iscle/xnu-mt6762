@@ -25,6 +25,9 @@ int main(void) {
     uint32_t *pixels=(uint32_t *)(area+page+mapped-bytes);
     memset(area+page,0xa5,mapped);
     struct diagnostic_console c={pixels,372,838};
+    diagnostic_clear(&c);
+    for(size_t n=0;n<count;++n) assert(pixels[n]==0xff001c28u);
+    c.column=372; c.row=838;
     diagnostic_character(&c,'A');
     assert(c.column==384 && c.row==838);
     assert(pixels[count-1]==0xff001c28U);
@@ -44,6 +47,7 @@ int main(void) {
     for(size_t n=0;n<count;++n) after+=pixels[n];
     assert(before==after);
     struct diagnostic_console disabled={0,12,32};
+    diagnostic_clear(&disabled);
     diagnostic_character(&disabled,'A');diagnostic_character(&disabled,'\n');
     assert(disabled.column==12 && disabled.row==32);
     for(unsigned n=0;n<20000;++n) diagnostic_character(&c,n%47==0?'\n':(char)(' '+n%95));

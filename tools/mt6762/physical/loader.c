@@ -103,6 +103,7 @@ const struct entry_result *loader_main(uint64_t fdt_address, uint64_t original_e
     loader_trace_commit(TRACE_FDT, 0);
     uint64_t framebuffer = validated_console();
     console.pixels = (void *)(uintptr_t)framebuffer;
+    diagnostic_clear(&console);
     if (framebuffer) text("XNU DIAGNOSTIC\r\nBOOTLOADER DISPLAY VERIFIED\r\n");
     else text("Framebuffer unverified; UART diagnostics only\r\n");
     loader_trace_commit(TRACE_CONSOLE, 0);

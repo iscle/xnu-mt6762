@@ -37,23 +37,45 @@ struct mt6762_ovl_snapshot {
     uint32_t downstream_rdma, dsi_start, dsi_mode, dsi_lanes, dsi_active;
     uint32_t dsi_ps, dsi_vsa, dsi_vbp, dsi_vfp;
 };
-static inline int mt6762_ovl_matches(const struct mt6762_fb_layout *f,
-    const struct mt6762_ovl_snapshot *s)
+static inline int mt6762_ovl_matches_sources(const struct mt6762_fb_layout *f,
+    const struct mt6762_ovl_snapshot *s, uint32_t sources)
 {
     uint32_t dimensions = f->width | (f->height << 16);
     /* Reject rotation, colour keys, matrix conversion, local/constant source,
      * extended layers, manual format and byte/RGB swaps. Alpha is opaque or
      * disabled. Only the one known memory layer may contribute to scanout. */
-    return mt6762_fb_bounds(f) && (s->en & 1) && s->sources == (1u << f->layer) &&
+    return mt6762_fb_bounds(f) && (s->en & 1) && s->sources == sources &&
         !(s->ext_sources & 7) && s->roi == dimensions &&
         (s->con & 0xfffffe00u) == 0x2000 && (!(s->con & 0x100) || (s->con & 255) == 255) &&
-        s->address == f->physical && (s->pitch & 0xffff) == f->stride &&
+        s->address == f->physical && s->pitch == f->stride &&
         s->size == dimensions && !s->offset && !s->clip && (s->rdma & 1) &&
         (s->downstream_rdma & 0x13) == 1 && /* RDMA direct-link, no reset */
         (s->dsi_start & 1) && (s->dsi_mode & 0x1f0303) == 2 &&
         ((s->dsi_lanes >> 2) & 15) == 7 && (s->dsi_active & 0x3fff) == f->height &&
-        (s->dsi_ps & 0x03077fffu) == ((2u << 16) | 1152) &&
+        /* DSI_PS_Control remaps enum RGB888=2 to hardware selector5-2=3. */
+        (s->dsi_ps & 0x03077fffu) == ((3u << 16) | 1152) &&
         s->dsi_vsa == 2 && s->dsi_vbp == 20 && s->dsi_vfp == 170;
+}
+static inline int mt6762_ovl_matches(const struct mt6762_fb_layout *f,
+    const struct mt6762_ovl_snapshot *s)
+{
+    return f->layer <= 3 && mt6762_ovl_matches_sources(f, s, 1u << f->layer);
+}
+/* Exact inherited LK menu profile measured in capture9. Both memory layers
+ * must be full-size BGRA within the independently reserved allocation. The
+ * caller additionally validates global datapath/cache controls and renders
+ * opaque pixels into layer1. This is not native display ownership. */
+static inline uint64_t mt6762_boot_menu_buffer(uint64_t base, uint64_t reserved_size,
+    const struct mt6762_ovl_snapshot *layers)
+{
+    struct mt6762_fb_layout f = {base, 0x144000, base, reserved_size, 384, 854, 1536, 1, 0};
+    if (reserved_size < 2 * UINT64_C(0x144000) ||
+        !mt6762_ovl_matches_sources(&f, &layers[0], 3) || layers[0].con != 0x21ff ||
+        layers[0].ext_sources != 0) return 0;
+    f.physical += 0x144000; f.layer = 1;
+    if (!mt6762_ovl_matches_sources(&f, &layers[1], 3) || layers[1].con != 0x21ff ||
+        layers[1].ext_sources != 0) return 0;
+    return f.physical;
 }
 struct mt6762_pwm_io {
     void *context;

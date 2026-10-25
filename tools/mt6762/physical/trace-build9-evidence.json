@@ -1,0 +1,354 @@
+{
+  "purpose": "Image9: measured LK menu-layer console, correct DSI hardware selector, opaque XNU text pixels",
+  "kernel_sha256": "a1f0de1cfb7b04b335d9163b093bba69fa0bb99db1734c11dd430264910f8c4b",
+  "physical_image_sha256": "df3d9afc328cc1809e1d2e15551bf24ac5a897db6780096a1ed959c0ed5a08f8",
+  "normal_boot_sha256": "ff4b4f59d7c6519f9e7df0095078463ade9ad5d724ce545716758082227cac7e",
+  "physical_manifest_sha256": "706efc653a295bec88165c4c726bd7fddc176f1b3f7fa170529a307b9caacfda",
+  "trace": {
+    "identity": "ef5e46961c45719c5dc3c81d759b169c1c8947c052d0b0995aff002006f2531c",
+    "offset": 16384,
+    "physical_address": 1074282496,
+    "size": 256,
+    "initialized_sha256": "f090916b28d1ec544c9480e365b7e3224f00e6a85144e803b3745203027ef1eb",
+    "physical_retention_proven": false,
+    "final_marker_proves_xnu_entry": false
+  },
+  "display_trace": {
+    "offset": 16640,
+    "physical_address": 1074282752,
+    "size": 512,
+    "initialized_sha256": "490412d8e5462c377d455560073e83d7ca61bbd9e416154b22341711c884e9a3",
+    "register_writes": false,
+    "physical_retention_proven": false
+  },
+  "probes": {
+    "probe-positive": {
+      "report_sha256": "1527e4ee3fe5a788ccc7ff01dfdc5eede632f542003b175d48d8e7ba87b84919",
+      "checks": {
+        "ram": true,
+        "xnu": true,
+        "pages": true,
+        "result": true,
+        "cases": true,
+        "done": true,
+        "trace_initialized_before_execution": true,
+        "trace_executed": true,
+        "trace_jump_ready": true,
+        "display_record_expected_state": true
+      },
+      "automated_checks_passed": true,
+      "physical_validation": false,
+      "display_after": {
+        "version": 2,
+        "state": 1,
+        "state_name": "tag",
+        "pass_number": 0,
+        "read_mask": 1,
+        "identity": "ef5e46961c45719c5dc3c81d759b169c1c8947c052d0b0995aff002006f2531c",
+        "accepted": false,
+        "native_ownership": false,
+        "physical_retention_proven": false,
+        "tag": {
+          "base": 0,
+          "size": 0,
+          "present": 0,
+          "found": 0
+        }
+      }
+    },
+    "probe-single": {
+      "report_sha256": "1a1d2aa0cde36615c87d93c8023146eabea876a69d10d39c79762561bffe38f7",
+      "checks": {
+        "ram": true,
+        "xnu": true,
+        "pages": true,
+        "display_admitted": true,
+        "display_pixels": true,
+        "no_display_register_writes": true,
+        "trace_initialized_before_execution": true,
+        "trace_executed": true,
+        "trace_jump_ready": true,
+        "display_record_expected_state": true
+      },
+      "automated_checks_passed": true,
+      "physical_validation": false,
+      "display_after": {
+        "version": 2,
+        "state": 8,
+        "state_name": "accepted",
+        "pass_number": 2,
+        "read_mask": 63,
+        "identity": "ef5e46961c45719c5dc3c81d759b169c1c8947c052d0b0995aff002006f2531c",
+        "accepted": true,
+        "native_ownership": false,
+        "physical_retention_proven": false,
+        "tag": {
+          "base": 2130247680,
+          "size": 4653056,
+          "present": 17,
+          "found": 1
+        },
+        "power": [
+          8,
+          8,
+          13
+        ],
+        "gates": 0,
+        "sources": 1,
+        "layer": 0,
+        "scanout": {
+          "0": {
+            "en": 1,
+            "sources": 1,
+            "ext_sources": 0,
+            "roi": 55968128,
+            "con": 8447,
+            "address": 2130247680,
+            "pitch": 1536,
+            "size": 55968128,
+            "offset": 0,
+            "clip": 0,
+            "rdma": 1,
+            "downstream_rdma": 1,
+            "dsi_start": 1,
+            "dsi_mode": 2,
+            "dsi_lanes": 28,
+            "dsi_active": 854,
+            "dsi_ps": 197760,
+            "dsi_vsa": 2,
+            "dsi_vbp": 20,
+            "dsi_vfp": 170
+          }
+        },
+        "datapath": 0,
+        "sbch": 0
+      },
+      "framebuffer_sha256": "69e0d80ce1f1250d571197a0702ab7de2ce48ddd966b9aa548f14ee3135c6bd0",
+      "framebuffer_base": 2130247680,
+      "framebuffer_alpha_opaque": true,
+      "visual_review": "Original-resolution image shows both successful205-case rounds and MT6762_IIG_PROBE_DONE; synthetic fixture only"
+    },
+    "probe-menu": {
+      "report_sha256": "cc98fb420ec3dbbad79a1e2b7443f4409237120c7d0ce139590d658e4d4e1b2d",
+      "checks": {
+        "ram": true,
+        "xnu": true,
+        "pages": true,
+        "display_admitted": true,
+        "display_pixels": true,
+        "no_display_register_writes": true,
+        "opaque_console_pixels": true,
+        "trace_initialized_before_execution": true,
+        "trace_executed": true,
+        "trace_jump_ready": true,
+        "display_record_expected_state": true
+      },
+      "automated_checks_passed": true,
+      "physical_validation": false,
+      "display_after": {
+        "version": 2,
+        "state": 8,
+        "state_name": "accepted",
+        "pass_number": 2,
+        "read_mask": 63,
+        "identity": "ef5e46961c45719c5dc3c81d759b169c1c8947c052d0b0995aff002006f2531c",
+        "accepted": true,
+        "native_ownership": false,
+        "physical_retention_proven": false,
+        "tag": {
+          "base": 2130247680,
+          "size": 4653056,
+          "present": 17,
+          "found": 1
+        },
+        "power": [
+          8,
+          8,
+          13
+        ],
+        "gates": 0,
+        "sources": 3,
+        "layer": 1,
+        "scanout": {
+          "0": {
+            "en": 1,
+            "sources": 3,
+            "ext_sources": 0,
+            "roi": 55968128,
+            "con": 8703,
+            "address": 2130247680,
+            "pitch": 1536,
+            "size": 55968128,
+            "offset": 0,
+            "clip": 0,
+            "rdma": 5373953,
+            "downstream_rdma": 257,
+            "dsi_start": 1,
+            "dsi_mode": 2,
+            "dsi_lanes": 65564,
+            "dsi_active": 854,
+            "dsi_ps": 738395264,
+            "dsi_vsa": 2,
+            "dsi_vbp": 20,
+            "dsi_vfp": 170
+          },
+          "1": {
+            "en": 1,
+            "sources": 3,
+            "ext_sources": 0,
+            "roi": 55968128,
+            "con": 8703,
+            "address": 2131574784,
+            "pitch": 1536,
+            "size": 55968128,
+            "offset": 0,
+            "clip": 0,
+            "rdma": 4718593,
+            "downstream_rdma": 257,
+            "dsi_start": 1,
+            "dsi_mode": 2,
+            "dsi_lanes": 65564,
+            "dsi_active": 854,
+            "dsi_ps": 738395264,
+            "dsi_vsa": 2,
+            "dsi_vbp": 20,
+            "dsi_vfp": 170
+          }
+        },
+        "datapath": 0,
+        "sbch": 0
+      },
+      "framebuffer_sha256": "69e0d80ce1f1250d571197a0702ab7de2ce48ddd966b9aa548f14ee3135c6bd0",
+      "framebuffer_base": 2131574784,
+      "framebuffer_alpha_opaque": true,
+      "visual_review": "Original-resolution image shows both successful205-case rounds and MT6762_IIG_PROBE_DONE; synthetic fixture only"
+    },
+    "probe-menu-state": {
+      "report_sha256": "8912620352d8034c9d2fa16f04cbad19cf714cc427288cd8a2ac138d2a32897e",
+      "checks": {
+        "ram": true,
+        "xnu": true,
+        "pages": true,
+        "display_admitted": true,
+        "display_pixels": true,
+        "no_display_register_writes": true,
+        "opaque_console_pixels": true,
+        "trace_initialized_before_execution": true,
+        "trace_executed": true,
+        "trace_jump_ready": true,
+        "display_record_expected_state": true
+      },
+      "automated_checks_passed": true,
+      "physical_validation": false,
+      "display_after": {
+        "version": 2,
+        "state": 8,
+        "state_name": "accepted",
+        "pass_number": 2,
+        "read_mask": 63,
+        "identity": "ef5e46961c45719c5dc3c81d759b169c1c8947c052d0b0995aff002006f2531c",
+        "accepted": true,
+        "native_ownership": false,
+        "physical_retention_proven": false,
+        "tag": {
+          "base": 2130247680,
+          "size": 4653056,
+          "present": 17,
+          "found": 1
+        },
+        "power": [
+          8,
+          8,
+          13
+        ],
+        "gates": 0,
+        "sources": 3,
+        "layer": 1,
+        "scanout": {
+          "0": {
+            "en": 1,
+            "sources": 3,
+            "ext_sources": 0,
+            "roi": 55968128,
+            "con": 8703,
+            "address": 2130247680,
+            "pitch": 1536,
+            "size": 55968128,
+            "offset": 0,
+            "clip": 0,
+            "rdma": 5373953,
+            "downstream_rdma": 257,
+            "dsi_start": 1,
+            "dsi_mode": 2,
+            "dsi_lanes": 65564,
+            "dsi_active": 854,
+            "dsi_ps": 738395264,
+            "dsi_vsa": 2,
+            "dsi_vbp": 20,
+            "dsi_vfp": 170
+          },
+          "1": {
+            "en": 1,
+            "sources": 3,
+            "ext_sources": 0,
+            "roi": 55968128,
+            "con": 8703,
+            "address": 2131574784,
+            "pitch": 1536,
+            "size": 55968128,
+            "offset": 0,
+            "clip": 0,
+            "rdma": 4718593,
+            "downstream_rdma": 257,
+            "dsi_start": 1,
+            "dsi_mode": 2,
+            "dsi_lanes": 65564,
+            "dsi_active": 854,
+            "dsi_ps": 738395264,
+            "dsi_vsa": 2,
+            "dsi_vbp": 20,
+            "dsi_vfp": 170
+          }
+        },
+        "datapath": 0,
+        "sbch": 0
+      },
+      "framebuffer_sha256": "69e0d80ce1f1250d571197a0702ab7de2ce48ddd966b9aa548f14ee3135c6bd0",
+      "framebuffer_base": 2131574784,
+      "framebuffer_alpha_opaque": true,
+      "visual_review": "Original-resolution image shows both successful205-case rounds and MT6762_IIG_PROBE_DONE; synthetic fixture only",
+      "retained_log_sha256": "727fd704cdfcbf59d466e7c097da08fba9be0868f941c86b22c94a7f95634925"
+    }
+  },
+  "host_tests": {
+    "count": 59,
+    "passed": true,
+    "skipped": 0,
+    "output_sha256": "c9a76483e0693cee32e77200bcdeb518940c642f29f9de5b3f7c63e29db737b6"
+  },
+  "physical_execution_of_image9_proven": false,
+  "installation_pending": false,
+  "full_ios_userspace_proven": false,
+  "native_peripheral_ownership": false,
+  "installation": {
+    "boot_sha256": "ff4b4f59d7c6519f9e7df0095078463ade9ad5d724ce545716758082227cac7e",
+    "full_readback_verified": true,
+    "preserved_sha256": {
+      "para": "5744b4afa6da419c0c5382034ab3757a6627d0ff9ca3778398313cf10f1e80d8",
+      "recovery": "2a4d62a60690c59e26a0004b6efaea56f433059a6f84b6109d113c1d7a364173",
+      "seccfg": "bb95c846d18259d48c89ae93540dc2fe438f8ca9c07dd812b3c76555f0744b4e",
+      "vbmeta": "2f3fb6474d7ff35ac4c48ab2bef71247ba50de4a94de2474b7d1b60cd6654f51"
+    },
+    "persistent_write_extents": [
+      {
+        "address": "0x1c600000",
+        "bytes": 33554432
+      }
+    ],
+    "bcb_written": false,
+    "reset_requested": false,
+    "mtkclient_commit": "fa97df7df41140e60f215f24eea82cb46faf9ff0",
+    "seccfg_source_sha256": "274743b51dd3b8a648fb0cc96bd872205d8f892ac88082a7b3737671b05a0be7"
+  },
+  "next_action": "Power restart with reader stopped, then bounded capture10"
+}
