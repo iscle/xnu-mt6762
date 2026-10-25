@@ -28,6 +28,15 @@ Image, embedded diagnostic PID1, kernel23, trace identity and16KiB VM/4KiB
 hardware-page configuration are unchanged. No recovery image is relabeled as
 boot: the template and descriptor name are independently fixed to stock boot.
 
+On 2026-10-25 the full boot partition was installed and read back with the
+candidate hash below. Only after that verification, the existing
+``boot-recovery`` command was cleared in para; full readback confirmed all
+bytes after its32-byte command remained unchanged. Recovery, authenticated
+unlocked seccfg and main vbmeta remained unchanged. The existing DA
+HOME_SCREEN request was acknowledged. No subsequent USB capture or visible
+payload result has established execution yet. The reader is waiting; stock
+restoration is not planned. See ``normal-trial-install-evidence.json``.
+
 Independent validation checks partition size, footer bounds/version, unsigned
 header/key/authentication fields, a single bounded descriptor, exact partition
 name, payload size, salt and recomputed SHA256. Official ``info_image`` and

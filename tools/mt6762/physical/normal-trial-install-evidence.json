@@ -1,0 +1,50 @@
+{
+  "date_utc": "2026-10-25",
+  "status": "normal boot image installed and HOME_SCREEN requested; post-boot capture pending",
+  "installation": {
+    "boot_sha256": "0b3f8f438e9bca7299a845ab663a9553e0209ddeaaf717fc86cd056e280b09ef",
+    "para_before_sha256": "67bef7ae449f68b9be4c8bb2ff77d559135730ced20cf9e8013d4fa2716cf310",
+    "para_after_sha256": "5744b4afa6da419c0c5382034ab3757a6627d0ff9ca3778398313cf10f1e80d8",
+    "boot_full_readback_verified": true,
+    "para_full_readback_verified": true,
+    "para_bytes32_plus_unchanged": true,
+    "preserved_partition_sha256": {
+      "0x108000": "2a4d62a60690c59e26a0004b6efaea56f433059a6f84b6109d113c1d7a364173",
+      "0xf000000": "bb95c846d18259d48c89ae93540dc2fe438f8ca9c07dd812b3c76555f0744b4e",
+      "0x164000000": "2f3fb6474d7ff35ac4c48ab2bef71247ba50de4a94de2474b7d1b60cd6654f51"
+    },
+    "persistent_write_extents": [
+      {
+        "address": "0x1c600000",
+        "bytes": 33554432
+      },
+      {
+        "address": "0x2108000",
+        "bytes": 512
+      }
+    ],
+    "automatic_reset": false,
+    "candidate_sha256": "0b3f8f438e9bca7299a845ab663a9553e0209ddeaaf717fc86cd056e280b09ef",
+    "recovery_unchanged": true,
+    "seccfg_unchanged": true,
+    "vbmeta_unchanged": true,
+    "mtkclient_commit": "fa97df7df41140e60f215f24eea82cb46faf9ff0",
+    "seccfg_source_sha256": "274743b51dd3b8a648fb0cc96bd872205d8f892ac88082a7b3737671b05a0be7"
+  },
+  "restart": {
+    "requested": true,
+    "acknowledged": true,
+    "outcome": "indeterminate pending post-boot evidence",
+    "payload_execution_proven": false,
+    "returned_type": "bool"
+  },
+  "prior_capture": {
+    "reserved_DA_runtime_verified": true,
+    "trace_valid": false,
+    "trace_sha256": "5a872f002e1d83f6accf9aef6810f965b3e14213835b1881484d9c2afd1bd6c7",
+    "missing_trace_does_not_prove_no_execution": true
+  },
+  "restoration": "not performed, per user instruction",
+  "physical_xnu_execution_proven": false,
+  "early_BROM_enumeration": "May precede normal boot; not evidence of misrouting"
+}
