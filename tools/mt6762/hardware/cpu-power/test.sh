@@ -34,3 +34,5 @@ Path(sys.argv[1]).write_text('\n'.join(lines)+'\n')
 THERMAL
 cc -std=c11 -Wall -Wextra -Werror -g -I "$testdir" test_native_thermal.c -o "$testdir/test-native-thermal"
 "$testdir/test-native-thermal"
+cc -std=c11 -Wall -Wextra -Werror -g test_thermal_observer.c -o "$testdir/test-thermal-observer"
+"$testdir/test-thermal-observer"

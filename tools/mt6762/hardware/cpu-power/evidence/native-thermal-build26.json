@@ -1,0 +1,434 @@
+{
+  "scope": "Native thermal observation acquisition expiry",
+  "physical_hardware_tested": false,
+  "kernel_sha256": "6cb48df396069e92a76575deaaed592d4eceb5d6ba98bd2dc72ff950274b03b7",
+  "source_sha256": "f95311d869a48aab101254f75b49e6b872f938ade22fc7b51f0fb20ab313b1bf",
+  "host_consumer_test_sha256": "346178dd48c618be99b3b41295088ff5efc4f26ff5cf3130ff0e433d81e9189e",
+  "host_suite_command": "sh tools/mt6762/hardware/cpu-power/test.sh",
+  "host_suite_passed": true,
+  "runs": {
+    "positive": {
+      "report_sha256": "20e03bbd1a9eba5666baa0fa83961b7826f434620a0fa7392358fb01bd1ab8b6",
+      "summary": {
+        "kernel_sha256": "6cb48df396069e92a76575deaaed592d4eceb5d6ba98bd2dc72ff950274b03b7",
+        "qemu_binary_sha256": "2a4b3151bf86b5c48a6d0a3819600be69051ad6b60503bc68f18e7462a131408",
+        "kernel_panic_observed": false,
+        "expected_cpu_count": 8,
+        "secondary_cpus_online": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "native_sysctls": {
+          "mt6762_pmic_id": {
+            "value": 22320,
+            "error": 0
+          },
+          "mt6762_power_valid": {
+            "value": 71,
+            "error": 0
+          },
+          "mt6762_power_errors": {
+            "value": 1,
+            "error": 0
+          },
+          "mt6762_battery_adc_mv": {
+            "value": 4400,
+            "error": 0
+          },
+          "mt6762_ntc_adc_mv": {
+            "value": 615,
+            "error": 0
+          },
+          "mt6762_adc_voltage_samples": {
+            "value": 5,
+            "error": 0
+          },
+          "mt6762_adc_ntc_samples": {
+            "value": 4,
+            "error": 0
+          },
+          "mt6762_charger_control_safe": {
+            "value": 1,
+            "error": 0
+          },
+          "mt6762_charger_state": {
+            "value": 0,
+            "error": 0
+          },
+          "mt6762_sspm_alive": {
+            "value": -1,
+            "error": 0
+          },
+          "mt6762_sspm_fault": {
+            "value": 0,
+            "error": 0
+          },
+          "mt6762_pmic_die_mc": {
+            "value": 27500,
+            "error": 0
+          },
+          "mt6762_pmic_buck1_mc": {
+            "value": 27500,
+            "error": 0
+          },
+          "mt6762_pmic_buck2_mc": {
+            "value": 27500,
+            "error": 0
+          },
+          "mt6762_thermal_observed": {
+            "value": 7,
+            "error": 0
+          },
+          "mt6762_thermal_fresh": {
+            "value": 7,
+            "error": 0
+          },
+          "mt6762_thermal_samples": {
+            "value": 28,
+            "error": 0
+          },
+          "mt6762_thermal_errors": {
+            "value": 2,
+            "error": 0
+          },
+          "mt6762_cpu_ts1_mc": {
+            "value": -273000,
+            "error": 0
+          },
+          "mt6762_gauge_current_ua": {
+            "value": -2147483648,
+            "error": 0
+          },
+          "mt6762_gauge_current_valid": {
+            "value": 0,
+            "error": 0
+          },
+          "mt6762_gauge_samples": {
+            "value": 0,
+            "error": 0
+          },
+          "mt6762_gauge_errors": {
+            "value": 0,
+            "error": 0
+          },
+          "mt6762_gauge_fault": {
+            "value": 0,
+            "error": 0
+          },
+          "mt6762_gauge_raw_current": {
+            "value": -1,
+            "error": 0
+          },
+          "mt6762_gauge_charge_valid": {
+            "value": 0,
+            "error": 0
+          },
+          "mt6762_gauge_freshness_rejections": {
+            "value": 0,
+            "error": 0
+          },
+          "mt6762_bif_raw": {
+            "value": -1,
+            "error": 0
+          },
+          "mt6762_bif_ntc_raw": {
+            "value": -1,
+            "error": 0
+          },
+          "mt6762_bif_pair_fresh": {
+            "value": 0,
+            "error": 0
+          },
+          "mt6762_bif_samples": {
+            "value": 0,
+            "error": 0
+          },
+          "mt6762_bif_errors": {
+            "value": 0,
+            "error": 0
+          },
+          "mt6762_bif_fault": {
+            "value": 0,
+            "error": 0
+          },
+          "mt6762_bif_generation_rejections": {
+            "value": 0,
+            "error": 0
+          },
+          "mt6762_bif_last_error": {
+            "value": 0,
+            "error": 0
+          },
+          "mt6762_battery_report_gap_state": {
+            "value": 0,
+            "error": 0
+          },
+          "mt6762_battery_reports_suppressed": {
+            "value": 0,
+            "error": 0
+          },
+          "mt6762_adc_voltage_requests": {
+            "value": 5,
+            "error": 0
+          },
+          "battery_voltage_mv": {
+            "value": 4400,
+            "error": 0
+          },
+          "battery_current_ma": {
+            "value": -2147483648,
+            "error": 0
+          },
+          "battery_present": {
+            "value": 1,
+            "error": 0
+          },
+          "battery_charger_present": {
+            "value": 1,
+            "error": 0
+          },
+          "battery_charging": {
+            "value": 0,
+            "error": 0
+          },
+          "battery_soc": {
+            "value": -1,
+            "error": 0
+          },
+          "battery_temperature_c": {
+            "value": -273,
+            "error": 0
+          },
+          "mt6762_gauge_charge_uah": {
+            "value": -9223372036854775808,
+            "error": 0
+          }
+        },
+        "thermal_fault_injected_after_fresh": false,
+        "thermal_fault_injected_at_seconds": null,
+        "queue_held_at_end": 0
+      },
+      "private_report": "boot/native-thermal-build26/queue/positive.json"
+    },
+    "postfresh-timeout": {
+      "report_sha256": "5f8b6d1672968bd22fb6e612860006b71526080aa05932d27601851b894c9c09",
+      "summary": {
+        "kernel_sha256": "6cb48df396069e92a76575deaaed592d4eceb5d6ba98bd2dc72ff950274b03b7",
+        "qemu_binary_sha256": "2a4b3151bf86b5c48a6d0a3819600be69051ad6b60503bc68f18e7462a131408",
+        "kernel_panic_observed": false,
+        "expected_cpu_count": 8,
+        "secondary_cpus_online": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "native_sysctls": {
+          "mt6762_pmic_id": {
+            "value": 22320,
+            "error": 0
+          },
+          "mt6762_power_valid": {
+            "value": 71,
+            "error": 0
+          },
+          "mt6762_power_errors": {
+            "value": 1,
+            "error": 0
+          },
+          "mt6762_battery_adc_mv": {
+            "value": 4400,
+            "error": 0
+          },
+          "mt6762_ntc_adc_mv": {
+            "value": 615,
+            "error": 0
+          },
+          "mt6762_adc_voltage_samples": {
+            "value": 7,
+            "error": 0
+          },
+          "mt6762_adc_ntc_samples": {
+            "value": 6,
+            "error": 0
+          },
+          "mt6762_charger_control_safe": {
+            "value": 1,
+            "error": 0
+          },
+          "mt6762_charger_state": {
+            "value": 0,
+            "error": 0
+          },
+          "mt6762_sspm_alive": {
+            "value": -1,
+            "error": 0
+          },
+          "mt6762_sspm_fault": {
+            "value": 0,
+            "error": 0
+          },
+          "mt6762_pmic_die_mc": {
+            "value": -273000,
+            "error": 0
+          },
+          "mt6762_pmic_buck1_mc": {
+            "value": -273000,
+            "error": 0
+          },
+          "mt6762_pmic_buck2_mc": {
+            "value": -273000,
+            "error": 0
+          },
+          "mt6762_thermal_observed": {
+            "value": 0,
+            "error": 0
+          },
+          "mt6762_thermal_fresh": {
+            "value": 0,
+            "error": 0
+          },
+          "mt6762_thermal_samples": {
+            "value": 4,
+            "error": 0
+          },
+          "mt6762_thermal_errors": {
+            "value": 32,
+            "error": 0
+          },
+          "mt6762_cpu_ts1_mc": {
+            "value": -273000,
+            "error": 0
+          },
+          "mt6762_gauge_current_ua": {
+            "value": -2147483648,
+            "error": 0
+          },
+          "mt6762_gauge_current_valid": {
+            "value": 0,
+            "error": 0
+          },
+          "mt6762_gauge_samples": {
+            "value": 0,
+            "error": 0
+          },
+          "mt6762_gauge_errors": {
+            "value": 0,
+            "error": 0
+          },
+          "mt6762_gauge_fault": {
+            "value": 0,
+            "error": 0
+          },
+          "mt6762_gauge_raw_current": {
+            "value": -1,
+            "error": 0
+          },
+          "mt6762_gauge_charge_valid": {
+            "value": 0,
+            "error": 0
+          },
+          "mt6762_gauge_freshness_rejections": {
+            "value": 0,
+            "error": 0
+          },
+          "mt6762_bif_raw": {
+            "value": -1,
+            "error": 0
+          },
+          "mt6762_bif_ntc_raw": {
+            "value": -1,
+            "error": 0
+          },
+          "mt6762_bif_pair_fresh": {
+            "value": 0,
+            "error": 0
+          },
+          "mt6762_bif_samples": {
+            "value": 0,
+            "error": 0
+          },
+          "mt6762_bif_errors": {
+            "value": 0,
+            "error": 0
+          },
+          "mt6762_bif_fault": {
+            "value": 0,
+            "error": 0
+          },
+          "mt6762_bif_generation_rejections": {
+            "value": 0,
+            "error": 0
+          },
+          "mt6762_bif_last_error": {
+            "value": 0,
+            "error": 0
+          },
+          "mt6762_battery_report_gap_state": {
+            "value": 0,
+            "error": 0
+          },
+          "mt6762_battery_reports_suppressed": {
+            "value": 0,
+            "error": 0
+          },
+          "mt6762_adc_voltage_requests": {
+            "value": 7,
+            "error": 0
+          },
+          "battery_voltage_mv": {
+            "value": 4400,
+            "error": 0
+          },
+          "battery_current_ma": {
+            "value": -2147483648,
+            "error": 0
+          },
+          "battery_present": {
+            "value": 1,
+            "error": 0
+          },
+          "battery_charger_present": {
+            "value": 1,
+            "error": 0
+          },
+          "battery_charging": {
+            "value": 0,
+            "error": 0
+          },
+          "battery_soc": {
+            "value": -1,
+            "error": 0
+          },
+          "battery_temperature_c": {
+            "value": -273,
+            "error": 0
+          },
+          "mt6762_gauge_charge_uah": {
+            "value": -9223372036854775808,
+            "error": 0
+          }
+        },
+        "thermal_fault_injected_after_fresh": true,
+        "thermal_fault_injected_at_seconds": 1.375,
+        "queue_held_at_end": 0
+      },
+      "private_report": "boot/native-thermal-build26/queue/postfresh-timeout.json"
+    }
+  },
+  "limits": [
+    "Controlled host endpoints exercise the actual consumer; they are not real PMIC or CPU sensors",
+    "QEMU tests synthetic PMIC conversion and actual kernel publication/getters; host tests cover scheduling and overflow cases",
+    "CPU conversion freshness and battery-cell temperature remain unproved",
+    "The frozen physical normal-boot trial still contains kernel23; it was not silently replaced by build26",
+    "Full make still fails the known donor export checks"
+  ]
+}

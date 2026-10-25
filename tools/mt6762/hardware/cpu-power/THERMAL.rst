@@ -70,6 +70,26 @@ of stock's default-value workaround. Measurement rails, temperatures outside
 Measurement and freshness contracts
 ----------------------------------
 
+Observation expiry starts before calibration reads and sensor acquisition.
+The driver converts the two-second interval to absolute ticks and checks the
+addition for overflow. Calibration, conversion, scheduling and publication
+lock delays all consume that same interval. Publication checks the clock under
+the lock and rejects an already-expired result; getters also reject timestamps
+before acquisition. A slow successful read cannot renew an old measurement.
+CPU snapshots use the same cache-age bound without claiming hardware conversion
+freshness. Invalid replacements clear the old sensor's validity.
+
+``test_thermal_observer.c`` compiles the actual native consumer with controlled
+clock, lock-delay and hardware I/O endpoints. It covers calibration/conversion
+delay, preemption during interval conversion, blocked publication and readers,
+expiry boundaries, clock regression, zero duration, overflow, replacement
+failures and CPU observation age. Protocol/calibration tests remain separate.
+Build26 links with unchanged generated IIG inputs; the existing donor export
+checks still fail, so it is not a fully passing build. Two eight-core QEMU runs
+exercise valid PMIC observations and a timeout injected after confirmed fresh
+samples. See ``evidence/native-thermal-build26.json``. These do not establish
+physical sensor operation, battery-cell temperature or charging readiness.
+
 ``pmic-thermal-adc-owned=1`` additionally transfers exclusive initialized AP
 ownership of PMIC die/VCORE/VPROC ADC channels and shared CH4/DCXO mux. It
 requires the existing ``adc-verified`` and PWRAP admission. The common ADC

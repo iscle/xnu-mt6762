@@ -142,7 +142,9 @@ The thermal observer reads live calibration efuses and serializes PMIC
 die/VCORE/VPROC ADC requests with the battery ADC. The additional
 `pmic-thermal-adc-owned=1` contract covers the initialized channels and CH4
 mux. It requires a READY low-to-high conversion transition, rejects generic
-calibration fallbacks, and expires observations after two seconds. Independent
+calibration fallbacks, and expires observations two seconds after acquisition
+starts. Delayed publication cannot renew that interval; reads reject expired
+or regressed timestamps. Independent
 execution of the original stock calibration routine validates the integer
 formula, including nonzero slopes and both signs. These PMIC temperatures
 are not battery-cell temperatures. CPU sensor readbacks are calibrated
