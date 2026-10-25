@@ -35,6 +35,9 @@ The exact new normal-boot image also passes its delivered-payload QEMU test,
 including the205-case IIG diagnostic,16KiB VM/4KiB hardware mapping, and loader
 phase10. Its32MiB boot partition was written and fully read back; para,
 recovery,seccfg and vbmeta hashes stayed unchanged. At recording time the
-physical restart of Image7 was pending. See gic-eoi-build28-evidence.json,
+physical restart of Image7 was pending. Capture8 subsequently recovered the
+phone's CPU0 readback0x402 ->0x400 and completed diagnostic PID1 with205 cases
+in both rounds. This confirms that Image7 inherited split mode and corrected
+it on actual hardware. See gic-eoi-build28-evidence.json,
 trace-build7-evidence.json and PHYSICAL-XNU-ENTRY.rst. No full iOS boot or
 physical display/touch/charging readiness is claimed.

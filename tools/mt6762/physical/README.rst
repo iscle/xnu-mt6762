@@ -59,6 +59,11 @@ and boot arguments are copied and relocated only after admission.
 Screen diagnostics
 ------------------
 
+Image7 has now reached project diagnostic PID1 on the phone, including both
+205-case checks, with16KiB VM/4KiB hardware pages. See PHYSICAL-XNU-ENTRY.rst.
+The physical framebuffer remains unadmitted. Image8 adds bounded retained
+display readback to locate the failed prerequisite; see DISPLAY-TRACE.rst.
+
 The videolfb tag is only a candidate. Display writes additionally require an
 independent exact memreserve/reg reservation inside RAM, matching live power,
 clock gates, single-layer OVL, RDMA and DSI readback, and the inspected

@@ -8,7 +8,7 @@
 #include "payload_layout.h"
 #include "loader_trace.h"
 #include "diagnostic_console.h"
-#include "../hardware/display-touch/mt6762_display_core.h"
+#include "display_probe.h"
 
 extern unsigned char image_start[], image_end[];
 extern const unsigned char xnu_blob[], diagnostic_blob[], adt_blob[], args_blob[];
@@ -70,32 +70,15 @@ __attribute__((noreturn)) void loader_exception(uint64_t esr, uint64_t far, uint
 }
 /* An optional console, admitted by actual scanout readback. Tag metadata is
  * only a candidate. No register writes or native-driver ownership is granted. */
+static uint32_t display_read(void *context, uint64_t address)
+{ (void)context; return read32(address); }
+static void display_barrier(void *context)
+{ (void)context; __asm__ volatile("dsb sy" ::: "memory"); }
 static uint64_t validated_console(void)
 {
-    const struct mtk_fdt_framebuffer *tag = &fdt.framebuffer;
-    if (!(tag->present & 16) || tag->found != 1) return 0;
-    struct mt6762_fb_layout fb = {tag->base, 0x144000, tag->base, tag->size,
-        384, 854, 1536, 1, 0};
-    if (!mt6762_fb_bounds(&fb)) return 0;
-    if (!mtk_fdt_framebuffer_reserved(&fdt)) return 0;
-    for (unsigned pass = 0; pass < 2; ++pass) {
-        if (!mt6762_display_power(read32(0x10006180), read32(0x10006184), read32(0x1000630c))) return 0;
-        if (read32(0x14000100) & ((1u<<7)|(1u<<10)|(1u<<17)|(1u<<19)|(1u<<20)|(1u<<28))) return 0;
-        uint32_t sources = read32(0x1400b02c);
-        if (!sources || (sources & (sources-1)) || sources > 8) return 0;
-        fb.layer = sources == 1 ? 0 : sources == 2 ? 1 : sources == 4 ? 2 : 3;
-        uint64_t layer = fb.layer * 0x20;
-        struct mt6762_ovl_snapshot s = {
-            read32(0x1400b00c), sources, read32(0x1400b324), read32(0x1400b020),
-            read32(0x1400b030+layer), read32(0x1400bf40+layer), read32(0x1400b044+layer),
-            read32(0x1400b038+layer), read32(0x1400b03c+layer), read32(0x1400b04c+layer),
-            read32(0x1400b0c0+layer), read32(0x1400d010), read32(0x14014000),
-            read32(0x14014014), read32(0x14014018), read32(0x1401402c),
-            read32(0x1401401c), read32(0x14014020), read32(0x14014024), read32(0x14014028)
-        };
-        if (!mt6762_ovl_matches(&fb, &s)) return 0;
-    }
-    return tag->base;
+    const struct display_probe_io io = {0, display_read, display_barrier};
+    return display_probe_console(&fdt.framebuffer, mtk_fdt_framebuffer_reserved(&fdt),
+        &io, &physical_display);
 }
 static void put64(unsigned char *base, size_t offset, uint64_t value)
 { memcpy(base + offset, &value, sizeof(value)); }

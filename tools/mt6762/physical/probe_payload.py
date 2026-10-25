@@ -18,6 +18,7 @@ import xml.etree.ElementTree as ET
 
 import bootimg
 import trace_record
+import display_record
 
 
 def digest(data):
@@ -262,6 +263,10 @@ def main():
     if traced:
         identity = trace_bytes[16:48]
         report['trace_file'] = trace_record.decode(trace_bytes, identity)
+    display_bytes = raw[display_record.OFFSET:display_record.OFFSET + display_record.SIZE]
+    display_traced = traced and display_bytes[:8] == display_record.MAGIC
+    if display_traced:
+        report['display_file'] = display_record.decode(display_bytes, identity)
     with tempfile.TemporaryDirectory(prefix='mtk-physical-') as tmp:
         gdb = Path(tmp) / 'gdb'
         qmp_path = Path(tmp) / 'qmp'
@@ -291,6 +296,12 @@ def main():
                     report['trace_before'] = trace_record.decode(before.read_bytes(), identity)
                     if before.read_bytes() != trace_bytes:
                         raise RuntimeError('QEMU physical trace differs from loaded initialized Image')
+                if display_traced:
+                    before = args.output / 'display-before.bin'
+                    qmp.command('human-monitor-command', {'command-line':
+                        f'pmemsave {display_record.ADDRESS:#x} {display_record.SIZE:#x} "{before.resolve()}"'})
+                    if before.read_bytes() != display_bytes:
+                        raise RuntimeError('QEMU display record differs from loaded Image')
                 report['gdb_capabilities'] = rsp.packet('qSupported:multiprocess+;qXfer:features:read+')
                 regs = rsp.registers(args.output)
                 report['registers'] = regs
@@ -331,6 +342,12 @@ def main():
                         f'pmemsave {trace_record.ADDRESS:#x} {trace_record.SIZE:#x} "{after.resolve()}"'})
                     report['trace_after'] = trace_record.decode(after.read_bytes(), identity)
                     report['trace_after_sha256'] = digest(after.read_bytes())
+                if display_traced:
+                    after = args.output / 'display-after.bin'
+                    qmp.command('human-monitor-command', {'command-line':
+                        f'pmemsave {display_record.ADDRESS:#x} {display_record.SIZE:#x} "{after.resolve()}"'})
+                    report['display_after'] = display_record.decode(after.read_bytes(), identity)
+                    report['display_after_sha256'] = digest(after.read_bytes())
                 if args.display_fixture:
                     report['display_state'] = json.loads(qmp.command('qom-get',
                         {'path':'/machine', 'property':'lab-display-state'}))
@@ -391,6 +408,11 @@ def main():
             report['checks']['trace_jump_ready'] = final['phase'] == 10 and final['entry'] >= 0xd0000000
         report['automated_checks_passed'] = all(report['checks'].values())
     report['passed'] = None if args.visible_console else report['automated_checks_passed']
+    if display_traced:
+        expected = 0 if args.exception_at is not None else 8 if args.display_fixture else 1
+        report['checks']['display_record_expected_state'] = report['display_after']['state'] == expected
+        report['automated_checks_passed'] = all(report['checks'].values())
+        report['passed'] = None if args.visible_console else report['automated_checks_passed']
     (args.output / 'report.json').write_text(json.dumps(report, indent=2) + '\n')
     print(json.dumps(dict(output=str(args.output), passed=report['passed'], checks=report['checks'])))
     return 0 if report['automated_checks_passed'] else 1

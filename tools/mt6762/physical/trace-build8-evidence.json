@@ -1,0 +1,186 @@
+{
+  "purpose": "Image8: retain first rejected inherited-display prerequisite without relaxing console admission",
+  "kernel_sha256": "17908e45f488cba314de6eecb942a0ab64bfc416dd6051bd0e3f7bec592669eb",
+  "physical_image_sha256": "27636a723cc0d449d82442260238968aa839b719e8d15dabf7d360353bdd93ef",
+  "normal_boot_sha256": "984e681d87fd255c0f5569091ab8bdc82fc375f78a0477193f127cdae340393a",
+  "physical_manifest_sha256": "7ee8767ef4ef1cf38082a4b60430c267d2daea3a0c06b0453ca11666c7d9f073",
+  "trace": {
+    "identity": "f8f085516976b6d1003406567399e93ead8c2ecbe3e06cc2df53ca7b2478fe8f",
+    "offset": 16384,
+    "physical_address": 1074282496,
+    "size": 256,
+    "initialized_sha256": "33cf247f3fd2a9690cd92189662a1159ea0c042baf20418e4dff14dc9ea4dc63",
+    "physical_retention_proven": false,
+    "final_marker_proves_xnu_entry": false
+  },
+  "display_trace": {
+    "offset": 16640,
+    "physical_address": 1074282752,
+    "size": 512,
+    "initialized_sha256": "d39b18ecfb49765fc719b01542e26477f3a794af487b5529f430abbf46a88c7d",
+    "register_writes": false,
+    "physical_retention_proven": false
+  },
+  "probes": {
+    "probe-positive": {
+      "report_sha256": "1f7302839fc66072f1dbb1162a3556f7aad8d5d49513605f5f63cdf6d5359ce7",
+      "checks": {
+        "ram": true,
+        "xnu": true,
+        "pages": true,
+        "result": true,
+        "cases": true,
+        "done": true,
+        "trace_initialized_before_execution": true,
+        "trace_executed": true,
+        "trace_jump_ready": true,
+        "display_record_expected_state": true
+      },
+      "automated_checks_passed": true,
+      "physical_validation": false,
+      "display_after": {
+        "state": 1,
+        "state_name": "tag",
+        "pass_number": 0,
+        "read_mask": 1,
+        "identity": "f8f085516976b6d1003406567399e93ead8c2ecbe3e06cc2df53ca7b2478fe8f",
+        "accepted": false,
+        "native_ownership": false,
+        "physical_retention_proven": false,
+        "tag": {
+          "base": 0,
+          "size": 0,
+          "present": 0,
+          "found": 0
+        }
+      }
+    },
+    "probe-display": {
+      "report_sha256": "0b1ea593e35078a2c816ae5ea548bbda80fefbe71d069395b3c3d8b6d4cf4062",
+      "checks": {
+        "ram": true,
+        "xnu": true,
+        "pages": true,
+        "display_admitted": true,
+        "display_pixels": true,
+        "no_display_register_writes": true,
+        "trace_initialized_before_execution": true,
+        "trace_executed": true,
+        "trace_jump_ready": true,
+        "display_record_expected_state": true
+      },
+      "automated_checks_passed": true,
+      "physical_validation": false,
+      "display_after": {
+        "state": 8,
+        "state_name": "accepted",
+        "pass_number": 2,
+        "read_mask": 31,
+        "identity": "f8f085516976b6d1003406567399e93ead8c2ecbe3e06cc2df53ca7b2478fe8f",
+        "accepted": true,
+        "native_ownership": false,
+        "physical_retention_proven": false,
+        "tag": {
+          "base": 2130247680,
+          "size": 4653056,
+          "present": 17,
+          "found": 1
+        },
+        "power": [
+          8,
+          8,
+          13
+        ],
+        "gates": 0,
+        "sources": 1,
+        "layer": 0,
+        "scanout": {
+          "0": {
+            "en": 1,
+            "sources": 1,
+            "ext_sources": 0,
+            "roi": 55968128,
+            "con": 8447,
+            "address": 2130247680,
+            "pitch": 1536,
+            "size": 55968128,
+            "offset": 0,
+            "clip": 0,
+            "rdma": 1,
+            "downstream_rdma": 1,
+            "dsi_start": 1,
+            "dsi_mode": 2,
+            "dsi_lanes": 28,
+            "dsi_active": 854,
+            "dsi_ps": 132224,
+            "dsi_vsa": 2,
+            "dsi_vbp": 20,
+            "dsi_vfp": 170
+          }
+        }
+      },
+      "framebuffer_sha256": "ac2028a7a75bd1c06401a773679f180e0e79f90f712529e1909aa1f60ec19e2b",
+      "visual_review": "Both successful205-case rounds and MT6762_IIG_PROBE_DONE visible; emulator only"
+    },
+    "probe-static-refusal": {
+      "report_sha256": "3e9c60a5b2dd2136241f7735fef032839595ac47f038207c320a5c06a8ac8019",
+      "checks": {
+        "refused": true,
+        "no_xnu": true,
+        "trace_initialized_before_execution": true,
+        "trace_executed": true,
+        "trace_refused_no_window": true,
+        "display_record_expected_state": true
+      },
+      "automated_checks_passed": true,
+      "physical_validation": false,
+      "display_after": {
+        "state": 1,
+        "state_name": "tag",
+        "pass_number": 0,
+        "read_mask": 1,
+        "identity": "f8f085516976b6d1003406567399e93ead8c2ecbe3e06cc2df53ca7b2478fe8f",
+        "accepted": false,
+        "native_ownership": false,
+        "physical_retention_proven": false,
+        "tag": {
+          "base": 0,
+          "size": 0,
+          "present": 0,
+          "found": 0
+        }
+      }
+    }
+  },
+  "host_tests": {
+    "count": 59,
+    "passed": true,
+    "skipped": 0,
+    "output_sha256": "c233c01bc5c5cc804e1553813bc968661ef81658a32fd4d2427854ae1c23f7e7",
+    "runtime_fdt_fixture": "capture5 exact pinned regression"
+  },
+  "physical_execution_of_image8_proven": false,
+  "installation_pending": false,
+  "full_ios_userspace_proven": false,
+  "installation": {
+    "boot_sha256": "984e681d87fd255c0f5569091ab8bdc82fc375f78a0477193f127cdae340393a",
+    "full_readback_verified": true,
+    "preserved_sha256": {
+      "para": "5744b4afa6da419c0c5382034ab3757a6627d0ff9ca3778398313cf10f1e80d8",
+      "recovery": "2a4d62a60690c59e26a0004b6efaea56f433059a6f84b6109d113c1d7a364173",
+      "seccfg": "bb95c846d18259d48c89ae93540dc2fe438f8ca9c07dd812b3c76555f0744b4e",
+      "vbmeta": "2f3fb6474d7ff35ac4c48ab2bef71247ba50de4a94de2474b7d1b60cd6654f51"
+    },
+    "persistent_write_extents": [
+      {
+        "address": "0x1c600000",
+        "bytes": 33554432
+      }
+    ],
+    "bcb_written": false,
+    "reset_requested": false,
+    "mtkclient_commit": "fa97df7df41140e60f215f24eea82cb46faf9ff0",
+    "seccfg_source_sha256": "274743b51dd3b8a648fb0cc96bd872205d8f892ac88082a7b3737671b05a0be7"
+  },
+  "next_action": "Power restart with reader stopped, then bounded capture9"
+}

@@ -1,5 +1,21 @@
-Confirmed physical XNU execution, Image6
-=======================================
+Confirmed physical XNU and diagnostic userspace execution
+=========================================================
+
+Image7/kernel28 subsequently reached the project diagnostic PID1 on the phone.
+Capture8 recovered3634 bytes of XNU log, including successful root RAM-disk
+mount, completed BSD initialization, and MT6762_IIG_PROBE_DONE. Both diagnostic
+rounds reported result1 and205 cases. This is project-built test userspace;
+original Apple userspace and the iOS GUI are still not demonstrated physically.
+
+The CPU0 log measured ICC_CTLR_EL1 changing from0x402 to0x400. Thus this boot
+actually inherited split EOI mode and the build28 fix established combined
+mode before interrupt delivery. The physical before/after progress and the
+controlled emulator regression support the fix. The framebuffer remains
+unadmitted, with no Video fields, and mandatory peripherals are still unfinished.
+See trace-build7-evidence.json for the build-bound trace and retained-log hashes.
+
+Earlier Image6 evidence
+-----------------------
 
 Capture7 recovered the Image6 identity and loader phase10, immediately before
 branch to XNU. The later read-only DA session recovered the exact kernel entry
@@ -15,7 +31,7 @@ entry counters both retain1; scheduler tick retains207. The root device and
 mount-attempt count remain unset in the captured bytes. These are retained
 lower bounds, not proof of the exact stop: dirty cached tail data may have
 been lost across reset. Diagnostic PID1 and original Apple userspace on the
-phone are not yet proved.
+phone were not yet proved in this earlier capture.
 
 The boot arguments have no Video framebuffer. The loader's optional readback
 validator therefore did not admit inherited scanout. This accounts for serial

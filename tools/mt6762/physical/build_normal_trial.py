@@ -19,6 +19,7 @@ DIAGNOSTICS = (
     'f5287195f43aee30e555325290aac890ff899dbe04c12d97e5a259be1a9c0b58', # Image5
     'd484161ced6f942984794005d2ac1f8710e33dff49a1e15e8e7ecfbc0725112a', # Image6: empty LK placeholder
     '8e2858b929ff0f3fb42c261eb891f60a67d6dd0939727e59016e8f0d8d2184c2', # Image7: establish combined EOI
+    '27636a723cc0d449d82442260238968aa839b719e8d15dabf7d360353bdd93ef', # Image8: retained display readback
 )
 VBMETA_FLAGS3 = '2f3fb6474d7ff35ac4c48ab2bef71247ba50de4a94de2474b7d1b60cd6654f51'
 

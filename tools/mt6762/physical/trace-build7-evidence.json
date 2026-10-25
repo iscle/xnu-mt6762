@@ -1164,7 +1164,35 @@
     "skipped": 0,
     "log_sha256": "8f7990c86926460032dc231bbbe2e980620899e1a20a9281ea9c1beabe831ca3"
   },
-  "hardware_execution_of_this_image_proven": false,
-  "next_action": "Power restart, then capture8; reader currently stopped",
-  "previous_image_physical_xnu_execution": "trace-build6-evidence.json"
+  "hardware_execution_of_this_image_proven": true,
+  "next_action": "Capture8 complete: diagnostic PID1 proved; prepare Image8 display snapshot",
+  "previous_image_physical_xnu_execution": "trace-build6-evidence.json",
+  "physical_capture8": {
+    "trace_sha256": "91fde7909d63177ff36862d7b5b3e625a79bffbad72794ef7d4a766e2d6dfbff",
+    "phase": 10,
+    "retained_xnu": {
+      "kernel_sha256": "17908e45f488cba314de6eecb942a0ab64bfc416dd6051bd0e3f7bec592669eb",
+      "log_address": "0xd3bb49a0",
+      "log_length": 3634,
+      "retained_cache_may_be_incomplete": true,
+      "log_sha256": "c3322671d9a61b5f479c4a4c0778786d79677e8c9ac023f418cbcb14f3239522",
+      "memory_globals": [
+        "0xd0000000",
+        "0x20000000",
+        "0xfffffff004000000",
+        "0xe"
+      ]
+    },
+    "physical_diagnostic_pid1_proven": true,
+    "iig_cases": 205,
+    "successful_rounds": 2,
+    "gic_cpu0_ctlr_before": "0x402",
+    "gic_cpu0_ctlr_after": "0x400",
+    "vm_page_size": 16384,
+    "hardware_page_size": 4096,
+    "video_absent_in_kernel_log": true,
+    "full_ios_userspace_proven": false,
+    "native_peripheral_ownership": false,
+    "retained_cache_tail_may_be_incomplete": true
+  }
 }

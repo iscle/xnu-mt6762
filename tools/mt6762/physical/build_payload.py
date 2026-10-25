@@ -14,6 +14,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent / 'boot'))
 import prepare
 import trace_record
+import display_record
 
 
 def sha(data):
@@ -59,7 +60,7 @@ def main():
         parser.error('output must be new')
     source_paths = [HERE/name for name in ('start.S','loader.c','loader.ld',
         'fdt_handoff.c','fdt_handoff.h','diagnostic_console.h','loader_trace.h',
-        'trace_record.py','build_payload.py','bootimg.py')]
+        'trace_record.py','display_probe.h','display_record.py','build_payload.py','bootimg.py')]
     source_paths += [Path(prepare.__file__), HERE.parent/'hardware/display-touch/mt6762_display_core.h']
     sources_before = {str(p.relative_to(HERE.parent)):sha(p.read_bytes()) for p in source_paths}
     original_kernel = args.kernel.read_bytes()
@@ -136,6 +137,9 @@ def main():
     (out/'trace.bin').write_bytes(trace_record.initialized(trace_identity))
     trace_assembly = '.section .trace,"aw"\n.balign 64\n.global physical_trace\nphysical_trace:\n'
     trace_assembly += '.incbin "' + str(out/'trace.bin') + '"\n'
+    (out/'display.bin').write_bytes(display_record.initialized(trace_identity))
+    trace_assembly += '.section .display_trace,"aw"\n.balign 64\n.global physical_display\nphysical_display:\n'
+    trace_assembly += '.incbin "' + str(out/'display.bin') + '"\n'
     (out/'trace.S').write_text(trace_assembly)
     clang = str(args.llvm/'clang')
     common = [clang,'--target=aarch64-none-elf','-mcpu=cortex-a53','-mgeneral-regs-only',
@@ -154,6 +158,8 @@ def main():
     raw_image = (out/'Image').read_bytes()
     if raw_image[trace_record.OFFSET:trace_record.OFFSET + trace_record.SIZE] != trace_record.initialized(trace_identity):
         raise ValueError('trace record does not match fixed source Image offset')
+    if raw_image[display_record.OFFSET:display_record.OFFSET + display_record.SIZE] != display_record.initialized(trace_identity):
+        raise ValueError('display record does not match fixed source Image offset')
     # Empty newc archive; XNU's diagnostic executable is embedded in Image.
     name=b'TRAILER!!!\0'; fields=[0,0,0,0,1,0,0,0,0,0,0,len(name),0]
     cpio=b'070701'+b''.join(f'{field:08x}'.encode() for field in fields)+name
@@ -181,6 +187,9 @@ def main():
                    initialized_sha256=sha(trace_record.initialized(trace_identity)),
                    physical_retention_proven=False, final_marker_proves_xnu_entry=False),
         framebuffer='Conditional strict live scanout admission; otherwise no display writes',
+        display_trace=dict(offset=display_record.OFFSET, physical_address=display_record.ADDRESS,
+            size=display_record.SIZE, initialized_sha256=sha(display_record.initialized(trace_identity)),
+            register_writes=False, physical_retention_proven=False),
         limitations=['No full iOS GUI, charging, touch or button acceptance.',
                      'Stock AP watchdog policy remains; exact reset timing/routing is unverified.',
                      'FDT and processor-state mismatch halt before XNU; no guessed RAM fallback.'])
