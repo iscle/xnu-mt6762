@@ -448,6 +448,21 @@ gic_v3_irq_cpu_init(void)
 	__builtin_arm_wsr64("ICC_SRE_EL1", __builtin_arm_rsr64("ICC_SRE_EL1") | 1);
 	__builtin_arm_isb(ISB_SY);
 
+	/* Our EOIR-only completion path requires combined priority drop and
+	 * deactivation (Arm IHI 0069, ICC_CTLR_EL1.EOImode, bit 1). Firmware may
+	 * leave split mode enabled; then the first interrupt stays active forever
+	 * unless DIR is written. Establish our mode instead of inheriting it. */
+	uint64_t icc_ctlr_before = __builtin_arm_rsr64("ICC_CTLR_EL1");
+	__builtin_arm_wsr64("ICC_CTLR_EL1", icc_ctlr_before & ~2ull);
+	__builtin_arm_isb(ISB_SY);
+	uint64_t icc_ctlr_after = __builtin_arm_rsr64("ICC_CTLR_EL1");
+	if (icc_ctlr_after & 2ull) {
+		panic("gic: CPU %d cannot establish combined EOI mode (%llx -> %llx)",
+		    cpu, icc_ctlr_before, icc_ctlr_after);
+	}
+	kprintf("gic: CPU %d ICC_CTLR_EL1 %llx -> %llx (combined EOI)\n",
+	    cpu, icc_ctlr_before, icc_ctlr_after);
+
 	gicr = gicr_cpu_base[cpu] = gic_find_redistributor();
 
 	uint32_t waker = gic_read32(gicr + GICR_WAKER);

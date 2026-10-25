@@ -1,0 +1,1170 @@
+{
+  "kernel_sha256": "17908e45f488cba314de6eecb942a0ab64bfc416dd6051bd0e3f7bec592669eb",
+  "physical_manifest_sha256": "addb0ad7724180fdf349c0b55ead19f267e0af39dced6379e19d3620c38465c2",
+  "image_sha256": "8e2858b929ff0f3fb42c261eb891f60a67d6dd0939727e59016e8f0d8d2184c2",
+  "normal_boot_sha256": "27cc3de44123e8468a64f6097aaaa2cc2214db65d112e42686f0d03de20cf773",
+  "trace": {
+    "identity": "af5ebbdab990efb0f2e814bef1d586b9f45a65b0cb09703d3ad819ee71cbb228",
+    "offset": 16384,
+    "physical_address": 1074282496,
+    "size": 256,
+    "initialized_sha256": "c3b396e9e36cf5f042589cf34b2fa7b3713cbaf9901845899e48a339da3aa74a",
+    "physical_retention_proven": false,
+    "final_marker_proves_xnu_entry": false
+  },
+  "installation": {
+    "boot_sha256": "27cc3de44123e8468a64f6097aaaa2cc2214db65d112e42686f0d03de20cf773",
+    "full_readback_verified": true,
+    "preserved_sha256": {
+      "para": "5744b4afa6da419c0c5382034ab3757a6627d0ff9ca3778398313cf10f1e80d8",
+      "recovery": "2a4d62a60690c59e26a0004b6efaea56f433059a6f84b6109d113c1d7a364173",
+      "seccfg": "bb95c846d18259d48c89ae93540dc2fe438f8ca9c07dd812b3c76555f0744b4e",
+      "vbmeta": "2f3fb6474d7ff35ac4c48ab2bef71247ba50de4a94de2474b7d1b60cd6654f51"
+    },
+    "persistent_write_extents": [
+      {
+        "address": "0x1c600000",
+        "bytes": 33554432
+      }
+    ],
+    "bcb_written": false,
+    "reset_requested": false,
+    "mtkclient_commit": "fa97df7df41140e60f215f24eea82cb46faf9ff0",
+    "seccfg_source_sha256": "274743b51dd3b8a648fb0cc96bd872205d8f892ac88082a7b3737671b05a0be7"
+  },
+  "normal_payload_probe": {
+    "kind": "synthetic-LK-QEMU-only",
+    "physical_validation": false,
+    "delivered_image_sha256": "27cc3de44123e8468a64f6097aaaa2cc2214db65d112e42686f0d03de20cf773",
+    "image_sha256": "d413f1ccfe7a6dd6d06a764f3513bd8875f90ee765d78528130d363450923b52",
+    "stock_dtb_sha256": "658e181d1a13d930dc09567883e734bdbd4579350c8332ff954a0ecbb2ed08fe",
+    "runtime_dtb_sha256": "294002bab94fcfd29846d29c9f0f66cc2f92cef824c04588dc2bbb0271a8e337",
+    "changed_memory_size_offset": 6720,
+    "static_memory": false,
+    "synthetic_display": false,
+    "manual_visible_console_review_required": false,
+    "external_payloads": [
+      "image-derived Image",
+      "image-derived runtime FDT"
+    ],
+    "trace_file": {
+      "phase": 0,
+      "phase_inverse": 18446744073709551615,
+      "sequence": 0,
+      "sequence_inverse": 18446744073709551615,
+      "previous_phase": 0,
+      "detail": 0,
+      "original_el": 0,
+      "fdt": 0,
+      "midr": 0,
+      "frequency": 0,
+      "ram": 0,
+      "args": 0,
+      "entry": 0,
+      "esr": 0,
+      "far": 0,
+      "elr": 0,
+      "spsr": 0,
+      "exception_el": 0,
+      "entry_sctlr": 0,
+      "mpidr": 0,
+      "phase_name": "initialized-file-only",
+      "identity": "af5ebbdab990efb0f2e814bef1d586b9f45a65b0cb09703d3ad819ee71cbb228",
+      "executed": false,
+      "proves_xnu_executed": false,
+      "physical_ram_retention_proven": false
+    },
+    "command": [
+      "/home/iscle/mt6762-ios-port/qemu/build/qemu-system-aarch64",
+      "-M",
+      "mt6762",
+      "-cpu",
+      "cortex-a53",
+      "-smp",
+      "1",
+      "-m",
+      "4096M",
+      "-dtb",
+      "/home/iscle/mt6762-ios-port/boot/physical-normal-build4/probe-positive/runtime.dtb",
+      "-display",
+      "none",
+      "-serial",
+      "file:/home/iscle/mt6762-ios-port/boot/physical-normal-build4/probe-positive/serial.log",
+      "-monitor",
+      "none",
+      "-S",
+      "-gdb",
+      "unix:/tmp/mtk-physical-_x23g6jp/gdb,server=on,wait=off",
+      "-qmp",
+      "unix:/tmp/mtk-physical-_x23g6jp/qmp,server=on,wait=off",
+      "-device",
+      "loader,file=/home/iscle/mt6762-ios-port/boot/physical-normal-build4/probe-positive/Image,addr=0x40080000,force-raw=on",
+      "-device",
+      "loader,file=/home/iscle/mt6762-ios-port/boot/physical-normal-build4/probe-positive/runtime.dtb,addr=0x47880000,force-raw=on"
+    ],
+    "trace_before": {
+      "phase": 0,
+      "phase_inverse": 18446744073709551615,
+      "sequence": 0,
+      "sequence_inverse": 18446744073709551615,
+      "previous_phase": 0,
+      "detail": 0,
+      "original_el": 0,
+      "fdt": 0,
+      "midr": 0,
+      "frequency": 0,
+      "ram": 0,
+      "args": 0,
+      "entry": 0,
+      "esr": 0,
+      "far": 0,
+      "elr": 0,
+      "spsr": 0,
+      "exception_el": 0,
+      "entry_sctlr": 0,
+      "mpidr": 0,
+      "phase_name": "initialized-file-only",
+      "identity": "af5ebbdab990efb0f2e814bef1d586b9f45a65b0cb09703d3ad819ee71cbb228",
+      "executed": false,
+      "proves_xnu_executed": false,
+      "physical_ram_retention_proven": false
+    },
+    "gdb_capabilities": "PacketSize=20020;qXfer:features:read+;vContSupported+;multiprocess+",
+    "registers": {
+      "x0": [
+        0,
+        64
+      ],
+      "x1": [
+        1,
+        64
+      ],
+      "x2": [
+        2,
+        64
+      ],
+      "x3": [
+        3,
+        64
+      ],
+      "x4": [
+        4,
+        64
+      ],
+      "x5": [
+        5,
+        64
+      ],
+      "x6": [
+        6,
+        64
+      ],
+      "x7": [
+        7,
+        64
+      ],
+      "x8": [
+        8,
+        64
+      ],
+      "x9": [
+        9,
+        64
+      ],
+      "x10": [
+        10,
+        64
+      ],
+      "x11": [
+        11,
+        64
+      ],
+      "x12": [
+        12,
+        64
+      ],
+      "x13": [
+        13,
+        64
+      ],
+      "x14": [
+        14,
+        64
+      ],
+      "x15": [
+        15,
+        64
+      ],
+      "x16": [
+        16,
+        64
+      ],
+      "x17": [
+        17,
+        64
+      ],
+      "x18": [
+        18,
+        64
+      ],
+      "x19": [
+        19,
+        64
+      ],
+      "x20": [
+        20,
+        64
+      ],
+      "x21": [
+        21,
+        64
+      ],
+      "x22": [
+        22,
+        64
+      ],
+      "x23": [
+        23,
+        64
+      ],
+      "x24": [
+        24,
+        64
+      ],
+      "x25": [
+        25,
+        64
+      ],
+      "x26": [
+        26,
+        64
+      ],
+      "x27": [
+        27,
+        64
+      ],
+      "x28": [
+        28,
+        64
+      ],
+      "x29": [
+        29,
+        64
+      ],
+      "x30": [
+        30,
+        64
+      ],
+      "sp": [
+        31,
+        64
+      ],
+      "pc": [
+        32,
+        64
+      ],
+      "cpsr": [
+        33,
+        32
+      ],
+      "v0": [
+        34,
+        128
+      ],
+      "v1": [
+        35,
+        128
+      ],
+      "v2": [
+        36,
+        128
+      ],
+      "v3": [
+        37,
+        128
+      ],
+      "v4": [
+        38,
+        128
+      ],
+      "v5": [
+        39,
+        128
+      ],
+      "v6": [
+        40,
+        128
+      ],
+      "v7": [
+        41,
+        128
+      ],
+      "v8": [
+        42,
+        128
+      ],
+      "v9": [
+        43,
+        128
+      ],
+      "v10": [
+        44,
+        128
+      ],
+      "v11": [
+        45,
+        128
+      ],
+      "v12": [
+        46,
+        128
+      ],
+      "v13": [
+        47,
+        128
+      ],
+      "v14": [
+        48,
+        128
+      ],
+      "v15": [
+        49,
+        128
+      ],
+      "v16": [
+        50,
+        128
+      ],
+      "v17": [
+        51,
+        128
+      ],
+      "v18": [
+        52,
+        128
+      ],
+      "v19": [
+        53,
+        128
+      ],
+      "v20": [
+        54,
+        128
+      ],
+      "v21": [
+        55,
+        128
+      ],
+      "v22": [
+        56,
+        128
+      ],
+      "v23": [
+        57,
+        128
+      ],
+      "v24": [
+        58,
+        128
+      ],
+      "v25": [
+        59,
+        128
+      ],
+      "v26": [
+        60,
+        128
+      ],
+      "v27": [
+        61,
+        128
+      ],
+      "v28": [
+        62,
+        128
+      ],
+      "v29": [
+        63,
+        128
+      ],
+      "v30": [
+        64,
+        128
+      ],
+      "v31": [
+        65,
+        128
+      ],
+      "fpsr": [
+        66,
+        32
+      ],
+      "fpcr": [
+        67,
+        32
+      ],
+      "tpidr": [
+        68,
+        64
+      ],
+      "ID_MMFR5": [
+        69,
+        64
+      ],
+      "RES_0_C0_C3_7": [
+        70,
+        64
+      ],
+      "DBGVCR32_EL2": [
+        71,
+        64
+      ],
+      "MAIR_EL3": [
+        72,
+        64
+      ],
+      "ID_AA64PFR1_EL1": [
+        73,
+        64
+      ],
+      "ID_AA64PFR2_EL1": [
+        74,
+        64
+      ],
+      "ID_AA64PFR3_EL1_RESERVED": [
+        75,
+        64
+      ],
+      "SCTLR_EL1": [
+        76,
+        64
+      ],
+      "ID_AA64ZFR0_EL1": [
+        77,
+        64
+      ],
+      "ACTLR_EL1": [
+        78,
+        64
+      ],
+      "CNTKCTL_EL1": [
+        79,
+        64
+      ],
+      "DACR32_EL2": [
+        80,
+        64
+      ],
+      "ID_AA64SMFR0_EL1": [
+        81,
+        64
+      ],
+      "CPACR_EL1": [
+        82,
+        64
+      ],
+      "ID_AA64PFR6_EL1_RESERVED": [
+        83,
+        64
+      ],
+      "FPEXC32_EL2": [
+        84,
+        64
+      ],
+      "ID_AA64FPFR0_EL1": [
+        85,
+        64
+      ],
+      "ID_AA64DFR0_EL1": [
+        86,
+        64
+      ],
+      "ID_AA64DFR1_EL1": [
+        87,
+        64
+      ],
+      "ID_AA64DFR2_EL1_RESERVED": [
+        88,
+        64
+      ],
+      "ID_AA64DFR3_EL1_RESERVED": [
+        89,
+        64
+      ],
+      "ID_AA64AFR0_EL1": [
+        90,
+        64
+      ],
+      "ID_AA64AFR1_EL1": [
+        91,
+        64
+      ],
+      "ID_AA64AFR2_EL1_RESERVED": [
+        92,
+        64
+      ],
+      "CNTFRQ_EL0": [
+        93,
+        64
+      ],
+      "OSDTRRX_EL1": [
+        94,
+        64
+      ],
+      "ID_AA64AFR3_EL1_RESERVED": [
+        95,
+        64
+      ],
+      "SPSR_EL1": [
+        96,
+        64
+      ],
+      "DBGBVR0_EL1": [
+        97,
+        64
+      ],
+      "ELR_EL1": [
+        98,
+        64
+      ],
+      "ID_AA64ISAR1_EL1": [
+        99,
+        64
+      ],
+      "DBGBCR0_EL1": [
+        100,
+        64
+      ],
+      "PMEVTYPER0_EL0": [
+        101,
+        64
+      ],
+      "ID_AA64ISAR2_EL1": [
+        102,
+        64
+      ],
+      "PMEVTYPER1_EL0": [
+        103,
+        64
+      ],
+      "DBGWVR0_EL1": [
+        104,
+        64
+      ],
+      "ID_AA64ISAR3_EL1": [
+        105,
+        64
+      ],
+      "VBAR_EL1": [
+        106,
+        64
+      ],
+      "DBGWCR0_EL1": [
+        107,
+        64
+      ],
+      "RVBAR_EL1": [
+        108,
+        64
+      ],
+      "ID_AA64ISAR4_EL1_RESERVED": [
+        109,
+        64
+      ],
+      "PMEVTYPER2_EL0": [
+        110,
+        64
+      ],
+      "RMR_EL1": [
+        111,
+        64
+      ],
+      "ID_AA64ISAR5_EL1_RESERVED": [
+        112,
+        64
+      ],
+      "PMEVTYPER3_EL0": [
+        113,
+        64
+      ],
+      "ID_AA64ISAR6_EL1_RESERVED": [
+        114,
+        64
+      ],
+      "PMEVTYPER5_EL0": [
+        115,
+        64
+      ],
+      "ID_AA64ISAR7_EL1_RESERVED": [
+        116,
+        64
+      ],
+      "SP_EL0": [
+        117,
+        64
+      ],
+      "ID_AA64MMFR0_EL1": [
+        118,
+        64
+      ],
+      "DBGBVR1_EL1": [
+        119,
+        64
+      ],
+      "ID_AA64MMFR1_EL1": [
+        120,
+        64
+      ],
+      "DBGBCR1_EL1": [
+        121,
+        64
+      ],
+      "ID_AA64MMFR2_EL1": [
+        122,
+        64
+      ],
+      "DBGWVR1_EL1": [
+        123,
+        64
+      ],
+      "ID_AA64MMFR3_EL1": [
+        124,
+        64
+      ],
+      "PMINTENSET_EL1": [
+        125,
+        64
+      ],
+      "DBGWCR1_EL1": [
+        126,
+        64
+      ],
+      "ID_AA64MMFR4_EL1": [
+        127,
+        64
+      ],
+      "PMCNTENSET_EL0": [
+        128,
+        64
+      ],
+      "ACTLR_EL2": [
+        129,
+        64
+      ],
+      "ID_AA64MMFR5_EL1_RESERVED": [
+        130,
+        64
+      ],
+      "MDCCINT_EL1": [
+        131,
+        64
+      ],
+      "ID_AA64MMFR6_EL1_RESERVED": [
+        132,
+        64
+      ],
+      "PMCNTENCLR_EL0": [
+        133,
+        64
+      ],
+      "ID_AA64MMFR7_EL1_RESERVED": [
+        134,
+        64
+      ],
+      "MDSCR_EL1": [
+        135,
+        64
+      ],
+      "CNTP_CTL_EL0": [
+        136,
+        64
+      ],
+      "CNTP_CVAL_EL0": [
+        137,
+        64
+      ],
+      "DBGBVR2_EL1": [
+        138,
+        64
+      ],
+      "PMSELR_EL0": [
+        139,
+        64
+      ],
+      "DBGBCR2_EL1": [
+        140,
+        64
+      ],
+      "DBGWVR2_EL1": [
+        141,
+        64
+      ],
+      "PMCEID1_EL0": [
+        142,
+        64
+      ],
+      "PMCR_EL0": [
+        143,
+        64
+      ],
+      "DBGWCR2_EL1": [
+        144,
+        64
+      ],
+      "PMOVSCLR_EL0": [
+        145,
+        64
+      ],
+      "L2ACTLR": [
+        146,
+        64
+      ],
+      "TTBR0_EL1": [
+        147,
+        64
+      ],
+      "OSDTRTX_EL1": [
+        148,
+        64
+      ],
+      "MDCCSR_EL0": [
+        149,
+        64
+      ],
+      "CNTV_CTL_EL0": [
+        150,
+        64
+      ],
+      "TCR_EL1": [
+        151,
+        64
+      ],
+      "CNTV_CVAL_EL0": [
+        152,
+        64
+      ],
+      "DBGBVR3_EL1": [
+        153,
+        64
+      ],
+      "PMCEID0_EL0": [
+        154,
+        64
+      ],
+      "DBGBCR3_EL1": [
+        155,
+        64
+      ],
+      "PMCCNTR_EL0": [
+        156,
+        64
+      ],
+      "TTBR1_EL1": [
+        157,
+        64
+      ],
+      "DBGWVR3_EL1": [
+        158,
+        64
+      ],
+      "PMUSERENR_EL0": [
+        159,
+        64
+      ],
+      "ACTLR_EL3": [
+        160,
+        64
+      ],
+      "DBGWCR3_EL1": [
+        161,
+        64
+      ],
+      "PMINTENCLR_EL1": [
+        162,
+        64
+      ],
+      "PMOVSSET_EL0": [
+        163,
+        64
+      ],
+      "SP_EL1": [
+        164,
+        64
+      ],
+      "MDRAR_EL1": [
+        165,
+        64
+      ],
+      "DBGBVR4_EL1": [
+        166,
+        64
+      ],
+      "PMCCFILTR_EL0": [
+        167,
+        64
+      ],
+      "DBGBCR4_EL1": [
+        168,
+        64
+      ],
+      "DBGCLAIMSET_EL1": [
+        169,
+        64
+      ],
+      "PMEVTYPER4_EL0": [
+        170,
+        64
+      ],
+      "CPUACTLR_EL1": [
+        171,
+        64
+      ],
+      "CPUECTLR_EL1": [
+        172,
+        64
+      ],
+      "CONTEXTIDR_EL1": [
+        173,
+        64
+      ],
+      "CNTPS_CTL_EL1": [
+        174,
+        64
+      ],
+      "CPUMERRSR_EL1": [
+        175,
+        64
+      ],
+      "CNTPS_CVAL_EL1": [
+        176,
+        64
+      ],
+      "L2MERRSR_EL1": [
+        177,
+        64
+      ],
+      "DBGBVR5_EL1": [
+        178,
+        64
+      ],
+      "MAIR_EL1": [
+        179,
+        64
+      ],
+      "DBGBCR5_EL1": [
+        180,
+        64
+      ],
+      "TPIDR_EL1": [
+        181,
+        64
+      ],
+      "DBGCLAIMCLR_EL1": [
+        182,
+        64
+      ],
+      "AFSR0_EL1": [
+        183,
+        64
+      ],
+      "OSLSR_EL1": [
+        184,
+        64
+      ],
+      "AFSR1_EL1": [
+        185,
+        64
+      ],
+      "PAR_EL1": [
+        186,
+        64
+      ],
+      "CBAR_EL1": [
+        187,
+        64
+      ],
+      "OSECCR_EL1": [
+        188,
+        64
+      ],
+      "DBGDTR_EL0": [
+        189,
+        64
+      ],
+      "SPSR_IRQ": [
+        190,
+        64
+      ],
+      "MDCR_EL3": [
+        191,
+        64
+      ],
+      "SPSR_ABT": [
+        192,
+        64
+      ],
+      "FPCR": [
+        193,
+        64
+      ],
+      "SPSR_UND": [
+        194,
+        64
+      ],
+      "SPSR_FIQ": [
+        195,
+        64
+      ],
+      "FPSR": [
+        196,
+        64
+      ],
+      "CLIDR": [
+        197,
+        64
+      ],
+      "ESR_EL1": [
+        198,
+        64
+      ],
+      "ID_PFR0": [
+        199,
+        64
+      ],
+      "REVIDR_EL1": [
+        200,
+        64
+      ],
+      "AMAIR_EL1": [
+        201,
+        64
+      ],
+      "ID_DFR0": [
+        202,
+        64
+      ],
+      "DBGDTRTX_EL0": [
+        203,
+        64
+      ],
+      "ID_AFR0": [
+        204,
+        64
+      ],
+      "ID_MMFR0": [
+        205,
+        64
+      ],
+      "CSSELR": [
+        206,
+        64
+      ],
+      "ID_MMFR1": [
+        207,
+        64
+      ],
+      "AIDR": [
+        208,
+        64
+      ],
+      "TPIDR_EL0": [
+        209,
+        64
+      ],
+      "ID_MMFR2": [
+        210,
+        64
+      ],
+      "TPIDRRO_EL0": [
+        211,
+        64
+      ],
+      "ID_MMFR3": [
+        212,
+        64
+      ],
+      "IFSR32_EL2": [
+        213,
+        64
+      ],
+      "OSDLR_EL1": [
+        214,
+        64
+      ],
+      "ID_ISAR0": [
+        215,
+        64
+      ],
+      "ID_ISAR1": [
+        216,
+        64
+      ],
+      "PMEVCNTR0_EL0": [
+        217,
+        64
+      ],
+      "ID_ISAR2": [
+        218,
+        64
+      ],
+      "PMEVCNTR1_EL0": [
+        219,
+        64
+      ],
+      "ID_ISAR3": [
+        220,
+        64
+      ],
+      "CTR_EL0": [
+        221,
+        64
+      ],
+      "PMEVCNTR2_EL0": [
+        222,
+        64
+      ],
+      "ID_ISAR4": [
+        223,
+        64
+      ],
+      "PMEVCNTR3_EL0": [
+        224,
+        64
+      ],
+      "ID_ISAR5": [
+        225,
+        64
+      ],
+      "PMEVCNTR4_EL0": [
+        226,
+        64
+      ],
+      "ID_MMFR4": [
+        227,
+        64
+      ],
+      "ID_ISAR6": [
+        228,
+        64
+      ],
+      "PMEVCNTR5_EL0": [
+        229,
+        64
+      ],
+      "MVFR0_EL1": [
+        230,
+        64
+      ],
+      "L2CTLR_EL1": [
+        231,
+        64
+      ],
+      "L2ECTLR_EL1": [
+        232,
+        64
+      ],
+      "MVFR1_EL1": [
+        233,
+        64
+      ],
+      "MVFR2_EL1": [
+        234,
+        64
+      ],
+      "FAR_EL1": [
+        235,
+        64
+      ],
+      "RES_0_C0_C3_3": [
+        236,
+        64
+      ],
+      "ID_PFR2": [
+        237,
+        64
+      ],
+      "ID_DFR1": [
+        238,
+        64
+      ]
+    },
+    "initial_registers": {
+      "pc": 0,
+      "cpsr": 1073742789,
+      "x0": 0,
+      "SCTLR_EL1": 12912696,
+      "CNTFRQ_EL0": 13000000
+    },
+    "stop_reply": "T02thread:p01.01;",
+    "final_registers": {
+      "pc": 18446744005112130492,
+      "cpsr": 1610613700,
+      "x0": 1,
+      "x1": 18446744050522079024,
+      "x2": 18446744050522078800,
+      "x19": 18446744005119443328,
+      "x20": 18446744005110600304,
+      "sp": 18446744050522078864,
+      "ESR_EL1": 1442840704,
+      "ELR_EL1": 18446744005112118892,
+      "FAR_EL1": 4294983680,
+      "SCTLR_EL1": 877943101,
+      "TCR_EL1": 148798842138,
+      "CNTFRQ_EL0": 13000000
+    },
+    "trace_after": {
+      "phase": 10,
+      "phase_inverse": 18446744073709551605,
+      "sequence": 10,
+      "sequence_inverse": 18446744073709551605,
+      "previous_phase": 9,
+      "detail": 0,
+      "original_el": 1,
+      "fdt": 1200095232,
+      "midr": 1091555380,
+      "frequency": 13000000,
+      "ram": 3489660928,
+      "args": 3559915520,
+      "entry": 3544577192,
+      "esr": 0,
+      "far": 0,
+      "elr": 0,
+      "spsr": 0,
+      "exception_el": 0,
+      "entry_sctlr": 12912696,
+      "mpidr": 2147483648,
+      "phase_name": "about-to-branch-to-XNU",
+      "identity": "af5ebbdab990efb0f2e814bef1d586b9f45a65b0cb09703d3ad819ee71cbb228",
+      "executed": true,
+      "proves_xnu_executed": false,
+      "physical_ram_retention_proven": false
+    },
+    "trace_after_sha256": "a488be00a29425b01f6181ae67ff927f0c4bc1f6a7296e781dd5696b86a40cbc",
+    "serial_pid1_observations": {
+      "result": true,
+      "cases": true,
+      "done": true
+    },
+    "checks": {
+      "ram": true,
+      "xnu": true,
+      "pages": true,
+      "result": true,
+      "cases": true,
+      "done": true,
+      "trace_initialized_before_execution": true,
+      "trace_executed": true,
+      "trace_jump_ready": true
+    },
+    "automated_checks_passed": true,
+    "passed": true
+  },
+  "host_tests": {
+    "count": 57,
+    "skipped": 0,
+    "log_sha256": "8f7990c86926460032dc231bbbe2e980620899e1a20a9281ea9c1beabe831ca3"
+  },
+  "hardware_execution_of_this_image_proven": false,
+  "next_action": "Power restart, then capture8; reader currently stopped",
+  "previous_image_physical_xnu_execution": "trace-build6-evidence.json"
+}

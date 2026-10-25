@@ -173,5 +173,143 @@
     "da_uploaded": false,
     "trace_retrieved": false,
     "outcome": "capture guard refused changed security target; normal boot and XNU execution remain unproven"
+  },
+  "physical_run": {
+    "trace": {
+      "trace_address": "0x40084000",
+      "trace_sha256": "bc851de0aaf9347dd084eebc49cad8e5298388f6938ac9cdaf3dbca54a9cc4ab",
+      "reservation_runtime": {
+        "0x4000a340": {
+          "value": "0x40090000",
+          "expected": "0x40090000",
+          "matches": true
+        },
+        "0x4000adf8": {
+          "value": "0x40090000",
+          "expected": "0x40090000",
+          "matches": true
+        },
+        "0x40000120": {
+          "value": "0x4005e2a0",
+          "expected": "0x4005e2a0",
+          "matches": true
+        },
+        "0x4000a344": {
+          "value": "0x68000000",
+          "expected": "0x68000000",
+          "matches": true
+        },
+        "0x400538a0": {
+          "value": "0x40090000",
+          "expected": "0x40090000",
+          "matches": true
+        },
+        "0x400538a4": {
+          "value": "0x27f70000",
+          "expected": "0x27f70000",
+          "matches": true
+        }
+      },
+      "retention_proven": false,
+      "trace": {
+        "phase": 10,
+        "phase_inverse": 18446744073709551605,
+        "sequence": 10,
+        "sequence_inverse": 18446744073709551605,
+        "previous_phase": 9,
+        "detail": 0,
+        "original_el": 1,
+        "fdt": 1200095232,
+        "midr": 1091555380,
+        "frequency": 13000000,
+        "ram": 3489660928,
+        "args": 3559915520,
+        "entry": 3544577192,
+        "esr": 0,
+        "far": 0,
+        "elr": 0,
+        "spsr": 0,
+        "exception_el": 0,
+        "entry_sctlr": 818939904,
+        "mpidr": 2147483648,
+        "phase_name": "about-to-branch-to-XNU",
+        "identity": "0565a4cfb8770bfdd1f24373587ab06fecf3f7881c327c741ec245a708417998",
+        "executed": true,
+        "proves_xnu_executed": false,
+        "physical_ram_retention_proven": false
+      },
+      "reservation_runtime_verified": true
+    },
+    "fdt": {
+      "allocation_sha256": "bd41248c84f50a89c395fbf35fee877a05ed9a69483664741c348dda82a4549f",
+      "magic": "d00dfeed",
+      "total_size": 166225,
+      "fdt_sha256": "48566d2f8a714b6b54d52e56ab02312a32be26612e2e972d28e119dcb27a55f6"
+    },
+    "preserved_handoff": {
+      "trace_sha256": "bc851de0aaf9347dd084eebc49cad8e5298388f6938ac9cdaf3dbca54a9cc4ab",
+      "args_sha256": "93e2934ce1a20b5a16ba6e67190e94d232cc2115e94e3ba2bf0c240f66c89b60",
+      "entry_sha256": "5249b83c88dc9403ad1f24480265078c28467ce0ca7213a9d9b0b2514b6e4138",
+      "args_u64": [
+        "0x20002",
+        "0xfffffff004000000",
+        "0xd0000000",
+        "0x20000000",
+        "0xd4304000",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0"
+      ],
+      "storage_writes": false,
+      "reset_requested": false
+    },
+    "kernel_state": {
+      "trace_sha256": "bc851de0aaf9347dd084eebc49cad8e5298388f6938ac9cdaf3dbca54a9cc4ab",
+      "loader_log_length": 2936,
+      "symbols": {
+        "const-boot-args.bin": {
+          "address": "0xd31a0530",
+          "sha256": "2eaf7f81a3271b50831eeb6fd24ae656de1c792ab87dc662ef9dfa7f6dc1e717"
+        },
+        "memory-globals.bin": {
+          "address": "0xd31a1100",
+          "sha256": "9d8e6e4eb1f66b9124c009eb02a6b5545bf2e1a87d0ff1eac7af5a9c181c27cb"
+        },
+        "loader-log-length.bin": {
+          "address": "0xd3d349a0",
+          "sha256": "b299931428136b67d84b6d5150082346fc5966b04e2f2a796233279fa587c227"
+        },
+        "loader-slot.bin": {
+          "address": "0xd34607f0",
+          "sha256": "971bc7b7f6a152b078dc5ce956c595445c89c729d6196f425afcaf8f9aa2fd25"
+        },
+        "xnu_log_sha256": "cd6138c4c51e31f48edaf85f12a365f161c14916628d06e784bf98f102f6256b"
+      },
+      "storage_writes": false,
+      "reset_requested": false
+    },
+    "xnu_execution_proven": true,
+    "kernel_entry_page_matches_exact_file": true,
+    "native_framebuffer_validation_passed": false,
+    "diagnostic_pid1_execution_proven": false,
+    "vm_page_size": 16384,
+    "hardware_page_size": 4096,
+    "retained_log_bytes": 2936,
+    "retained_log_last_line": "cpu_start() cpu: 0",
+    "last_line_is_not_a_proven_hang_site": true,
+    "retained_irq_count": 1,
+    "retained_timer_count": 1,
+    "retained_scheduler_tick": 207,
+    "progress_state_sha256": "125e6b901aa301f6e4c490a50e148aa157118df1f3ed24f7ebc2d553fb6cd0ce",
+    "limits": [
+      "Retained cache contents may be incomplete after watchdog/reset; zero values cannot prove absence",
+      "Loader log allocation was zero-filled by this image before branch; preserved log and initialized globals establish XNU execution",
+      "Timer count is a retained lower bound; inherited GIC EOImode is not captured",
+      "No native peripheral ownership or full iOS userspace boot proved"
+    ]
   }
 }

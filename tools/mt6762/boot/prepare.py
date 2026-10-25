@@ -347,7 +347,19 @@ def validate_regions(regions):
             raise ValueError('Overlapping regions: ' + a['name'] + ' / ' + b['name'])
 
 
-def trampoline(ba_pa, entry_pa):
+def trampoline(ba_pa, entry_pa, split_eoi=False):
+    eoi_setup = '''    /* Explicit synthetic inherited CPU-interface mode. */
+    mrs x4, ICC_SRE_EL1
+    orr x4, x4, #1
+    msr ICC_SRE_EL1, x4
+    isb
+    mrs x4, ICC_CTLR_EL1
+    orr x4, x4, #2
+    msr ICC_CTLR_EL1, x4
+    isb
+    mrs x4, ICC_CTLR_EL1
+99: tbz x4, #1, 99b
+''' if split_eoi else ''
     return f'''/* QEMU-only AArch64 Linux Image handoff; no stack or relocation. */
 .section .text,"ax"
 .global _start
@@ -362,6 +374,7 @@ _start:
     .long 0
 start:
     msr daifset, #15
+{eoi_setup}\
     ldr x1, =0x11002000
     adr x2, message
 1:  ldrb w3, [x2], #1
@@ -381,7 +394,7 @@ start:
     mov x3, xzr
     br x9
 message:
-    .asciz "mt6762 loader: entering XNU at {entry_pa:#x} boot_args={ba_pa:#x}\\r\\n"
+    .asciz "mt6762 loader: entering XNU at {entry_pa:#x} boot_args={ba_pa:#x}{' synthetic-split-eoi=1' if split_eoi else ''}\\r\\n"
     .balign 8
     .ltorg
 image_end:
@@ -403,6 +416,8 @@ def main():
                    help='Emulated RAM only, independent of phone reservations (default512MiB)')
     p.add_argument('--cpus', type=int, choices=range(1, 9), default=1,
                    help='Emulated A53 cores with MT6762 Aff1/Aff0 topology (default1)')
+    p.add_argument('--lab-split-eoi', action='store_true',
+                   help='QEMU-only inherited ICC_CTLR_EL1.EOImode=1 regression fixture')
     p.add_argument('--framebuffer', action='store_true',
                    help='Synthetic384x854 BGRA backing RAM, not a MediaTek display-controller model')
     p.add_argument('--native-lab-i2c', action='store_true',
@@ -548,7 +563,7 @@ def main():
             region['source_sha256'] = hashed.hexdigest()
         else:
             Path(region['file']).write_bytes(payload + bytes(region['size'] - len(payload)))
-    (out / 'trampoline.S').write_text(trampoline(ba_pa, entry_pa))
+    (out / 'trampoline.S').write_text(trampoline(ba_pa, entry_pa, a.lab_split_eoi))
     elf = out / 'trampoline.elf'
     image = out / 'trampoline.Image'
     subprocess.run([str(a.clang), '--target=aarch64-none-elf', '-march=armv8-a', '-nostdlib', '-fuse-ld=lld',
@@ -589,6 +604,7 @@ def main():
     manifest = dict(kernel=str(a.kernel.resolve()), kernel_sha256=hashlib.sha256(raw).hexdigest(),
                     entry_va=hex(m['entry']), entry_pa=hex(entry_pa), virt_base=hex(VIRT), phys_base=hex(PHYS),
                     ram_size=MEMORY, vm_page_size=PAGE, hardware_page_size=4096, cpu_count=a.cpus,
+                    lab_split_eoi=a.lab_split_eoi,
                     boot_args_pa=hex(ba_pa), adt_pa=hex(adt_pa), top_of_kernel_data=hex(top),
                     chained_rebases=nfix, ramdisk=ramdisk_info, framebuffer=framebuffer,
                     native_lab_msdc=bool(msdc_image), native_lab_msdc_image=msdc_image,

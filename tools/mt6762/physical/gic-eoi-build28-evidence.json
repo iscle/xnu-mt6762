@@ -1,0 +1,84 @@
+{
+  "kernel_sha256": "17908e45f488cba314de6eecb942a0ab64bfc416dd6051bd0e3f7bec592669eb",
+  "qemu_binary_sha256": "8683dc2e61883545bf92d9602e3f8985b870002564f21cc859ac1dc492c85013",
+  "official_architecture": "https://documentation-service.arm.com/static/67eaa4d098aa3c3b6eea7351",
+  "runs": {
+    "old-split": {
+      "kernel_sha256": "0d2f6bf06c1d50aae5b326830c991ab8717847000354d60b648d553d7a5c29d6",
+      "manifest_sha256": "5611e6a23e6a234b702147e1860dff8459f1d8d28804980a6aec626e8734bcc6",
+      "serial_sha256": "4be48aad3d59f5473189f76947b016087fb68cc6a1102bf2c7dcf03aa4e3e395",
+      "report_sha256": "be254a191415b64abf096a6f201214f4c223b4d5e265cf730cdb3ae27a9d90c9",
+      "trampoline_sha256": "e495f5d1826897538b850348d2f72242c2c53a48842ea4193b04e240eed65d6d",
+      "injected_mode_readback_confirmed": true,
+      "pid1_queue_ready": false,
+      "cpu_eoi_readbacks": [],
+      "all_eight_cores_online": false,
+      "panic": false,
+      "integration_command_exit": 1
+    },
+    "fixed-split": {
+      "kernel_sha256": "17908e45f488cba314de6eecb942a0ab64bfc416dd6051bd0e3f7bec592669eb",
+      "manifest_sha256": "dce2a435e1c045ee5bbaa5497eb066b4eaff0e06acb9435b93be655db40b105d",
+      "serial_sha256": "b7fa4f2744e878b27df8c961ceb51615de2301a73c34a85991bea8c716d70772",
+      "report_sha256": "32006d572c202e6d6ca8f06516a11d2248898d23ac15d2d778b00824a9f255a9",
+      "trampoline_sha256": "e495f5d1826897538b850348d2f72242c2c53a48842ea4193b04e240eed65d6d",
+      "injected_mode_readback_confirmed": true,
+      "pid1_queue_ready": true,
+      "cpu_eoi_readbacks": [
+        "gic: CPU 0 ICC_CTLR_EL1 8c02 -> 8c00 (combined EOI)",
+        "gic: CPU 1 ICC_CTLR_EL1 8c00 -> 8c00 (combined EOI)",
+        "gic: CPU 2 ICC_CTLR_EL1 8c00 -> 8c00 (combined EOI)",
+        "gic: CPU 3 ICC_CTLR_EL1 8c00 -> 8c00 (combined EOI)",
+        "gic: CPU 4 ICC_CTLR_EL1 8c00 -> 8c00 (combined EOI)",
+        "gic: CPU 5 ICC_CTLR_EL1 8c00 -> 8c00 (combined EOI)",
+        "gic: CPU 6 ICC_CTLR_EL1 8c00 -> 8c00 (combined EOI)",
+        "gic: CPU 7 ICC_CTLR_EL1 8c00 -> 8c00 (combined EOI)"
+      ],
+      "all_eight_cores_online": true,
+      "panic": false,
+      "integration_command_exit": 0
+    },
+    "fixed-combined": {
+      "kernel_sha256": "17908e45f488cba314de6eecb942a0ab64bfc416dd6051bd0e3f7bec592669eb",
+      "manifest_sha256": "24c99d44df8e9dd45743f61164bac3c7196bde0fa0526d38b2b5f1f9f726f746",
+      "serial_sha256": "197eb91522e5b2ea162346839a3b12478c33cf15c76b3d1be5bc79d7fceeb0bb",
+      "report_sha256": "a1d24134f7d3910af434cba35b2cdb1736529792ebf9740d7beae3da010ab713",
+      "trampoline_sha256": "32f052824a6c3212c26b7de346158a9ab36f5e1fd69dacf2318b29c2e6c0b8d9",
+      "injected_mode_readback_confirmed": false,
+      "pid1_queue_ready": true,
+      "cpu_eoi_readbacks": [
+        "gic: CPU 0 ICC_CTLR_EL1 8c00 -> 8c00 (combined EOI)",
+        "gic: CPU 1 ICC_CTLR_EL1 8c00 -> 8c00 (combined EOI)",
+        "gic: CPU 2 ICC_CTLR_EL1 8c00 -> 8c00 (combined EOI)",
+        "gic: CPU 3 ICC_CTLR_EL1 8c00 -> 8c00 (combined EOI)",
+        "gic: CPU 4 ICC_CTLR_EL1 8c00 -> 8c00 (combined EOI)",
+        "gic: CPU 5 ICC_CTLR_EL1 8c00 -> 8c00 (combined EOI)",
+        "gic: CPU 6 ICC_CTLR_EL1 8c00 -> 8c00 (combined EOI)",
+        "gic: CPU 7 ICC_CTLR_EL1 8c00 -> 8c00 (combined EOI)"
+      ],
+      "all_eight_cores_online": true,
+      "panic": false,
+      "integration_command_exit": 0
+    },
+    "old-combined": {
+      "kernel_sha256": "0d2f6bf06c1d50aae5b326830c991ab8717847000354d60b648d553d7a5c29d6",
+      "manifest_sha256": "438130d922683ccc5395fec6a6f45c3c7f1161a42378786c245b5db8c422af9b",
+      "serial_sha256": "1ce2f319bc79d4a9f18ae383d7041ac7832b63bff6653beab2107a087fa266bc",
+      "report_sha256": "971d29f32aa02b3bdcd400f61e466cce5da8bebe527fba0179cc52de1a1067c7",
+      "trampoline_sha256": "32f052824a6c3212c26b7de346158a9ab36f5e1fd69dacf2318b29c2e6c0b8d9",
+      "injected_mode_readback_confirmed": false,
+      "pid1_queue_ready": true,
+      "cpu_eoi_readbacks": [],
+      "all_eight_cores_online": true,
+      "panic": false,
+      "integration_command_exit": 0
+    }
+  },
+  "physical_cause_confirmed": false,
+  "full_build_passed": false,
+  "limits": [
+    "Synthetic inherited mode test is not a read of the phone EOImode",
+    "Physical Image6 retained one timer entry but cache retention is incomplete",
+    "Known donor post-link export failures remain"
+  ]
+}
