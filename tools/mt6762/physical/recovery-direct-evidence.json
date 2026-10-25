@@ -1,0 +1,19 @@
+{
+  "status": "direct recovery request armed and reset; post-trial capture/restoration pending",
+  "date_utc": "2026-10-25",
+  "recovery_sha256_before_and_after": "b57766a667c18e6ba854c81a24346c6582ad02fa31f89a93769c7086275c0005",
+  "para_before_sha256": "ac736de13809ea303d20d4c10e5c62bb83b6451ead15ae32569a445ee85814a1",
+  "para_after_sha256": "67bef7ae449f68b9be4c8bb2ff77d559135730ced20cf9e8013d4fa2716cf310",
+  "baseline_command": "bootonce-bootloader",
+  "baseline_recovery_arguments": "empty",
+  "trial_command": "boot-recovery",
+  "written_sector_bytes": 512,
+  "modified_field_bytes": 32,
+  "all_bytes_after_command_preserved": true,
+  "complete_para_and_recovery_readbacks_verified": true,
+  "seccfg_preserved": true,
+  "dm_verity_status": 0,
+  "user_screen_observation": "black",
+  "xnu_execution": "not established",
+  "restoration": "required and pending connection; do not treat as completed"
+}

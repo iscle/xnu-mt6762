@@ -58,6 +58,38 @@ proved, but an unobserved DA shutdown/reset state is not guaranteed to reach it.
 A full verified readback of the installed candidate is still necessary after
 an intervening Android boot.
 
+Guarded trial operations
+-----------------------
+
+``recovery_bcb.py`` implements command-field planning and checked writes through
+caller-supplied storage callbacks. It opens no connection, changes no security
+state and never resets the phone. A caller must first authenticate the selected
+unlocked device, verify exact GPT geometry, save the fresh full para backup and
+have authorization for the trial. Arming rereads the full32MiB recovery and
+requires the reviewed diagnostic digest, then requires para still equals its
+backup. It writes one512-byte sector, changing only the32-byte command, and
+compares the complete512KiB para readback. Errors leave reset prohibited until
+the caller resolves storage state; there is no speculative retry or erase.
+
+Default admission requires an empty command and empty recovery-argument string.
+The separately reviewed ``allow_bootloader_request=True`` option permits only
+the exact zero-padded ``bootonce-bootloader`` command found in the new live
+capture. The exact consumer's rejection of that marker was already proved
+above. No other pending command or nonempty recovery argument is admitted.
+Restoration restores the saved32-byte command while retaining every unrelated
+current byte; a foreign command is rejected. The full partition is read back
+again, including when the field was already restored. This helper restores
+neither the recovery image nor any other partition; the parent orchestrator
+must restore stock recovery and verify its complete readback separately.
+
+Nine synthetic-storage tests cover write ordering, wrong recovery hashes,
+changed backups, pending commands/arguments, uncertain writes, unrelated
+readback corruption, current-field preservation, foreign markers, repeated
+restoration, truncation and the explicit bootloader-marker option. They do not
+replace the physical readbacks. The new live capture found diagnostic build1
+still installed after Android boot, so the stock automatic restoration attempt
+did not replace it in that observed interval.
+
 Offline execution evidence
 --------------------------
 

@@ -17,6 +17,15 @@ read back, so automatic restoration cannot yet be excluded. Stock recovery
 restoration remains mandatory; see recovery-trial-install-evidence.json and
 the in-progress private record hardware/recovery-trial-20261024.
 
+On2026-10-25 a new full readback found build1 still on recovery and the repaired
+seccfg unchanged. Para contained the exact unsupported ``bootonce-bootloader``
+command and empty recovery arguments. The approved direct trial replaced only
+that32-byte command with ``boot-recovery`` and verified the entire para and
+recovery partitions afterward. Security state remained unchanged. After a
+normal DA reset the user reported a black screen; physical XNU execution is
+not established. Post-trial log capture and stock recovery/command restoration
+are pending the next download-agent connection. See recovery-direct-evidence.json.
+
 Build locally, without device access::
 
   python3 tools/mt6762/physical/build_recovery_trial.py \
