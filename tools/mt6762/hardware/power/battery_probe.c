@@ -22,6 +22,17 @@ static void diagnostic(const char *key)
     int error = status ? errno : (size == sizeof(value) ? 0 : EINVAL);
     printf("MT6762_BAT_SYSCTL %s=%d error=%d\n", key, value, error);
 }
+static void charge_diagnostic(void)
+{
+    const char *name = "kern.redwood.mt6762_gauge_charge_uah";
+    int64_t value = 0;
+    size_t size = sizeof(value);
+    errno = 0;
+    int status = sysctlbyname(name, &value, &size, NULL, 0);
+    int error = status ? errno : (size == sizeof(value) ? 0 : EINVAL);
+    printf("MT6762_BAT_SYSCTL mt6762_gauge_charge_uah=%lld error=%d\n",
+        (long long)value, error);
+}
 static void property(CFDictionaryRef properties, CFStringRef key)
 {
     CFTypeRef value = CFDictionaryGetValue(properties, key);
@@ -85,6 +96,10 @@ int main(int argc, char **argv)
         IOObjectRelease(iterator);
         printf("MT6762_BAT_COUNT %u\n", count);
         diagnostic("mt6762_power_valid");
+        diagnostic("mt6762_gauge_current_ua");
+        diagnostic("mt6762_gauge_current_valid");
+        diagnostic("mt6762_gauge_charge_valid");
+        charge_diagnostic();
         diagnostic("mt6762_adc_voltage_requests");
         diagnostic("mt6762_battery_report_gap_state");
         diagnostic("mt6762_battery_reports_suppressed");

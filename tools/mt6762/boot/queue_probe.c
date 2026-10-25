@@ -57,7 +57,8 @@ static void observe(int fd)
         "mt6762_thermal_errors", "mt6762_cpu_ts1_mc",
         "mt6762_gauge_current_ua", "mt6762_gauge_current_valid",
         "mt6762_gauge_samples", "mt6762_gauge_errors", "mt6762_gauge_fault",
-        "mt6762_gauge_raw_current",
+        "mt6762_gauge_raw_current", "mt6762_gauge_charge_valid",
+        "mt6762_gauge_freshness_rejections",
         "mt6762_bif_raw", "mt6762_bif_ntc_raw", "mt6762_bif_pair_fresh",
         "mt6762_bif_samples", "mt6762_bif_errors", "mt6762_bif_fault",
         "mt6762_bif_generation_rejections", "mt6762_bif_last_error",
@@ -76,6 +77,20 @@ static void observe(int fd)
         char *p = text(line, "MT6762_SYSCTL "); p = text(p, fields[i]); *p++ = '=';
         if (value < 0) *p++ = '-';
         p = decimal(p, value < 0 ? -(long)value : value);
+        p = text(p, " error="); if (error < 0) *p++ = '-';
+        p = decimal(p, error < 0 ? -error : error); *p++ = '\n';
+        call3(4, fd, (long)line, p-line);
+    }
+    {
+        const char *key = "mt6762_gauge_charge_uah";
+        char name[96], line[192], *end = text(name, "kern.redwood.");
+        end = text(end, key); *end = 0;
+        long value = 0; u64 size = sizeof(value);
+        long error = call6(274, (long)name, end-name, (long)&value, (long)&size, 0, 0);
+        if (!error && size != sizeof(value)) error = -22;
+        char *p = text(line, "MT6762_SYSCTL "); p = text(p, key); *p++ = '=';
+        if (value < 0) *p++ = '-';
+        p = decimal(p, value < 0 ? 0UL - (u64)value : (u64)value);
         p = text(p, " error="); if (error < 0) *p++ = '-';
         p = decimal(p, error < 0 ? -error : error); *p++ = '\n';
         call3(4, fd, (long)line, p-line);

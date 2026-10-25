@@ -1,0 +1,845 @@
+{
+  "scope": "Synthetic native gauge regression; build24 superseded by build25 deadline arithmetic fix. No physical hardware proof.",
+  "kernel_sha256": "b165fe7c8570df7d3ff56a1308aec6e2e2e45fe9926a2409bf0483ff6e0274a8",
+  "cases": [
+    {
+      "case": "queue/positive.json",
+      "report_sha256": "1d0822cf833505c5d9c513fb1c231b08c4e94ac803ad443b99d5229b18568012",
+      "qemu_sha256": "8ae2e848f1f75ee8512de2ec363c1f04024d710aefd7bd186d545390ca1654ac",
+      "gauge": {
+        "mt6762_gauge_current_ua": 31400,
+        "mt6762_gauge_current_valid": 1,
+        "mt6762_gauge_samples": 5,
+        "mt6762_gauge_errors": 0,
+        "mt6762_gauge_fault": 0,
+        "mt6762_gauge_raw_current": 100,
+        "mt6762_gauge_charge_valid": 1,
+        "mt6762_gauge_freshness_rejections": 0,
+        "mt6762_gauge_charge_uah": 0
+      },
+      "cpu_count": 8,
+      "secondary_cpus": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "post_valid_fault_injected": false,
+      "kernel_panic": false
+    },
+    {
+      "case": "queue/startup-calibration.json",
+      "report_sha256": "928631f5e60d88763a99b0a7e90ff793b5cf0c0e09b8a5483f378b8a3d9e04a6",
+      "qemu_sha256": "8ae2e848f1f75ee8512de2ec363c1f04024d710aefd7bd186d545390ca1654ac",
+      "gauge": {
+        "mt6762_gauge_current_ua": -2147483648,
+        "mt6762_gauge_current_valid": 0,
+        "mt6762_gauge_samples": 0,
+        "mt6762_gauge_errors": 1,
+        "mt6762_gauge_fault": 1,
+        "mt6762_gauge_raw_current": -1,
+        "mt6762_gauge_charge_valid": 0,
+        "mt6762_gauge_freshness_rejections": 0,
+        "mt6762_gauge_charge_uah": -9223372036854775808
+      },
+      "cpu_count": 8,
+      "secondary_cpus": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "post_valid_fault_injected": false,
+      "kernel_panic": false
+    },
+    {
+      "case": "queue/startup-clock.json",
+      "report_sha256": "c441fff8a853b621084b662d10dcf8f0205fcc0197e5f7453d5d8aad0582fcad",
+      "qemu_sha256": "8ae2e848f1f75ee8512de2ec363c1f04024d710aefd7bd186d545390ca1654ac",
+      "gauge": {
+        "mt6762_gauge_current_ua": -2147483648,
+        "mt6762_gauge_current_valid": 0,
+        "mt6762_gauge_samples": 0,
+        "mt6762_gauge_errors": 1,
+        "mt6762_gauge_fault": 1,
+        "mt6762_gauge_raw_current": -1,
+        "mt6762_gauge_charge_valid": 0,
+        "mt6762_gauge_freshness_rejections": 0,
+        "mt6762_gauge_charge_uah": -9223372036854775808
+      },
+      "cpu_count": 8,
+      "secondary_cpus": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "post_valid_fault_injected": false,
+      "kernel_panic": false
+    },
+    {
+      "case": "queue/startup-counter-stuck.json",
+      "report_sha256": "5f5d55e2255997fbd34174814e6e07beb26d82ef51670d6f6d84995c6d69d482",
+      "qemu_sha256": "8ae2e848f1f75ee8512de2ec363c1f04024d710aefd7bd186d545390ca1654ac",
+      "gauge": {
+        "mt6762_gauge_current_ua": -2147483648,
+        "mt6762_gauge_current_valid": 0,
+        "mt6762_gauge_samples": 5,
+        "mt6762_gauge_errors": 0,
+        "mt6762_gauge_fault": 0,
+        "mt6762_gauge_raw_current": 100,
+        "mt6762_gauge_charge_valid": 0,
+        "mt6762_gauge_freshness_rejections": 4,
+        "mt6762_gauge_charge_uah": -9223372036854775808
+      },
+      "cpu_count": 8,
+      "secondary_cpus": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "post_valid_fault_injected": false,
+      "kernel_panic": false
+    },
+    {
+      "case": "queue/startup-latch-stuck.json",
+      "report_sha256": "89195f6bf0f446ed3b77259eb4988f4f7798100d296c99f374924ccfbf8d5a4f",
+      "qemu_sha256": "8ae2e848f1f75ee8512de2ec363c1f04024d710aefd7bd186d545390ca1654ac",
+      "gauge": {
+        "mt6762_gauge_current_ua": -2147483648,
+        "mt6762_gauge_current_valid": 0,
+        "mt6762_gauge_samples": 0,
+        "mt6762_gauge_errors": 1,
+        "mt6762_gauge_fault": 1,
+        "mt6762_gauge_raw_current": -1,
+        "mt6762_gauge_charge_valid": 0,
+        "mt6762_gauge_freshness_rejections": 0,
+        "mt6762_gauge_charge_uah": -9223372036854775808
+      },
+      "cpu_count": 8,
+      "secondary_cpus": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "post_valid_fault_injected": false,
+      "kernel_panic": false
+    },
+    {
+      "case": "queue/startup-stale.json",
+      "report_sha256": "33396ec21331a2bf3c962cca7bf58126dc7d07e4d2a45c878460c17933fef0b0",
+      "qemu_sha256": "8ae2e848f1f75ee8512de2ec363c1f04024d710aefd7bd186d545390ca1654ac",
+      "gauge": {
+        "mt6762_gauge_current_ua": -2147483648,
+        "mt6762_gauge_current_valid": 0,
+        "mt6762_gauge_samples": 0,
+        "mt6762_gauge_errors": 1,
+        "mt6762_gauge_fault": 1,
+        "mt6762_gauge_raw_current": -1,
+        "mt6762_gauge_charge_valid": 0,
+        "mt6762_gauge_freshness_rejections": 0,
+        "mt6762_gauge_charge_uah": -9223372036854775808
+      },
+      "cpu_count": 8,
+      "secondary_cpus": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "post_valid_fault_injected": false,
+      "kernel_panic": false
+    },
+    {
+      "case": "queue/startup-timeout.json",
+      "report_sha256": "dd10e4705a5bd68f9821a707a6b4bdbb28062c3471eabb5f58544bc0d24810f6",
+      "qemu_sha256": "8ae2e848f1f75ee8512de2ec363c1f04024d710aefd7bd186d545390ca1654ac",
+      "gauge": {
+        "mt6762_gauge_current_ua": -2147483648,
+        "mt6762_gauge_current_valid": 0,
+        "mt6762_gauge_samples": 0,
+        "mt6762_gauge_errors": 1,
+        "mt6762_gauge_fault": 1,
+        "mt6762_gauge_raw_current": -1,
+        "mt6762_gauge_charge_valid": 0,
+        "mt6762_gauge_freshness_rejections": 0,
+        "mt6762_gauge_charge_uah": -9223372036854775808
+      },
+      "cpu_count": 8,
+      "secondary_cpus": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "post_valid_fault_injected": false,
+      "kernel_panic": false
+    },
+    {
+      "case": "queue/postvalid-calibration.json",
+      "report_sha256": "7cb86b9853a5c7df29c333d831a2cb3cbfffcdfeadbb8e30b9076a89749a7bce",
+      "qemu_sha256": "8ae2e848f1f75ee8512de2ec363c1f04024d710aefd7bd186d545390ca1654ac",
+      "gauge": {
+        "mt6762_gauge_current_ua": -2147483648,
+        "mt6762_gauge_current_valid": 0,
+        "mt6762_gauge_samples": 2,
+        "mt6762_gauge_errors": 1,
+        "mt6762_gauge_fault": 1,
+        "mt6762_gauge_raw_current": 100,
+        "mt6762_gauge_charge_valid": 0,
+        "mt6762_gauge_freshness_rejections": 0,
+        "mt6762_gauge_charge_uah": -9223372036854775808
+      },
+      "cpu_count": 8,
+      "secondary_cpus": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "post_valid_fault_injected": true,
+      "kernel_panic": false
+    },
+    {
+      "case": "queue/postvalid-clock.json",
+      "report_sha256": "5aada8d0c25108690baf6979c6b27c2034959ba79a116c542ccdaefe002f7f9f",
+      "qemu_sha256": "8ae2e848f1f75ee8512de2ec363c1f04024d710aefd7bd186d545390ca1654ac",
+      "gauge": {
+        "mt6762_gauge_current_ua": -2147483648,
+        "mt6762_gauge_current_valid": 0,
+        "mt6762_gauge_samples": 2,
+        "mt6762_gauge_errors": 1,
+        "mt6762_gauge_fault": 1,
+        "mt6762_gauge_raw_current": 100,
+        "mt6762_gauge_charge_valid": 0,
+        "mt6762_gauge_freshness_rejections": 0,
+        "mt6762_gauge_charge_uah": -9223372036854775808
+      },
+      "cpu_count": 8,
+      "secondary_cpus": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "post_valid_fault_injected": true,
+      "kernel_panic": false
+    },
+    {
+      "case": "queue/postvalid-counter-stuck.json",
+      "report_sha256": "1dc314d09bc1f078d173c13eaf3245c145877540484b440ae7f45a7f1034db66",
+      "qemu_sha256": "8ae2e848f1f75ee8512de2ec363c1f04024d710aefd7bd186d545390ca1654ac",
+      "gauge": {
+        "mt6762_gauge_current_ua": -2147483648,
+        "mt6762_gauge_current_valid": 0,
+        "mt6762_gauge_samples": 5,
+        "mt6762_gauge_errors": 0,
+        "mt6762_gauge_fault": 0,
+        "mt6762_gauge_raw_current": 100,
+        "mt6762_gauge_charge_valid": 0,
+        "mt6762_gauge_freshness_rejections": 3,
+        "mt6762_gauge_charge_uah": -9223372036854775808
+      },
+      "cpu_count": 8,
+      "secondary_cpus": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "post_valid_fault_injected": true,
+      "kernel_panic": false
+    },
+    {
+      "case": "queue/postvalid-latch-stuck.json",
+      "report_sha256": "fec0733d6a6c6e5179a7237442269cdb95e9d96f395cdd0ba31debea9599b18f",
+      "qemu_sha256": "8ae2e848f1f75ee8512de2ec363c1f04024d710aefd7bd186d545390ca1654ac",
+      "gauge": {
+        "mt6762_gauge_current_ua": -2147483648,
+        "mt6762_gauge_current_valid": 0,
+        "mt6762_gauge_samples": 2,
+        "mt6762_gauge_errors": 1,
+        "mt6762_gauge_fault": 1,
+        "mt6762_gauge_raw_current": 100,
+        "mt6762_gauge_charge_valid": 0,
+        "mt6762_gauge_freshness_rejections": 0,
+        "mt6762_gauge_charge_uah": -9223372036854775808
+      },
+      "cpu_count": 8,
+      "secondary_cpus": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "post_valid_fault_injected": true,
+      "kernel_panic": false
+    },
+    {
+      "case": "queue/postvalid-stale.json",
+      "report_sha256": "61e47dad28ff49abd8261f8e063984d31a98430b608d44d3b9ec13228539b938",
+      "qemu_sha256": "8ae2e848f1f75ee8512de2ec363c1f04024d710aefd7bd186d545390ca1654ac",
+      "gauge": {
+        "mt6762_gauge_current_ua": -2147483648,
+        "mt6762_gauge_current_valid": 0,
+        "mt6762_gauge_samples": 2,
+        "mt6762_gauge_errors": 1,
+        "mt6762_gauge_fault": 1,
+        "mt6762_gauge_raw_current": 100,
+        "mt6762_gauge_charge_valid": 0,
+        "mt6762_gauge_freshness_rejections": 0,
+        "mt6762_gauge_charge_uah": -9223372036854775808
+      },
+      "cpu_count": 8,
+      "secondary_cpus": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "post_valid_fault_injected": true,
+      "kernel_panic": false
+    },
+    {
+      "case": "queue/postvalid-timeout.json",
+      "report_sha256": "a855bfec4373bdb6fbda8a955a12b0dcb07de2f46c7f650e88c937279cdc5a12",
+      "qemu_sha256": "8ae2e848f1f75ee8512de2ec363c1f04024d710aefd7bd186d545390ca1654ac",
+      "gauge": {
+        "mt6762_gauge_current_ua": -2147483648,
+        "mt6762_gauge_current_valid": 0,
+        "mt6762_gauge_samples": 2,
+        "mt6762_gauge_errors": 1,
+        "mt6762_gauge_fault": 1,
+        "mt6762_gauge_raw_current": 100,
+        "mt6762_gauge_charge_valid": 0,
+        "mt6762_gauge_freshness_rejections": 0,
+        "mt6762_gauge_charge_uah": -9223372036854775808
+      },
+      "cpu_count": 8,
+      "secondary_cpus": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "post_valid_fault_injected": true,
+      "kernel_panic": false
+    },
+    {
+      "case": "signed-positive/positive.json",
+      "report_sha256": "d428e428702e5eb130bef17eb906d5fdfcb0ef2efe4d80cd651802168bb35d1b",
+      "qemu_sha256": "2a4b3151bf86b5c48a6d0a3819600be69051ad6b60503bc68f18e7462a131408",
+      "gauge": {
+        "mt6762_gauge_current_ua": 31400,
+        "mt6762_gauge_current_valid": 1,
+        "mt6762_gauge_samples": 5,
+        "mt6762_gauge_errors": 0,
+        "mt6762_gauge_fault": 0,
+        "mt6762_gauge_raw_current": 100,
+        "mt6762_gauge_charge_valid": 1,
+        "mt6762_gauge_freshness_rejections": 0,
+        "mt6762_gauge_charge_uah": 35800
+      },
+      "cpu_count": 8,
+      "secondary_cpus": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "post_valid_fault_injected": false,
+      "kernel_panic": false
+    },
+    {
+      "case": "signed-negative/negative.json",
+      "report_sha256": "79e381190e2bd0c1ba7410d9b546c47b38f287d6562314a19932ab7cb6433b43",
+      "qemu_sha256": "2a4b3151bf86b5c48a6d0a3819600be69051ad6b60503bc68f18e7462a131408",
+      "gauge": {
+        "mt6762_gauge_current_ua": -31400,
+        "mt6762_gauge_current_valid": 1,
+        "mt6762_gauge_samples": 5,
+        "mt6762_gauge_errors": 0,
+        "mt6762_gauge_fault": 0,
+        "mt6762_gauge_raw_current": 65435,
+        "mt6762_gauge_charge_valid": 1,
+        "mt6762_gauge_freshness_rejections": 0,
+        "mt6762_gauge_charge_uah": -35800
+      },
+      "cpu_count": 8,
+      "secondary_cpus": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "post_valid_fault_injected": false,
+      "kernel_panic": false
+    }
+  ],
+  "original_apple": {
+    "passed": true,
+    "serial_sha256": "ffdd17b44aa332b45ce62c3c01adcbd1d952864c353c0a8ce274e5263d9169b3",
+    "expected_current_ua": -31400,
+    "expected_charge_uah": -35800,
+    "fresh_iterations": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59,
+      60,
+      61,
+      62,
+      63,
+      64,
+      65,
+      66,
+      67,
+      68,
+      69,
+      70,
+      71,
+      72,
+      73,
+      74,
+      75,
+      76,
+      77,
+      78
+    ],
+    "invalid_iterations": [
+      79,
+      80,
+      81,
+      82,
+      83,
+      84,
+      85,
+      86,
+      87,
+      88,
+      89,
+      90,
+      91,
+      92,
+      93,
+      94,
+      95,
+      96,
+      97,
+      98,
+      99
+    ],
+    "complete_observations": 100,
+    "unknown_battery_properties_absent": [
+      "CurrentCapacity",
+      "MaxCapacity",
+      "AppleRawCurrentCapacity",
+      "AppleRawMaxCapacity",
+      "DesignCapacity",
+      "NominalChargeCapacity",
+      "Temperature",
+      "CycleCount",
+      "TimeRemaining"
+    ],
+    "physical_hardware_tested": false,
+    "apple_preservation": {
+      "status": "verified-byte-preservation",
+      "read_only": true,
+      "apple_executables_recompiled": false,
+      "critical_executables_checked": 3,
+      "critical_executables_checked_against_retained_apple_dmg": 3,
+      "mapped_cache_files_checked": 43,
+      "system_image_bytes": 2491162624,
+      "root_image_bytes": 4194304,
+      "system_image": "/home/iscle/mt6762-ios-port/runtime/userland/system.apfs",
+      "root_image": "/home/iscle/mt6762-ios-port/boot/native-gauge-build24/original-apple/root.apfs",
+      "project_stage0_matches": true,
+      "project_init_matches": true,
+      "resources_are_unmodified": false,
+      "resource_changes": "Donor fetch recipe trims AppleColorEmoji and PingFang fonts; build selects/rearranges resources and launch jobs.",
+      "limit": "Checks extracted Apple cache files against APFS bytes and three executables against the retained Apple DMG when available; does not establish boot, authenticity, or all-file preservation.",
+      "originals": [
+        {
+          "source": "ios165/rootfs/sbin/launchd",
+          "destination": "/sbin/launchd.ios",
+          "size": 525088,
+          "sha256": "4c61512d19b9a55a6ddad27e23b88fc5008fbf77d0c0b5e6bdd7c7d90cef3e06"
+        },
+        {
+          "source": "ios165/rootfs/usr/lib/dyld",
+          "destination": "/usr/lib/dyld",
+          "size": 922912,
+          "sha256": "a453aa234fc9bd440dc4e55bd2e18f9a7eb2bc3fd7ef319d8714a664bc55bf5c"
+        },
+        {
+          "source": "ios165/rootfs/System/Library/CoreServices/SpringBoard.app/SpringBoard",
+          "destination": "/System/Library/CoreServices/SpringBoard.app/SpringBoard",
+          "size": 112048,
+          "sha256": "7926a1ba0b115cf45102b2c3d8e4eb7bc9c84bcf70b573d2a798690d9148059c"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64",
+          "size": 393216,
+          "sha256": "f0cbc6aab454a56f9f71f8a05743c1cdbf1a0fca3cfe9de2bd81305e80b0e408"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64.01",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.01",
+          "size": 114589696,
+          "sha256": "a2014bafdad6c2bd1047cd63ca24836d90e2ce5a2ded876e622a19908d5f9f2e"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64.02",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.02",
+          "size": 98304,
+          "sha256": "b6c8e4a08d8d74e39cc3b10f6ea19ccf6ef64c0c96f8da077456a9d62cdd3bb1"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64.03",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.03",
+          "size": 115736576,
+          "sha256": "ac6948bd07df9b007beaffba11a6c878a846542aace43555e8514725b60527b5"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64.04",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.04",
+          "size": 180224,
+          "sha256": "c2b2dcbaf5c10090440bf5c2e955a411011827d4d7cf2fa437eabbfe234ff1ad"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64.05",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.05",
+          "size": 114475008,
+          "sha256": "51a583395b72059e4ed779d8bfae08ea29e74d7ec5d822f5c5c76097267efbda"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64.06",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.06",
+          "size": 376832,
+          "sha256": "fa6e4ce0e69590ce01cf63977734b2c7cef3049b210edcf71b5a3f1758e86d3a"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64.07",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.07",
+          "size": 115408896,
+          "sha256": "de0052e8d60d284164d837de1f82630329dbbf42ef11d2166eb354ed473d1d3e"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64.08",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.08",
+          "size": 278528,
+          "sha256": "d4977965a1a2becfaade25a3a2a223a44508df520b2b5722e79d9870c1bf8e3f"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64.09",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.09",
+          "size": 115572736,
+          "sha256": "30f21c3d5a5b8e1e3421ac396d0ed34a90d1b22e5a53b15b942d73903d1ee785"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64.10",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.10",
+          "size": 409600,
+          "sha256": "63575cc0c12d78faf6f65bce5b97308b24293c918bf5fecf464747196ba324e7"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64.11",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.11",
+          "size": 115769344,
+          "sha256": "59385b1d56819d6e1616f6a65ec45eb0febd834280c37a98cccb54c027e0fa1e"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64.12",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.12",
+          "size": 393216,
+          "sha256": "85671000d76def1439b9c3b90278ca55e92e86f50b1328d6c515b4f98c94346c"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64.13",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.13",
+          "size": 107954176,
+          "sha256": "15e253352b9e693702872ee0e694ca06aebaffe6a8bc3399240f67ec5276847e"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64.14",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.14",
+          "size": 409600,
+          "sha256": "c36a448f4b733689de6a87c3e1e1fc57687cd9b6a7885374335dc9de32db5f73"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64.15",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.15",
+          "size": 115081216,
+          "sha256": "495324c42dcb456015149dda37a498ad28310bf05ede2069cb264cf7c2a84970"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64.16",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.16",
+          "size": 458752,
+          "sha256": "15f1f22994db8e97eb83d7fa74fc88ef3df5f8af581321e51c940b7f30bf1501"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64.17",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.17",
+          "size": 97419264,
+          "sha256": "712ff7abbcfe66a2dbbf9c0543c3e42b80f53c2876859c9f48cdfe0a3257bf15"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64.18",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.18",
+          "size": 376832,
+          "sha256": "8b660f9423ce2efdd815dacb1cec2cd93639c24571102675c7f3292d4a9d7b21"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64.19",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.19",
+          "size": 115916800,
+          "sha256": "d0aeb5e72db0f9604002d543dd7b273fd81fbae33a8b4a5fcfa441ed72c506ec"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64.20",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.20",
+          "size": 294912,
+          "sha256": "6b8cf42836db046fd09bc473b413acd98090060261ae686a51fd3858678f5bf5"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64.21",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.21",
+          "size": 113721344,
+          "sha256": "0e4fd75dc3582c9276a3693df8bf069fc8924e232c5046ad70af275c48865ea3"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64.22",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.22",
+          "size": 491520,
+          "sha256": "ffbcdb02451ff08b3e2e36ed8c802396ffafe1e21aa6332778d8c57020826c02"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64.23",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.23",
+          "size": 115621888,
+          "sha256": "9f5e79a80b9d9f1eb2c0a3e9940cf3fc6b47d84dc888f8808e6b0f76dc76ca80"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64.24",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.24",
+          "size": 491520,
+          "sha256": "2add98173853b932c9d5f98afe7be1b583b1ebfa50697a0dccc2a85797d99c5e"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64.25",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.25",
+          "size": 76529664,
+          "sha256": "985246dceb751666d7bacaf84d9a594611cb95df860fef4fe4d19c2292e47392"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64.26",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.26",
+          "size": 229376,
+          "sha256": "a01ba41db7a4d5e6216228626d76a0dc5eda1217a4f4a0c6b63769f5f9d042db"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64.27.dylddata",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.27.dylddata",
+          "size": 189300736,
+          "sha256": "57501da84145ad55c5ec81304535a2ef9c7f3cdf25f4a61effedba455a7b8e88"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64.28.dyldlinkedit",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.28.dyldlinkedit",
+          "size": 19906560,
+          "sha256": "224304a92780f0ad69618da3aaddffe8e0474d88614a280a26c39820757899f1"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64.29",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.29",
+          "size": 114573312,
+          "sha256": "0dd52772a57c5f4300476b8b2e729472c103892346654d97b6f304860a0806ac"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64.30",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.30",
+          "size": 491520,
+          "sha256": "68b05135e1d7ce62a7ed2430703548338c0e9aef04b567f3cdbcaaa3dbccecfd"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64.31",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.31",
+          "size": 115703808,
+          "sha256": "cb7ae8db64b70b46925f8bfeaca4f61e001668fd52e3035a8761074c7a3f15c1"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64.32",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.32",
+          "size": 606208,
+          "sha256": "dd868f32c96da710af79943b70435aade4b08692512f37fb671dbd321d6e84b2"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64.33",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.33",
+          "size": 113115136,
+          "sha256": "821c7e973e928e8c7cf730a08af07bfde6c8021887215792b635b1256bfa93a1"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64.34",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.34",
+          "size": 704512,
+          "sha256": "a27633353c2e257e373d97f1fb0a447368f777e46f4f60c67f4e480900ea6b8a"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64.35",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.35",
+          "size": 115834880,
+          "sha256": "59391e0326951b3a95955ec11f397085e64cb5eb6667c733c80945c9498e1807"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64.36",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.36",
+          "size": 475136,
+          "sha256": "e1428f7512bf99786e5c7c46637e78e7be0cf0a388f2f1ccc984a456a858446c"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64.37",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.37",
+          "size": 115851264,
+          "sha256": "a683939095abce7a27de78d1a3768ad2df3c760c2db28185ed97a975b151b459"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64.38",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.38",
+          "size": 540672,
+          "sha256": "42e3acabaf65492a90abc3b511294dc70e8e26136a60865e166dc9cbe71629ce"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64.39",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.39",
+          "size": 62521344,
+          "sha256": "fe3b22c8530ba313ceb2185dbd21ba89febb0ee9dc550f9c5253aec6f7e39758"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64.40",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.40",
+          "size": 458752,
+          "sha256": "c97766e9074ada6eb98a659d5f0afb4e2b50766486437ffa08abf73ff68a988e"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64.41.dylddata",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.41.dylddata",
+          "size": 99794944,
+          "sha256": "d89d868b816a6d7c594eab0cecbab39f30dd223b8df094b111bdd6d7a8dc6dff"
+        },
+        {
+          "source": "ios165/20F66__iPhone10,3_6/dyld_shared_cache_arm64.42.dyldlinkedit",
+          "destination": "/System/Cryptexes/OS/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.42.dyldlinkedit",
+          "size": 333955072,
+          "sha256": "05256dce35f488828f2316e5651a24cfbcb48a751597be0303657cede2f9128f"
+        }
+      ]
+    }
+  },
+  "known_build24_limitation": "The deadline helper resampled current time after acquisition_start; preemption between the calls could extend validity. Build25 uses checked acquisition_start plus absolute duration and tests injected preemption/overflow."
+}

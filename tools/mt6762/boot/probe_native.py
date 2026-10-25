@@ -26,6 +26,10 @@ def main():
                    help='Clear an explicit startup fixture fault after native rejection; require recovery only for generation failures')
     p.add_argument('--bif-fault-after-fresh',action='store_true',
                    help='Inject BIF fault after actual native raw-pair freshness is observed')
+    p.add_argument('--expected-gauge-current-ua',type=int,default=31400)
+    p.add_argument('--expected-gauge-charge-uah',type=int,default=0)
+    p.add_argument('--expect-gauge-charge',action='store_true',
+                   help='Require coherent native signed CAR observation (build24 or later)')
     p.add_argument('--gauge-fault',choices=('none','timeout','latch-stuck','stale','clock','calibration','counter-stuck'),default='none')
     p.add_argument('--gauge-fault-after-valid',action='store_true',
                    help='Inject gauge fault after actual native current-valid1 is observed')
@@ -334,9 +338,20 @@ def main():
             raise SystemExit(1)
         values={name:diagnostic[name]['value'] for name in fields}
         if a.gauge_fault=='none':
-            if values['mt6762_gauge_current_ua']!=31400 or values['mt6762_gauge_current_valid']!=1 or values['mt6762_gauge_samples']<2 or values['mt6762_gauge_fault']:
+            if values['mt6762_gauge_current_ua']!=a.expected_gauge_current_ua or values['mt6762_gauge_current_valid']!=1 or values['mt6762_gauge_samples']<2 or values['mt6762_gauge_fault']:
                 raise SystemExit(1)
         elif values['mt6762_gauge_current_ua']!=-2147483648 or values['mt6762_gauge_current_valid']:
+            raise SystemExit(1)
+    if a.expect_gauge_charge:
+        if not m.get('native_lab_gauge'):
+            raise ValueError('Charge validation requires the native gauge fixture')
+        diagnostic=result['native_sysctls']
+        fields=('mt6762_gauge_charge_uah','mt6762_gauge_charge_valid')
+        if any(name not in diagnostic or diagnostic[name]['error'] for name in fields):
+            raise SystemExit(1)
+        # Expected signed value comes from an independent original-stock vector.
+        expected=(a.expected_gauge_charge_uah,1) if a.gauge_fault=='none' else (-(1<<63),0)
+        if tuple(diagnostic[name]['value'] for name in fields)!=expected:
             raise SystemExit(1)
     if a.thermal_fault_after_fresh and not thermal_injected:
         raise SystemExit(1)

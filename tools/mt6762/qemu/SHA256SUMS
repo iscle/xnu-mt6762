@@ -8,3 +8,4 @@ cb88db3657b853657c55b306e756280727063d2a8b86127985e55dd25d956c49  0005-arm-add-o
 f3822bc82cd24761590b66ca9ecb190a20384a8c2a12c3a24394851240a50c1f  0008-arm-add-explicit-PMIC-gauge-snapshot-laboratory.patch
 b28cb1120fab387ba04940119170ee3ef2d57f873073615f75c79d82d5e0f480  0009-arm-add-explicit-BIF-generation-and-ownership-laboratory.patch
 a9f7d57f6687d76700afd082e2ab400ff63c86632f9166b13f8a0ba8b5cb491f  0010-arm-add-explicit-read-only-MSDC-file-backed-laboratory.patch
+b24cd36ec47263695c9975f9ac3ff886f0679552bdd30fbd156e74179e754f70  0011-arm-add-explicit-immutable-gauge-sample-laboratory.patch

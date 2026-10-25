@@ -1,7 +1,7 @@
 Reproducing the local MT6762 QEMU experiment
 ==========================================
 
-These ten patches reproduce the local research machine used for MT6762
+These eleven patches reproduce the local research machine used for MT6762
 bring-up. They contain source code and documentation only: no phone firmware,
 iOS files, credentials, personal partitions, or built binaries.
 
@@ -19,9 +19,10 @@ Source provenance
   ``1cefe6067521f188fffbe2070bd520501a8c60fe``,
   ``63ec9fcb45cb0cf59214a3d2b676f408d724cf62``,
   ``78122652f1258b3900d7fd721c9b1df06d4122d4``,
-  ``49d41542f0ccfed448d90c9ad4397a592292d027`` and
-  ``20e020a98f55679572ad7d18e1c4897b9951a1b5``.
-* Resulting Git tree: ``2958156e028ff475865c0c604a56b6921b259607``.
+  ``49d41542f0ccfed448d90c9ad4397a592292d027``,
+  ``20e020a98f55679572ad7d18e1c4897b9951a1b5`` and
+  ``0f9a62cb5b983e7d9d2a93d90a2c18eb46e0cf1a``.
+* Resulting Git tree: ``9a5908e76856a77220006765583d40e4ec63f2f1``.
 
 ``apply.sh`` verifies the patch SHA-256 hashes, fetches that exact upstream
 commit, applies the patch series in order, and verifies the final tree.
@@ -164,3 +165,9 @@ and block reads, range/EOF behavior and fault latching. No firmware or test
 image binaries are included, and no physical eMMC or filesystem boot is
 implied. The patch glob intentionally includes all four-digit prefixes,
 including0010 and later.
+
+The eleventh patch adds immutable ``lab-gauge-sample`` input only to the explicit
+gauge laboratory fixture. It packs the raw current/CAR-low/CAR-high 16-bit
+words into an unsigned 48-bit tuple, captured at READ_PRE. The default remains
+current100/CAR0. It exercises signed native observations using known original
+stock arithmetic vectors and never represents remaining capacity or real cells.

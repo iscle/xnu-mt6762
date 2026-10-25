@@ -1,7 +1,8 @@
-MT6357 current observation and battery-temperature prerequisites
-==============================================================
+MT6357 current/Coulomb observation and temperature prerequisites
+===============================================================
 
-The native gauge driver observes current only. It does not initialize or reset
+The native gauge driver observes coherent current and signed accumulated charge.
+It does not initialize or reset
 an inherited gauge, enable charging, estimate remaining capacity, or report SOC.
 Its hardware path has only been exercised against an explicitly synthetic QEMU
 fixture. Physical calibration and ownership are still prerequisites.
@@ -30,9 +31,10 @@ integer overflow; invalid inputs or unrepresentable results are rejected.
 
 Coulomb raw registers 0x0d12/0x0d14 contain a signed 20-bit count:
 (low >> 11) | ((high & 0x7fff) << 5), with sign high bit 15. Stock conversion
-uses 11176 and rounds before R_FG/CAR_TUNE scaling. The pure tested decoder
-is available for future accounting, but a cumulative gauge count is not a
-battery remaining-capacity measurement and is not published as one.
+uses 11176 and rounds before R_FG/CAR_TUNE scaling. The decoder now feeds a private native current/charge snapshot, but a cumulative
+gauge count is not a battery remaining-capacity measurement and is not published
+as one. Neither its arbitrary inherited origin nor a learned full-charge
+capacity is inferred from a counter reading.
 
 emulate_stock_gauge.py executes these original ARM64 arithmetic routines with
 mocked register reads and no device I/O. evidence/stock-gauge-vectors.json
@@ -85,17 +87,27 @@ snapshots are exposed. A transport or protocol fault is sticky; speculative
 cleanup/reset writes and automatic retry after a fault are deliberately absent.
 
 The first snapshot establishes a counter baseline. A later advancing NTER is
-required before current is valid. Equality invalidates current; backwards or
+required before current and charge are valid. Equality invalidates both; backwards or
 ambiguous half-range movement is rejected, and modulo-33-bit forward wrap is
 supported. The actual MT6357 NTER period has not been independently recovered;
 no native conversion to elapsed seconds assumes one. Sample validity expires
-after two seconds using the kernel's independent monotonic clock. Getter
-validity and value both check this deadline. The separate synthetic fixture
+two seconds after acquisition begins, before configuration or latch I/O, using
+the kernel's independent monotonic clock. A completed but already expired
+acquisition is discarded. Getter validity and values check this deadline after
+taking the mutex, so lock contention cannot make a stale snapshot look fresh.
+The separate synthetic fixture
 uses an explicit 2 Hz test clock, not a claim about actual hardware timing.
 
 kern.redwood.mt6762_gauge_current_ua returns INT_MIN when invalid. Companion
 nodes current_valid, samples, errors, fault and raw_current expose observation
-state. Only a fresh value adds the existing native battery CURRENT valid bit;
+state. ``mt6762_gauge_charge_uah`` is a signed 64-bit sysctl, with INT64_MIN
+when invalid; ``mt6762_gauge_charge_valid`` shares the same snapshot validity.
+``mt6762_gauge_freshness_rejections`` counts nonadvancing NTER and acquisitions
+that have expired before completion. Current and charge are decoded together
+and installed under one mutex; a partial CAR read failure rejects the whole
+snapshot. Separate sysctl calls are independent observations, not an atomic
+public multi-field ABI. Only a fresh current value adds the existing native
+battery CURRENT valid bit;
 no userland ABI structure was enlarged. Failed reads clear valid publication.
 
 Validation
@@ -114,6 +126,46 @@ Positive current was 31400 microamps from raw 100 with advancing NTER. All six
 startup fault cases and three faults injected after a valid reading rejected
 current. An inherited latch caused zero gauge commands. All eight emulated
 CPUs and the input queue remained live. See evidence/native-gauge-build15.json.
+
+Build24 adds ``test_gauge_observer.c``, compiling the actual native observer and
+getter code against controlled PMIC/clock callbacks. It covers signed pairs,
+zero, partial CAR I/O failure, calibration loss, counter stalls/backwards/wrap,
+slow acquisition, deadline boundary, and expiration while waiting for a lock.
+The unchanged conversion decoder still matches 21 original Image vectors.
+The header inventory required by genuine IIG replay remains unchanged;
+only the native C implementation and diagnostic readers were extended.
+
+The optional QEMU ``lab-gauge-sample`` is an immutable unsigned 48-bit tuple:
+current register in bits 15:0, CAR low in 31:16 and CAR high in 47:32. It requires
+``lab-gauge``; omission retains the earlier +31.4mA/zero-CAR fixture. The tuple
+is copied at READ_PRE into the modeled latch and reset preserves its configured
+input. It is explicit synthetic data, not battery physics or physical evidence.
+Native eight-core tests reproduce original-stock vectors +31400uA /
++35800uAh and -31400uA / -35800uAh. Six startup faults and the same six faults
+after a valid reading invalidate both observations. See ``evidence/native-gauge-build24.json`` and
+``evidence/native-gauge-build25.json`` for hashes and original Apple-userspace
+results.
+
+Build24 is retained as intermediate evidence. Review found that its deadline
+helper sampled the clock a second time, allowing a preemption gap to extend
+validity beyond acquisition_start + 2 seconds. Build25 uses an absolute interval
+and checked addition to the recorded start; zero intervals and overflow reject
+before any PMIC I/O. The actual-observer host test injects preemption during
+interval conversion and checks overflow without issuing a transaction.
+
+The corrected build25 kernel SHA-256 is
+69770fa400f264d66b7b4b83f102b05027222dc4d76814e50feae8bfd08c4a6a.
+Its fresh native eight-core suite passed both signed vectors and all twelve
+startup/post-valid fault runs with 16KiB software VM and 4KiB hardware pages.
+A 150-second original Apple-userland run produced 100 IOKit/probe observations:
+66 coherent +31mA / +35800uAh observations, then 34 with current and CAR invalid
+after an explicit synthetic gauge-clock loss. IOKit removed Amperage and
+InstantAmperage; all capacity, temperature, cycle and remaining-time properties
+stayed absent. The reader is source-built; Apple executables were not rebuilt.
+``check_gauge_probe.py`` reproduces these assertions from the retained serial log.
+The kernel links and the replay/source guards pass; the full build still has
+the documented inherited post-link export failures. These laboratory results
+do not establish physical gauge calibration or a charging policy.
 
 Battery NTC: recovered arithmetic, incomplete hardware admission
 --------------------------------------------------------------

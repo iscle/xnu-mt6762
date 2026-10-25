@@ -1,0 +1,39 @@
+{
+  "artifact_ready": true,
+  "artifact": "/home/iscle/mt6762-ios-port/xnu/BUILD/obj/DEVELOPMENT_ARM64_MT6762/mach.development.mt6762",
+  "make_exit_code": 2,
+  "all_checks_passed": false,
+  "known_postlink_export_failures_only": true,
+  "new_link_observed": true,
+  "macho_arm64_executable": true,
+  "kernel_source_sha256": "eb481cf35773a89c071a79dbb0f584c92826296074f544ed5f4a862724f7d73a",
+  "source_unchanged_during_build": true,
+  "source_files_changed_during_build": [],
+  "iig_inputs_unchanged_during_build": true,
+  "iig_inputs_sha256": "943f6fdd328af1c7bdde195ee8e42ba95a36c1029b6edaa21777145e3fc6e4f1",
+  "iig_executable": "/home/iscle/mt6762-ios-port/xnu/tools/mt6762/iig/experimental_legacy_replay.py",
+  "iig_selected_environment": {
+    "MTK_IIG_CANDIDATE": "/home/iscle/mt6762-ios-port/toolchain/iig-legacy-candidate26c-2",
+    "MTK_IIG_CANDIDATE_SHA256": "7fb212a3a7494bc8e3186d23b83e2e8487e01bf4edc4b35ff22faa23386398de",
+    "MTK_IIG_GENERATED": "/home/iscle/mt6762-ios-port/toolchain/iig-generated-diagnostic26c",
+    "MTK_IIG_GENERATION_SHA256": "e7a5ada653deb73c997d22994fc0db0db39aef2268297c3cb6b1a407f9d402cf",
+    "MTK_IIG_INPUTS": "/home/iscle/mt6762-ios-port/toolchain/iig-inputs-8796-build21-diagnostic26c",
+    "MTK_IIG_INPUT_SHA256": "52f15cab4e8194b2cd5e5195be4f3c4e9dc0b24bc5c077beaa05be7ff4137799",
+    "MTK_IIG_OUTPUT_ROOT": "/home/iscle/mt6762-ios-port/xnu/BUILD",
+    "MTK_IIG_XNU": "/home/iscle/mt6762-ios-port/xnu"
+  },
+  "sha256": "69770fa400f264d66b7b4b83f102b05027222dc4d76814e50feae8bfd08c4a6a",
+  "source_head": "01aedff58f7a6acd0cc344fc6db7a8ed9ec5dbf3",
+  "errors": [
+    "make[4]: *** [/home/iscle/mt6762-ios-port/xnu/config/Makefile:108: /home/iscle/mt6762-ios-port/xnu/BUILD/obj/DEVELOPMENT_ARM64_MT6762/config/Private.symbolset] Error 1",
+    "make[4]: *** [/home/iscle/mt6762-ios-port/xnu/config/Makefile:121: check_all_exports] Error 1",
+    "make[3]: *** [/home/iscle/mt6762-ios-port/xnu/makedefs/MakeInc.dir:89: config_all] Error 2",
+    "make[2]: *** [/home/iscle/mt6762-ios-port/xnu/makedefs/MakeInc.dir:89: config_all_recurse_into_config] Error 2",
+    "make[1]: *** [/home/iscle/mt6762-ios-port/xnu/makedefs/MakeInc.top:538: config_all_bootstrap_DEVELOPMENT^ARM64^MT6762] Error 2",
+    "make: *** [Makefile:239: all] Error 2"
+  ],
+  "build_log": "/home/iscle/mt6762-ios-port/evidence/builds/20261025T201406Z-2010851/make.log",
+  "scope": "Build24 gauge observer with strict checked acquisition-start + absolute interval deadline; injected preemption/overflow host tests.",
+  "build_log_sha256": "a6338ec3af710854eea671feb8964ebb4f3a7ea43da1e693197e385bc5f1c76d",
+  "full_build_accepted_for_lab_only": true
+}

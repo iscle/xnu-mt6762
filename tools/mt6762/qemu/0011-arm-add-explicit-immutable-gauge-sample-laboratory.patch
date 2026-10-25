@@ -1,0 +1,251 @@
+From 0f9a62cb5b983e7d9d2a93d90a2c18eb46e0cf1a Mon Sep 17 00:00:00 2001
+From: Iscle <albertiscle9@gmail.com>
+Date: Sun, 25 Oct 2026 21:11:33 +0100
+Subject: [PATCH] arm: add explicit immutable gauge sample laboratory input
+
+---
+ hw/arm/mt6762.c                   | 36 ++++++++++++++++++++++++++++++-
+ hw/arm/mt6762_lab_power.c         | 16 ++++++++++++--
+ include/hw/arm/mt6762_lab_power.h |  1 +
+ tests/mt6762/test_lab_gauge.py    | 28 ++++++++++++++++++++++--
+ tests/mt6762/test_lab_power.py    |  5 +++--
+ 5 files changed, 79 insertions(+), 7 deletions(-)
+
+diff --git a/hw/arm/mt6762.c b/hw/arm/mt6762.c
+index 524fe05..e4c4048 100644
+--- a/hw/arm/mt6762.c
++++ b/hw/arm/mt6762.c
+@@ -63,7 +63,8 @@ struct MT6762MachineState {
+     unsigned lab_sspm_fault;
+     MT6762SSPMLab *sspm;
+     bool lab_power, lab_pmic_thermal, lab_gauge, lab_bif;
+-    uint64_t lab_adc_delay_us;
++    uint64_t lab_adc_delay_us, lab_gauge_sample;
++    bool lab_gauge_sample_set;
+     unsigned lab_power_fault;
+     uint64_t lab_key_mask;
+     MT6762PowerLab *power;
+@@ -310,6 +311,10 @@ static void mt6762_init(MachineState *ms)
+         error_report("lab-bif requires lab-power");
+         exit(EXIT_FAILURE);
+     }
++    if (s->lab_gauge_sample_set && !s->lab_gauge) {
++        error_report("lab-gauge-sample requires lab-gauge");
++        exit(EXIT_FAILURE);
++    }
+     if (s->lab_gauge && !s->lab_power) {
+         error_report("lab-gauge requires lab-power");
+         exit(EXIT_FAILURE);
+@@ -322,6 +327,9 @@ static void mt6762_init(MachineState *ms)
+         s->power = mt6762_lab_power_create(OBJECT(s), sysmem);
+         mt6762_lab_power_set_thermal(s->power, s->lab_pmic_thermal);
+         mt6762_lab_power_set_gauge(s->power, s->lab_gauge);
++        if (s->lab_gauge_sample_set) {
++            mt6762_lab_power_set_gauge_sample(s->power, s->lab_gauge_sample);
++        }
+         mt6762_lab_power_set_bif(s->power, s->lab_bif);
+         mt6762_lab_power_set_adc_delay_us(s->power, s->lab_adc_delay_us);
+         mt6762_lab_power_configure(s->power, s->lab_power_fault);
+@@ -674,6 +682,30 @@ static void mt6762_set_power_fault(Object *obj, const char *value, Error **errp)
+     error_setg(errp, "unknown lab-power-fault");
+ }
+ 
++/* Explicit immutable synthetic tuple: current[15:0], CAR low[31:16], high[47:32]. */
++static void mt6762_get_gauge_sample(Object *obj, Visitor *v, const char *name,
++                                  void *opaque, Error **errp)
++{
++    MT6762MachineState *s = MT6762_MACHINE(obj);
++    uint64_t value = s->lab_gauge_sample_set ? s->lab_gauge_sample : 100;
++    visit_type_uint64(v, name, &value, errp);
++}
++static void mt6762_set_gauge_sample(Object *obj, Visitor *v, const char *name,
++                                  void *opaque, Error **errp)
++{
++    MT6762MachineState *s = MT6762_MACHINE(obj);
++    uint64_t value;
++    if (!visit_type_uint64(v, name, &value, errp)) {
++        return;
++    }
++    if (s->initialized || value > UINT64_C(0xffffffffffff)) {
++        error_setg(errp, "lab-gauge-sample is pre-init only, unsigned 48-bit tuple");
++        return;
++    }
++    s->lab_gauge_sample = value;
++    s->lab_gauge_sample_set = true;
++}
++
+ static void mt6762_get_adc_delay(Object *obj, Visitor *v, const char *name,
+                                   void *opaque, Error **errp)
+ {
+@@ -749,6 +781,8 @@ static void mt6762_class_init(ObjectClass *oc, const void *data)
+                               mt6762_get_adc_delay, mt6762_set_adc_delay, NULL, NULL);
+     object_class_property_add_bool(oc, "lab-bif", mt6762_get_lab_bif,
+                                    mt6762_set_lab_bif);
++    object_class_property_add(oc, "lab-gauge-sample", "uint64",
++                              mt6762_get_gauge_sample, mt6762_set_gauge_sample, NULL, NULL);
+     object_class_property_add_bool(oc, "lab-gauge", mt6762_get_lab_gauge,
+                                    mt6762_set_lab_gauge);
+     object_class_property_add_bool(oc, "lab-pmic-thermal", mt6762_get_lab_thermal,
+diff --git a/hw/arm/mt6762_lab_power.c b/hw/arm/mt6762_lab_power.c
+index ef588ab..84cbcce 100644
+--- a/hw/arm/mt6762_lab_power.c
++++ b/hw/arm/mt6762_lab_power.c
+@@ -23,6 +23,7 @@ struct MT6762PowerLab {
+     unsigned adc_delay_us;
+     uint64_t bif_tdet_writes;
+     uint16_t gauge_control;
++    uint64_t gauge_sample, gauge_latched_sample;
+     uint64_t gauge_ticks, gauge_snapshots, gauge_commands;
+     unsigned fault, keys, fsm;
+     uint32_t command;
+@@ -95,8 +96,9 @@ static uint16_t pmic_read(MT6762PowerLab *s, uint16_t address)
+         case 0xd0a:
+             return s->fault == MT6762_POWER_FAULT_GAUGE_STALE ?
+                    0x8000 : s->gauge_control;
+-        case 0xd8a: return 100; /* Synthetic +31.4mA, never battery SOC. */
+-        case 0xd12: case 0xd14: return 0;
++        case 0xd8a: return s->gauge_latched_sample;
++        case 0xd12: return s->gauge_latched_sample >> 16;
++        case 0xd14: return s->gauge_latched_sample >> 32;
+         case 0xd20: return s->gauge_ticks;
+         case 0xd22: return s->gauge_ticks >> 16;
+         case 0xd24: return (s->gauge_ticks >> 32) & 1;
+@@ -135,6 +137,7 @@ static void pmic_write(MT6762PowerLab *s, uint16_t address, uint16_t data)
+         unsigned phase = s->gauge_control & 9;
+         if (data == 1 && phase == 0 && !(s->gauge_control & 0x8000)) {
+             s->gauge_snapshots++;
++            s->gauge_latched_sample = s->gauge_sample;
+             if (s->fault != MT6762_POWER_FAULT_GAUGE_COUNTER_STUCK) {
+                 s->gauge_ticks = (qemu_clock_get_ns(QEMU_CLOCK_VIRTUAL) /
+                                   500000000) & ((UINT64_C(1) << 33) - 1);
+@@ -283,10 +286,12 @@ static void power_reset(void *opaque)
+     s->gauge_control = 0;
+     s->bif_tdet_writes = 0;
+     s->gauge_ticks = s->gauge_snapshots = s->gauge_commands = 0;
++    s->gauge_latched_sample = s->gauge_sample;
+ }
+ MT6762PowerLab *mt6762_lab_power_create(Object *owner, MemoryRegion *memory)
+ {
+     MT6762PowerLab *s = g_new0(MT6762PowerLab, 1);
++    s->gauge_sample = 100; /* Default legacy synthetic +31.4mA, zero CAR. */
+     s->transaction = timer_new_ns(QEMU_CLOCK_VIRTUAL, transaction_complete, s);
+     s->adc[0] = timer_new_ns(QEMU_CLOCK_VIRTUAL, adc0_complete, s);
+     s->adc[1] = timer_new_ns(QEMU_CLOCK_VIRTUAL, adc1_complete, s);
+@@ -312,6 +317,11 @@ void mt6762_lab_power_set_gauge(MT6762PowerLab *s, bool enabled)
+ {
+     s->gauge_enabled = enabled;
+ }
++void mt6762_lab_power_set_gauge_sample(MT6762PowerLab *s, uint64_t sample)
++{
++    s->gauge_sample = sample;
++    s->gauge_latched_sample = sample;
++}
+ void mt6762_lab_power_set_bif(MT6762PowerLab *s, bool enabled)
+ {
+     s->bif_enabled = enabled;
+@@ -344,6 +354,7 @@ char *mt6762_lab_power_state(MT6762PowerLab *s)
+         "\"thermal_requests\":[%" PRIu64 ",%" PRIu64 ",%" PRIu64 "],"
+         "\"thermal_completions\":[%" PRIu64 ",%" PRIu64 ",%" PRIu64 "],"
+         "\"gauge_enabled\":%s,\"gauge_calibration_synthetic\":%s,"
++        "\"gauge_sample\":%" PRIu64 ",\"gauge_latched_sample\":%" PRIu64 ","
+         "\"gauge_control\":%u,\"gauge_ticks\":%" PRIu64 ","
+         "\"gauge_snapshots\":%" PRIu64 ",\"gauge_commands\":%" PRIu64 ","
+         "\"bif_enabled\":%s,\"bif_config_synthetic\":%s,\"adc_delay_us\":%u,"
+@@ -356,6 +367,7 @@ char *mt6762_lab_power_state(MT6762PowerLab *s)
+         s->adc_requests[2], s->adc_requests[3], s->adc_requests[4],
+         s->adc_completions[2], s->adc_completions[3], s->adc_completions[4],
+         s->gauge_enabled ? "true" : "false", s->gauge_enabled ? "true" : "false",
++        s->gauge_sample, s->gauge_latched_sample,
+         s->fault == MT6762_POWER_FAULT_GAUGE_STALE ? 0x8000 : s->gauge_control,
+         s->gauge_ticks, s->gauge_snapshots, s->gauge_commands,
+         s->bif_enabled ? "true" : "false", s->bif_enabled ? "true" : "false",
+diff --git a/include/hw/arm/mt6762_lab_power.h b/include/hw/arm/mt6762_lab_power.h
+index fcf9121..eb0b1f7 100644
+--- a/include/hw/arm/mt6762_lab_power.h
++++ b/include/hw/arm/mt6762_lab_power.h
+@@ -34,6 +34,7 @@ enum {
+ };
+ MT6762PowerLab *mt6762_lab_power_create(Object *owner, MemoryRegion *memory);
+ void mt6762_lab_power_set_thermal(MT6762PowerLab *s, bool enabled);
++void mt6762_lab_power_set_gauge_sample(MT6762PowerLab *s, uint64_t sample);
+ void mt6762_lab_power_set_gauge(MT6762PowerLab *s, bool enabled);
+ void mt6762_lab_power_set_bif(MT6762PowerLab *s, bool enabled);
+ /* Explicit synthetic NTC/BIF timing override, 0 retains stock-shaped80us. */
+diff --git a/tests/mt6762/test_lab_gauge.py b/tests/mt6762/test_lab_gauge.py
+index 796d314..a902cdd 100644
+--- a/tests/mt6762/test_lab_gauge.py
++++ b/tests/mt6762/test_lab_gauge.py
+@@ -2,14 +2,17 @@
+ """Paused-CPU opt-in gauge fixture tests; no phone access or gauge initialization."""
+ import argparse
+ import tempfile
++import subprocess
+ from pathlib import Path
+ from test_lab_power import PowerLab
+ 
+-def capture(lab):
++def capture(lab, sample=100):
+     assert lab.pmic(0xd0a) == 0
+     lab.pmic(0xd0a, 1)
+     assert lab.pmic(0xd0a) == 0x8001
+-    assert lab.pmic(0xd8a) == 100
++    assert lab.pmic(0xd8a) == sample & 0xffff
++    assert lab.pmic(0xd12) == (sample >> 16) & 0xffff
++    assert lab.pmic(0xd14) == (sample >> 32) & 0xffff
+     ticks = lab.pmic(0xd20) | lab.pmic(0xd22) << 16 | lab.pmic(0xd24) << 32
+     lab.pmic(0xd0a, 9)
+     assert lab.pmic(0xd0a) == 0x8009
+@@ -60,6 +63,27 @@ def main():
+                     n=lab.state()['rejected'];lab.pmic(0xd0a,0)
+                     assert lab.state()['rejected']==n+1 and lab.pmic(0xd0a)==0x8008
+             finally:lab.close()
++    # Known original-stock vectors, including zero and both signs. They are
++    # explicit test input, not a board-default calibration or battery model.
++    for sample in (0, 100 | 500 << 16 | 100 << 32,
++                   65435 | 65031 << 16 | 65435 << 32, (1 << 48) - 1):
++        with tempfile.TemporaryDirectory(prefix='mt6762-gauge-sample-') as directory:
++            lab=PowerLab(args.qemu.resolve(),args.dtb.resolve(),directory,gauge=True,gauge_sample=sample)
++            try:
++                capture(lab,sample)
++                assert lab.state()['gauge_latched_sample']==sample
++                try:
++                    lab.command('qom-set',path='/machine',property='lab-gauge-sample',value=100)
++                except (RuntimeError,AssertionError):pass
++                else:raise AssertionError('immutable tuple accepted runtime mutation')
++                assert lab.state()['gauge_sample']==sample
++            finally:lab.close()
++    for machine in ('mt6762,lab-gauge-sample=0',
++                    'mt6762,lab-power=on,lab-gauge=on,lab-gauge-sample=281474976710656'):
++        result=subprocess.run([str(args.qemu.resolve()),'-M',machine,'-display','none',
++                               '-dtb',str(args.dtb.resolve()),'-cpu','cortex-a53'],
++                              capture_output=True,timeout=5)
++        assert result.returncode and b'lab-gauge-sample' in result.stderr
+     print('PASS: synthetic gauge latch, NTER progression, faults, reset rejection and default absence')
+ 
+ if __name__=='__main__':main()
+diff --git a/tests/mt6762/test_lab_power.py b/tests/mt6762/test_lab_power.py
+index e58b3b7..287b3b7 100644
+--- a/tests/mt6762/test_lab_power.py
++++ b/tests/mt6762/test_lab_power.py
+@@ -14,7 +14,7 @@
+ 
+ 
+ class PowerLab(Lab):
+-    def __init__(self, qemu, dtb, directory, enabled=True, thermal=False, gauge=False, bif=False, adc_delay_us=0):
++    def __init__(self, qemu, dtb, directory, enabled=True, thermal=False, gauge=False, bif=False, adc_delay_us=0, gauge_sample=None):
+         directory = Path(directory)
+         self.log = (directory / 'qemu.log').open('w+')
+         self.qmp_path = directory / 'qmp.sock'
+@@ -23,7 +23,8 @@ def __init__(self, qemu, dtb, directory, enabled=True, thermal=False, gauge=Fals
+             str(qemu), '-M', 'mt6762' + (',lab-power=on' if enabled else '') +
+             (',lab-pmic-thermal=on' if thermal else '') +
+             (',lab-gauge=on' if gauge else '') + (',lab-bif=on' if bif else '') +
+-            (f',lab-adc-delay-us={adc_delay_us}' if adc_delay_us else ''),
++            (f',lab-adc-delay-us={adc_delay_us}' if adc_delay_us else '') +
++            (f',lab-gauge-sample={gauge_sample}' if gauge_sample is not None else ''),
+             '-accel', 'qtest', '-cpu', 'cortex-a53', '-m', '512M', '-smp', '1',
+             '-dtb', str(dtb), '-display', 'none', '-serial', 'null',
+             '-monitor', 'none', '-qmp', f'unix:{self.qmp_path},server=on,wait=off',
+-- 
+2.55.0
+

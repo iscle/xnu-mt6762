@@ -22,6 +22,8 @@ Path(sys.argv[1]).write_text(text+'};\n')
 GAUGE
 cc -std=c11 -Wall -Wextra -Werror -g -I "$testdir" test_native_gauge.c -o "$testdir/test-native-gauge"
 "$testdir/test-native-gauge"
+cc -std=c11 -Wall -Wextra -Werror -g test_gauge_observer.c -o "$testdir/test-gauge-observer"
+"$testdir/test-gauge-observer"
 python3 - "$testdir/ntc_vectors.h" <<'NTC'
 import json,sys
 from pathlib import Path
