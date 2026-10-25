@@ -23,7 +23,7 @@ struct diagnostic_console { volatile uint32_t *pixels; unsigned column, row; };
 static void diagnostic_clear(struct diagnostic_console *c)
 {
     if (!c->pixels) return;
-    for (unsigned n = 0; n < 384u * 854u; ++n) c->pixels[n] = 0xff001c28u;
+    for (unsigned n = 0; n < 384u * 854u; ++n) c->pixels[n] = 0xff000000u;
     c->column = c->row = 0;
 }
 static void diagnostic_character(struct diagnostic_console *c, char ch)
@@ -41,7 +41,7 @@ static void diagnostic_character(struct diagnostic_console *c, char ch)
     for (unsigned y=0; y<16; ++y) for (unsigned x=0; x<12; ++x) {
         unsigned bits = index >= 0 && y < 14 ? diagnostic_font[index][y/2] : 0;
         if (index < 0 && ch != ' ' && ch != '\t' && (y == 6 || y == 7)) bits = 4;
-        c->pixels[(c->row+y)*384+c->column+x] = x<10 && (bits & (16u>>(x/2))) ? 0xffffffffu : 0xff001c28u;
+        c->pixels[(c->row+y)*384+c->column+x] = x<10 && (bits & (16u>>(x/2))) ? 0xffffffffu : 0xff000000u;
     }
     c->column += 12;
 }

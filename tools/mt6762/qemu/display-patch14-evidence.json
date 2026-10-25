@@ -1,0 +1,18 @@
+{
+  "scope": "AI-assisted local experiment only; no upstream submission",
+  "commit": "8c1c0163c9d3772b7f551cd75ee7c5eaad2a2841",
+  "parent": "944a34afa8a40f2a4a05b4134e9bfa6c9835b633",
+  "tree": "0125e95a64260f85882328607ded8cf8f7ad12b5",
+  "patch": "0014-arm-match-captured-MT6762-two-layer-datapath-word.patch",
+  "patch_sha256": "646db3b62098322385614d638a09581dbbc60f6067cbf4de5d09e19b5e91cd35",
+  "binary_sha256": "fb5d08b840dd25d030d5154cd455093b96c2076b45f9e9435cb3cf8483b540be",
+  "test_passed": "python3 tests/mt6762/test_lab_display.py --qemu build/qemu-system-aarch64 --dtb /home/iscle/mt6762-ios-port/firmware/boot.bin.dtb",
+  "capture_source": "capture10/display-result.json",
+  "capture_sha256": "a14dda668f3cbaf3aea439f5fee1e87e93b268eaf225d80fd270d4c0b37f662b",
+  "change": "Only two-layer DATAPATH_CON returns0x81000001; single-layer remains0. Both read-only. No other modeled behavior changed.",
+  "limits": [
+    "Synthetic register fixture only, no physical scanout proof",
+    "No XNU edits or device actions"
+  ],
+  "independent_index_replay_tree_verified": true
+}

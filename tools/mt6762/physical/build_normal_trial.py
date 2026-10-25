@@ -21,6 +21,7 @@ DIAGNOSTICS = (
     '8e2858b929ff0f3fb42c261eb891f60a67d6dd0939727e59016e8f0d8d2184c2', # Image7: establish combined EOI
     '27636a723cc0d449d82442260238968aa839b719e8d15dabf7d360353bdd93ef', # Image8: retained display readback
     'df3d9afc328cc1809e1d2e15551bf24ac5a897db6780096a1ed959c0ed5a08f8', # Image9: measured LK menu console
+    'f3249887751e115413399f0c94dbe605f67f5bad20714f087c1f36c99c37b74a', # Image10: preserve measured datapath profile
 )
 VBMETA_FLAGS3 = '2f3fb6474d7ff35ac4c48ab2bef71247ba50de4a94de2474b7d1b60cd6654f51'
 

@@ -326,7 +326,7 @@
     "skipped": 0,
     "output_sha256": "c9a76483e0693cee32e77200bcdeb518940c642f29f9de5b3f7c63e29db737b6"
   },
-  "physical_execution_of_image9_proven": false,
+  "physical_execution_of_image9_proven": true,
   "installation_pending": false,
   "full_ios_userspace_proven": false,
   "native_peripheral_ownership": false,
@@ -350,5 +350,97 @@
     "mtkclient_commit": "fa97df7df41140e60f215f24eea82cb46faf9ff0",
     "seccfg_source_sha256": "274743b51dd3b8a648fb0cc96bd872205d8f892ac88082a7b3737671b05a0be7"
   },
-  "next_action": "Power restart with reader stopped, then bounded capture10"
+  "next_action": "Audit inherited DATAPATH bit31 before admitting unchanged pipeline",
+  "physical_diagnostic_pid1_proven": true,
+  "physical_capture10": {
+    "trace_sha256": "31471ab5e18254a8b515a89077879cb5a024b0dbededa0bcce659eb8bcdf1079",
+    "display": {
+      "sha256": "edeb48f426191fc33db92f16fc3a52f42f14d782a974642e34f2d78ac0cadfdd",
+      "version": 2,
+      "state": 10,
+      "state_name": "datapath",
+      "pass_number": 1,
+      "read_mask": 63,
+      "identity": "ef5e46961c45719c5dc3c81d759b169c1c8947c052d0b0995aff002006f2531c",
+      "accepted": false,
+      "native_ownership": false,
+      "physical_retention_proven": false,
+      "tag": {
+        "base": 2130247680,
+        "size": 4653056,
+        "present": 17,
+        "found": 1
+      },
+      "power": [
+        17228,
+        17228,
+        3597
+      ],
+      "gates": 3481537151,
+      "sources": 3,
+      "scanout": {
+        "0": {
+          "en": 1,
+          "sources": 3,
+          "ext_sources": 0,
+          "roi": 55968128,
+          "con": 8703,
+          "address": 2130247680,
+          "pitch": 1536,
+          "size": 55968128,
+          "offset": 0,
+          "clip": 0,
+          "rdma": 7471105,
+          "downstream_rdma": 257,
+          "dsi_start": 1,
+          "dsi_mode": 2,
+          "dsi_lanes": 65564,
+          "dsi_active": 854,
+          "dsi_ps": 738395264,
+          "dsi_vsa": 2,
+          "dsi_vbp": 20,
+          "dsi_vfp": 170
+        },
+        "1": {
+          "en": 1,
+          "sources": 3,
+          "ext_sources": 0,
+          "roi": 55968128,
+          "con": 8703,
+          "address": 2131574784,
+          "pitch": 1536,
+          "size": 55968128,
+          "offset": 0,
+          "clip": 0,
+          "rdma": 5373953,
+          "downstream_rdma": 257,
+          "dsi_start": 1,
+          "dsi_mode": 2,
+          "dsi_lanes": 65564,
+          "dsi_active": 854,
+          "dsi_ps": 738395264,
+          "dsi_vsa": 2,
+          "dsi_vbp": 20,
+          "dsi_vfp": 170
+        }
+      },
+      "datapath": 2164260865,
+      "sbch": 0
+    },
+    "retained_xnu": {
+      "kernel_sha256": "a1f0de1cfb7b04b335d9163b093bba69fa0bb99db1734c11dd430264910f8c4b",
+      "log_address": "0xd3bb49a0",
+      "log_length": 3634,
+      "retained_cache_may_be_incomplete": true,
+      "log_sha256": "587ec3327d990b0ca7e3796710de8f4b1e5d9644306e5356ea2531b46155a108",
+      "memory_globals": [
+        "0xd0000000",
+        "0x20000000",
+        "0xfffffff004000000",
+        "0xe"
+      ]
+    },
+    "diagnostic_rounds": 2,
+    "iig_cases": 205
+  }
 }

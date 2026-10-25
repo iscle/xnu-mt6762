@@ -1,0 +1,41 @@
+From 8c1c0163c9d3772b7f551cd75ee7c5eaad2a2841 Mon Sep 17 00:00:00 2001
+From: Iscle <albertiscle9@gmail.com>
+Date: Sun, 25 Oct 2026 23:05:55 +0100
+Subject: [PATCH] arm: match captured MT6762 two-layer datapath word
+
+AI-assisted local experiment only; not intended for upstream submission. Two-layer DATAPATH_CON now returns captured0x81000001. Default single-layer still returns0; pipeline remains read-only. Existing display QTest validates both profiles and rejects attempted changes.
+---
+ hw/arm/mt6762_lab_display.c      | 3 ++-
+ tests/mt6762/test_lab_display.py | 2 +-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/hw/arm/mt6762_lab_display.c b/hw/arm/mt6762_lab_display.c
+index 8b7ef6f..c45c03f 100644
+--- a/hw/arm/mt6762_lab_display.c
++++ b/hw/arm/mt6762_lab_display.c
+@@ -59,7 +59,8 @@ static uint64_t display_read(void *opaque, hwaddr offset, unsigned size)
+         case 0xf40:
+             return s->framebuffer_pa +
+                 (s->fault == MT6762_DISPLAY_FAULT_SCANOUT ? 0x4000 : 0);
+-        case 0x024: case 0x03c: case 0x04c: case 0x324: case 0x3a0: return 0;
++        case 0x024: return s->two_layer ? 0x81000001 : 0;
++        case 0x03c: case 0x04c: case 0x324: case 0x3a0: return 0;
+         case 0x050: return s->two_layer ? 0x21ff : 0;
+         case 0x058: return s->two_layer ? 384 | (854u << 16) : 0;
+         case 0x064: return s->two_layer ? 1536 : 0;
+diff --git a/tests/mt6762/test_lab_display.py b/tests/mt6762/test_lab_display.py
+index 663d0f9..53ae08b 100644
+--- a/tests/mt6762/test_lab_display.py
++++ b/tests/mt6762/test_lab_display.py
+@@ -185,7 +185,7 @@ def main():
+                 0x1400b044: 1536, 0x1400b064: 1536,
+                 0x1400bf40: 0x7ef90000, 0x1400bf60: 0x7f0d4000,
+                 0x1400b03c: 0, 0x1400b05c: 0, 0x1400b04c: 0, 0x1400b06c: 0,
+-                0x1400b324: 0, 0x1400b024: 0, 0x1400b3a0: 0,
++                0x1400b324: 0, 0x1400b024: 0x81000001, 0x1400b3a0: 0,
+                 0x1400b0c0: 0x520001, 0x1400b0e0: 0x480001,
+                 0x1400d010: 0x101, 0x14014000: 1, 0x14014014: 2,
+                 0x14014018: 0x1001c, 0x1401401c: 0x2c030480,
+-- 
+2.55.0
+

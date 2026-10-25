@@ -20,10 +20,11 @@ static const uint64_t addresses[] = {
  0x14014014,0x14014018,0x1401402c,0x1401401c,0x14014020,0x14014024,0x14014028};
 static uint32_t values[] = {8,8,13,0,1,1,0,384|(854<<16),0x21ff,0x7ef90000,
  1536,384|(854<<16),0,0,1,1,1,2,7<<2,854,(3<<16)|1152,2,20,170};
-struct fixture {unsigned reads, barriers, fail_read, fail_value, sources;};
+struct fixture {unsigned reads, barriers, fail_read, fail_value, sources, datapath;};
 static uint32_t read_reg(void *context,uint64_t address) {
  struct fixture *f=context; ++f->reads;
- if(address==0x1400b024 || address==0x1400b3a0) return f->reads==f->fail_read?f->fail_value:0;
+ if(address==0x1400b024 || address==0x1400b3a0)
+  return f->reads==f->fail_read?f->fail_value:(address==0x1400b024?f->datapath:0);
  for(unsigned n=0;n<sizeof(addresses)/sizeof(addresses[0]);++n) {
   int matches=addresses[n]==address;
   /* Per-layer OVL registers are readable only for enabled sources. */
@@ -70,6 +71,9 @@ int main(int argc,char **argv) {
  }
  f=(struct fixture){.sources=3};r=run(&f,tag,1,DISPLAY_ACCEPTED,90);
  assert(r.read_mask==63 && r.scanout[0].sources==3 && r.scanout[1].sources==3);
+ f=(struct fixture){.sources=3,.datapath=0x81000001};
+ r=run(&f,tag,1,DISPLAY_ACCEPTED,90);assert(r.datapath==0x81000001 && r.layer==1);
+ f=(struct fixture){.sources=3,.datapath=0x81000003};run(&f,tag,1,DISPLAY_DATAPATH,45);
  f=(struct fixture){.sources=15};r=run(&f,tag,1,DISPLAY_SOURCES,83);
  for(unsigned i=0;i<4;++i) assert(r.scanout[i].address==tag.base);
  f=(struct fixture){.sources=16};run(&f,tag,1,DISPLAY_SOURCES,5);

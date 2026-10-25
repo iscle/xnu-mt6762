@@ -1,0 +1,185 @@
+{
+  "purpose": "Image10: preserve exact measured wide-gamut datapath profile for opaque diagnostic console",
+  "kernel_sha256": "a1f0de1cfb7b04b335d9163b093bba69fa0bb99db1734c11dd430264910f8c4b",
+  "physical_image_sha256": "f3249887751e115413399f0c94dbe605f67f5bad20714f087c1f36c99c37b74a",
+  "normal_boot_sha256": "8ca0238e2fadc54755ffa0cc2116b5229256da1e75422931837b93f3dc2d1283",
+  "physical_manifest_sha256": "6e638a93a41138ed157e5ceaa3b2c6033827d5a539fd357ff13e34c07d7eb44c",
+  "trace": {
+    "identity": "dca3067c49139bbf826605677c3c16eeb9450539a1bc0a8a78a0fe979b3beff7",
+    "offset": 16384,
+    "physical_address": 1074282496,
+    "size": 256,
+    "initialized_sha256": "1f269242874612138071e4b574f3311dd3bcfebd9b1cec4bf0e4240bbfbe8979",
+    "physical_retention_proven": false,
+    "final_marker_proves_xnu_entry": false
+  },
+  "display_trace": {
+    "offset": 16640,
+    "physical_address": 1074282752,
+    "size": 512,
+    "initialized_sha256": "64f0ee0fe646874ad51b5e108689663577bb99808136bddda58ce9739685868d",
+    "register_writes": false,
+    "physical_retention_proven": false
+  },
+  "probes": {
+    "probe-positive": {
+      "report_sha256": "44cb095198fd5a39dbc1c8f03546e4dd512bdc8908643fa82a8840b04405a371",
+      "checks": {
+        "ram": true,
+        "xnu": true,
+        "pages": true,
+        "result": true,
+        "cases": true,
+        "done": true,
+        "trace_initialized_before_execution": true,
+        "trace_executed": true,
+        "trace_jump_ready": true,
+        "display_record_expected_state": true
+      },
+      "automated_checks_passed": true,
+      "physical_validation": false,
+      "display_after": {
+        "version": 2,
+        "state": 1,
+        "state_name": "tag",
+        "pass_number": 0,
+        "read_mask": 1,
+        "identity": "dca3067c49139bbf826605677c3c16eeb9450539a1bc0a8a78a0fe979b3beff7",
+        "accepted": false,
+        "native_ownership": false,
+        "physical_retention_proven": false,
+        "tag": {
+          "base": 0,
+          "size": 0,
+          "present": 0,
+          "found": 0
+        }
+      }
+    },
+    "probe-menu": {
+      "report_sha256": "22882492e8d83a676b1a9be979486b9c4b18edc1ed54bf3139c1fdabc8f5b982",
+      "checks": {
+        "ram": true,
+        "xnu": true,
+        "pages": true,
+        "display_admitted": true,
+        "display_pixels": true,
+        "no_display_register_writes": true,
+        "opaque_console_pixels": true,
+        "trace_initialized_before_execution": true,
+        "trace_executed": true,
+        "trace_jump_ready": true,
+        "display_record_expected_state": true
+      },
+      "automated_checks_passed": true,
+      "physical_validation": false,
+      "display_after": {
+        "version": 2,
+        "state": 8,
+        "state_name": "accepted",
+        "pass_number": 2,
+        "read_mask": 63,
+        "identity": "dca3067c49139bbf826605677c3c16eeb9450539a1bc0a8a78a0fe979b3beff7",
+        "accepted": true,
+        "native_ownership": false,
+        "physical_retention_proven": false,
+        "tag": {
+          "base": 2130247680,
+          "size": 4653056,
+          "present": 17,
+          "found": 1
+        },
+        "power": [
+          8,
+          8,
+          13
+        ],
+        "gates": 0,
+        "sources": 3,
+        "layer": 1,
+        "scanout": {
+          "0": {
+            "en": 1,
+            "sources": 3,
+            "ext_sources": 0,
+            "roi": 55968128,
+            "con": 8703,
+            "address": 2130247680,
+            "pitch": 1536,
+            "size": 55968128,
+            "offset": 0,
+            "clip": 0,
+            "rdma": 5373953,
+            "downstream_rdma": 257,
+            "dsi_start": 1,
+            "dsi_mode": 2,
+            "dsi_lanes": 65564,
+            "dsi_active": 854,
+            "dsi_ps": 738395264,
+            "dsi_vsa": 2,
+            "dsi_vbp": 20,
+            "dsi_vfp": 170
+          },
+          "1": {
+            "en": 1,
+            "sources": 3,
+            "ext_sources": 0,
+            "roi": 55968128,
+            "con": 8703,
+            "address": 2131574784,
+            "pitch": 1536,
+            "size": 55968128,
+            "offset": 0,
+            "clip": 0,
+            "rdma": 4718593,
+            "downstream_rdma": 257,
+            "dsi_start": 1,
+            "dsi_mode": 2,
+            "dsi_lanes": 65564,
+            "dsi_active": 854,
+            "dsi_ps": 738395264,
+            "dsi_vsa": 2,
+            "dsi_vbp": 20,
+            "dsi_vfp": 170
+          }
+        },
+        "datapath": 2164260865,
+        "sbch": 0
+      },
+      "framebuffer_sha256": "69e0d80ce1f1250d571197a0702ab7de2ce48ddd966b9aa548f14ee3135c6bd0",
+      "framebuffer_alpha_opaque": true,
+      "visual_review": "Exact pixels match original-resolution reviewed fullPID1 diagnostic image fromnormal6"
+    }
+  },
+  "host_tests": {
+    "count": 59,
+    "passed": true,
+    "skipped": 0,
+    "output_sha256": "c98dfc65c31d0269a2238bf292b4d1486df8ca54c3acb0ad77f75cde46bfbd98"
+  },
+  "physical_execution_of_image10_proven": false,
+  "installation_pending": false,
+  "full_ios_userspace_proven": false,
+  "native_peripheral_ownership": false,
+  "installation": {
+    "boot_sha256": "8ca0238e2fadc54755ffa0cc2116b5229256da1e75422931837b93f3dc2d1283",
+    "full_readback_verified": true,
+    "preserved_sha256": {
+      "para": "5744b4afa6da419c0c5382034ab3757a6627d0ff9ca3778398313cf10f1e80d8",
+      "recovery": "2a4d62a60690c59e26a0004b6efaea56f433059a6f84b6109d113c1d7a364173",
+      "seccfg": "bb95c846d18259d48c89ae93540dc2fe438f8ca9c07dd812b3c76555f0744b4e",
+      "vbmeta": "2f3fb6474d7ff35ac4c48ab2bef71247ba50de4a94de2474b7d1b60cd6654f51"
+    },
+    "persistent_write_extents": [
+      {
+        "address": "0x1c600000",
+        "bytes": 33554432
+      }
+    ],
+    "bcb_written": false,
+    "reset_requested": false,
+    "mtkclient_commit": "fa97df7df41140e60f215f24eea82cb46faf9ff0",
+    "seccfg_source_sha256": "274743b51dd3b8a648fb0cc96bd872205d8f892ac88082a7b3737671b05a0be7"
+  },
+  "next_action": "Power restart with reader stopped, then bounded capture11"
+}

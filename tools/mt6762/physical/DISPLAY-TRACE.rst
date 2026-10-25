@@ -94,3 +94,23 @@ every visible pixel has alpha255. An initially incomplete image preview was
 not reproduced: the saved bytes, original-resolution image and separate
 retained-log probe all show the completed diagnostic. No physical readiness
 claim follows from that emulator result. See trace-build9-evidence.json.
+
+Capture10 and exact inherited wide-gamut profile
+-----------------------------------------------
+
+Image9 again completed diagnostic PID1 physically. Capture10 measured
+DATAPATH_CON0x81000001 and SBCH0, with the same two-layer geometry. The only
+rejected datapath bit was31, named WIDE_GAMUT_EN by the selected headers.
+Exact LK OVLStart at0x4800a29a..0x4800a2a6 preserves this bit while enabling
+SMI IDs. Exact stock Linux ovl_start at0xffffff8008753710..0xffffff8008753758
+also preserves it while changing SMI/rounding/GCLAST/clamp controls. Layer
+format, address and pitch are independently configured as already measured.
+
+Image10 admits this exact0x81000001 profile, retaining the earlier non-wide-
+gamut allowlist and every other check. Arbitrary combinations with bit31
+remain rejected. It never clears the bit or reprograms the display. The
+loader's palette is now opaque black/white, matching the XNU text console.
+The precise color transfer function is unknown; colorimetric accuracy is
+not claimed. The matching explicit QEMU fixture and all59 host tests pass;
+its rendered bytes match the previously reviewed completed diagnostic.
+Physical Image10 results are recorded separately in trace-build10-evidence.json.

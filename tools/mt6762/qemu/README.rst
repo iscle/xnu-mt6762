@@ -1,7 +1,7 @@
 Reproducing the local MT6762 QEMU experiment
 ==========================================
 
-These thirteen patches reproduce the local research machine used for MT6762
+These fourteen patches reproduce the local research machine used for MT6762
 bring-up. They contain source code and documentation only: no phone firmware,
 iOS files, credentials, personal partitions, or built binaries.
 
@@ -22,7 +22,7 @@ Source provenance
   ``49d41542f0ccfed448d90c9ad4397a592292d027``,
   ``20e020a98f55679572ad7d18e1c4897b9951a1b5`` and
   ``0f9a62cb5b983e7d9d2a93d90a2c18eb46e0cf1a``.
-* Resulting Git tree: ``4b52a43a15bafb73e526dafe2b0dffed2cf8c423``.
+* Resulting Git tree: ``0125e95a64260f85882328607ded8cf8f7ad12b5``.
 
 ``apply.sh`` verifies the patch SHA-256 hashes, fetches that exact upstream
 commit, applies the patch series in order, and verifies the final tree.
@@ -185,3 +185,9 @@ provides explicit zero DATAPATH_CON/SBCH fixtures. These are synthetic readback
 values, with no panel, compositor or DMA emulation. Register writes remain
 rejected. Readback, mode immutability, RAM bounds and write rejection are tested;
 see display-patch13-evidence.json. The patch replay matches the recorded tree.
+
+The fourteenth patch changes only the explicit two-layer fixture DATAPATH_CON
+to the subsequently measured0x81000001; single-layer remains zero and SBCH
+remains zero. This preserves the actual handoff's wide-gamut bit for the
+inherited console test, without modeling its color transfer function.
+See display-patch14-evidence.json.

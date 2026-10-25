@@ -26,11 +26,11 @@ int main(void) {
     memset(area+page,0xa5,mapped);
     struct diagnostic_console c={pixels,372,838};
     diagnostic_clear(&c);
-    for(size_t n=0;n<count;++n) assert(pixels[n]==0xff001c28u);
+    for(size_t n=0;n<count;++n) assert(pixels[n]==0xff000000u);
     c.column=372; c.row=838;
     diagnostic_character(&c,'A');
     assert(c.column==384 && c.row==838);
-    assert(pixels[count-1]==0xff001c28U);
+    assert(pixels[count-1]==0xff000000U);
     diagnostic_character(&c,'B');
     assert(c.column==12 && c.row==0);
     for(size_t n=0;n<(size_t)((unsigned char*)pixels-(area+page));++n) assert(area[page+n]==0xa5);
@@ -51,7 +51,7 @@ int main(void) {
     diagnostic_character(&disabled,'A');diagnostic_character(&disabled,'\n');
     assert(disabled.column==12 && disabled.row==32);
     for(unsigned n=0;n<20000;++n) diagnostic_character(&c,n%47==0?'\n':(char)(' '+n%95));
-    for(size_t n=0;n<count;++n) assert(pixels[n]==0xa5a5a5a5U || pixels[n]==0xffffffffU || pixels[n]==0xff001c28U);
+    for(size_t n=0;n<count;++n) assert(pixels[n]==0xa5a5a5a5U || pixels[n]==0xffffffffU || pixels[n]==0xff000000U);
     for(size_t n=0;n<(size_t)((unsigned char*)pixels-(area+page));++n) assert(area[page+n]==0xa5);
     assert(munmap(area,mapped+2*page)==0);
     return 0;
