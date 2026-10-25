@@ -1,0 +1,110 @@
+{
+  "preloader_sha256": "7e62da99110271864c330cffcef5237e20ca03881b933263af828561d963f674",
+  "loader_sha256": "aef234190ccb8145d2e3b8459741e9adb70f2caa8481aa216c1b25152afaca1f",
+  "da1_sha256": "c346abd330ea21b5dbf754f0ad2a84e30a9a9b4833fd9468eb8bbeb24fbeea59",
+  "capture2_pattern": {
+    "sha256": "5a872f002e1d83f6accf9aef6810f965b3e14213835b1881484d9c2afd1bd6c7",
+    "length": 256,
+    "period_bytes": 32,
+    "period": "30 bytes0xff then2 bytes0xfb",
+    "writer_identified": false
+  },
+  "bounded_stock_calls": [
+    {
+      "name": "rank0_test_arguments",
+      "start": "0x21e37e",
+      "end_exclusive": "0x21e38a",
+      "sha256": "1c85f9eaf258d89ac215d1f3aa518a30e55a61c662f07f3b95670d9f6ba493eb",
+      "instructions": [
+        {
+          "va": "0x21e37e",
+          "instruction": "mov.w r0, #0x48000000"
+        },
+        {
+          "va": "0x21e382",
+          "instruction": "mov.w r1, #0x2000"
+        },
+        {
+          "va": "0x21e386",
+          "instruction": "bl #0x21e548"
+        }
+      ]
+    },
+    {
+      "name": "rank1_dynamic_test_arguments",
+      "start": "0x21e3b6",
+      "end_exclusive": "0x21e3d8",
+      "sha256": "106be6d44515555989b8d5c81bed94ee5ad4b6d42629fd2c5f7648b90d99a52e",
+      "instructions": [
+        {
+          "va": "0x21e3b6",
+          "instruction": "bl #0x216f8c"
+        },
+        {
+          "va": "0x21e3ba",
+          "instruction": "add.w r4, r0, #0x40000000"
+        },
+        {
+          "va": "0x21e3be",
+          "instruction": "ldr.w r0, [sb]"
+        },
+        {
+          "va": "0x21e3c2",
+          "instruction": "cmp r0, #1"
+        },
+        {
+          "va": "0x21e3c4",
+          "instruction": "itt eq"
+        },
+        {
+          "va": "0x21e3c6",
+          "instruction": "ldreq.w r0, [r8]"
+        },
+        {
+          "va": "0x21e3ca",
+          "instruction": "cmpeq r0, #1"
+        },
+        {
+          "va": "0x21e3cc",
+          "instruction": "beq #0x21e468"
+        },
+        {
+          "va": "0x21e3ce",
+          "instruction": "mov r0, r4"
+        },
+        {
+          "va": "0x21e3d0",
+          "instruction": "mov.w r1, #0x2000"
+        },
+        {
+          "va": "0x21e3d4",
+          "instruction": "bl #0x21e548"
+        }
+      ]
+    }
+  ],
+  "rank0_test_requested_range": [
+    "0x48000000",
+    "0x48002000"
+  ],
+  "rank1_test": "base computed via0x216f8c plus0x40000000; requested size0x2000; actual remapping not established here",
+  "static_exact_pattern_word_search": {
+    "preloader_contains_fffffbfb": false,
+    "da1_contains_fffffbfb": false,
+    "limitation": "No match does not exclude generated patterns or hardware test engines."
+  },
+  "capture4_positive": {
+    "report_sha256": "0d4ecf760e5661ff8df36988a1a3a262e439fa5cea5f4bf2e6e9919d33713094",
+    "trace_sha256": "ea0711d6663f435be4b6f300d8f5741fe0d8a0554a31e58bc2f2042102e6590d",
+    "phase": 254,
+    "previous_phase": 4,
+    "detail": 261,
+    "midr": "0x410fd034",
+    "fdt": "0x47880000",
+    "original_el": 1,
+    "frequency": 13000000,
+    "reservation_runtime_verified": true,
+    "interpretation": "Build-bound loader trace survived this trial and reached parser refusal; no proof XNU executed or universal retention."
+  },
+  "disposition": "Investigation bounded and closed after positive capture4. No alternate trace address or memory-write change proposed."
+}

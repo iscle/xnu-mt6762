@@ -1,6 +1,6 @@
 {
   "date_utc": "2026-10-25",
-  "status": "normal boot image installed and HOME_SCREEN requested; post-boot capture pending",
+  "status": "historical normal2 installation; subsequent capture proved diagnostic loader execution and FDT refusal; superseded by normal3",
   "installation": {
     "boot_sha256": "0b3f8f438e9bca7299a845ab663a9553e0209ddeaaf717fc86cd056e280b09ef",
     "para_before_sha256": "67bef7ae449f68b9be4c8bb2ff77d559135730ced20cf9e8013d4fa2716cf310",
@@ -34,9 +34,10 @@
   "restart": {
     "requested": true,
     "acknowledged": true,
-    "outcome": "indeterminate pending post-boot evidence",
+    "outcome": "32-byte packet not accepted by exact DA receiver replay; ACK cannot establish reset fields accepted",
     "payload_execution_proven": false,
-    "returned_type": "bool"
+    "returned_type": "bool",
+    "wire_audit": "da-shutdown-wire-evidence.json"
   },
   "prior_capture": {
     "reserved_DA_runtime_verified": true,
@@ -46,5 +47,6 @@
   },
   "restoration": "not performed, per user instruction",
   "physical_xnu_execution_proven": false,
-  "early_BROM_enumeration": "May precede normal boot; not evidence of misrouting"
+  "early_BROM_enumeration": "May precede normal boot; not evidence of misrouting",
+  "subsequent_evidence": "trace-build6-evidence.json"
 }

@@ -80,7 +80,7 @@
     "trace_identity": "0565a4cfb8770bfdd1f24373587ab06fecf3f7881c327c741ec245a708417998",
     "source_inputs_stable": true,
     "native_ownership": false,
-    "physically_installed": false
+    "physically_installed": true
   },
   "host_suite": {
     "tests": 57,
@@ -129,5 +129,49 @@
     "Physical loader trace proves EL1 entry and CPU/timer admission, not XNU execution",
     "No new peripheral ownership or charging control is asserted",
     "New kernel26 thermal work is separate; this physical candidate retains frozen kernel23"
-  ]
+  ],
+  "physical_install": {
+    "boot_sha256": "1b2e9daa734e471698f888b017592e7a06f84261b8d7e903674b1384fe32c612",
+    "full_readback_verified": true,
+    "preserved_sha256": {
+      "para": "5744b4afa6da419c0c5382034ab3757a6627d0ff9ca3778398313cf10f1e80d8",
+      "recovery": "2a4d62a60690c59e26a0004b6efaea56f433059a6f84b6109d113c1d7a364173",
+      "seccfg": "bb95c846d18259d48c89ae93540dc2fe438f8ca9c07dd812b3c76555f0744b4e",
+      "vbmeta": "2f3fb6474d7ff35ac4c48ab2bef71247ba50de4a94de2474b7d1b60cd6654f51"
+    },
+    "persistent_write_extents": [
+      {
+        "address": "0x1c600000",
+        "bytes": 33554432
+      }
+    ],
+    "bcb_written": false,
+    "reset_requested": false,
+    "mtkclient_commit": "fa97df7df41140e60f215f24eea82cb46faf9ff0",
+    "seccfg_source_sha256": "274743b51dd3b8a648fb0cc96bd872205d8f892ac88082a7b3737671b05a0be7"
+  },
+  "reset_exchange": {
+    "payload_bytes": 28,
+    "fields": [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0
+    ],
+    "acknowledged": true,
+    "boot_success_proven": false,
+    "outcome": "indeterminate until subsequent observation"
+  },
+  "post_reset_capture": {
+    "attempt": "capture6",
+    "connected_after_reset_seconds_approx": 23,
+    "mode": "secure BROM",
+    "target_config": "0xe7",
+    "da_uploaded": false,
+    "trace_retrieved": false,
+    "outcome": "capture guard refused changed security target; normal boot and XNU execution remain unproven"
+  }
 }

@@ -1,6 +1,11 @@
 Pinned preloader and DA reset routing
 ====================================
 
+Follow-up: ``DA-SHUTDOWN-WIRE.rst`` resolves the receive-length gap below.
+The exact receiver rejects the 32-byte stock request before copying its
+fields, although the handler still returns a zero status. The original
+field-dispatch replay remains conditional on accepted input.
+
 The captured RGU reset acknowledgements do not establish recovery or XNU entry.
 The observed transient USB identity0e8d:0003 must not be treated as proof of
 misrouting: the user confirms this BROM enumeration can precede normal boot.
