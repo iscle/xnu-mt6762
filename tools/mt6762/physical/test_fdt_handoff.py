@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Freestanding parser exercised through a host shared object; no device I/O."""
 import ctypes as C
+import hashlib
+import os
 from pathlib import Path
 import struct
 import subprocess
@@ -144,6 +146,56 @@ class FDTTests(unittest.TestCase):
         rc,i=self.parse(fdt(self.root([(0x40000000,0x180000000)],[dynamic])))
         self.assertEqual(rc,0);self.assertEqual(i.reserved_count,3)
         self.assertEqual(self.select(i),(0,0xd0000000))
+    def test_empty_lk_zmc_placeholder_declares_no_reservation(self):
+        reserve=node('reserved-memory',[('#address-cells',U32(2)),('#size-cells',U32(2)),('ranges',b'')],[
+            node('firmware',[('reg',U64(0xbff30000)+U64(0x40000))]),
+            node('zone-movable-cma-memory'),
+            node('dynamic',[('size',U64(0x1000)),('alloc-ranges',U64(0x40000000)+U64(0x90000000))])])
+        rc,i=self.parse(fdt(self.root([(0x40000000,0x180000000)],[reserve])))
+        self.assertEqual(rc,0)
+        self.assertEqual(i.reserved_count,2)
+        self.assertEqual([(i.reserved[n].base,i.reserved[n].size,i.reserved_kind[n]) for n in range(2)],
+                         [(0xbff30000,0x40000,2),(0x40000000,0x90000000,3)])
+        self.assertEqual(self.select(i,0x47880000,[(0x40080000,15918304)]),(0,0xd0000000))
+    def test_zmc_exception_is_exact_empty_shape_only(self):
+        cases=[node('other-empty'),node('zone-movable-cma-memory@0'),
+               node('zone-movable-cma-memory',[('size',U64(0x1000))]),
+               node('zone-movable-cma-memory',[('status',b'disabled\0')]),
+               node('zone-movable-cma-memory',[('unknown',b'')]),
+               node('zone-movable-cma-memory',[('reg',b'')]),
+               node('zone-movable-cma-memory',[('reg',U64(0x80000000)+U64(0))]),
+               node('zone-movable-cma-memory',[('alloc-ranges',U64(0xfffffffffffffff0)+U64(0x100))]),
+               node('zone-movable-cma-memory',[],[node('nested')])]
+        for child in cases:
+            reserve=node('reserved-memory',[('#address-cells',U32(2)),('#size-cells',U32(2)),('ranges',b'')],[child])
+            with self.subTest(child=child):
+                self.assertNotEqual(self.parse(fdt(self.root([(0x40000000,0x180000000)],[reserve])))[0],0)
+    def test_populated_zmc_keeps_full_reservation(self):
+        for prop,value,kind in [('reg',U64(0x80000000)+U64(0x20000000),2),
+                                ('alloc-ranges',U64(0x80000000)+U64(0x20000000),3)]:
+            reserve=node('reserved-memory',[('#address-cells',U32(2)),('#size-cells',U32(2)),('ranges',b'')],[
+                node('zone-movable-cma-memory',[(prop,value)])])
+            rc,i=self.parse(fdt(self.root([(0x80000000,0x80000000)],[reserve])))
+            self.assertEqual(rc,0);self.assertEqual(i.reserved_count,1)
+            self.assertEqual(i.reserved_kind[0],kind)
+            self.assertEqual(self.select(i),(0,0xa0000000))
+    @unittest.skipUnless(os.environ.get('MTK_RUNTIME_FDT'), 'Set MTK_RUNTIME_FDT for private live capture regression')
+    def test_exact_live_capture_reservations_and_window(self):
+        blob=Path(os.environ['MTK_RUNTIME_FDT']).read_bytes()
+        self.assertEqual(hashlib.sha256(blob).hexdigest(),'3f70e9fd742e7bff2b6f4fbf7eaa79887f602def295f4b8b88d93f649d267c30')
+        rc,i=self.parse(blob)
+        self.assertEqual(rc,0);self.assertEqual(i.board_compatible,1)
+        self.assertEqual((i.memory_count,i.memory[0].base,i.memory[0].size),(1,0x40000000,0x180000000))
+        self.assertEqual(i.reserved_count,25)
+        self.assertEqual(list(i.reserved_kind[:25]).count(2),19)
+        self.assertEqual(list(i.reserved_kind[:25]).count(3),6)
+        rc,base=self.select(i,0x47880000,[(0x40080000,15918304)])
+        self.assertEqual((rc,base),(0,0xd0000000))
+        intervals=[(i.reserved[n].base,i.reserved[n].size) for n in range(i.reserved_count)]
+        intervals += [(0x47880000,len(blob)),(0x40080000,15918304),
+                      (i.framebuffer.base,i.framebuffer.size)]
+        for address,size in intervals:
+            self.assertFalse(base < address+size and address < base+0x20000000)
     def test_board_compatible_exact_list(self):
         for values,expected in [(b'board,test\0mediatek,MT6765\0',1),(b'mediatek,MT6762\0',1),
                 (b'mediatek,mt6765\0',0),(b'mediatek,MT6765-other\0',0)]:

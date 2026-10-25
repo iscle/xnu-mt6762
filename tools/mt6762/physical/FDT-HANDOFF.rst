@@ -20,6 +20,13 @@ When a reserved-memory child has no reg, the complete explicitly bounded
 alloc-ranges or alloc-range intervals are excluded conservatively. No allocation
 address is guessed from size/alignment. Missing bounds, unknown cell widths,
 translated reserved-memory ranges and ambiguous declarations are rejected.
+One exact LK-generated inert placeholder is accepted: a direct child named
+``zone-movable-cma-memory`` with no properties or children. LK's
+``memory_lowpwer_fixup`` creates it before checking for the source allocation
+node and can exit leaving it empty. Without reg or size it declares no
+reservation, matching the supplied Linux reserved-memory scan. Any property,
+child, unit-address suffix or different name prevents this exception; populated
+nodes still require ordinary valid reg/alloc bounds. No actual range is dropped.
 Overlapping reservation exclusions are valid and act as a union. Adjacent RAM
 banks are treated separately; this can conservatively reject an otherwise
 contiguous allocation across a bank boundary.
@@ -45,6 +52,25 @@ The actual dumped stock DT parses, including its six dynamic reservation bounds,
 but its512MiB memory placeholder cannot supply the required allocation. Only a
 real bootloader-updated RAM map can satisfy the physical loader. Synthetic larger
 maps are host-test fixtures, not observations of the phone's runtime handoff.
+
+The separately captured physical runtime FDT (SHA256
+``3f70e9fd742e7bff2b6f4fbf7eaa79887f602def295f4b8b88d93f649d267c30``)
+has166225 bytes and declares RAM0x40000000+0x180000000. Image5's original parser
+returned range-error at the empty placeholder above, matching captured trace
+phase254/previous4/detail261. The fixed parser accepts that exact captured tree
+and retains all25 exclusions:19 actual reg reservations and6 complete dynamic
+allocation intervals. Its chosen512MiB window is [0xd0000000,0xf0000000), which
+does not overlap any exclusion, the captured DTB at0x47880000, the15918304-byte
+Image5 source at0x40080000, or the recorded framebuffer. The framebuffer metadata
+also has an exact independent reg reservation, but hardware scanout admission
+still requires the loader's separate MMIO checks.
+
+runtime-fdt-placeholder-evidence.json records before/after host execution,
+source hashes and range metadata; no raw proprietary DTB is committed. Run the
+private capture regression with ``MTK_RUNTIME_FDT=/private/runtime.dtb`` set.
+All23 FDT tests pass, including synthetic placeholder/malformed/populated cases.
+These results prove parsing/window admission only; no loader rebuild or further
+physical console, relocation or XNU-entry success is claimed by this fix.
 
 Host tests (compile shared object in a temporary directory, no hardware I/O)::
 

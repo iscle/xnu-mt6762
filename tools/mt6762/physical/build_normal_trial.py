@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Package the frozen Image5 diagnostic for the exact32MiB normal boot slot.
+"""Package an explicitly frozen diagnostic for the exact32MiB normal boot slot.
 
 Offline only. No device commands and no changes to the main vbmeta image.
 """
@@ -15,7 +15,10 @@ import bootimg
 from build_recovery_trial import AVBTOOL, PARTITION_SIZE
 
 STOCK_BOOT = '95f362d6c5e018fb588ce1101a75120157079571e8749e349141a5a906f09296'
-DIAGNOSTIC = 'f5287195f43aee30e555325290aac890ff899dbe04c12d97e5a259be1a9c0b58'
+DIAGNOSTICS = (
+    'f5287195f43aee30e555325290aac890ff899dbe04c12d97e5a259be1a9c0b58', # Image5
+    'd484161ced6f942984794005d2ac1f8710e33dff49a1e15e8e7ecfbc0725112a', # Image6: empty LK placeholder
+)
 VBMETA_FLAGS3 = '2f3fb6474d7ff35ac4c48ab2bef71247ba50de4a94de2474b7d1b60cd6654f51'
 
 
@@ -81,8 +84,9 @@ def main():
     vbmeta = args.vbmeta_capture.read_bytes()
     if len(backup) != PARTITION_SIZE or sha(backup) != STOCK_BOOT:
         raise ValueError('Require exact complete stock boot backup')
-    if sha(source) != DIAGNOSTIC:
-        raise ValueError('Require frozen Image5 diagnostic container')
+    diagnostic_sha = sha(source)
+    if diagnostic_sha not in DIAGNOSTICS:
+        raise ValueError('Require an explicitly frozen diagnostic container')
     if (len(vbmeta) != 0x800000 or sha(vbmeta) != VBMETA_FLAGS3 or
             vbmeta[:4] != b'AVB0' or struct.unpack_from('>I', vbmeta, 120)[0] != 3):
         raise ValueError('Require inspected main-vbmeta flags3 capture; never patch it here')
@@ -118,12 +122,12 @@ def main():
         text = check.stdout + check.stderr
         (out / (action + '.txt')).write_text(text)
         checks[action] = sha(text.encode())
-    if sha(args.boot_backup.read_bytes()) != STOCK_BOOT or sha(args.diagnostic.read_bytes()) != DIAGNOSTIC or sha(args.vbmeta_capture.read_bytes()) != VBMETA_FLAGS3:
+    if sha(args.boot_backup.read_bytes()) != STOCK_BOOT or sha(args.diagnostic.read_bytes()) != diagnostic_sha or sha(args.vbmeta_capture.read_bytes()) != VBMETA_FLAGS3:
         raise ValueError('Input changed during preparation')
     report = dict(purpose='Normal boot partition diagnostic, not full iOS',
         target_partition='boot', image_sha256=sha(complete), image_bytes=len(complete),
         stock_boot_backup_sha256=STOCK_BOOT, stock_boot_backup_bytes=len(backup),
-        diagnostic_input_sha256=DIAGNOSTIC, main_vbmeta_capture_sha256=VBMETA_FLAGS3,
+        diagnostic_input_sha256=diagnostic_sha, main_vbmeta_capture_sha256=VBMETA_FLAGS3,
         main_vbmeta_capture_flags=3, main_vbmeta_changed=False,
         main_vbmeta_capture_is_fresh_device_state=False,
         original_diagnostic_components_unchanged=True,

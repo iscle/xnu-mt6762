@@ -1,0 +1,133 @@
+{
+  "date_utc": "2026-10-25",
+  "physical_previous_trial": {
+    "boot_image_sha256": "0b3f8f438e9bca7299a845ab663a9553e0209ddeaaf717fc86cd056e280b09ef",
+    "trace": {
+      "trace_address": "0x40084000",
+      "trace_sha256": "ea0711d6663f435be4b6f300d8f5741fe0d8a0554a31e58bc2f2042102e6590d",
+      "reservation_runtime": {
+        "0x4000a340": {
+          "value": "0x40090000",
+          "expected": "0x40090000",
+          "matches": true
+        },
+        "0x4000adf8": {
+          "value": "0x40090000",
+          "expected": "0x40090000",
+          "matches": true
+        },
+        "0x40000120": {
+          "value": "0x4005e2a0",
+          "expected": "0x4005e2a0",
+          "matches": true
+        },
+        "0x4000a344": {
+          "value": "0x68000000",
+          "expected": "0x68000000",
+          "matches": true
+        },
+        "0x400538a0": {
+          "value": "0x40090000",
+          "expected": "0x40090000",
+          "matches": true
+        },
+        "0x400538a4": {
+          "value": "0x27f70000",
+          "expected": "0x27f70000",
+          "matches": true
+        }
+      },
+      "retention_proven": false,
+      "trace": {
+        "phase": 254,
+        "phase_inverse": 18446744073709551361,
+        "sequence": 5,
+        "sequence_inverse": 18446744073709551610,
+        "previous_phase": 4,
+        "detail": 261,
+        "original_el": 1,
+        "fdt": 1200095232,
+        "midr": 1091555380,
+        "frequency": 13000000,
+        "ram": 0,
+        "args": 0,
+        "entry": 0,
+        "esr": 0,
+        "far": 0,
+        "elr": 0,
+        "spsr": 0,
+        "exception_el": 0,
+        "entry_sctlr": 818939904,
+        "mpidr": 2147483648,
+        "phase_name": "refused",
+        "identity": "b06becb67a750182c3a95d3c523881e4673793995b11fe7e7ee78d98cbc273b4",
+        "executed": true,
+        "proves_xnu_executed": false,
+        "physical_ram_retention_proven": false
+      },
+      "reservation_runtime_verified": true
+    },
+    "loader_execution_proven": true,
+    "xnu_execution_proven": false,
+    "runtime_fdt_sha256": "3f70e9fd742e7bff2b6f4fbf7eaa79887f602def295f4b8b88d93f649d267c30",
+    "first_stop": "FDT_E_RANGE at exact empty LK zone-movable-cma-memory node"
+  },
+  "new_candidate": {
+    "normal_boot_sha256": "1b2e9daa734e471698f888b017592e7a06f84261b8d7e903674b1384fe32c612",
+    "physical_image_sha256": "d484161ced6f942984794005d2ac1f8710e33dff49a1e15e8e7ecfbc0725112a",
+    "kernel_sha256": "73de3c79ad2e93b70d5f1d741edea8c66aad918e65d233b19c7486f058462abd",
+    "diagnostic_sha256": "443680aeecc7ba5a8facec24e32ec5d4d1160a18cefbf2b8de489d2d83859087",
+    "trace_identity": "0565a4cfb8770bfdd1f24373587ab06fecf3f7881c327c741ec245a708417998",
+    "source_inputs_stable": true,
+    "native_ownership": false,
+    "physically_installed": false
+  },
+  "host_suite": {
+    "tests": 57,
+    "passed": true,
+    "includes_exact_runtime_fdt_and_new_normal_image": true,
+    "log_sha256": "4abc7cad48cc23e2faa529d15e5b167a693894969605b6e5b2c51cdfe1a73e7d"
+  },
+  "emulator_runs": {
+    "Image6": {
+      "report_sha256": "fcca011489c186216983ad3e245bea0a3fc22123937066d6d160882dfdca5882",
+      "passed": true,
+      "checks": {
+        "ram": true,
+        "xnu": true,
+        "pages": true,
+        "result": true,
+        "cases": true,
+        "done": true,
+        "trace_initialized_before_execution": true,
+        "trace_executed": true,
+        "trace_jump_ready": true
+      },
+      "runtime_dtb_sha256": "294002bab94fcfd29846d29c9f0f66cc2f92cef824c04588dc2bbb0271a8e337",
+      "kind": "synthetic-LK-QEMU-only"
+    },
+    "normal3": {
+      "report_sha256": "6ac0adaa296f3cdfbd9f2732fb48aac6d0953c534e33e373b32adbf662886579",
+      "passed": true,
+      "checks": {
+        "ram": true,
+        "xnu": true,
+        "pages": true,
+        "result": true,
+        "cases": true,
+        "done": true,
+        "trace_initialized_before_execution": true,
+        "trace_executed": true,
+        "trace_jump_ready": true
+      },
+      "runtime_dtb_sha256": "294002bab94fcfd29846d29c9f0f66cc2f92cef824c04588dc2bbb0271a8e337",
+      "kind": "synthetic-LK-QEMU-only"
+    }
+  },
+  "limits": [
+    "Runtime capture parser test and emulator execution are distinct evidence; the QEMU execution uses synthetic runtime memory size",
+    "Physical loader trace proves EL1 entry and CPU/timer admission, not XNU execution",
+    "No new peripheral ownership or charging control is asserted",
+    "New kernel26 thermal work is separate; this physical candidate retains frozen kernel23"
+  ]
+}

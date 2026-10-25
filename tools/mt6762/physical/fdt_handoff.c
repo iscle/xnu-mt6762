@@ -17,6 +17,7 @@ struct node {
     uint32_t seen_device_type, have_ranges, parent_ac, parent_sc;
     uint32_t tag_seen, high_seen, low_seen, size_seen, high, low, fbsize;
     uint32_t alloc, alloclen, have_alloc, compatible_seen;
+    uint32_t properties, empty_zmc_placeholder;
     uint64_t tag_base; uint32_t tag_size, tag_found, tag_fps;
 };
 static uint32_t be32(const unsigned char *p)
@@ -63,6 +64,12 @@ static int finish_node(const unsigned char *b, struct node *n, struct mtk_fdt_in
     if(n->memory || n->kind==RESERVED_CHILD) {
         if(n->memory && n->disabled) return 0;
         if(n->parent_ac!=2 || n->parent_sc!=2) return MTK_FDT_E_CELLS;
+        /* LK memory_lowpwer_fixup creates this node before looking for its
+         * source allocation node and may leave it completely empty. With no
+         * reg, size, properties or children it declares no reservation. Do
+         * not extend this exception to populated or differently named nodes. */
+        if(n->kind==RESERVED_CHILD && n->empty_zmc_placeholder &&
+           !n->properties && !n->children) return 0;
         uint32_t offset=n->reg, length=n->reglen;
         if(!n->have_reg) {
             if(n->memory || !n->have_alloc) return MTK_FDT_E_RANGE;
@@ -145,7 +152,10 @@ static int parse(const unsigned char *b, size_t accessible, struct mtk_fdt_info 
                     if(basename_is(b+at,"memory")) n->memory=1;
                     else if(same(b+at,"reserved-memory")) { if(reserved_seen++) return MTK_FDT_E_AMBIGUOUS; n->kind=RESERVED_ROOT; }
                     else if(same(b+at,"chosen")) { if(chosen_seen++) return MTK_FDT_E_AMBIGUOUS; n->kind=CHOSEN; }
-                } else if(parent->kind==RESERVED_ROOT) n->kind=RESERVED_CHILD;
+                } else if(parent->kind==RESERVED_ROOT) {
+                    n->kind=RESERVED_CHILD;
+                    n->empty_zmc_placeholder=same(b+at,"zone-movable-cma-memory");
+                }
                 else if(parent->kind==RESERVED_CHILD) return MTK_FDT_E_STRUCTURE;
                 else if(parent->kind==CHOSEN && basename_is(b+at,"framebuffer")) {
                     if(fb_seen++) return MTK_FDT_E_AMBIGUOUS;
@@ -161,6 +171,7 @@ static int parse(const unsigned char *b, size_t accessible, struct mtk_fdt_info 
             uint32_t length,nameoff,len, padded; const unsigned char *name; struct node *n;
             if(!depth || !bounded(at,8,stop)) return MTK_FDT_E_STRUCTURE;
             n=&nodes[depth-1]; if(n->children) return MTK_FDT_E_STRUCTURE;
+            ++n->properties;
             length=be32(b+at); nameoff=be32(b+at+4); at+=8;
             if(length>stop-at || nameoff>=strings_size || !terminated(b+strings+nameoff,strings_size-nameoff,&len)) return MTK_FDT_E_BOUNDS;
             padded=(length+3U)&~3U; if(padded<length || !bounded(at,padded,stop)) return MTK_FDT_E_BOUNDS;

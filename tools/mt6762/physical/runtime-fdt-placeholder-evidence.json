@@ -1,0 +1,197 @@
+{
+  "scope": "Offline host execution of Image5 parser and narrowly fixed parser on private physical runtime FDT",
+  "capture_sha256": "3f70e9fd742e7bff2b6f4fbf7eaa79887f602def295f4b8b88d93f649d267c30",
+  "capture_size": 166225,
+  "raw_capture_committed": false,
+  "physical_phone_actions": false,
+  "rebuilt_loader_or_kernel": false,
+  "failure_node": "/reserved-memory/zone-movable-cma-memory",
+  "failure_shape": {
+    "properties": 0,
+    "children": 0
+  },
+  "original_failure": {
+    "trace_phase": 254,
+    "previous_phase": 4,
+    "detail": 261,
+    "parser_error": -5
+  },
+  "reference_source_sha256": {
+    "vendor/mediatek/proprietary/bootable/bootloader/lk/lib/mblock/mblock_v2.c": "565b6fe3803e0e31cc6ccd20438028c466ede08960561c8368223c913bf173c7",
+    "kernel-4.9/drivers/of/fdt.c": "3219a94ad47bdb43ab66f64035dbe6f0558b6a39f8c972b2776de73597ec7747"
+  },
+  "runs": [
+    {
+      "source": "image5-source",
+      "source_sha256": "8ba2807ee328f343da5a68cc386cf4a82b5bc3801bfea1c8561832d8249467b3",
+      "parse_result": -5
+    },
+    {
+      "source": "fixed-source",
+      "source_sha256": "a365ed02fa3a43f1bef264c1521ca9f17ed252a22508483c40cf3a4cfd6130b7",
+      "parse_result": 0,
+      "board_compatible": 1,
+      "memory": [
+        {
+          "base": 1073741824,
+          "size": 6442450944
+        }
+      ],
+      "reservations": [
+        {
+          "base": 2080374784,
+          "size": 23068672,
+          "kind": 2
+        },
+        {
+          "base": 2013265920,
+          "size": 1507328,
+          "kind": 2
+        },
+        {
+          "base": 2382364672,
+          "size": 268435456,
+          "kind": 2
+        },
+        {
+          "base": 2684289024,
+          "size": 65536,
+          "kind": 2
+        },
+        {
+          "base": 2013200384,
+          "size": 65536,
+          "kind": 2
+        },
+        {
+          "base": 2130247680,
+          "size": 4653056,
+          "kind": 2
+        },
+        {
+          "base": 1205272576,
+          "size": 65536,
+          "kind": 2
+        },
+        {
+          "base": 1204355072,
+          "size": 917504,
+          "kind": 2
+        },
+        {
+          "base": 1204289536,
+          "size": 65536,
+          "kind": 2
+        },
+        {
+          "base": 2138046464,
+          "size": 786432,
+          "kind": 2
+        },
+        {
+          "base": 2134900736,
+          "size": 2097152,
+          "kind": 2
+        },
+        {
+          "base": 3220373504,
+          "size": 262144,
+          "kind": 2
+        },
+        {
+          "base": 3220635648,
+          "size": 524288,
+          "kind": 2
+        },
+        {
+          "base": 1205338112,
+          "size": 327680,
+          "kind": 2
+        },
+        {
+          "base": 2138832896,
+          "size": 262144,
+          "kind": 2
+        },
+        {
+          "base": 2136997888,
+          "size": 266240,
+          "kind": 2
+        },
+        {
+          "base": 2139095040,
+          "size": 8388608,
+          "kind": 2
+        },
+        {
+          "base": 7516188672,
+          "size": 4096,
+          "kind": 2
+        },
+        {
+          "base": 3221221376,
+          "size": 4096,
+          "kind": 2
+        },
+        {
+          "base": 1073741824,
+          "size": 1610612736,
+          "kind": 3
+        },
+        {
+          "base": 1073741824,
+          "size": 1342177280,
+          "kind": 3
+        },
+        {
+          "base": 1073741824,
+          "size": 2147483648,
+          "kind": 3
+        },
+        {
+          "base": 1073741824,
+          "size": 2147483648,
+          "kind": 3
+        },
+        {
+          "base": 3221225472,
+          "size": 268435456,
+          "kind": 3
+        },
+        {
+          "base": 3221225472,
+          "size": 268435456,
+          "kind": 3
+        }
+      ],
+      "window_result": 0,
+      "window_base": 3489660928,
+      "window_size": 536870912,
+      "source_image_exclusion": {
+        "base": 1074266112,
+        "size": 15918304
+      },
+      "fdt_exclusion": {
+        "base": 1200095232,
+        "size": 166225
+      },
+      "framebuffer": {
+        "base": 2130247680,
+        "size": 4653056,
+        "present": 17,
+        "found": 1
+      },
+      "framebuffer_exact_reservation": true
+    }
+  ],
+  "tests": {
+    "command": "MTK_RUNTIME_FDT=<private capture>/runtime.dtb python3 -m unittest -v test_fdt_handoff.py",
+    "count": 23,
+    "passed": true
+  },
+  "remaining_limits": [
+    "FDT parsing and window admission pass; later physical console/MMIO/relocation/XNU entry remain unproved.",
+    "No native peripheral ownership asserted.",
+    "Only the exact property-free placeholder is exempt; populated malformed ranges still fail."
+  ]
+}
