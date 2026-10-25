@@ -1,0 +1,164 @@
+{
+  "image_sha256": "82b1919185a49f268a0f8e145a6714d6264c1f66918a90df0d763266147ead4b",
+  "elf_sha256": "643474799f7c300f2d3c7f5130f697ee359929f13db0750f4dd7b9d648af14fc",
+  "image_va_base": "0xffffff8008080000",
+  "spans": [
+    {
+      "name": "parse_time_log_content",
+      "start": "0xffffff800867a610",
+      "end_exclusive": "0xffffff800867a69c",
+      "sha256": "c9e71632a050d9582f019a0d81f21c98fcbe924045777d45c64a21846d8c8eb9"
+    },
+    {
+      "name": "parse_log_content",
+      "start": "0xffffff800867a69c",
+      "end_exclusive": "0xffffff800867a72c",
+      "sha256": "4349b1f8f92b894ecf8e4534e9b51bf41f91c364b747386cf9cd71433049a8c1"
+    },
+    {
+      "name": "Ripi_cpu_dvfs_thread",
+      "start": "0xffffff800867a72c",
+      "end_exclusive": "0xffffff800867ac10",
+      "sha256": "7960956a4fc95d7177cb1a60d12236debb74ac218d4617cb7f3a6191b771729f"
+    },
+    {
+      "name": "cpuhvfs_get_cur_dvfs_freq_idx",
+      "start": "0xffffff800867b230",
+      "end_exclusive": "0xffffff800867b268",
+      "sha256": "3644a5985d70a928a1c15559b622d64819f2fea2f044dc7666cdda44cf7f7bca"
+    },
+    {
+      "name": "cpuhvfs_get_cur_volt",
+      "start": "0xffffff800867b2c0",
+      "end_exclusive": "0xffffff800867b304",
+      "sha256": "8ad531822d90ba24657dc1c8cb9df891d14d340ce4558c4cbf3c30d88e517062"
+    },
+    {
+      "name": "cpuhvfs_get_volt",
+      "start": "0xffffff800867b304",
+      "end_exclusive": "0xffffff800867b33c",
+      "sha256": "82200959331ea787cf41778553b3636651987ed4ac3c36756915f25353a8d557"
+    },
+    {
+      "name": "cpuhvfs_set_cluster_load_freq",
+      "start": "0xffffff800867b4f8",
+      "end_exclusive": "0xffffff800867b5dc",
+      "sha256": "fa8580d20a2dc03f4249f3c4d2076c910957750da41ab1ba9e8b6b1f76fe5ab8"
+    },
+    {
+      "name": "sspm_ipi_recv_wait",
+      "start": "0xffffff800880a40c",
+      "end_exclusive": "0xffffff800880a49c",
+      "sha256": "20d22011775842397bd3cef887489ea54bb784aac4fb9312e214631725a8e406"
+    },
+    {
+      "name": "ipi_isr_cb",
+      "start": "0xffffff800880a104",
+      "end_exclusive": "0xffffff800880a2d8",
+      "sha256": "7d976377a0be9d21504ad21e217bd28fc9cbfd7b6ae4eebad0d5c172e47b4c7a"
+    },
+    {
+      "name": "sspm_mbox_irq_handler",
+      "start": "0xffffff8008809b54",
+      "end_exclusive": "0xffffff8008809bdc",
+      "sha256": "053a743db1e12bc771431f6cb01f934a0cd203213cf0518748f2e489d82fb583"
+    }
+  ],
+  "bsp_references": [
+    {
+      "path": "kernel-4.14/drivers/misc/mediatek/base/power/cpufreq_v1/src/mtk_cpufreq_hybrid.c",
+      "sha256": "a74a298e8056c7c3ace715b5090eb37042fc2459ce403164ee59d66a8cd1e2d5"
+    },
+    {
+      "path": "kernel-4.14/drivers/misc/mediatek/base/power/cpufreq_v1/src/mtk_cpufreq_hybrid.h",
+      "sha256": "0597931187a7aab1ed37ab71d50fa7fb973b80519b9b83a4dfbceefcf55315e8"
+    },
+    {
+      "path": "kernel-4.14/drivers/misc/mediatek/sspm/v1/sspm_ipi_mbox.c",
+      "sha256": "9456cf093e31178d28b3fc5371eae7ec094e0bc5fa9abd02a3a2e337d28a6065"
+    }
+  ],
+  "execution": {
+    "cases": [
+      {
+        "case": "original_decoder_all_32_bit_positions",
+        "passed": true,
+        "vectors": 33,
+        "timestamp": "0x1234567889abcdef",
+        "decoded_fields": [
+          "opp[15:12]",
+          "limit[7:4]",
+          "base[11:8]"
+        ],
+        "ignored_bits": [
+          0,
+          1,
+          2,
+          3,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31
+        ]
+      },
+      {
+        "case": "original_current_index_raw_snapshot",
+        "passed": true,
+        "vectors": 3
+      },
+      {
+        "case": "original_wait_without_lock",
+        "passed": true,
+        "wait_calls": 1,
+        "try_wait_calls": 0
+      },
+      {
+        "case": "original_wait_coalesces",
+        "passed": true,
+        "wait_calls": 1,
+        "try_wait_calls": 3
+      },
+      {
+        "case": "original_notification_drops_busy_lock",
+        "passed": true,
+        "callback_order": []
+      },
+      {
+        "case": "original_notification_copies",
+        "passed": true,
+        "callback_order": [
+          "copy",
+          "unlock",
+          "complete"
+        ]
+      }
+    ],
+    "modeled_callbacks": {
+      "0xffffff800809ef9c": "ftrace_noop",
+      "0xffffff8008f2e1d0": "wait_for_completion_model",
+      "0xffffff800810cc70": "try_wait_for_completion_model",
+      "0xffffff8008f32768": "spin_trylock_model",
+      "0xffffff8008f329d8": "spin_unlock_model",
+      "0xffffff80088094a4": "memcpy_from_sspm_model",
+      "0xffffff800810cbac": "complete_model"
+    },
+    "scope": "Original AP instructions only; modeled RAM, ftrace/OS callbacks; no SSPM producer or hardware."
+  },
+  "limits": [
+    "No active SSPM firmware producer was analyzed or executed.",
+    "No physical handoff, mailbox observation, voltage or transition measurement.",
+    "AP decoder evidence does not assign undocumented producer semantics to ignored bits."
+  ]
+}
