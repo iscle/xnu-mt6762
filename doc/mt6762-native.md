@@ -1,8 +1,9 @@
 # Native MT6762 integration
 
 This is the native driver implementation contract, not a physical-device
-readiness certificate. The phone has not booted this kernel. The QEMU fixtures
-exercise the actual XNU drivers but deliberately model only selected hardware.
+readiness certificate. The phone now boots XNU and diagnostic PID1, but the
+physical loader does not yet grant native peripheral ownership. The QEMU
+fixtures exercise the actual XNU drivers while modeling only selected hardware.
 
 ## Initialization and ownership
 
