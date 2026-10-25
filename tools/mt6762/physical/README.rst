@@ -9,6 +9,9 @@ alone cannot fix that interface mismatch; the candidate is not a working
 temporary boot route on this stock bootloader. Do not flash this boot image as
 a workaround. RECOVERY-TRIAL.rst describes a separately packaged recovery
 candidate, the authorized installation and the user's instruction to retain it.
+The next selected route is the normal boot partition, authorized by the user;
+see NORMAL-BOOT.rst for its prepared image and validation. Early transient
+BootROM USB enumeration alone does not establish a boot-routing failure.
 
 This directory builds a self-contained Android boot-v2 image for a temporary
 ``fastboot boot`` trial on the inspected A25/MT6762 phone. It contains XNU and

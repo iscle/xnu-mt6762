@@ -106,5 +106,7 @@
     "Host-paced register operations do not prove timing equivalence to original LK",
     "DA autonomous PMIC activity and reset retention unproved",
     "USB enumeration is not evidence of recovery/kernel entry"
-  ]
+  ],
+  "interpretation": "Early BootROM USB enumeration can be part of normal startup; it does not establish a boot-routing failure. No physical XNU execution has been observed.",
+  "next_trial": "User authorized using normal boot partition; candidate preparation in progress. Recovery is retained."
 }

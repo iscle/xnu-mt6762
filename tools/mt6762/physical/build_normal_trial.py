@@ -1,0 +1,149 @@
+#!/usr/bin/env python3
+"""Package the frozen Image5 diagnostic for the exact32MiB normal boot slot.
+
+Offline only. No device commands and no changes to the main vbmeta image.
+"""
+import argparse
+import hashlib
+import json
+from pathlib import Path
+import struct
+import subprocess
+import sys
+
+import bootimg
+from build_recovery_trial import AVBTOOL, PARTITION_SIZE
+
+STOCK_BOOT = '95f362d6c5e018fb588ce1101a75120157079571e8749e349141a5a906f09296'
+DIAGNOSTIC = 'f5287195f43aee30e555325290aac890ff899dbe04c12d97e5a259be1a9c0b58'
+VBMETA_FLAGS3 = '2f3fb6474d7ff35ac4c48ab2bef71247ba50de4a94de2474b7d1b60cd6654f51'
+
+
+def sha(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def validate_unsigned_boot(complete, packed):
+    """Independently check the one bounded SHA256 boot descriptor and bytes."""
+    image = bootimg.parse(complete)
+    footer = image.footer
+    if len(complete) != PARTITION_SIZE or footer is None:
+        raise ValueError('Require exact32MiB image and AVB footer')
+    if footer['major'] != 1 or footer['minor'] != 0 or footer['original_size'] != len(packed):
+        raise ValueError('Wrong AVB footer version/original extent')
+    if complete[:len(packed)] != packed:
+        raise ValueError('Diagnostic payload changed')
+    offset, size = footer['vbmeta_offset'], footer['vbmeta_size']
+    if size < 256 or offset % 4096:
+        raise ValueError('Invalid vbmeta extent/alignment')
+    header = complete[offset:offset + 256]
+    auth_size, aux_size = struct.unpack_from('>2Q', header, 12)
+    algorithm, = struct.unpack_from('>I', header, 28)
+    desc_offset, desc_size = struct.unpack_from('>2Q', header, 96)
+    key_offset, key_size, metadata_offset, metadata_size = struct.unpack_from('>4Q', header, 64)
+    if (header[:4] != b'AVB0' or struct.unpack_from('>2I', header, 4) != (1, 0) or
+            auth_size or algorithm or aux_size % 64 or 256 + aux_size != size or
+            any(header[32:64]) or key_size or metadata_size or
+            key_offset > aux_size or metadata_offset > aux_size or
+            any(header[112:128]) or any(header[176:256])):
+        raise ValueError('Unexpected signed/keyed/flagged/unsupported vbmeta header')
+    if desc_offset != 0 or not 132 <= desc_size <= aux_size:
+        raise ValueError('Invalid descriptor range')
+    descriptor = complete[offset + 256:offset + 256 + desc_size]
+    tag, following, image_size, algorithm_name, name_size, salt_size, digest_size, flags = struct.unpack_from('>3Q32s4I', descriptor)
+    if (tag != 2 or following + 16 != desc_size or image_size != len(packed) or
+            algorithm_name != b'sha256'.ljust(32, b'\0') or
+            (name_size, salt_size, digest_size, flags) != (4, 32, 32, 0) or
+            any(descriptor[72:132])):
+        raise ValueError('Unexpected hash descriptor layout/name length/flags')
+    if desc_size != ((132 + name_size + salt_size + digest_size + 7) & ~7):
+        raise ValueError('Descriptor padding/size mismatch')
+    name = descriptor[132:136]
+    salt, digest = descriptor[136:168], descriptor[168:200]
+    if name != b'boot' or any(descriptor[200:]):
+        raise ValueError('Descriptor does not identify only boot')
+    if salt != hashlib.sha256(packed).digest() or digest != hashlib.sha256(salt + packed).digest():
+        raise ValueError('Boot descriptor salt/digest mismatch')
+    if any(complete[len(packed):offset]) or any(complete[offset + 256 + desc_size:offset + size]):
+        raise ValueError('Nonzero descriptor or payload alignment padding')
+    return dict(partition_name='boot', algorithm='NONE', hash_algorithm='sha256',
+                image_size=image_size, salt=salt.hex(), digest=digest.hex(),
+                signature_created=False, independently_verified=True)
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    for name in ('diagnostic', 'boot-backup', 'vbmeta-capture', 'avbtool', 'out'):
+        parser.add_argument('--' + name, type=Path, required=True)
+    args = parser.parse_args()
+    source = args.diagnostic.read_bytes()
+    backup = args.boot_backup.read_bytes()
+    vbmeta = args.vbmeta_capture.read_bytes()
+    if len(backup) != PARTITION_SIZE or sha(backup) != STOCK_BOOT:
+        raise ValueError('Require exact complete stock boot backup')
+    if sha(source) != DIAGNOSTIC:
+        raise ValueError('Require frozen Image5 diagnostic container')
+    if (len(vbmeta) != 0x800000 or sha(vbmeta) != VBMETA_FLAGS3 or
+            vbmeta[:4] != b'AVB0' or struct.unpack_from('>I', vbmeta, 120)[0] != 3):
+        raise ValueError('Require inspected main-vbmeta flags3 capture; never patch it here')
+    if sha(args.avbtool.read_bytes()) != AVBTOOL:
+        raise ValueError('Require pinned official AOSP avbtool')
+    diagnostic, template = bootimg.parse(source), bootimg.parse(backup)
+    if any(diagnostic.address(n) != template.address(n) for n in bootimg.ADDRESS_OFFSETS):
+        raise ValueError('Load address mismatch')
+    if any(diagnostic.parts[n] != template.parts[n] for n in ('second', 'dtb', 'recovery_dtbo')):
+        raise ValueError('Non-diagnostic component mismatch')
+    packed = bootimg.pack(template, diagnostic.parts['kernel'], diagnostic.parts['ramdisk'])
+    if packed != source:
+        raise ValueError('Frozen diagnostic is not exact repack of this stock boot header')
+    out = args.out.resolve()
+    out.mkdir(parents=True, exist_ok=False)
+    image = out / 'boot.img'
+    image.write_bytes(packed)
+    command = [sys.executable, str(args.avbtool.resolve()), 'add_hash_footer',
+               '--image', str(image), '--partition_name', 'boot',
+               '--partition_size', str(PARTITION_SIZE), '--algorithm', 'NONE',
+               '--hash_algorithm', 'sha256', '--salt', sha(packed)]
+    subprocess.run(command, check=True)
+    complete = image.read_bytes()
+    avb = validate_unsigned_boot(complete, packed)
+    result = bootimg.parse(complete)
+    for name in bootimg.PARTS:
+        if result.parts[name] != diagnostic.parts[name]:
+            raise ValueError('Embedded diagnostic component changed')
+    checks = {}
+    for action in ('info_image', 'verify_image'):
+        check = subprocess.run([sys.executable, str(args.avbtool.resolve()), action,
+                                '--image', str(image)], capture_output=True, text=True, check=True)
+        text = check.stdout + check.stderr
+        (out / (action + '.txt')).write_text(text)
+        checks[action] = sha(text.encode())
+    if sha(args.boot_backup.read_bytes()) != STOCK_BOOT or sha(args.diagnostic.read_bytes()) != DIAGNOSTIC or sha(args.vbmeta_capture.read_bytes()) != VBMETA_FLAGS3:
+        raise ValueError('Input changed during preparation')
+    report = dict(purpose='Normal boot partition diagnostic, not full iOS',
+        target_partition='boot', image_sha256=sha(complete), image_bytes=len(complete),
+        stock_boot_backup_sha256=STOCK_BOOT, stock_boot_backup_bytes=len(backup),
+        diagnostic_input_sha256=DIAGNOSTIC, main_vbmeta_capture_sha256=VBMETA_FLAGS3,
+        main_vbmeta_capture_flags=3, main_vbmeta_changed=False,
+        main_vbmeta_capture_is_fresh_device_state=False,
+        original_diagnostic_components_unchanged=True,
+        raw_loader=bootimg.kernel_gzip_info(result.parts['kernel']),
+        trace_identity_and_frozen_kernel_unchanged=True,
+        avb=avb, avbtool_sha256=AVBTOOL,
+        avbtool_commit='761178607206f4cb2af79ed9eec52d8cbd814adb',
+        producer_sha256=sha(Path(__file__).read_bytes()),
+        bootimg_producer_sha256=sha(Path(bootimg.__file__).read_bytes()),
+        commands=[command], check_output_sha256=checks,
+        writes_device=False, physical_boot_validated=False,
+        limits=['Unsigned descriptor integrity is not a trusted signature.',
+                'Require independently confirmed current unlocked state and main-vbmeta flags3.',
+                'Normal-path LK/bootloader acceptance remains physically unproved.',
+                'Keep the verified stock boot backup for recovery if needed; no automatic restoration.',
+                'No change to recovery, LK, vendor_boot, BCB or main vbmeta is performed by this tool.'])
+    (out / 'manifest.json').write_text(json.dumps(report, indent=2) + '\n')
+    (out / 'SHA256SUMS').write_text(sha(complete) + '  boot.img\n')
+    print(json.dumps(dict(image=str(image), size=len(complete), sha256=sha(complete))))
+
+
+if __name__ == '__main__':
+    main()
