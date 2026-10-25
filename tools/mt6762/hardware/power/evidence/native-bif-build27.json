@@ -1,0 +1,58 @@
+{
+  "kernel_sha256": "0d2f6bf06c1d50aae5b326830c991ab8717847000354d60b648d553d7a5c29d6",
+  "source_stable": true,
+  "iig_inputs_stable": true,
+  "full_build_passed": false,
+  "qemu_local_commit": "b4eafc7a7a76c906c4b6b6843573f783f33745f7",
+  "qemu_binary_sha256": "8683dc2e61883545bf92d9602e3f8985b870002564f21cc859ac1dc492c85013",
+  "host_tests_passed": true,
+  "bif_host_log_sha256": "8285bcee422b929eab531ad4e3c5b6a0d31493e00ac899f369fa8418654c839b",
+  "runs": {
+    "positive": {
+      "passed": true,
+      "fresh_records": 21,
+      "unavailable_records": 0,
+      "distinct_acquisitions": 11,
+      "post_fresh_trim_change": false,
+      "model_trim_reads": 168,
+      "tdet_writes": 0,
+      "trim_writes": 0,
+      "calibrated_temperature_proven": false,
+      "physical_hardware_tested": false,
+      "serial_sha256": "b1a971acec9a845c7917f24bd3077bdd76751a0163cd9c7aeac8eebf39eb1b1d",
+      "report_sha256": "33b90a7847d2a19fcb921862f71f528149fe7ec433d8393ea969a9f8b812fad1",
+      "native_report_sha256": "33b90a7847d2a19fcb921862f71f528149fe7ec433d8393ea969a9f8b812fad1"
+    },
+    "trim-after-fresh": {
+      "passed": true,
+      "fresh_records": 3,
+      "unavailable_records": 18,
+      "distinct_acquisitions": 1,
+      "post_fresh_trim_change": true,
+      "model_trim_reads": 35,
+      "tdet_writes": 0,
+      "trim_writes": 0,
+      "calibrated_temperature_proven": false,
+      "physical_hardware_tested": false,
+      "serial_sha256": "5607e9a9e82d58a35f939823de8adbb30a38a397e53d1bd88142949f9d9b3fde",
+      "report_sha256": "6c080c1a2bcd7ee87e4579f54a5dee8b1d6ccdf32e1f2daa51a582a898f09915",
+      "native_report_sha256": "6c080c1a2bcd7ee87e4579f54a5dee8b1d6ccdf32e1f2daa51a582a898f09915"
+    },
+    "config-rejected": {
+      "native_report_sha256": "48213f94a4f8a6d792fa766dcc934cad4e2d5a6c5e791b3fe11159dfb167c413",
+      "bif_requests": 0,
+      "fault": {
+        "value": 1,
+        "error": 0
+      },
+      "tdet_writes": 0,
+      "trim_writes": 0
+    }
+  },
+  "limits": [
+    "Explicit synthetic QEMU2000us ADC timing, not a physical timing claim",
+    "Raw observation only: factory transfer semantics and board calibration remain unresolved",
+    "Matching scans do not supply a hardware reset epoch or exclude ABA changes",
+    "Apple userspace and IIG interfaces unchanged; current physical image remains kernel23"
+  ]
+}

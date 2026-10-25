@@ -1,7 +1,7 @@
 Reproducing the local MT6762 QEMU experiment
 ==========================================
 
-These eleven patches reproduce the local research machine used for MT6762
+These twelve patches reproduce the local research machine used for MT6762
 bring-up. They contain source code and documentation only: no phone firmware,
 iOS files, credentials, personal partitions, or built binaries.
 
@@ -22,7 +22,7 @@ Source provenance
   ``49d41542f0ccfed448d90c9ad4397a592292d027``,
   ``20e020a98f55679572ad7d18e1c4897b9951a1b5`` and
   ``0f9a62cb5b983e7d9d2a93d90a2c18eb46e0cf1a``.
-* Resulting Git tree: ``9a5908e76856a77220006765583d40e4ec63f2f1``.
+* Resulting Git tree: ``32feba878a84cf50d098bda6f12d24278c712045``.
 
 ``apply.sh`` verifies the patch SHA-256 hashes, fetches that exact upstream
 commit, applies the patch series in order, and verifies the final tree.
@@ -171,3 +171,8 @@ gauge laboratory fixture. It packs the raw current/CAR-low/CAR-high 16-bit
 words into an unsigned 48-bit tuple, captured at READ_PRE. The default remains
 current100/CAR0. It exercises signed native observations using known original
 stock arithmetic vectors and never represents remaining capacity or real cells.
+
+The twelfth patch (local commit ``b4eafc7a7a76c906c4b6b6843573f783f33745f7``) exposes eight explicit
+read-only synthetic PMIC identity/trim words for BIF diagnostics, with an
+isolated ``bif-trim`` fault and counters. No calibration transfer, hardware
+protection or OTP operation is modeled.

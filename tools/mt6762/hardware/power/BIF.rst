@@ -155,3 +155,8 @@ generation rejections. Every run had zero TDET write attempts and no kernel
 panic. The eight-CPU execution, source/model hashes and before/after values are
 recorded in evidence/native-bif-build18.json. These remain synthetic tests; no
 physical timing, calibration or restoration fallback has been established.
+
+Build27 extends raw-pair observation to the enumerated20-word state, including
+full HW/SW identity, analog configuration and six factory shadows. See
+``BIF-OBSERVATION.rst`` for the atomic diagnostic, exact provenance and limits.
+Matching words still do not admit calibrated battery temperature.

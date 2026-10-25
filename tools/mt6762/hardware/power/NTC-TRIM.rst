@@ -80,11 +80,11 @@ actual encoded selectors are unequal. PMIC die/buck-temperature calibration
 words 0x11ae–0x11b8 describe another sensor calibration and must not be reused
 as battery NTC factory gain/offset evidence.
 
-The current BIF diagnostic checks SW trim and ADC configuration before/after
-each pair, but does not read these six factory coefficient shadows or analog
-calibration field. A future read-only snapshot should include them plus PMIC
-identity/revision and the already captured ADC/TDET configuration, with strict
-transaction errors, pre/post continuity and reset-epoch invalidation. The pure
+Build27 adds the six factory coefficient shadows, analog configuration and
+full HW/SW identity to matching pre/post scans and an atomic raw-pair diagnostic;
+see ``BIF-OBSERVATION.rst``. Strict transaction errors, changed state and expiry
+invalidate the snapshot. An unobserved reset that restores identical words
+remains undetectable; no hardware reset epoch is established. The pure
 ``decode_trim`` helper records raw fields and missing words, but deliberately
 returns ``calibrated=False`` even for a complete snapshot. No readback values
 currently available prove the missing transfer semantics. A future admission

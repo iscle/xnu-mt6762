@@ -95,6 +95,20 @@ static void observe(int fd)
         p = decimal(p, error < 0 ? -error : error); *p++ = '\n';
         call3(4, fd, (long)line, p-line);
     }
+    {
+        const char name[]="kern.redwood.mt6762_bif_observation";
+        unsigned char value[72]={0};u64 size=sizeof(value);
+        long error=call6(274,(long)name,sizeof(name)-1,(long)value,(long)&size,0,0);
+        if(!error && size!=sizeof(value))error=-22;
+        char line[256],*p=text(line,"MT6762_BIF_OBSERVATION error=");
+        if(error<0)*p++='-';
+        p=decimal(p,error<0?-error:error);p=text(p," size=");p=decimal(p,size);
+        p=text(p," data=");
+        if(!error)for(unsigned i=0;i<sizeof(value);i++) {
+            *p++="0123456789abcdef"[value[i]>>4];*p++="0123456789abcdef"[value[i]&15];
+        }
+        *p++='\n';call3(4,fd,(long)line,p-line);
+    }
     print(fd, "MT6762_SYSCTL_END\n");
 }
 void start(void)

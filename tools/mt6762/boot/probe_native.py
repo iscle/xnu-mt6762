@@ -21,7 +21,7 @@ def main():
                    help='Negative test: malformed native handoff must remain headless and perform no transfers')
     p.add_argument('--expect-bif-rejected',action='store_true',
                    help='Negative BIF handoff case: reject admission before any BIF request')
-    p.add_argument('--bif-fault',choices=('none','tdet-set','config','timeout','stale','rail','tdet-changed','adc-stale'),default='none')
+    p.add_argument('--bif-fault',choices=('none','tdet-set','config','trim','timeout','stale','rail','tdet-changed','adc-stale'),default='none')
     p.add_argument('--bif-clear-after-rejection',action='store_true',
                    help='Clear an explicit startup fixture fault after native rejection; require recovery only for generation failures')
     p.add_argument('--bif-fault-after-fresh',action='store_true',

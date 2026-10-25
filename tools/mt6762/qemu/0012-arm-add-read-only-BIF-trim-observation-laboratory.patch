@@ -1,0 +1,292 @@
+From b4eafc7a7a76c906c4b6b6843573f783f33745f7 Mon Sep 17 00:00:00 2001
+From: Iscle <albertiscle9@gmail.com>
+Date: Sun, 25 Oct 2026 22:30:42 +0100
+Subject: [PATCH] arm: expose synthetic BIF raw trim observation for local
+ experiments
+
+---
+ hw/arm/mt6762.c                         |  2 +-
+ hw/arm/mt6762_lab_power.c               | 34 ++++++++-
+ include/hw/arm/mt6762_lab_power.h       |  1 +
+ tests/mt6762/lab-bif-trim-evidence.json | 51 +++++++++++++
+ tests/mt6762/test_lab_bif_trim.py       | 98 +++++++++++++++++++++++++
+ 5 files changed, 183 insertions(+), 3 deletions(-)
+ create mode 100644 tests/mt6762/lab-bif-trim-evidence.json
+ create mode 100644 tests/mt6762/test_lab_bif_trim.py
+
+diff --git a/hw/arm/mt6762.c b/hw/arm/mt6762.c
+index e4c4048..b999c6a 100644
+--- a/hw/arm/mt6762.c
++++ b/hw/arm/mt6762.c
+@@ -657,7 +657,7 @@ static const char *const mt6762_power_fault_names[] = {
+     "gauge-timeout", "gauge-latch-stuck", "gauge-stale", "gauge-clock",
+     "gauge-calibration", "gauge-counter-stuck",
+     "bif-tdet-set", "bif-config", "bif-timeout", "bif-stale", "bif-rail",
+-    "bif-tdet-changed", "adc-stale"
++    "bif-tdet-changed", "adc-stale", "bif-trim"
+ };
+ 
+ static char *mt6762_get_power_fault(Object *obj, Error **errp)
+diff --git a/hw/arm/mt6762_lab_power.c b/hw/arm/mt6762_lab_power.c
+index 84cbcce..41d215a 100644
+--- a/hw/arm/mt6762_lab_power.c
++++ b/hw/arm/mt6762_lab_power.c
+@@ -22,6 +22,7 @@ struct MT6762PowerLab {
+     bool gauge_enabled, bif_enabled;
+     unsigned adc_delay_us;
+     uint64_t bif_tdet_writes;
++    uint64_t bif_trim_reads, bif_trim_write_attempts;
+     uint16_t gauge_control;
+     uint64_t gauge_sample, gauge_latched_sample;
+     uint64_t gauge_ticks, gauge_snapshots, gauge_commands;
+@@ -57,6 +58,17 @@ static void adc3_complete(void *opaque) { adc_complete(opaque, 3); }
+ static void adc4_complete(void *opaque) { adc_complete(opaque, 4); }
+ static void adc5_complete(void *opaque) { adc_complete(opaque, 5); }
+ 
++static int bif_trim_index(uint16_t address)
++{
++    if (address == 0x1008) {
++        return 0;
++    }
++    if (address >= 0x11a2 && address <= 0x11ac && !(address & 1)) {
++        return 1 + (address - 0x11a2) / 2;
++    }
++    return -1;
++}
++
+ static uint16_t pmic_read(MT6762PowerLab *s, uint16_t address)
+ {
+     switch (address) {
+@@ -72,8 +84,19 @@ static uint16_t pmic_read(MT6762PowerLab *s, uint16_t address)
+         return s->adc_data[1];
+     }
+     if (s->bif_enabled) {
++        /* Raw identities only: not decoded or claimed calibrated/physical. */
++        static const uint16_t trim[7] = {
++            0x1357, 0x2468, 0x369c, 0x48ad, 0x5bce, 0x6df0, 0x7e12
++        };
++        int index = bif_trim_index(address);
++        if (index >= 0) {
++            s->bif_trim_reads++;
++            return trim[index] ^ (index == 3 &&
++                s->fault == MT6762_POWER_FAULT_BIF_TRIM ? 1 : 0);
++        }
+         /* Explicit synthetic trim/configuration snapshot, not physical defaults. */
+         switch (address) {
++        case 0x000a: return 0x0101; /* Synthetic SWCID, read-only. */
+         case 0x1236:
+             return s->fault == MT6762_POWER_FAULT_BIF_TDET_SET ||
+                 (s->fault == MT6762_POWER_FAULT_BIF_TDET_CHANGED &&
+@@ -129,6 +152,9 @@ static uint16_t pmic_read(MT6762PowerLab *s, uint16_t address)
+ static void pmic_write(MT6762PowerLab *s, uint16_t address, uint16_t data)
+ {
+     unsigned channel = 6;
++    if (s->bif_enabled && bif_trim_index(address) >= 0) {
++        s->bif_trim_write_attempts++; /* Rejected by the common path below. */
++    }
+     if (s->bif_enabled && address == 0x1236) {
+         s->bif_tdet_writes++; /* All TDET writes remain rejected. */
+     }
+@@ -285,6 +311,7 @@ static void power_reset(void *opaque)
+     s->commands = s->reads = s->writes = s->rejected = s->clears = s->key_reads = 0;
+     s->gauge_control = 0;
+     s->bif_tdet_writes = 0;
++    s->bif_trim_reads = s->bif_trim_write_attempts = 0;
+     s->gauge_ticks = s->gauge_snapshots = s->gauge_commands = 0;
+     s->gauge_latched_sample = s->gauge_sample;
+ }
+@@ -359,7 +386,9 @@ char *mt6762_lab_power_state(MT6762PowerLab *s)
+         "\"gauge_snapshots\":%" PRIu64 ",\"gauge_commands\":%" PRIu64 ","
+         "\"bif_enabled\":%s,\"bif_config_synthetic\":%s,\"adc_delay_us\":%u,"
+         "\"bif_requests\":%" PRIu64 ",\"bif_completions\":%" PRIu64 ","
+-        "\"bif_tdet_write_attempts\":%" PRIu64 "}",
++        "\"bif_tdet_write_attempts\":%" PRIu64 ","
++        "\"bif_trim_reads\":%" PRIu64 ","
++        "\"bif_trim_write_attempts\":%" PRIu64 "}",
+         s->fault, s->keys, s->fsm, s->commands, s->reads, s->writes,
+         s->rejected, s->clears, s->key_reads, s->adc_requests[0],
+         s->adc_requests[1], s->adc_completions[0], s->adc_completions[1],
+@@ -372,5 +401,6 @@ char *mt6762_lab_power_state(MT6762PowerLab *s)
+         s->gauge_ticks, s->gauge_snapshots, s->gauge_commands,
+         s->bif_enabled ? "true" : "false", s->bif_enabled ? "true" : "false",
+         s->adc_delay_us,
+-        s->adc_requests[5], s->adc_completions[5], s->bif_tdet_writes);
++        s->adc_requests[5], s->adc_completions[5], s->bif_tdet_writes,
++        s->bif_trim_reads, s->bif_trim_write_attempts);
+ }
+diff --git a/include/hw/arm/mt6762_lab_power.h b/include/hw/arm/mt6762_lab_power.h
+index eb0b1f7..79ae869 100644
+--- a/include/hw/arm/mt6762_lab_power.h
++++ b/include/hw/arm/mt6762_lab_power.h
+@@ -30,6 +30,7 @@ enum {
+     MT6762_POWER_FAULT_BIF_RAIL,
+     MT6762_POWER_FAULT_BIF_TDET_CHANGED,
+     MT6762_POWER_FAULT_ADC_STALE,
++    MT6762_POWER_FAULT_BIF_TRIM,
+     MT6762_POWER_FAULT_COUNT,
+ };
+ MT6762PowerLab *mt6762_lab_power_create(Object *owner, MemoryRegion *memory);
+diff --git a/tests/mt6762/lab-bif-trim-evidence.json b/tests/mt6762/lab-bif-trim-evidence.json
+new file mode 100644
+index 0000000..0c1f90a
+--- /dev/null
++++ b/tests/mt6762/lab-bif-trim-evidence.json
+@@ -0,0 +1,51 @@
++{
++  "scope": "AI-assisted local experiment only; not for upstream submission",
++  "synthetic_only": true,
++  "physical_calibration_claimed": false,
++  "base_commit": "0f9a62cb5b983e7d9d2a93d90a2c18eb46e0cf1a",
++  "binary_sha256": "8683dc2e61883545bf92d9602e3f8985b870002564f21cc859ac1dc492c85013",
++  "source_sha256": {
++    "hw/arm/mt6762.c": "47c3332f805b90d19093abea895b878acd00bfae0c2449b6a9f600cd3bdba417",
++    "hw/arm/mt6762_lab_power.c": "f6599f99ae32735cc8f0f2d2b2c73bd86f4076fe7f155e1efe9f464acf82f002",
++    "include/hw/arm/mt6762_lab_power.h": "bf6bda73b91fac05918e561dc2b8447d9da0135ebd61f1072e5eea1cdf64492f",
++    "tests/mt6762/test_lab_bif_trim.py": "7926f9f4cfc848d520665f27734e4222f554d6df49b7252fd0b41de707658e7e"
++  },
++  "read_only_pmic_words": {
++    "0x000a": "0x0101",
++    "0x1008": "0x1357",
++    "0x11a2": "0x2468",
++    "0x11a4": "0x369c",
++    "0x11a6": "0x48ad",
++    "0x11a8": "0x5bce",
++    "0x11aa": "0x6df0",
++    "0x11ac": "0x7e12"
++  },
++  "fault": {
++    "name": "bif-trim",
++    "number": 26,
++    "only_change": "0x11a6 XOR 1 while selected; explicit QOM startup/post-sample injection, reversible via none"
++  },
++  "tests_passed": [
++    "test_lab_bif_trim.py",
++    "test_lab_power.py",
++    "test_lab_bif.py",
++    "test_lab_thermal.py",
++    "test_lab_gauge.py"
++  ],
++  "invocation": "python3 tests/mt6762/TEST.py --qemu build/qemu-system-aarch64 --dtb /home/iscle/mt6762-ios-port/firmware/boot.bin.dtb",
++  "dtb_sha256": "658e181d1a13d930dc09567883e734bdbd4579350c8332ff954a0ecbb2ed08fe",
++  "new_test_coverage": [
++    "exact distinct raw words and SWCID",
++    "all new words reject writes without changes",
++    "normal raw sample does not change raw identity",
++    "startup and post-sample isolated shadow change",
++    "fault does not modify chip identity/selectors/raw ADC sample/completion counts",
++    "clearing fault restores synthetic shadow",
++    "raw words absent with lab-bif disabled, including with thermal+gauge enabled"
++  ],
++  "limits": [
++    "No native XNU integration run in this task",
++    "No physical calibration/temperature/reset-epoch semantics",
++    "No physical device access"
++  ]
++}
+diff --git a/tests/mt6762/test_lab_bif_trim.py b/tests/mt6762/test_lab_bif_trim.py
+new file mode 100644
+index 0000000..297c24e
+--- /dev/null
++++ b/tests/mt6762/test_lab_bif_trim.py
+@@ -0,0 +1,98 @@
++#!/usr/bin/env python3
++"""Local experiment: synthetic raw BIF words, no calibration interpretation.
++
++Tests actual PWRAP transactions with paused CPUs. No target or physical I/O.
++"""
++import argparse
++import tempfile
++from pathlib import Path
++from test_lab_power import PowerLab
++
++ADDRESSES = [0x1008, *range(0x11a2, 0x11ae, 2)]
++RAW = [0x1357, 0x2468, 0x369c, 0x48ad, 0x5bce, 0x6df0, 0x7e12]
++CHANGED = [*RAW[:3], RAW[3] ^ 1, *RAW[4:]]
++SELECTORS = [0x1236, 0x10de, 0x10e0, 0x1120, 0x1126, 0x1128,
++             0x112e, 0x1132, 0x1136, 0x113a, 0x113c]
++CONFIG = [4, 0x4000, *([0] * 9)]
++
++
++def read_trim(lab):
++    before = lab.state()['bif_trim_reads']
++    result = [lab.pmic(address) for address in ADDRESSES]
++    assert lab.state()['bif_trim_reads'] == before + 7
++    return result
++
++
++def verify_readonly(lab, expected):
++    before = lab.state()
++    for address, value in zip(ADDRESSES, expected):
++        lab.pmic(address, value ^ 0xffff)
++    after = lab.state()
++    assert after['rejected'] == before['rejected'] + 7
++    assert after['bif_trim_write_attempts'] == before['bif_trim_write_attempts'] + 7
++    assert read_trim(lab) == expected
++
++
++def exercise(lab, startup_fault):
++    if startup_fault:
++        lab.fault('bif-trim')
++    assert read_trim(lab) == (CHANGED if startup_fault else RAW)
++    assert lab.pmic(0x0008) == 0x5730 and lab.pmic(0x000a) == 0x0101
++    before = lab.state()['rejected']
++    lab.pmic(0x000a, 0xffff)
++    assert lab.pmic(0x000a) == 0x0101 and lab.state()['rejected'] == before + 1
++    assert [lab.pmic(a) for a in SELECTORS] == CONFIG
++    # A completed raw sample does not itself alter the trim identity.
++    lab.pmic(0x110e, 2048)
++    lab.step(80000)
++    assert lab.pmic(0x109e) == 0x8000 | 4089
++    assert lab.state()['bif_completions'] == 1
++    assert read_trim(lab) == (CHANGED if startup_fault else RAW)
++    lab.fault('bif-trim')  # Explicit post-sample injection in the normal case.
++    assert lab.state()['fault'] == 26
++    assert read_trim(lab) == CHANGED
++    assert lab.pmic(0x0008) == 0x5730 and lab.pmic(0x000a) == 0x0101
++    assert [lab.pmic(a) for a in SELECTORS] == CONFIG
++    assert lab.pmic(0x109e) == 0x8000 | 4089
++    assert lab.state()['bif_requests'] == lab.state()['bif_completions'] == 1
++    verify_readonly(lab, CHANGED)
++    lab.fault('none')
++    assert read_trim(lab) == RAW
++    verify_readonly(lab, RAW)
++    assert lab.state()['bif_tdet_write_attempts'] == 0
++
++
++def main():
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument('--qemu', type=Path, required=True)
++    parser.add_argument('--dtb', type=Path, required=True)
++    args = parser.parse_args()
++    for startup_fault in (False, True):
++        with tempfile.TemporaryDirectory(prefix='mt6762-bif-trim-') as directory:
++            lab = PowerLab(args.qemu.resolve(), args.dtb.resolve(), directory, bif=True)
++            try:
++                exercise(lab, startup_fault)
++            finally:
++                lab.close()
++    # Other power fixtures must not accidentally expose BIF raw words.
++    for thermal in (False, True):
++        with tempfile.TemporaryDirectory(prefix='mt6762-no-bif-trim-') as directory:
++            lab = PowerLab(args.qemu.resolve(), args.dtb.resolve(), directory,
++                           thermal=thermal, gauge=thermal)
++            try:
++                for fault in ('none', 'bif-trim'):
++                    lab.fault(fault)
++                    before = lab.state()['rejected']
++                    assert [lab.pmic(a) for a in [0x000a, *ADDRESSES]] == [0xffff] * 8
++                    for address in [0x000a, *ADDRESSES]:
++                        lab.pmic(address, 0)
++                    state = lab.state()
++                    assert state['rejected'] == before + 16
++                    assert state['bif_trim_reads'] == state['bif_trim_write_attempts'] == 0
++            finally:
++                lab.close()
++    print('PASS: seven synthetic read-only words, startup/post-sample isolated shadow fault, default absence')
++
++
++if __name__ == '__main__':
++    main()
+-- 
+2.55.0
+
