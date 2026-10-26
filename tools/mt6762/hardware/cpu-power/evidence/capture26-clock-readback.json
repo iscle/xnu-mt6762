@@ -1,0 +1,111 @@
+{
+  "schema": "mt6762-configured-cpu-clocks-v1",
+  "reference_khz": 26000,
+  "domains": {
+    "cpu0_3": {
+      "valid": true,
+      "nominal_khz": 1499999,
+      "stock_getter_rounded_khz": 1499500,
+      "reasons": [],
+      "fields": {
+        "pcw": 1890461,
+        "postdivider_code": 1,
+        "ckdiv_code": 0,
+        "source_mux": 1,
+        "ratio_numerator": 1,
+        "ratio_denominator": 1
+      },
+      "registers": {
+        "con0": {
+          "address": "0x1000c21c",
+          "value": "0x00000191"
+        },
+        "con1": {
+          "address": "0x1000c220",
+          "value": "0x811cd89d"
+        },
+        "power": {
+          "address": "0x1000c228",
+          "value": "0x80000001"
+        },
+        "ckdiv": {
+          "address": "0x102007a0",
+          "value": "0x00010a00"
+        }
+      }
+    },
+    "cpu4_7": {
+      "valid": true,
+      "nominal_khz": 919999,
+      "stock_getter_rounded_khz": 919500,
+      "reasons": [],
+      "fields": {
+        "pcw": 1159483,
+        "postdivider_code": 1,
+        "ckdiv_code": 0,
+        "source_mux": 1,
+        "ratio_numerator": 1,
+        "ratio_denominator": 1
+      },
+      "registers": {
+        "con0": {
+          "address": "0x1000c20c",
+          "value": "0x00000191"
+        },
+        "con1": {
+          "address": "0x1000c210",
+          "value": "0x0111b13b"
+        },
+        "power": {
+          "address": "0x1000c218",
+          "value": "0x80000001"
+        },
+        "ckdiv": {
+          "address": "0x102007a4",
+          "value": "0x00000aff"
+        }
+      }
+    },
+    "cci": {
+      "valid": true,
+      "nominal_khz": 599999,
+      "stock_getter_rounded_khz": 599750,
+      "reasons": [],
+      "fields": {
+        "pcw": 1512369,
+        "postdivider_code": 2,
+        "ckdiv_code": 0,
+        "source_mux": 1,
+        "ratio_numerator": 1,
+        "ratio_denominator": 1
+      },
+      "registers": {
+        "con0": {
+          "address": "0x1000c22c",
+          "value": "0x00000191"
+        },
+        "con1": {
+          "address": "0x1000c230",
+          "value": "0x821713b1"
+        },
+        "power": {
+          "address": "0x1000c238",
+          "value": "0x80000001"
+        },
+        "ckdiv": {
+          "address": "0x102007c0",
+          "value": "0x00010a00"
+        }
+      }
+    }
+  },
+  "ownership_granted": false,
+  "dvfs_control_ready": false,
+  "device_access_performed": false,
+  "limitations": [
+    "Configured nominal rates; no hardware frequency-counter measurement.",
+    "Two equal read passes do not prove atomicity or exclude an intervening change.",
+    "This parser does not authenticate capture acquisition or verify the claimed peripheral-record digest.",
+    "No PMIC electrical measurement, calibrated OPP, SSPM liveness, or thermal/current budget proof."
+  ]
+}

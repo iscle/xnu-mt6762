@@ -54,7 +54,13 @@ static inline int mt6762_pll_khz(uint32_t con0,uint32_t con1,uint32_t power,
     uint64_t rate;
     if(!khz || !(con0&1) || (power&3)!=1 || ((ckdiv>>9)&3)!=1 ||
        !pcw || post>4)return -1;
-    if(div>=8 && div<=11) {num=12-div;den=4;}
+    /* Code 0 is the undivided boot encoding retained by this unit's exact
+     * preloader. Its PLL setup leaves DIVSEL unchanged, and physical capture26
+     * observes 0 on all three domains. Stock get_cur_phy_freq treats it as
+     * unity. See hardware/cpu-power/CKDIV0.rst; do not extend stock's permissive
+     * default to other unsupported encodings. */
+    if(div==0) {num=1;den=1;}
+    else if(div>=8 && div<=11) {num=12-div;den=4;}
     else if(div>=16 && div<=20) {num=21-div;den=5;}
     else if(div>=24 && div<=29) {num=30-div;den=6;}
     else return -1;

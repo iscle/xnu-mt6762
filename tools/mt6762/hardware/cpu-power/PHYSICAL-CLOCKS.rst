@@ -39,7 +39,7 @@ It requires completed two-pass acquisition, exactly one record for each word,
 width four, both valid bits, equal unsigned values, and the stable marker. It
 then applies ``mt6762_pll_khz`` admission: PLL enabled, power on and isolation
 off, source mux selecting this PLL, nonzero PCW, postdivider codes 0..4 and
-CKDIV codes 8..11, 16..20 or 24..29. Missing, malformed, duplicate, unstable,
+CKDIV code 0 (inherited boot encoding), 8..11, 16..20 or 24..29. Missing, malformed, duplicate, unstable,
 disabled or bypassed domains remain unknown. Two equal passes are not atomic
 and do not exclude an intervening change. A successful parse grants nothing.
 
@@ -94,6 +94,11 @@ secondary CPU failure was observed in this audit. The generic PSCI start path
 already exists. Runtime topology, PSCI query results and per-CPU interrupt
 coverage are still required evidence before changing the physical CPU count;
 no direct power-controller programming is justified by this audit.
+
+Capture26 follow-up: the added physical observations identified inherited
+CKDIV code 0 on all three domains and both programmed CPU rail selectors.
+``CKDIV0.rst`` records the exact preloader replay and narrow decoder correction;
+the capture22 absence above remains a historical finding.
 
 Offline validation
 ------------------

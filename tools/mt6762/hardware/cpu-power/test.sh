@@ -20,6 +20,7 @@ Path(sys.argv[1]).write_text('static const uint32_t pvt_fixture[144]={'+','.join
 PVT
 cc -std=c11 -Wall -Wextra -Werror -g -I "$testdir" test_native_cpufreq.c -o "$testdir/test-native-cpufreq"
 "$testdir/test-native-cpufreq"
+PYTHONDONTWRITEBYTECODE=1 python3 test_clock_snapshot.py
 cc -std=c11 -Wall -Wextra -Werror -g test_native_sspm.c -o "$testdir/test-native-sspm"
 "$testdir/test-native-sspm"
 python3 - "$testdir/thermal_slopes.h" <<'THERMAL'

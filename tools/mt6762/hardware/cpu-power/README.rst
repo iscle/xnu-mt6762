@@ -117,6 +117,8 @@ CPU4-7 uses ARMPLL CON1 at0x1000c210 and CKDIV at0x102007a4.
 CCI uses CCIPLL CON1 at0x1000c230 and CKDIV at0x102007c0.
 PLL PCW is CON1[21:0],postdivider CON1[26:24],PCW-change bit31.
 CKDIV[21:17] encodes divider1/2/4 as8/10/11; clock source mux is[10:9].
+The inherited boot encoding0 also denotes unity; ``CKDIV0.rst`` corroborates
+this specific case with exact preloader instructions and physical capture26.
 BSP DDS arithmetic is ((VCO_kHz/1000)<<14)/26,using26MHz reference. Preserve
 unrelated register bits. PLL/postdivider settling is20us/1us in this BSP.
 

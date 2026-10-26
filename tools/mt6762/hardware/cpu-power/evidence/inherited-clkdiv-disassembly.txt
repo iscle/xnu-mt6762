@@ -1,0 +1,20 @@
+0x002244d2: cmp r4, #8
+0x002244d4: ittt ne
+0x002244d6: cmpne r4, #0xf
+0x002244d8: ldrne r0, [pc, #0x194]
+0x002244da: strne.w r0, [r5, #0x210]
+0x002244de: ldr r0, [pc, #0x194]
+0x002244e0: cmp r4, #8
+0x002244e2: str.w r0, [r5, #0x220]
+0x002244e6: ldr r0, [pc, #0x190]
+0x002244e8: str.w r0, [r5, #0x230]
+0x002245de: ldr r0, [pc, #0xb4]
+0x002245e0: ldr r1, [r0]
+0x002245e2: bfi r1, r2, #9, #2
+0x002245e6: str r1, [r0]
+0x002245e8: ldr r1, [r0, #4]
+0x002245ea: bfi r1, r2, #9, #2
+0x002245ee: str r1, [r0, #4]
+0x002245f0: ldr r1, [r0, #0x20]
+0x002245f2: bfi r1, r2, #9, #2
+0x002245f6: str r1, [r0, #0x20]

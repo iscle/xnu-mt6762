@@ -1,0 +1,516 @@
+{
+  "method": "Original bounded instructions with synthetic MMIO storage; captured raw fields independently cross-checked against the retained 4096-byte record; no phone access",
+  "image_sha256": "82b1919185a49f268a0f8e145a6714d6264c1f66918a90df0d763266147ead4b",
+  "preloader_sha256": "7e62da99110271864c330cffcef5237e20ca03881b933263af828561d963f674",
+  "capture_json_sha256": "62d606d00f15efccf1d4a3f08acfbb6c5068fefea8b3d639fa3693493092cfe3",
+  "peripheral_record_sha256": "0fc989e81b363456f1623b040c0bb15bab8c20e52af008fc2f3cbfc5e788611f",
+  "bound_image_identity": "27b5e400db43395f64697f3c0943bd92c600bd0062402d072ddb181efaa1f81c",
+  "xnu_log_sha256": "874119f688a57332d2e37a0ec0aaead89dc95c7e5c82888bc1cb0dd82524c87f",
+  "native_header_sha256": "6cd24cc53eda599a718c14daa79d6fed56427188355e782fec5caec3b2883253",
+  "decoder_sha256": "ad4657639709fe97df15189b9e53c9df6fd54967c9385ee32be93ae29c4d1189",
+  "audit_script_sha256": "6006a2a33c311fde4fa8cde9e63f855b6f59204ba825eed4e8a3530234237d87",
+  "bsp_sources": [
+    {
+      "path": "vendor/mediatek/proprietary/bootable/bootloader/preloader/platform/mt6765/src/drivers/pll.c",
+      "sha256": "ebdc1000f9f76c6d05be5c3d70bd58f07d4fafba0082a7c3fa6dda7586e0e982"
+    },
+    {
+      "path": "kernel-4.14/drivers/misc/mediatek/base/power/cpufreq_v1/src/mach/mt6765/mtk_cpufreq_platform.c",
+      "sha256": "fa2aa4c3ace8fb0adf7450e65ecb9af1810acec3396304347c8635bdfd5ccd9a"
+    }
+  ],
+  "preloader": {
+    "start": "0x2245de",
+    "end_exclusive": "0x2245f8",
+    "code_sha256": "31321e0379e5aabbad4009d364fef2b7e4355b5addcae7a54d7fd54c568fe0d9",
+    "initial_r2": 1,
+    "pll_control_literals": [
+      {
+        "domain": "cpu0_3",
+        "literal_va": "0x224674",
+        "word": "0x811cd89d",
+        "matches_capture_excluding_update_bit": true
+      },
+      {
+        "domain": "cpu4_7",
+        "literal_va": "0x224670",
+        "word": "0x8111b13b",
+        "matches_capture_excluding_update_bit": true
+      },
+      {
+        "domain": "cci",
+        "literal_va": "0x224678",
+        "word": "0x821713b1",
+        "matches_capture_excluding_update_bit": true
+      }
+    ],
+    "cases": [
+      {
+        "divsel": 0,
+        "before": [
+          "0x10800",
+          "0x8ff",
+          "0x10800"
+        ],
+        "after": [
+          "0x10a00",
+          "0xaff",
+          "0x10a00"
+        ]
+      },
+      {
+        "divsel": 1,
+        "before": [
+          "0x30800",
+          "0x208ff",
+          "0x30800"
+        ],
+        "after": [
+          "0x30a00",
+          "0x20aff",
+          "0x30a00"
+        ]
+      },
+      {
+        "divsel": 2,
+        "before": [
+          "0x50800",
+          "0x408ff",
+          "0x50800"
+        ],
+        "after": [
+          "0x50a00",
+          "0x40aff",
+          "0x50a00"
+        ]
+      },
+      {
+        "divsel": 3,
+        "before": [
+          "0x70800",
+          "0x608ff",
+          "0x70800"
+        ],
+        "after": [
+          "0x70a00",
+          "0x60aff",
+          "0x70a00"
+        ]
+      },
+      {
+        "divsel": 4,
+        "before": [
+          "0x90800",
+          "0x808ff",
+          "0x90800"
+        ],
+        "after": [
+          "0x90a00",
+          "0x80aff",
+          "0x90a00"
+        ]
+      },
+      {
+        "divsel": 5,
+        "before": [
+          "0xb0800",
+          "0xa08ff",
+          "0xb0800"
+        ],
+        "after": [
+          "0xb0a00",
+          "0xa0aff",
+          "0xb0a00"
+        ]
+      },
+      {
+        "divsel": 6,
+        "before": [
+          "0xd0800",
+          "0xc08ff",
+          "0xd0800"
+        ],
+        "after": [
+          "0xd0a00",
+          "0xc0aff",
+          "0xd0a00"
+        ]
+      },
+      {
+        "divsel": 7,
+        "before": [
+          "0xf0800",
+          "0xe08ff",
+          "0xf0800"
+        ],
+        "after": [
+          "0xf0a00",
+          "0xe0aff",
+          "0xf0a00"
+        ]
+      },
+      {
+        "divsel": 8,
+        "before": [
+          "0x110800",
+          "0x1008ff",
+          "0x110800"
+        ],
+        "after": [
+          "0x110a00",
+          "0x100aff",
+          "0x110a00"
+        ]
+      },
+      {
+        "divsel": 9,
+        "before": [
+          "0x130800",
+          "0x1208ff",
+          "0x130800"
+        ],
+        "after": [
+          "0x130a00",
+          "0x120aff",
+          "0x130a00"
+        ]
+      },
+      {
+        "divsel": 10,
+        "before": [
+          "0x150800",
+          "0x1408ff",
+          "0x150800"
+        ],
+        "after": [
+          "0x150a00",
+          "0x140aff",
+          "0x150a00"
+        ]
+      },
+      {
+        "divsel": 11,
+        "before": [
+          "0x170800",
+          "0x1608ff",
+          "0x170800"
+        ],
+        "after": [
+          "0x170a00",
+          "0x160aff",
+          "0x170a00"
+        ]
+      },
+      {
+        "divsel": 12,
+        "before": [
+          "0x190800",
+          "0x1808ff",
+          "0x190800"
+        ],
+        "after": [
+          "0x190a00",
+          "0x180aff",
+          "0x190a00"
+        ]
+      },
+      {
+        "divsel": 13,
+        "before": [
+          "0x1b0800",
+          "0x1a08ff",
+          "0x1b0800"
+        ],
+        "after": [
+          "0x1b0a00",
+          "0x1a0aff",
+          "0x1b0a00"
+        ]
+      },
+      {
+        "divsel": 14,
+        "before": [
+          "0x1d0800",
+          "0x1c08ff",
+          "0x1d0800"
+        ],
+        "after": [
+          "0x1d0a00",
+          "0x1c0aff",
+          "0x1d0a00"
+        ]
+      },
+      {
+        "divsel": 15,
+        "before": [
+          "0x1f0800",
+          "0x1e08ff",
+          "0x1f0800"
+        ],
+        "after": [
+          "0x1f0a00",
+          "0x1e0aff",
+          "0x1f0a00"
+        ]
+      },
+      {
+        "divsel": 16,
+        "before": [
+          "0x210800",
+          "0x2008ff",
+          "0x210800"
+        ],
+        "after": [
+          "0x210a00",
+          "0x200aff",
+          "0x210a00"
+        ]
+      },
+      {
+        "divsel": 17,
+        "before": [
+          "0x230800",
+          "0x2208ff",
+          "0x230800"
+        ],
+        "after": [
+          "0x230a00",
+          "0x220aff",
+          "0x230a00"
+        ]
+      },
+      {
+        "divsel": 18,
+        "before": [
+          "0x250800",
+          "0x2408ff",
+          "0x250800"
+        ],
+        "after": [
+          "0x250a00",
+          "0x240aff",
+          "0x250a00"
+        ]
+      },
+      {
+        "divsel": 19,
+        "before": [
+          "0x270800",
+          "0x2608ff",
+          "0x270800"
+        ],
+        "after": [
+          "0x270a00",
+          "0x260aff",
+          "0x270a00"
+        ]
+      },
+      {
+        "divsel": 20,
+        "before": [
+          "0x290800",
+          "0x2808ff",
+          "0x290800"
+        ],
+        "after": [
+          "0x290a00",
+          "0x280aff",
+          "0x290a00"
+        ]
+      },
+      {
+        "divsel": 21,
+        "before": [
+          "0x2b0800",
+          "0x2a08ff",
+          "0x2b0800"
+        ],
+        "after": [
+          "0x2b0a00",
+          "0x2a0aff",
+          "0x2b0a00"
+        ]
+      },
+      {
+        "divsel": 22,
+        "before": [
+          "0x2d0800",
+          "0x2c08ff",
+          "0x2d0800"
+        ],
+        "after": [
+          "0x2d0a00",
+          "0x2c0aff",
+          "0x2d0a00"
+        ]
+      },
+      {
+        "divsel": 23,
+        "before": [
+          "0x2f0800",
+          "0x2e08ff",
+          "0x2f0800"
+        ],
+        "after": [
+          "0x2f0a00",
+          "0x2e0aff",
+          "0x2f0a00"
+        ]
+      },
+      {
+        "divsel": 24,
+        "before": [
+          "0x310800",
+          "0x3008ff",
+          "0x310800"
+        ],
+        "after": [
+          "0x310a00",
+          "0x300aff",
+          "0x310a00"
+        ]
+      },
+      {
+        "divsel": 25,
+        "before": [
+          "0x330800",
+          "0x3208ff",
+          "0x330800"
+        ],
+        "after": [
+          "0x330a00",
+          "0x320aff",
+          "0x330a00"
+        ]
+      },
+      {
+        "divsel": 26,
+        "before": [
+          "0x350800",
+          "0x3408ff",
+          "0x350800"
+        ],
+        "after": [
+          "0x350a00",
+          "0x340aff",
+          "0x350a00"
+        ]
+      },
+      {
+        "divsel": 27,
+        "before": [
+          "0x370800",
+          "0x3608ff",
+          "0x370800"
+        ],
+        "after": [
+          "0x370a00",
+          "0x360aff",
+          "0x370a00"
+        ]
+      },
+      {
+        "divsel": 28,
+        "before": [
+          "0x390800",
+          "0x3808ff",
+          "0x390800"
+        ],
+        "after": [
+          "0x390a00",
+          "0x380aff",
+          "0x390a00"
+        ]
+      },
+      {
+        "divsel": 29,
+        "before": [
+          "0x3b0800",
+          "0x3a08ff",
+          "0x3b0800"
+        ],
+        "after": [
+          "0x3b0a00",
+          "0x3a0aff",
+          "0x3b0a00"
+        ]
+      },
+      {
+        "divsel": 30,
+        "before": [
+          "0x3d0800",
+          "0x3c08ff",
+          "0x3d0800"
+        ],
+        "after": [
+          "0x3d0a00",
+          "0x3c0aff",
+          "0x3d0a00"
+        ]
+      },
+      {
+        "divsel": 31,
+        "before": [
+          "0x3f0800",
+          "0x3e08ff",
+          "0x3f0800"
+        ],
+        "after": [
+          "0x3f0a00",
+          "0x3e0aff",
+          "0x3f0a00"
+        ]
+      }
+    ]
+  },
+  "stock_getter": {
+    "start": "0xffffff800867bcf0",
+    "end_exclusive": "0xffffff800867be60",
+    "code_sha256": "8ab8e033624207a9fe1c05d64d133c2d77452bc5edf9f358a459f1743c2d0855",
+    "hook": "_mcount only",
+    "cases": [
+      {
+        "domain": "cpu0_3",
+        "stock_khz": 1499500,
+        "nominal_khz": 1499999
+      },
+      {
+        "domain": "cpu4_7",
+        "stock_khz": 919500,
+        "nominal_khz": 919999
+      },
+      {
+        "domain": "cci",
+        "stock_khz": 599750,
+        "nominal_khz": 599999
+      }
+    ]
+  },
+  "pmic_raw": {
+    "0x14a2": "0x3b2d",
+    "0x14a4": "0x43",
+    "0x19cc": "0x3d23",
+    "0x19ce": "0x3"
+  },
+  "rails": {
+    "vproc": {
+      "selector": 45,
+      "programmed_uv": 800000,
+      "gray_code_consistent": true,
+      "electrical_measurement": false
+    },
+    "vsram_proc": {
+      "selector": 61,
+      "programmed_uv": 900000,
+      "gray_code_consistent": true,
+      "electrical_measurement": false
+    }
+  },
+  "ownership_granted": false,
+  "dvfs_control_ready": false,
+  "limitations": [
+    "Code0 unity is corroborated stock-software interpretation and inherited boot configuration, not an independent electrical frequency measurement.",
+    "Preloader replay proves mux-only writes; it does not simulate divider hardware or recover a complete hardware encoding table.",
+    "Programmed rails and inherited PLLs do not establish calibrated OPP safety or SSPM ownership."
+  ]
+}

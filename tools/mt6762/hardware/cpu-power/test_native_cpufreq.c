@@ -38,6 +38,22 @@ static void clock_tests(void)
     assert(mt6762_pll_khz(1,0x5100000,1,ck,&khz));
     assert(mt6762_pll_khz(1,0x100000,1,(1u<<9)|(12u<<17),&khz));
     assert(mt6762_pll_khz(1,0,1,ck,&khz));
+
+    /* Actual two-pass inherited capture26; code 0 is undivided. PCWs are
+     * rounded down by the preloader, so nominal whole-kHz values end in 999. */
+    assert(!mt6762_pll_khz(0x191,0x811cd89d,0x80000001,0x10a00,&khz) && khz==1499999);
+    assert(!mt6762_pll_khz(0x191,0x0111b13b,0x80000001,0x00aff,&khz) && khz==919999);
+    assert(!mt6762_pll_khz(0x191,0x821713b1,0x80000001,0x10a00,&khz) && khz==599999);
+    /* Admitting code 0 must not weaken source/power checks, or admit the
+     * other encodings hidden by the stock getter's permissive default. */
+    assert(mt6762_pll_khz(0x190,0x811cd89d,0x80000001,0x10a00,&khz) && khz==599999);
+    assert(mt6762_pll_khz(0x191,0x811cd89d,0x80000003,0x10a00,&khz) && khz==599999);
+    assert(mt6762_pll_khz(0x191,0x811cd89d,0x80000001,0x10800,&khz) && khz==599999);
+    for(unsigned div=1;div<32;div++) {
+        if((div>=8 && div<=11) || (div>=16 && div<=20) || (div>=24 && div<=29))continue;
+        assert(mt6762_pll_khz(0x191,0x811cd89d,0x80000001,(div<<17)|0x10a00,&khz));
+        assert(khz==599999);
+    }
 }
 static void caps_tests(void)
 {

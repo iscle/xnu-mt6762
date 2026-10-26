@@ -43,7 +43,11 @@ def decode_rate(con0, con1, power, ckdiv):
         reasons.append("zero PCW")
     if post > 4:
         reasons.append("reserved postdivider")
-    if 8 <= div <= 11:
+    # Exact inherited preloader encoding; see CKDIV0.rst. Do not copy stock's
+    # permissive default for the other unsupported divider codes.
+    if div == 0:
+        numerator, denominator = 1, 1
+    elif 8 <= div <= 11:
         numerator, denominator = 12 - div, 4
     elif 16 <= div <= 20:
         numerator, denominator = 21 - div, 5
