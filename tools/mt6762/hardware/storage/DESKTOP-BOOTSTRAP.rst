@@ -14,7 +14,14 @@ nor patches Apple's userspace binaries. The tiny RAM filesystem remains
 available at/redwood. The system APFS can therefore stay on eMMC rather than
 occupy several GiB as a RAM disk. The optional physical handoff producer now
 checks the captured LK profile; its real-device admission/card test is pending.
-The installed real-phone diagnostic does not enable MSDC or include iOS.
+Image24/kernel42 now enables the native MSDC probe; its physical result is
+pending. Image25 packages the same4MiB bootstrap used by the successful
+emulator run and a bounded userdata slice, but is not installed. Its builder
+and manifest checks passed. The separate ``physical/install_system_slice.py``
+requires caller-supplied fresh device/partition guards, backs up the entire
+target extent before any write, and verifies every written byte. It stops on
+errors without retrying or resetting. No system slice has been written to the
+phone yet. See ../../physical/desktop-build25-evidence.json.
 
 Kernel33 mounted the unchanged system APFS and ran launchd in QEMU, but its
 PIO transport latched a timeout under concurrent process startup. A host

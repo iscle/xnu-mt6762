@@ -30,6 +30,7 @@ DIAGNOSTICS = (
     '77d0183f98f523f3180a811c4b71cc9800af4a1203a4c56d95b87cf5e78393a8', # Image21: retained I2C setup values and read-only LK PWRAP probe
     'c1920f7877a8c48f6e1c1439ffd86681225153c77e02b95794be22406ab06551', # Image23: guarded synchronous LK storage probe, fully passing kernel41 build
     'f96011b960ba669b8a4e001003115ea2eeb0912c3a2db11cfa03a5f697d321f0', # Image24: measured I2C0 readback fix and inherited storage probe
+    'b0c0a3368981ee98f7b67e3c0918be3533d9d7ba65760713142d9991aa78c580', # Image25: APFS bootstrap for bounded eMMC iOS slice; physical result pending
 )
 VBMETA_FLAGS3 = '2f3fb6474d7ff35ac4c48ab2bef71247ba50de4a94de2474b7d1b60cd6654f51'
 
@@ -136,7 +137,7 @@ def main():
         checks[action] = sha(text.encode())
     if sha(args.boot_backup.read_bytes()) != STOCK_BOOT or sha(args.diagnostic.read_bytes()) != diagnostic_sha or sha(args.vbmeta_capture.read_bytes()) != VBMETA_FLAGS3:
         raise ValueError('Input changed during preparation')
-    report = dict(purpose='Normal boot partition diagnostic, not full iOS',
+    report = dict(purpose='Normal boot partition XNU payload; userspace identified by source manifest',
         target_partition='boot', image_sha256=sha(complete), image_bytes=len(complete),
         stock_boot_backup_sha256=STOCK_BOOT, stock_boot_backup_bytes=len(backup),
         diagnostic_input_sha256=diagnostic_sha, main_vbmeta_capture_sha256=VBMETA_FLAGS3,
@@ -153,7 +154,7 @@ def main():
         writes_device=False, physical_boot_validated=False,
         limits=['Unsigned descriptor integrity is not a trusted signature.',
                 'Require independently confirmed current unlocked state and main-vbmeta flags3.',
-                'Normal-path LK/bootloader acceptance remains physically unproved.',
+                'This exact candidate still requires physical boot validation.',
                 'Keep the verified stock boot backup for recovery if needed; no automatic restoration.',
                 'No change to recovery, LK, vendor_boot, BCB or main vbmeta is performed by this tool.'])
     (out / 'manifest.json').write_text(json.dumps(report, indent=2) + '\n')

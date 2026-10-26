@@ -63,6 +63,19 @@ The old AVB trailer is omitted; the resulting image is unsigned. The manifest
 records the kernel, diagnostic, template, loader dependencies, tools and image
 hashes. No binary or firmware is committed to this repository.
 
+For an eMMC desktop attempt, ``--bootstrap-apfs`` replaces ``--diagnostic``.
+Supply the small helper filesystem and ``--ios-system-slice START COUNT`` in
+512-byte sectors, plus ``--native-msdc-probe --native-pwrap-probe``, the native
+display/peripheral flags, ``--expand-memory`` and ``--refresh-watchdog``. The
+builder checks the raw APFS superblock checksum/geometry and limits the slice
+to the captured userdata extent. These checks do not validate its filesystem
+contents. The loader enables the slice only after storage admission and a live
+capacity check; the kernel then corroborates capacity through EXT_CSD. The
+existing iOS system image must be separately installed and verified at that
+extent. Building this image neither writes the phone nor establishes desktop
+or watchdog acceptance. The legacy output filename remains
+``mt6762-xnu-diagnostic-boot.img``; the manifest identifies the root payload.
+
 The physical Image enters at0x40080000 with the bootloader's runtime FDT in x0.
 It admits a little-endian, MMU/data-cache-off Cortex-A53 at EL1 or EL2 and a
 13MHz counter. EL1 entry preserves the existing GZ hypervisor state. EL2 entry

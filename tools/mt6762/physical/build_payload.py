@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build a self-contained temporary XNU diagnostic image; no device commands."""
+"""Build a physical XNU diagnostic or eMMC desktop bootstrap; no device commands."""
 import argparse
 import gzip
 import hashlib
@@ -17,6 +17,7 @@ import trace_record
 import display_record
 import pwm_record
 import peripheral_record
+import desktop_ramdisk
 
 
 def sha(data):
@@ -54,8 +55,13 @@ def encode_adt(tree):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    for name in ('kernel', 'diagnostic', 'template', 'llvm', 'out'):
+    for name in ('kernel', 'template', 'llvm', 'out'):
         parser.add_argument('--'+name, type=Path, required=True)
+    root = parser.add_mutually_exclusive_group(required=True)
+    root.add_argument('--diagnostic', type=Path, help='standalone project PID1 Mach-O')
+    root.add_argument('--bootstrap-apfs', type=Path, help='small APFS root containing the desktop bootstrap and helpers')
+    parser.add_argument('--ios-system-slice', nargs=2, type=lambda v:int(v,0),
+                        metavar=('START','COUNT'), help='read-only 512-byte sector extent inside captured userdata')
     parser.add_argument('--native-display', action='store_true',
                         help='require measured LK display/PWM admission and emit its native handoff')
     parser.add_argument('--brightness-pulse', action='store_true',
@@ -78,6 +84,11 @@ def main():
         parser.error('touch/watchdog/PWRAP requires native display and passive peripheral capture')
     if args.native_msdc_probe and not args.native_pwrap_probe:
         parser.error('native MSDC requires the read-only PWRAP probe')
+    if bool(args.bootstrap_apfs) != bool(args.ios_system_slice):
+        parser.error('--bootstrap-apfs and --ios-system-slice require each other')
+    if args.bootstrap_apfs and not (args.native_msdc_probe and args.expand_memory and args.refresh_watchdog):
+        parser.error('desktop bootstrap requires native MSDC, expanded memory and watchdog servicing')
+    ios_slice = desktop_ramdisk.validate_slice(*args.ios_system_slice) if args.ios_system_slice else None
     out = args.out.resolve()
     if out.exists():
         parser.error('output must be new')
@@ -85,14 +96,18 @@ def main():
         'fdt_handoff.c','fdt_handoff.h','diagnostic_console.h','loader_trace.h',
         'trace_record.py','display_probe.h','display_record.py','pwm_probe.h','pwm_record.py',
         'native_display.h','native_storage.h','peripheral_probe.h','peripheral_record.py','peripheral-registers.json',
-        'build_payload.py','bootimg.py')]
+        'build_payload.py','bootimg.py','desktop_ramdisk.py')]
     source_paths += [Path(prepare.__file__), HERE.parent/'hardware/display-touch/mt6762_display_core.h']
     source_paths += [HERE.parent/'hardware/display-touch/mt6762_touch_entry.h']
     source_paths += [HERE.parent/'hardware/power/mt6762_pwrap_entry.h']
     source_paths += [HERE.parents[2]/'bsd/dev/mt6762_msdc_clock.h']
     sources_before = {os.path.relpath(p,HERE.parent):sha(p.read_bytes()) for p in source_paths}
     original_kernel = args.kernel.read_bytes()
-    original_diagnostic = args.diagnostic.read_bytes()
+    root_path = args.bootstrap_apfs or args.diagnostic
+    if args.bootstrap_apfs and root_path.stat().st_size > desktop_ramdisk.MAX_BOOTSTRAP_BYTES:
+        raise ValueError('bootstrap exceeds32MiB')
+    original_diagnostic = root_path.read_bytes()
+    root_info = desktop_ramdisk.validate_bootstrap(original_diagnostic) if args.bootstrap_apfs else dict(format='mach-o')
     trace_identity = hashlib.sha256(os.urandom(32) + original_kernel +
         json.dumps(sources_before, sort_keys=True).encode()).digest()
     template_sha = sha(args.template.read_bytes())
@@ -113,7 +128,8 @@ def main():
         if left['offset']+left['vmsize'] > right['offset']:
             raise ValueError('overlapping kernel segments')
     diagnostic = original_diagnostic
-    prepare.parse_macho(diagnostic)
+    if not args.bootstrap_apfs:
+        prepare.parse_macho(diagnostic)
     ramdisk_offset = prepare.align(max(s['offset']+s['vmsize'] for s in segments))
     ramdisk_size = prepare.align(len(diagnostic))
     diagnostic += bytes(ramdisk_size-len(diagnostic))
@@ -125,6 +141,8 @@ def main():
     tree['props']['serial-number'] = b'MT6762DIAGNOSTIC\0'.ljust(32,b'\0')
     chosen = next(child for child in tree['children'] if child['name']=='chosen')
     chosen['props']['firmware-version'] = b'mt6762-physical-diagnostic\0'
+    if args.bootstrap_apfs:
+        chosen['props']['firmware-version'] = b'mt6762-physical-desktop-bootstrap\0'
     chosen['props']['boot-manifest-hash'] = hashlib.sha384(kernel).digest()
     for key in ('unique-chip-id', 'mac-address-wifi0', 'mac-address-bluetooth0'):
         chosen['props'].pop(key, None)
@@ -162,6 +180,10 @@ def main():
             assert len(msdc_values)==44
             props.update({name:prepare.u32(0) for name in msdc_flags+msdc_values})
             props['msdc-timeout-us']=prepare.u32(20000)
+        if ios_slice:
+            props['ios-system-slice']=prepare.u32(0)
+            props['ios-system-start-sector']=prepare.u64(ios_slice['start_sector'])
+            props['ios-system-sector-count']=prepare.u64(ios_slice['sector_count'])
         chosen['children'].append(dict(name='mt6762-handoff',props=props,children=[]))
     adt = encode_adt(tree)
     _, end, positions = decode_adt(adt)
@@ -195,6 +217,11 @@ def main():
     constants['REFRESH_WATCHDOG']=int(args.refresh_watchdog)
     constants['NATIVE_PWRAP_PROBE']=int(args.native_pwrap_probe)
     constants['NATIVE_MSDC_PROBE']=int(args.native_msdc_probe)
+    constants['IOS_SYSTEM_SLICE']=int(ios_slice is not None)
+    if ios_slice:
+        constants['IOS_SYSTEM_START']=ios_slice['start_sector']
+        constants['IOS_SYSTEM_COUNT']=ios_slice['sector_count']
+        constants['ADT_IOS_SLICE_PATCH']=positions['/device-tree/chosen/mt6762-handoff/ios-system-slice']
     if args.native_display:
         native_path='/device-tree/chosen/mt6762-handoff/'
         constants.update({k:positions[native_path+name] for k,name in (
@@ -261,7 +288,7 @@ def main():
         raise ValueError('PWM record does not match fixed source Image offset')
     if raw_image[peripheral_record.OFFSET:peripheral_record.OFFSET + peripheral_record.SIZE] != peripheral_record.initialized(trace_identity):
         raise ValueError('Peripheral record does not match fixed source Image offset')
-    # Empty newc archive; XNU's diagnostic executable is embedded in Image.
+    # Empty Android newc archive; XNU's actual root is embedded in Image.
     name=b'TRAILER!!!\0'; fields=[0,0,0,0,1,0,0,0,0,0,0,len(name),0]
     cpio=b'070701'+b''.join(f'{field:08x}'.encode() for field in fields)+name
     cpio+=bytes(-len(cpio)%4)
@@ -273,8 +300,10 @@ def main():
     sources_after = {os.path.relpath(p,HERE.parent):sha(p.read_bytes()) for p in source_paths}
     if sources_before != sources_after or template_sha != sha(args.template.read_bytes()):
         raise ValueError('build inputs changed during compilation; discard candidate')
-    report=dict(format=1,purpose='Temporary physical XNU diagnostic, not full iOS userspace',
+    report=dict(format=1,purpose=('Physical XNU bootstrap for existing iOS system slice' if ios_slice else
+                                'Temporary physical XNU diagnostic, not full iOS userspace'),
         kernel_sha256=sha(original_kernel),diagnostic_sha256=sha(original_diagnostic),
+        root_payload=dict(root_info,sha256=sha(original_diagnostic)),ios_system_slice=ios_slice,
         template_sha256=template_sha,source_sha256=sources_before,source_inputs_stable=True,
         tool_sha256={name:sha((args.llvm/name).read_bytes()) for name in ('clang','ld.lld','llvm-objcopy')},
         blob_sha256={name:sha(data) for name,data in blobs.items()},image_sha256=sha(image_path.read_bytes()),
@@ -309,7 +338,7 @@ def main():
         pwm_trace=dict(offset=pwm_record.OFFSET, physical_address=pwm_record.ADDRESS,
             size=pwm_record.SIZE, initialized_sha256=sha(pwm_record.initialized(trace_identity)),
             register_writes=False, native_ownership=False),
-        limitations=['No full iOS GUI, charging, touch or button acceptance.',
+        limitations=['Physical iOS GUI, charging, touch and buttons require runtime acceptance.',
                      'Stock AP watchdog policy remains; exact reset timing/routing is unverified.',
                      'FDT and processor-state mismatch halt before XNU; no guessed RAM fallback.'])
     (out/'physical-manifest.json').write_text(json.dumps(report,indent=2)+'\n')

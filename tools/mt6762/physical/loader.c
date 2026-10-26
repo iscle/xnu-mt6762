@@ -158,6 +158,11 @@ const struct entry_result *loader_main(uint64_t fdt_address, uint64_t original_e
     struct mt6762_storage_profile storage;
     if(!mt6762_storage_profile_read(pwrap_entry_read,NULL,&storage))
         stop("inherited synchronous LK eMMC profile",12);
+#if PAYLOAD_IOS_SYSTEM_SLICE
+    if(PAYLOAD_IOS_SYSTEM_START>=storage.sectors ||
+       PAYLOAD_IOS_SYSTEM_COUNT>storage.sectors-PAYLOAD_IOS_SYSTEM_START)
+        stop("iOS slice outside live eMMC capacity",13);
+#endif
 #endif
     struct mtk_fdt_range source = {(uintptr_t)image_start, (uintptr_t)image_end-(uintptr_t)image_start};
     uint64_t physical, memory_size=MTK_FDT_WINDOW_SIZE;
@@ -194,6 +199,11 @@ const struct entry_result *loader_main(uint64_t fdt_address, uint64_t original_e
     put64(adt, PAYLOAD_ADT_DRAM_PATCH, physical);
     put64(adt, PAYLOAD_ADT_DRAM_SIZE_PATCH, memory_size);
     put64(adt, PAYLOAD_ADT_RAMDISK_PATCH, physical + PAYLOAD_RAMDISK_OFFSET);
+#if PAYLOAD_IOS_SYSTEM_SLICE
+    /* The bounded slice becomes available only after live storage admission. */
+    uint32_t ios_slice_enabled=1;
+    memcpy(adt+PAYLOAD_ADT_IOS_SLICE_PATCH,&ios_slice_enabled,sizeof(ios_slice_enabled));
+#endif
 #if PAYLOAD_NATIVE_DISPLAY
     put64(adt, PAYLOAD_ADT_FB_PHYS_PATCH, framebuffer);
     put64(adt, PAYLOAD_ADT_FB_BASE_PATCH, fdt.framebuffer.base);

@@ -1,0 +1,41 @@
+{
+  "image": "Image25/kernel42",
+  "kernel_sha256": "00e0e3ff3a77319e707040ac70dd45c7ea1b25511be8fac68c9740a4206e9eeb",
+  "raw_boot_sha256": "b0c0a3368981ee98f7b67e3c0918be3533d9d7ba65760713142d9991aa78c580",
+  "normal_boot_sha256": "dd2d5ab707e5f832c2ce0bbc0f89fe1f414e981b90b8b49c403ccb6e01853a2c",
+  "root_payload": {
+    "format": "raw-apfs",
+    "bytes": 4194304,
+    "block_size": 4096,
+    "block_count": 1024,
+    "nxsb_checksum_verified": true,
+    "filesystem_contents_verified": false,
+    "sha256": "893dc1cea41d719fcc26416162526f3295b11cdd1b73bb98a9226e25ae93db8e"
+  },
+  "ios_system_slice": {
+    "start_sector": 12566528,
+    "sector_count": 4865552,
+    "sector_size": 512,
+    "read_only": true,
+    "physical_contents_verified": false
+  },
+  "system_image_sha256": "9329e9c9bf46d6890798bb15d0d0036ec8c9235abf7d77edbacdd346992454a0",
+  "all_kernel_build_checks_passed": true,
+  "loader_build_passed": true,
+  "source_inputs_stable": true,
+  "initial_slice_grant": 0,
+  "initial_storage_grants": 0,
+  "host_tests": {
+    "count": 84,
+    "optional_skips": 2,
+    "passed": true
+  },
+  "apple_preservation_passed": true,
+  "apple_cache_files": 43,
+  "apple_preservation_report_sha256": "2bdce6f86e53b4c0c81379b82d90a3a023865336b50214fe5040a0aa6eb78a43",
+  "bootstrap_entry_matches_project_macho": true,
+  "installed": false,
+  "physical_desktop_proven": false,
+  "physical_storage_acceptance": false,
+  "requires": "Image24 native eMMC result, backed-up system-slice installation and verified readback"
+}
