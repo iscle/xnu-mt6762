@@ -13,6 +13,23 @@ QEMU boot has none of these native flags.
 Ownership and readiness
 -----------------------
 
+The optional ``charger-readonly-probe=1`` works inside the inherited PWRAP
+diagnostic path, before its button worker starts. It additionally requires
+I2C5 to have completed its own handoff/setup admission; the flag never
+initializes that bus. It reads fixed PSC registers3,1,0, requires ID0xf0,
+and retains two complete observations in ``MT6762_PSC_PROBE`` lines. Failed
+reads stop this probe and do not publish partial values or charger readiness.
+The existing key worker can still start. There are no charger configuration
+writes, battery-policy operations or charge-enable grant on this path.
+
+These sequential observations are not atomic and do not establish exclusive
+charger control or protection. Manufacturer Rev06.5 says I2C activity can
+refresh the OTG watchdog, so register reads are not electrically passive.
+Host tests cover every control/status byte pair,255 wrong identities, each
+read failure, missing arguments and operation without a write callback.
+The installed Image33 predates this addition; its pending I2C5 capture is
+still needed before a physical bus profile can enable the probe.
+
 * ``pwrap-verified=1`` means the loader has checked the inherited PMIC wrapper
   and transferred AP WACS2 use with previous AP users quiesced. The physical
   profile2 uses initialization bit22; legacy bit21 is allowed only in the

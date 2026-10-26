@@ -2,6 +2,46 @@
 #include <stdio.h>
 #include "../../../../bsd/dev/mt6762_charger_protocol.h"
 struct model { uint8_t id,control; unsigned reads,writes; int fail_read,fail_write,no_latch,other_change; };
+struct observation_model { uint8_t id,control,status; unsigned reads,writes; int fail; };
+static int observation_read(void *p,uint8_t reg,uint8_t *v)
+{
+    static const uint8_t order[]={3,1,0};
+    struct observation_model *m=p;
+    assert(m->reads<3 && reg==order[m->reads]);
+    if(++m->reads==(unsigned)m->fail)return -8;
+    *v=reg==3?m->id:reg==1?m->control:m->status;
+    return 0;
+}
+static int observation_write(void *p,uint8_t reg,uint8_t v)
+{(void)reg;(void)v;((struct observation_model *)p)->writes++;return -9;}
+static void observation_tests(void)
+{
+    struct observation_model m={0};
+    struct mt6762_psc_io io={&m,observation_read,observation_write};
+    struct mt6762_psc_observation out;
+    for(unsigned control=0;control<256;control++)for(unsigned status=0;status<256;status++) {
+        m=(struct observation_model){.id=0xf0,.control=control,.status=status};
+        assert(!mt6762_psc_observe(&io,&out));
+        assert(out.id==0xf0 && out.control==control && out.status==status);
+        assert(m.reads==3 && !m.writes);
+    }
+    for(unsigned id=0;id<256;id++)if(id!=0xf0) {
+        m=(struct observation_model){.id=id};out=(struct mt6762_psc_observation){0xaa,0xbb,0xcc};
+        assert(mt6762_psc_observe(&io,&out)==-2 && m.reads==1 && !m.writes);
+        assert(out.id==0xaa && out.control==0xbb && out.status==0xcc);
+    }
+    for(int failure=1;failure<=3;failure++) {
+        m=(struct observation_model){.id=0xf0,.fail=failure};
+        out=(struct mt6762_psc_observation){0xaa,0xbb,0xcc};
+        assert(mt6762_psc_observe(&io,&out)==-8 && m.reads==(unsigned)failure && !m.writes);
+        assert(out.id==0xaa && out.control==0xbb && out.status==0xcc);
+    }
+    m=(struct observation_model){.id=0xf0};io.write=NULL;
+    assert(!mt6762_psc_observe(&io,&out) && m.reads==3);
+    m.reads=0;
+    assert(mt6762_psc_observe(NULL,&out)==-1 && mt6762_psc_observe(&io,NULL)==-1 && !m.reads);
+    io.read=NULL;assert(mt6762_psc_observe(&io,&out)==-1 && !m.reads);
+}
 static int rd(void *p,uint8_t reg,uint8_t *v)
 {
     struct model *m=p;m->reads++;
@@ -71,4 +111,4 @@ static void decoder_tests(void)
     assert(!mt6762_psc_termination_ua(7,50000,&v) && v==226000);
     assert(mt6762_psc_termination_ua(7,0,&v) && v==226000);
 }
-int main(void) {disable_tests();decoder_tests();puts("native charger ownership, disable/readback, nominal datasheet decoders: PASS");return 0;}
+int main(void) {observation_tests();disable_tests();decoder_tests();puts("native charger observation, ownership, disable/readback, nominal datasheet decoders: PASS");return 0;}

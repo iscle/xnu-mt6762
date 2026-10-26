@@ -371,6 +371,20 @@ void mt6762_power_init(void)
             kprintf("MT6762_PWRAP_SAMPLE pass=%u address=%04x error=%d value=%04x\n",pass,regs[i],error,value);
             if(error)return;
         }
+        /* Separate observation grant; bus5 still needs its own validated
+         * handoff and setup. Do not enter normal ADC/charger policy below. */
+        if(verified("charger-readonly-probe")) {
+            for(unsigned pass=0;pass<2;pass++) {
+                struct mt6762_psc_observation value;
+                int error=mt6762_i2c_ready(5)?mt6762_psc_observe(&psc_io,&value):-ENXIO;
+                if(error) {
+                    kprintf("MT6762_PSC_PROBE pass=%u error=%d\n",pass,error);
+                    break;
+                }
+                kprintf("MT6762_PSC_PROBE pass=%u error=0 id=%02x control=%02x status=%02x\n",
+                    pass,value.id,value.control,value.status);
+            }
+        }
         if(pwrap_ready && pwrap_read_only && verified("keys-inherited-probe") && verified("keypad-verified")) {
             keypad=mt6762_map_mmio(0x10010000,0x1000);
             keys_gpio=mt6762_map_mmio(0x10005000,0x1000);

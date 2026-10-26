@@ -7,6 +7,27 @@ struct mt6762_psc_io {
     int (*read)(void *,uint8_t,uint8_t *);
     int (*write)(void *,uint8_t,uint8_t);
 };
+struct mt6762_psc_observation {
+    uint8_t id,control,status;
+};
+/* Fixed identification/control/status reads for an already admitted bus.
+ * No configuration write callback is required or invoked. Publish only a
+ * complete sample; these sequential reads are not an atomic snapshot and
+ * establish neither control ownership nor protection. Datasheet OTG watchdog
+ * activity can be refreshed by reads, so this is not electrically passive. */
+static inline int
+mt6762_psc_observe(const struct mt6762_psc_io *io,struct mt6762_psc_observation *out)
+{
+    struct mt6762_psc_observation value;
+    int e;
+    if(!io || !io->read || !out)return -1;
+    if((e=io->read(io->context,3,&value.id)))return e;
+    if(value.id!=0xf0)return -2;
+    if((e=io->read(io->context,1,&value.control)))return e;
+    if((e=io->read(io->context,0,&value.status)))return e;
+    *out=value;
+    return 0;
+}
 /* Caller must hold exclusive control ownership across this entire operation.
  * Success means CE was read back disabled, not that an electrical fallback
  * exists. Bus failure leaves control safety unknown. No guessed reset. */
