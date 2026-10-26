@@ -58,7 +58,13 @@ CHARGER_SETUP_FLAGS = ('dma-direct','i2c-pads-verified','i2c5-verified',
 CHARGER_READONLY_FLAGS = CHARGER_SETUP_FLAGS[:-1] + ('charger-readonly-probe',)
 # Reviewed frozen kernel: secondary EL2 descent, firmware queries and cache
 # handoff; original-entry tests and an eight-core QEMU run passed.
-SMP_KERNELS = {'1d2310dfe3cc89fa29fadc896544503d89eedc01269c85d35278afa46f8f4f20'}
+SMP_KERNELS = {
+    '1d2310dfe3cc89fa29fadc896544503d89eedc01269c85d35278afa46f8f4f20',
+    # HakiOS kernel56: same reviewed start.s/psci_smp.c as kernel54;
+    # fresh build passed, QEMU observed8/8 CPUs and205 IIG runtime checks.
+    # This pin admits packaging, not physical8-core validation.
+    'bcc01522daf9bb430e8fd8df3d2b29a34bc3bf52674b978d936520eee1def60b',
+}
 # Capture34 exhausted the old20ms software wait before the inherited DDR
 # controller's approximately109ms data timeout. Allow its existing hardware
 # timeout/error reporting inside the protocol's bounded1s software envelope.
