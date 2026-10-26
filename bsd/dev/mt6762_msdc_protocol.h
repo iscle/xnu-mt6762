@@ -15,6 +15,7 @@ enum {
     MT6762_MSDC_COMMAND=-5, MT6762_MSDC_DATA=-6,
     MT6762_MSDC_CARD=-7, MT6762_MSDC_ACK=-8, MT6762_MSDC_FAULTED=-9
 };
+#define MT6762_MSDC_MAX_BLOCKS 256u
 struct mt6762_msdc_io {
     void *ctx;
     /* Must independently validate exclusive handoff, masked GIC, clocks,
@@ -81,7 +82,9 @@ static inline int mt6762_msdc_ack(struct mt6762_msdc *s,uint32_t bits)
 static inline int mt6762_msdc_command(struct mt6762_msdc *s,uint32_t command,
     uint32_t arg,uint32_t *r1)
 {
-    if((command!=0x8d && command!=0x02000888 && command!=0x02000891) ||
+    if((command!=0x8d && command!=0x97 && command!=0x02000888 &&
+        command!=0x02000891 && command!=0x02001092) ||
+       (command==0x97 && (arg<2 || arg>MT6762_MSDC_MAX_BLOCKS)) ||
        (command==0x02000888 && arg) ||
        (command==0x8d && arg!=(s->config.rca<<16)))return MT6762_MSDC_ARGUMENT;
     unsigned polls=0;int expired=0;
@@ -123,18 +126,22 @@ static inline int mt6762_msdc_status(struct mt6762_msdc *s)
     if((r1&0x1f00)!=0x900)return MT6762_MSDC_CARD;
     return mt6762_msdc_quiet(s);
 }
-static inline int mt6762_msdc_data512(struct mt6762_msdc *s,uint32_t opcode,
-    uint32_t arg,uint8_t data[512])
+static inline int mt6762_msdc_data_blocks(struct mt6762_msdc *s,uint32_t opcode,
+    uint32_t arg,unsigned count,uint8_t *data)
 {
-    if((opcode!=8 && opcode!=17) ||
-       (opcode==17 && arg>=s->config.sector_count))return MT6762_MSDC_ARGUMENT;
+    if(!data || !count || count>MT6762_MSDC_MAX_BLOCKS ||
+       (opcode!=8 && opcode!=17 && opcode!=18) ||
+       ((opcode==8 || opcode==17) && count!=1) || (opcode==18 && count<2) ||
+       (opcode!=8 && (arg>=s->config.sector_count ||
+        count>s->config.sector_count-arg)))return MT6762_MSDC_ARGUMENT;
+    const unsigned bytes=count*512u;
     uint32_t r1=0;
     unsigned have=0,polls=0;int expired=0;
     int error=mt6762_msdc_quiet(s);
     if(error)return error;
-    mt6762_msdc_w(s,0x50,1);
-    if(mt6762_msdc_r(s,0x50)!=1)return MT6762_MSDC_STATE;
-    error=mt6762_msdc_command(s,0x02000880u|opcode,arg,&r1);
+    mt6762_msdc_w(s,0x50,count);
+    if(mt6762_msdc_r(s,0x50)!=count)return MT6762_MSDC_STATE;
+    error=mt6762_msdc_command(s,(opcode==18?0x02001080u:0x02000880u)|opcode,arg,&r1);
     if(error)return error;
     uint64_t start=s->io.time_us(s->io.ctx);
     s->wait_phase=2;
@@ -142,8 +149,8 @@ static inline int mt6762_msdc_data512(struct mt6762_msdc *s,uint32_t opcode,
         uint32_t irq=mt6762_msdc_r(s,0x0c),fifo=mt6762_msdc_r(s,0x14)&0xff;
         s->last_irq=irq;
         if(irq&0xc000)return MT6762_MSDC_DATA;
-        if(fifo>512-have)return MT6762_MSDC_DATA;
-        if(fifo>=64 && have<512) {
+        if(fifo>bytes-have)return MT6762_MSDC_DATA;
+        if(fifo>=64 && have<bytes) {
             /* Exact stock PIO path drains sixteen32-bit words per64bytes. */
             for(unsigned i=0;i<16;i++) {
                 uint32_t word=mt6762_msdc_r(s,0x1c);
@@ -151,14 +158,14 @@ static inline int mt6762_msdc_data512(struct mt6762_msdc *s,uint32_t opcode,
             }
             s->data_bytes=have;
             /* Bound stalls, not CPU scheduling delays while data is ready.
-             * There are only eight chunks. Re-read IRQ before accepting the
+             * There are at most 8*256 chunks. Re-read IRQ before accepting the
              * final completion so a concurrent data error still wins. */
             uint64_t now=s->io.time_us(s->io.ctx);
             if(now<start)return MT6762_MSDC_TIMEOUT;
             start=now;polls=0;s->stalled_us=0;expired=0;
             continue;
         }
-        if(have==512 && (irq&0x1000)) {
+        if(have==bytes && (irq&0x1000)) {
             error=mt6762_msdc_ack(s,0x1000);
             if(error)return error;
             return mt6762_msdc_quiet(s);
@@ -168,6 +175,9 @@ static inline int mt6762_msdc_data512(struct mt6762_msdc *s,uint32_t opcode,
         if(expired && s->stalled_us==UINT64_MAX)return expired;
     }
 }
+static inline int mt6762_msdc_data512(struct mt6762_msdc *s,uint32_t opcode,
+    uint32_t arg,uint8_t data[512])
+{return mt6762_msdc_data_blocks(s,opcode,arg,1,data);}
 static inline int mt6762_msdc_init(struct mt6762_msdc *s,
     const struct mt6762_msdc_io *io,const struct mt6762_msdc_config *config)
 {
@@ -211,6 +221,32 @@ static inline int mt6762_msdc_read512(struct mt6762_msdc *s,uint64_t lba,void *o
        (error=mt6762_msdc_data512(s,17,(uint32_t)lba,data)) ||
        (error=mt6762_msdc_status(s)))return mt6762_msdc_fail(s,error);
     memcpy(out512,data,512);
+    return 0;
+}
+/* Predefined read-only multi-block PIO. A CMD23 failure or any partial transfer
+ * latches a terminal fault: no implicit STOP, reset, retry or single-block
+ * fallback. Scratch is caller-owned bounded memory, never a large kernel stack.
+ * Output is published only after all bytes, completion, TRAN and quiet checks. */
+static inline int mt6762_msdc_read_blocks(struct mt6762_msdc *s,uint64_t lba,
+    unsigned count,void *out,void *scratch,size_t scratch_size)
+{
+    size_t bytes=(size_t)count*512u;
+    if(!s || !out || !scratch || count<2 || count>MT6762_MSDC_MAX_BLOCKS ||
+       scratch_size<bytes)return MT6762_MSDC_ARGUMENT;
+    uintptr_t a=(uintptr_t)out,b=(uintptr_t)scratch;
+    if((a>=b?a-b:b-a)<bytes)return MT6762_MSDC_ARGUMENT;
+    if(s->faulted)return MT6762_MSDC_FAULTED;
+    if(!s->initialized || lba>=s->config.sector_count || lba>UINT32_MAX ||
+       count>s->config.sector_count-lba)return MT6762_MSDC_ARGUMENT;
+    uint32_t r1=0;
+    int error=mt6762_msdc_status(s);
+    if(!error)error=mt6762_msdc_command(s,0x97,count,&r1);
+    /* CMD23 only defines the following length. The card must remain TRAN. */
+    if(!error && (r1&0x1f00)!=0x900)error=MT6762_MSDC_CARD;
+    if(!error)error=mt6762_msdc_data_blocks(s,18,(uint32_t)lba,count,scratch);
+    if(!error)error=mt6762_msdc_status(s);
+    if(error)return mt6762_msdc_fail(s,error);
+    memcpy(out,scratch,bytes);
     return 0;
 }
 #endif

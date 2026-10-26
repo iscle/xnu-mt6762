@@ -18,7 +18,7 @@ static LCK_GRP_DECLARE(msdc_bsd_group,"mt6762-msdc-bsd");
 static LCK_MTX_DECLARE(msdc_bsd_lock,&msdc_bsd_group);
 static uint64_t capacity;
 static uint64_t ios_start,ios_count;
-static int (*sector_read)(uint64_t,void *);
+static int (*blocks_read)(uint64_t,unsigned,void *);
 static int ready,publishing,bmajor=-1,cmajor=-1;
 static int disk_ready(void)
 {return __atomic_load_n(&ready,__ATOMIC_ACQUIRE);}
@@ -37,13 +37,14 @@ static int disk_open(dev_t dev,int flags,__unused int type,__unused proc_t p)
 static int disk_close(__unused dev_t d,__unused int f,__unused int t,__unused proc_t p)
 {return 0;}
 
-static int read_one(dev_t dev,uint64_t sector,void *out)
+static int read_many(dev_t dev,uint64_t sector,unsigned blocks,void *out)
 {
     int error;
-    if(!disk_ready() || sector>=disk_capacity(dev))return EINVAL;
+    if(!disk_ready() || !blocks || blocks>MAX_READ/SECTOR ||
+       sector>=disk_capacity(dev) || blocks>disk_capacity(dev)-sector)return EINVAL;
     if(minor(dev)==1)sector+=ios_start; /* Full extent checked before publication. */
     lck_mtx_lock(&msdc_bsd_lock);
-    error=sector_read(sector,out);
+    error=blocks_read(sector,blocks,out);
     lck_mtx_unlock(&msdc_bsd_lock);
     return error;
 }
@@ -69,11 +70,10 @@ static void disk_strategy(buf_t bp)
     if(!length)goto finished;
     error=buf_map(bp,&data);
     if(error)goto finished;
-    while(done<length) {
-        error=read_one(dev,(uint64_t)block+done/SECTOR,data+done);
-        if(error)break;
-        done+=SECTOR;
-    }
+    /* One controller ownership interval and one all-or-nothing output per
+     * bounded strategy request, including a short read at the slice end. */
+    error=read_many(dev,(uint64_t)block,(unsigned)(length/SECTOR),data);
+    if(!error)done=length;
     {
         int unmap_error=buf_unmap(bp);
         if(!error)error=unmap_error;
@@ -108,7 +108,7 @@ static int disk_read(dev_t dev,struct uio *uio,__unused int flags)
         if(offset>=disk_capacity(dev)*SECTOR)return 0;
         unsigned within=(unsigned)(offset%SECTOR),count=SECTOR-within;
         if((uint64_t)uio_resid(uio)<count)count=(unsigned)uio_resid(uio);
-        int error=read_one(dev,offset/SECTOR,scratch);
+        int error=read_many(dev,offset/SECTOR,1,scratch);
         if(error)return error;
         /* Copyout may fault and recursively read a filesystem backed by this
          * device. The transport mutex is already released. */
@@ -128,11 +128,11 @@ static const struct cdevsw char_ops={
     .d_reserved_1=eno_getc,.d_reserved_2=eno_putc,.d_type=D_DISK
 };
 
-int mt6762_msdc_publish(uint64_t sectors,int (*read_sector)(uint64_t,void *))
+int mt6762_msdc_publish(uint64_t sectors,int (*read_blocks)(uint64_t,unsigned,void *))
 {
     void *block_node=NULL,*char_node=NULL,*ios_block=NULL,*ios_char=NULL;
     /* EXT_CSD SEC_COUNT and sector-addressed MMC commands are32-bit. */
-    if(!sectors || sectors>UINT32_MAX || !read_sector)return EINVAL;
+    if(!sectors || sectors>UINT32_MAX || !read_blocks)return EINVAL;
     uint32_t slice=0;
     uint64_t start=0,count=0;
     if(!mt6762_handoff_u32("ios-system-slice",&slice)) {
@@ -143,7 +143,7 @@ int mt6762_msdc_publish(uint64_t sectors,int (*read_sector)(uint64_t,void *))
     /* One publication attempt; only a release-published ready disk may be
      * accessed by later CPUs. Registration failure never exposes callbacks. */
     if(__atomic_exchange_n(&publishing,1,__ATOMIC_ACQ_REL))return EBUSY;
-    capacity=sectors;sector_read=read_sector;ios_start=start;ios_count=count;
+    capacity=sectors;blocks_read=read_blocks;ios_start=start;ios_count=count;
     bmajor=bdevsw_add(-1,&block_ops);
     if(bmajor<0)goto failed;
     cmajor=cdevsw_add_with_bdev(-1,&char_ops,bmajor);
@@ -169,6 +169,6 @@ failed:
     if(block_node)devfs_remove(block_node);
     if(cmajor>=0)cdevsw_remove(cmajor,&char_ops);
     if(bmajor>=0)bdevsw_remove(bmajor,&block_ops);
-    cmajor=bmajor=-1;capacity=ios_start=ios_count=0;sector_read=NULL;
+    cmajor=bmajor=-1;capacity=ios_start=ios_count=0;blocks_read=NULL;
     return ENXIO;
 }

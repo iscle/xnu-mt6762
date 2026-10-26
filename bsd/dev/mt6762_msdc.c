@@ -6,6 +6,7 @@
 #include <sys/mt6762_msdc.h>
 #if defined(ARM64_BOARD_CONFIG_MT6762)
 #include <kern/clock.h>
+#include <kern/kalloc.h>
 #include <libkern/libkern.h>
 #include <pexpert/pexpert.h>
 #include <sys/errno.h>
@@ -33,6 +34,13 @@ static struct mt6762_msdc_admission admission;
 static uint64_t perf_sectors,perf_read_us,perf_read_max_us;
 static uint64_t perf_start_us,perf_report_us;
 static int perf_started;
+static uint8_t *bulk_scratch;
+static uint64_t perf_batches,perf_single,perf_commands,perf_cmd13,perf_cmd17,perf_cmd18,perf_cmd23;
+static uint64_t perf_command_us,perf_data_us,command_started,data_started;
+static int command_timed,data_timed;
+static uint64_t time_us(void *unused);
+static void finish_timer(uint64_t start,uint64_t *total)
+{uint64_t end=time_us(NULL);if(end>=start)*total+=end-start;}
 static uint64_t time_us(void *);
 
 SYSCTL_DECL(_kern_hakios);
@@ -149,6 +157,13 @@ static uint32_t read32(void *unused,uint32_t offset)
 {
     (void)unused;
     uint32_t value=r32(controller,offset);
+    if(offset==0x0c && command_timed && (value&0x700)) {
+        finish_timer(command_started,&perf_command_us);command_timed=0;
+        if(!(value&0x600) && (issued_command==0x02000888 ||
+           issued_command==0x02000891 || issued_command==0x02001092)) {
+            data_started=time_us(NULL);data_timed=1;
+        }
+    }
     if(offset==0x40) {last_response=value;response_observed=1;}
     if(offset==0x1c && issued_command==0x02000888 && ext_bytes<=508) {
         for(unsigned i=0;i<4;i++)ext_snapshot[ext_bytes++]=(uint8_t)(value>>(i*8));
@@ -160,7 +175,16 @@ static void write32(void *unused,uint32_t offset,uint32_t value)
     (void)unused;
     if(offset==0x34) {
         last_response=0;response_observed=0;issued_command=value;
+        perf_commands++;
+        if(value==0x8d)perf_cmd13++;
+        if(value==0x02000891)perf_cmd17++;
+        if(value==0x02001092)perf_cmd18++;
+        if(value==0x97)perf_cmd23++;
+        command_started=time_us(NULL);command_timed=1;
         if(value==0x02000888)ext_bytes=0;
+    }
+    if(offset==0x0c && (value&0x1000) && data_timed) {
+        finish_timer(data_started,&perf_data_us);data_timed=0;
     }
     *(volatile uint32_t *)(controller+offset)=value;
     __asm__ volatile("dsb sy":::"memory");
@@ -188,18 +212,22 @@ static void performance_report(uint64_t now,int force)
 {
     if(!force && now>=perf_report_us && now-perf_report_us<30000000)return;
     perf_report_us=now;
-    kprintf("MT6762_MSDC_PERF lab=%u sectors=%llu bytes=%llu wall_us=%llu read_us=%llu read_max_us=%llu admissions=%llu full=%llu reused=%llu full_us=%llu full_max_us=%llu slow_full=%llu admission_errors=%llu clock_reverse=%llu\n",
+    kprintf("MT6762_MSDC_PERF lab=%u sectors=%llu bytes=%llu wall_us=%llu read_us=%llu read_max_us=%llu admissions=%llu full=%llu reused=%llu full_us=%llu full_max_us=%llu slow_full=%llu admission_errors=%llu clock_reverse=%llu batches=%llu singles=%llu commands=%llu cmd13=%llu cmd17=%llu cmd18=%llu cmd23=%llu command_us=%llu data_us=%llu\n",
         lab,perf_sectors,perf_sectors*512,now>=perf_start_us?now-perf_start_us:0,
         perf_read_us,perf_read_max_us,admission.calls,admission.full,
         admission.reused,admission.full_us,admission.full_max_us,
-        admission.slow_full,admission.failures,admission.clock_reversals);
+        admission.slow_full,admission.failures,admission.clock_reversals,
+        perf_batches,perf_single,perf_commands,perf_cmd13,perf_cmd17,perf_cmd18,perf_cmd23,
+        perf_command_us,perf_data_us);
 }
-static int read_sector(uint64_t lba,void *out)
+static int read_blocks(uint64_t lba,unsigned blocks,void *out)
 {
     if(!__atomic_load_n(&ready,__ATOMIC_ACQUIRE))return ENXIO;
     uint64_t start=time_us(NULL);
     if(!perf_started) {perf_started=1;perf_start_us=perf_report_us=start;}
-    int error=mt6762_msdc_read512(&engine,lba,out);
+    if(!blocks || blocks>MT6762_MSDC_MAX_BLOCKS || !bulk_scratch)return EINVAL;
+    int error=blocks==1?mt6762_msdc_read512(&engine,lba,out):
+        mt6762_msdc_read_blocks(&engine,lba,blocks,out,bulk_scratch,MT6762_MSDC_MAX_BLOCKS*512u);
     uint64_t end=time_us(NULL);
     if(end>=start) {
         uint64_t elapsed=end-start;
@@ -207,6 +235,8 @@ static int read_sector(uint64_t lba,void *out)
         if(elapsed>perf_read_max_us)perf_read_max_us=elapsed;
     }
     if(error) {
+        if(command_timed){finish_timer(command_started,&perf_command_us);command_timed=0;}
+        if(data_timed){finish_timer(data_started,&perf_data_us);data_timed=0;}
         mt6762_msdc_admission_invalidate(&admission);
         __atomic_store_n(&last_error,error,__ATOMIC_RELEASE);
         if(engine.faulted) {
@@ -220,11 +250,13 @@ static int read_sector(uint64_t lba,void *out)
         return error==MT6762_MSDC_ARGUMENT?EINVAL:
             (error==MT6762_MSDC_TIMEOUT?ETIMEDOUT:EIO);
     }
-    mt6762_msdc_admission_sector_done(&admission);
-    perf_sectors++;
-    performance_report(end,perf_sectors==1);
+    for(unsigned i=0;i<blocks;i++)mt6762_msdc_admission_sector_done(&admission);
+    perf_sectors+=blocks;
+    if(blocks==1)perf_single++;else perf_batches++;
+    performance_report(end,perf_sectors==blocks);
     int count=__atomic_load_n(&reads,__ATOMIC_RELAXED);
-    if(count<2147483647)__atomic_store_n(&reads,count+1,__ATOMIC_RELEASE);
+    count=count>2147483647-(int)blocks?2147483647:count+(int)blocks;
+    __atomic_store_n(&reads,count,__ATOMIC_RELEASE);
     return 0;
 }
 static int physical_contract(void)
@@ -310,8 +342,12 @@ void mt6762_storage_init(void)
             engine.data_bytes,engine.last_irq,engine.stalled_us,response_observed,last_response);
         printf("MT6762 MSDC: inherited admission/card read failed %d; no reset\n",error);return;
     }
-    error=mt6762_msdc_publish(config.sector_count,read_sector);
+    /* One bounded bounce shared under the BSD transport mutex. No per-request
+     * allocation, and no publication of partial data on a failed batch. */
+    bulk_scratch=kalloc_data(MT6762_MSDC_MAX_BLOCKS*512u,Z_WAITOK);
+    error=bulk_scratch?mt6762_msdc_publish(config.sector_count,read_blocks):ENOMEM;
     if(error) {
+        if(bulk_scratch){kfree_data(bulk_scratch,MT6762_MSDC_MAX_BLOCKS*512u);bulk_scratch=NULL;}
         last_error=-error;fault=1;engine.faulted=1;
         printf("MT6762 MSDC: read-only BSD publication failed %d\n",error);return;
     }

@@ -1,0 +1,215 @@
+{
+  "format": 1,
+  "scope": "Pre-bulk observations and bounded source/host protocol validation",
+  "captures": {
+    "physical36": {
+      "sha256": "84237acde964d7bd4d39b96f5f3375139e160fad2291717596c675b1d505711e",
+      "last_perf": {
+        "lab": 0,
+        "sectors": 1067785,
+        "bytes": 546705920,
+        "wall_us": 524292168,
+        "read_us": 341067032,
+        "read_max_us": 43023,
+        "admissions": 7474502,
+        "full": 337419,
+        "reused": 7137083,
+        "full_us": 54281022,
+        "full_max_us": 12940,
+        "slow_full": 39,
+        "admission_errors": 0,
+        "clock_reverse": 0
+      },
+      "first_at_least270s_storage_interval": {
+        "lab": 0,
+        "sectors": 811920,
+        "bytes": 415703040,
+        "wall_us": 270002332,
+        "read_us": 259143457,
+        "read_max_us": 43023,
+        "admissions": 5683447,
+        "full": 256381,
+        "reused": 5427066,
+        "full_us": 41197106,
+        "full_max_us": 12940,
+        "slow_full": 23,
+        "admission_errors": 0,
+        "clock_reverse": 0
+      },
+      "read_wall_fraction": 0.650528565591695,
+      "mean_sector_us": 319.41545535852254,
+      "read_mib_per_second": 1.528671333238828,
+      "full_observation_fraction_of_read": 0.1591505977042073,
+      "milestones": {
+        "Successfully spawned SpringBoard": [
+          "com.apple.xpc.launchd|1970-01-01 01:00:31.697571 (user/501/com.apple.SpringBoard [8]) <Notice>: Successfully spawned SpringBoard[8] because system support"
+        ],
+        "Successfully spawned backboardd": [
+          "com.apple.xpc.launchd|1970-01-01 01:01:05.514132 (user/501/com.apple.backboardd [12]) <Notice>: Successfully spawned backboardd[12] because speculative"
+        ],
+        "window server ready in": [
+          "1970-01-01 01:04:38.205912+0100 backboardd[12:211] [Common]       window server ready in 9.85704s. overall 36.0468s"
+        ],
+        "System shell connected:": [
+          "1970-01-01 01:04:39.399802+0100 backboardd[12:211] [SystemShell] System shell connected: <BKSystemShellClient: 0x13bd5f930; bundleIdentifier: com.apple.springboard; bundlePath: /System/Library/CoreServices/SpringBoard.app; jobLabel: com.app"
+        ],
+        "hakios: unlock:": []
+      }
+    },
+    "physical37": {
+      "sha256": "3d8c225b818ba584f5291ba73253d9494bba390cc7bc06b3966744633e68a8ee",
+      "last_perf": {
+        "lab": 0,
+        "sectors": 1085553,
+        "bytes": 555803136,
+        "wall_us": 777161051,
+        "read_us": 346889510,
+        "read_max_us": 6364,
+        "admissions": 7598878,
+        "full": 344154,
+        "reused": 7254724,
+        "full_us": 55158733,
+        "full_max_us": 283,
+        "slow_full": 0,
+        "admission_errors": 0,
+        "clock_reverse": 0
+      },
+      "first_at_least270s_storage_interval": {
+        "lab": 0,
+        "sectors": 814983,
+        "bytes": 417271296,
+        "wall_us": 270004203,
+        "read_us": 260312031,
+        "read_max_us": 6364,
+        "admissions": 5704888,
+        "full": 258064,
+        "reused": 5446824,
+        "full_us": 41354903,
+        "full_max_us": 283,
+        "slow_full": 0,
+        "admission_errors": 0,
+        "clock_reverse": 0
+      },
+      "read_wall_fraction": 0.4463547286030936,
+      "mean_sector_us": 319.55096618958265,
+      "read_mib_per_second": 1.5280230750743948,
+      "full_observation_fraction_of_read": 0.15900951573888758,
+      "milestones": {
+        "Successfully spawned SpringBoard": [
+          "com.apple.xpc.launchd|1970-01-01 01:00:31.136782 (user/501/com.apple.SpringBoard [8]) <Notice>: Successfully spawned SpringBoard[8] because system support"
+        ],
+        "Successfully spawned backboardd": [
+          "com.apple.xpc.launchd|1970-01-01 01:00:44.276933 (user/501/com.apple.backboardd [11]) <Notice>: Successfully spawned backboardd[11] because speculative"
+        ],
+        "window server ready in": [
+          "1970-01-01 01:04:39.715385+0100 backboardd[11:241] [Common]       window server ready in 12.462s. overall 39.1691s"
+        ],
+        "System shell connected:": [
+          "1970-01-01 01:04:44.541563+0100 backboardd[11:241] [SystemShell] System shell connected: <BKSystemShellClient: 0x10131d010; bundleIdentifier: com.apple.springboard; bundlePath: /System/Library/CoreServices/SpringBoard.app; jobLabel: com.app"
+        ],
+        "hakios: unlock:": []
+      }
+    },
+    "qemu56-smp8": {
+      "sha256": "21c6bd97ac534e91410ec6788a5cb08ae1a67c3edbf16bd3fa6c64234a702b3b",
+      "last_perf": {
+        "lab": 1,
+        "sectors": 1527609,
+        "bytes": 782135808,
+        "wall_us": 600200190,
+        "read_us": 444427227,
+        "read_max_us": 185087,
+        "admissions": 0,
+        "full": 0,
+        "reused": 0,
+        "full_us": 0,
+        "full_max_us": 0,
+        "slow_full": 0,
+        "admission_errors": 0,
+        "clock_reverse": 0
+      },
+      "first_at_least270s_storage_interval": {
+        "lab": 1,
+        "sectors": 922463,
+        "bytes": 472301056,
+        "wall_us": 270003139,
+        "read_us": 248641939,
+        "read_max_us": 185087,
+        "admissions": 0,
+        "full": 0,
+        "reused": 0,
+        "full_us": 0,
+        "full_max_us": 0,
+        "slow_full": 0,
+        "admission_errors": 0,
+        "clock_reverse": 0
+      },
+      "read_wall_fraction": 0.740464988856468,
+      "mean_sector_us": 290.92996113534286,
+      "read_mib_per_second": 1.6783463899506994,
+      "full_observation_fraction_of_read": 0.0,
+      "milestones": {
+        "Successfully spawned SpringBoard": [
+          "com.apple.xpc.launchd|1970-01-01 01:00:14.329608 (user/501/com.apple.SpringBoard [8]) <Notice>: Successfully spawned SpringBoard[8] because system support"
+        ],
+        "Successfully spawned backboardd": [
+          "com.apple.xpc.launchd|1970-01-01 01:00:23.983031 (user/501/com.apple.backboardd [11]) <Notice>: Successfully spawned backboardd[11] because speculative"
+        ],
+        "window server ready in": [
+          "1970-01-01 01:03:48.700869+0100 backboardd[11:243] [Common]       window server ready in 12.5633s. overall 34.1725s"
+        ],
+        "System shell connected:": [
+          "1970-01-01 01:03:49.825656+0100 backboardd[11:243] [SystemShell] System shell connected: <BKSystemShellClient: 0x101624bc0; bundleIdentifier: com.apple.springboard; bundlePath: /System/Library/CoreServices/SpringBoard.app; jobLabel: com.app"
+        ],
+        "hakios: unlock:": [
+          "hakios: unlock: asked, answer 1"
+        ]
+      }
+    }
+  },
+  "implementation": {
+    "maximum_batch_sectors": 256,
+    "maximum_bounce_bytes": 131072,
+    "multi_sequence": [
+      13,
+      23,
+      18,
+      13
+    ],
+    "single_sequence": [
+      13,
+      17,
+      13
+    ],
+    "raw_cmd23": "0x97",
+    "raw_cmd18": "0x02001092",
+    "media_writes": false,
+    "dma": false,
+    "reset_or_stop_or_retry": false,
+    "header_changes": [
+      "bsd/dev/mt6762_msdc_protocol.h",
+      "bsd/sys/mt6762_msdc.h"
+    ],
+    "kernel_runtime_tested": false,
+    "physical_bulk_tested": false
+  },
+  "host_tests": {
+    "command": "sh tools/mt6762/hardware/storage/test.sh",
+    "result": "PASS",
+    "bulk_counts": [
+      2,
+      32,
+      256
+    ],
+    "bulk_fault_classes": 11,
+    "clock_modes": [
+      "normal",
+      "frozen",
+      "backward"
+    ],
+    "bsd_strategy_actual_source": true,
+    "bsd_publication_actual_source": true,
+    "bsd_publication_failure_stages": 6,
+    "review_correction": "Renamed callback cleanup still referenced sector_read; corrected to blocks_read and extended harness to compile actual publication and cleanup."
+  }
+}

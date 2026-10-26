@@ -10,3 +10,7 @@ cc -std=c11 -Wall -Wextra -Werror -g test_msdc_clock.c -o "$testdir/msdc-clock"
 cc -std=c11 -Wall -Wextra -Werror -g test_msdc_admission.c -o "$testdir/msdc-admission"
 "$testdir/msdc-admission"
 python3 test_msdc_poll_delay.py
+
+cc -std=c11 -Wall -Wextra -Werror -g test_msdc_bulk.c -o "$testdir/msdc-bulk"
+"$testdir/msdc-bulk"
+python3 test_msdc_bsd_batch.py
