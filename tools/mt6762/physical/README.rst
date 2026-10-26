@@ -23,16 +23,31 @@ R1=0x900 from the final CMD13: the512-byte EXT_CSD transfer completed and the
 failure is in subsequent metadata validation. This corrects the earlier
 interpretation of the per-command byte counter as total transferred bytes.
 EXT_CSD BUS_WIDTH is write-only; the driver now uses admitted host mode with
-readable card timing/capabilities instead. Physical confirmation is pending.
+readable card timing/capabilities instead. Capture24/Image30/kernel48 confirms
+native eMMC admission at47,999,984Hz,244,285,440sectors and read-only access.
+The actual card reports BUS_WIDTH0, HS_TIMING1 and CARD_TYPE0x57; see
+../hardware/storage/capture24-native-evidence.json.
 Capture19 validates bounded LK card metadata
 (RCA1, sector addressing and244,285,440sectors), without granting storage
 ownership. See ../hardware/display-touch/physical-build36-evidence.json and the card audit.
-Touch integration with the physical desktop, charging and keys remain incomplete.
+Touch integration with the physical desktop and charging remain incomplete.
 The optional ``--native-buttons-probe`` (kernel43 onward) requires the
 read-only PWRAP probe and separately admits the captured keypad configuration.
 It polls power/volume state without changing pins, clocks, IRQs or reset
-policy. Capture22 confirms worker startup; hardware event validation is pending.
+policy. Capture24 contains two down/up pairs for each of the three physical
+buttons, plus three complete touch gestures. Delivery to the physical iOS
+desktop remains untested.
 See ../hardware/power/NATIVE.rst.
+
+Prepared Image32/kernel50 expands the passive record to235 entries, using
+record version2: twelve CPU/CCI PLL/divider words and36 charger-bus
+GPIO/pad/IRQ/controller/DMA words are added to the previous187 entries. The
+read-only PWRAP probe also retains four CPU-rail status words twice. These
+observations grant no I2C5, charging, clock-change or DVFS ownership. Gated
+controller/DMA reads retain the existing clock prerequisites. The offline
+CPU decoder reports nominal configured rates only; see
+../hardware/cpu-power/PHYSICAL-CLOCKS.rst and
+../hardware/power/i2c5-handoff-passive-review.json. Physical results are pending.
 
 Physical trial status: the dumped LK's fastboot boot path panics before XNU
 entry. Its caller passes the download pointer to a routine that instead looks
@@ -56,7 +71,8 @@ and requests the205-case generated DriverKit RPC selftest. By default it supplie
 no native peripheral ownership handoff. The opt-in display mode grants only
 its independently validated display/brightness contract. The separate touch
 probe permits a private bounded DMA buffer after bus admission. Charging,
-buttons, DVFS and the iOS GUI remain unaccepted. USB ADB is unavailable in XNU.
+DVFS and the iOS GUI remain unaccepted. Physical button events have been
+captured through the separately enabled button probe. USB ADB is unavailable in XNU.
 
 Build without accessing the phone
 --------------------------------

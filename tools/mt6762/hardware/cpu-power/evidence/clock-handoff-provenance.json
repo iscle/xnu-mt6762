@@ -1,0 +1,128 @@
+{
+  "method": "Local exact-stock bytes, retained disassembly and supplied BSP; native REA providers unavailable; no phone access",
+  "sources": {
+    "firmware/Image": {
+      "path": "/home/iscle/mt6762-ios-port/firmware/Image",
+      "sha256": "82b1919185a49f268a0f8e145a6714d6264c1f66918a90df0d763266147ead4b"
+    },
+    "emulator/stock.elf": {
+      "path": "/home/iscle/mt6762-ios-port/emulator/stock.elf",
+      "sha256": "643474799f7c300f2d3c7f5130f697ee359929f13db0750f4dd7b9d648af14fc"
+    },
+    "firmware/boot.dts": {
+      "path": "/home/iscle/mt6762-ios-port/firmware/boot.dts",
+      "lines": [
+        1035,
+        1038,
+        1930,
+        1933
+      ],
+      "sha256": "00dcbf4602559331e085fb04d6bacd1a6b6a4d7fc1f83a85e8d135c87f5d0d6c"
+    },
+    "bsp-cpu-platform": {
+      "path": "/mnt/0da18f53-c547-40a2-a7c3-b08e84d1aab4/alps/aosp-docker/workspace/kernel-4.14/drivers/misc/mediatek/base/power/cpufreq_v1/src/mach/mt6765/mtk_cpufreq_platform.c",
+      "lines": [
+        33,
+        45,
+        52,
+        88,
+        109,
+        116,
+        306,
+        419
+      ],
+      "sha256": "fa2aa4c3ace8fb0adf7450e65ecb9af1810acec3396304347c8635bdfd5ccd9a"
+    },
+    "bsp-clock-plls": {
+      "path": "/mnt/0da18f53-c547-40a2-a7c3-b08e84d1aab4/alps/aosp-docker/workspace/kernel-4.14/drivers/clk/mediatek/clk-mt6765.c",
+      "lines": [
+        1331,
+        1336
+      ],
+      "sha256": "a1bc40dc8f1e9abf150ec34f7c00fbaa69d8e879b4b4df55b265365adcaf39bc"
+    },
+    "bsp-pmic-registers": {
+      "path": "/mnt/0da18f53-c547-40a2-a7c3-b08e84d1aab4/alps/aosp-docker/workspace/kernel-4.14/include/linux/mfd/mt6357/registers.h",
+      "lines": [
+        756,
+        757,
+        1074,
+        1075,
+        10058,
+        10073,
+        13474,
+        13485
+      ],
+      "sha256": "6933e2382bde5f9487cc633b9e6167a4a93675a8f08eb8fae01315db0a0e8bbe"
+    },
+    "bsp-pmic-getters": {
+      "path": "/mnt/0da18f53-c547-40a2-a7c3-b08e84d1aab4/alps/aosp-docker/workspace/kernel-4.14/drivers/misc/mediatek/pmic/mt6357/v1/pmic_api.c",
+      "lines": [
+        31862,
+        31923,
+        46193,
+        46238
+      ],
+      "sha256": "40c9a9c7e23771a9a4cbe0b717f1d36895d072bbdc7bde1b58d5294198f3784f"
+    },
+    "native-clock-decoder": {
+      "path": "/home/iscle/mt6762-ios-port/xnu/bsd/dev/mt6762_cpufreq_protocol.h",
+      "sha256": "67dd5d411bf32695d032aea477218e8bd48f963aaed614d55e2798f465b4a324"
+    },
+    "capture22": {
+      "path": "/home/iscle/mt6762-ios-port/hardware/trace-boot-20261025/capture22/peripherals-result.json",
+      "sha256": "428b58a4eb1ef6e8e2243217867e5e80e6ffa19aadc5ff103d00cdc30f855c52"
+    }
+  },
+  "stock_function": {
+    "name": "get_cur_phy_freq",
+    "start": "0xffffff800867bcf0",
+    "end_exclusive": "0xffffff800867be60",
+    "code_sha256": "8ab8e033624207a9fe1c05d64d133c2d77452bc5edf9f358a459f1743c2d0855",
+    "jump_tables": [
+      "0xffffff8009085bb0",
+      "0xffffff8009085bb4"
+    ]
+  },
+  "registers": {
+    "cpu0_3": {
+      "con0": "0x1000c21c",
+      "con1": "0x1000c220",
+      "power": "0x1000c228",
+      "ckdiv": "0x102007a0"
+    },
+    "cpu4_7": {
+      "con0": "0x1000c20c",
+      "con1": "0x1000c210",
+      "power": "0x1000c218",
+      "ckdiv": "0x102007a4"
+    },
+    "cci": {
+      "con0": "0x1000c22c",
+      "con1": "0x1000c230",
+      "power": "0x1000c238",
+      "ckdiv": "0x102007c0"
+    }
+  },
+  "pmic": {
+    "vproc": {
+      "selector_register": "0x14a2",
+      "shift": 0,
+      "mask": 127,
+      "status_register": "0x14a4"
+    },
+    "vsram_proc": {
+      "selector_register": "0x19cc",
+      "shift": 8,
+      "mask": 127,
+      "status_register": "0x19ce"
+    },
+    "enable_bit": 0,
+    "stable_bit": 1,
+    "base_uv": 518750,
+    "step_uv": 6250,
+    "source_scope": "BSP getter/field semantics, not yet observed on physical XNU path"
+  },
+  "ownership_granted": false,
+  "dvfs_control_ready": false
+}

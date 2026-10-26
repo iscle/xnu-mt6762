@@ -1,0 +1,42 @@
+{
+  "capture": "capture24",
+  "image": "Image30/kernel48",
+  "kernel_sha256": "8306796a4e5e3ac343103c38b72ae4a974bff19792f6ff7a07c6a160114ce022",
+  "xnu_log_sha256": "491eb6abd90bba5bd0105973a98e8345356db28e979b1b3f180c0175f015f018",
+  "trace_sha256": "3773f7765561ba7dca491cdc4f93cba84525c2c133cb73be3c74754d97923610",
+  "vm_page_bytes": 16384,
+  "hardware_page_bytes": 4096,
+  "memory": {
+    "physical_base": 3489660928,
+    "usable_bytes": 4024434688,
+    "actual_bytes": 4024434688
+  },
+  "storage_lines": [
+    "MT6762_MSDC_EXT bytes=512 sectors=244285440 cqe=0 partition=48 bus_width=0 timing=1 revision=8 card_type=57 bkops=0 events=0",
+    "MT6762_MSDC_READY lab=0 sectors=244285440 hz=47999984 rca=1 readonly=1"
+  ],
+  "touch_events": {
+    "1": 3,
+    "3": 3,
+    "2": 21
+  },
+  "touch_complete_gestures": 3,
+  "key_event_counts": {
+    "2:1": 2,
+    "2:-1": 2,
+    "3:1": 2,
+    "3:-1": 2,
+    "1:1": 2,
+    "1:-1": 2
+  },
+  "all_three_buttons_pressed_and_released": true,
+  "iig_cases": 205,
+  "iig_passed": true,
+  "physical_desktop_proven": false,
+  "charging_proven": false,
+  "limits": [
+    "Kernel transport events; iOS desktop event delivery remains untested.",
+    "Card initialization accepted; filesystem slice not yet installed at capture time.",
+    "Capture connected through preloader; not evidence of a direct BootROM read."
+  ]
+}

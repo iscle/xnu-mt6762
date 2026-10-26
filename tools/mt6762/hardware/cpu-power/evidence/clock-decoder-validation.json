@@ -1,0 +1,32 @@
+{
+  "result": "pass",
+  "decoder_sha256": "b5f96325c99ec5057b4d5af343f15b4a8d4deda346679447f56ec5b25d7379b8",
+  "native_header_sha256": "67dd5d411bf32695d032aea477218e8bd48f963aaed614d55e2798f465b4a324",
+  "native_comparison_cases": 2568,
+  "native_coverage": "All postdivider and CKDIV encodings across six PCWs; enable/power/mux combinations; 1000 deterministic arbitrary u32 tuples",
+  "stock_image_sha256": "82b1919185a49f268a0f8e145a6714d6264c1f66918a90df0d763266147ead4b",
+  "stock_function_va": "0xffffff800867bcf0",
+  "stock_executed_cases": 225,
+  "stock_execution_scope": "Original bounded instructions under Unicorn; _mcount intercepted; clock registers represented by synthetic RAM; no hardware model or device access",
+  "stock_rounding_difference_cases": 150,
+  "stock_rounding_example": {
+    "con1": "0x55555",
+    "ckdiv": "0x100200",
+    "stock_khz": 554000,
+    "nominal_khz": 554666
+  },
+  "rejected_capture_corruptions": [
+    "width=2",
+    "valid=1",
+    "stable=False",
+    "first=-1",
+    "second=2",
+    "first=True",
+    "duplicate",
+    "missing",
+    "incomplete",
+    "one_pass"
+  ],
+  "capture22_all_twelve_words_absent": true,
+  "ownership_granted": false
+}

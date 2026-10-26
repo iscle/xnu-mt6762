@@ -361,10 +361,11 @@ void mt6762_power_init(void)
         }
     }
     if(verified("pwrap-inherited-probe")) {
-        /* PMIC ordinary readable words only: keys/reset policy and eMMC rails.
+        /* PMIC ordinary readable words only: keys/reset policy and eMMC/CPU rails.
          * No ADC/gauge commands, rail writes or charger control. The separate
          * inherited-key grant below permits only filtered key observations. */
-        static const uint16_t regs[]={0x24,0x14c,0x1988,0x1958,0x1c20,0x1996,0x1966};
+        static const uint16_t regs[]={0x24,0x14c,0x1988,0x1958,0x1c20,0x1996,0x1966,
+            0x14a2,0x14a4,0x19cc,0x19ce};
         for(unsigned pass=0;pwrap_ready && pass<2;pass++)for(unsigned i=0;i<sizeof(regs)/sizeof(regs[0]);i++) {
             uint16_t value=0;int error=mt6762_pwrap_read16(regs[i],&value);
             kprintf("MT6762_PWRAP_SAMPLE pass=%u address=%04x error=%d value=%04x\n",pass,regs[i],error,value);

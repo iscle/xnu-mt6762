@@ -1,6 +1,6 @@
 {
-  "format": 1,
-  "purpose": "Passive peripheral and bounded LK RAM observations; no ownership grants",
+  "format": 2,
+  "purpose": "Passive peripheral, CPU clock and bounded LK RAM observations; no ownership grants",
   "registers": [
     {
       "address": "0x10000070",
@@ -519,6 +519,160 @@
       "name": "WDT+0x34"
     },
     {
+      "address": "0x10005360",
+      "width": 4,
+      "group": 0,
+      "name": "GPIO I2C5 MODE",
+      "evidence": "../hardware/power/i2c5-handoff-passive-review.json"
+    },
+    {
+      "address": "0x10005010",
+      "width": 4,
+      "group": 0,
+      "name": "GPIO I2C5 DIR",
+      "evidence": "../hardware/power/i2c5-handoff-passive-review.json"
+    },
+    {
+      "address": "0x10005210",
+      "width": 4,
+      "group": 0,
+      "name": "GPIO I2C5 DIN",
+      "evidence": "../hardware/power/i2c5-handoff-passive-review.json"
+    },
+    {
+      "address": "0x10002610",
+      "width": 4,
+      "group": 0,
+      "name": "IOCFG_BL I2C5 DRIVE",
+      "evidence": "../hardware/power/i2c5-handoff-passive-review.json"
+    },
+    {
+      "address": "0x10002650",
+      "width": 4,
+      "group": 0,
+      "name": "IOCFG_BL I2C5 IES",
+      "evidence": "../hardware/power/i2c5-handoff-passive-review.json"
+    },
+    {
+      "address": "0x10002670",
+      "width": 4,
+      "group": 0,
+      "name": "IOCFG_BL I2C5 PD",
+      "evidence": "../hardware/power/i2c5-handoff-passive-review.json"
+    },
+    {
+      "address": "0x10002690",
+      "width": 4,
+      "group": 0,
+      "name": "IOCFG_BL I2C5 PU",
+      "evidence": "../hardware/power/i2c5-handoff-passive-review.json"
+    },
+    {
+      "address": "0x0c000114",
+      "width": 4,
+      "group": 0,
+      "name": "GICD I2C5 ISENABLER5",
+      "evidence": "../hardware/power/i2c5-handoff-passive-review.json"
+    },
+    {
+      "address": "0x0c000214",
+      "width": 4,
+      "group": 0,
+      "name": "GICD I2C5 ISPENDR5",
+      "evidence": "../hardware/power/i2c5-handoff-passive-review.json"
+    },
+    {
+      "address": "0x0c000314",
+      "width": 4,
+      "group": 0,
+      "name": "GICD I2C5 ISACTIVER5",
+      "evidence": "../hardware/power/i2c5-handoff-passive-review.json"
+    },
+    {
+      "address": "0x1000c21c",
+      "width": 4,
+      "group": 0,
+      "name": "CPU0-3 ARMPLL_L CON0",
+      "evidence": "../hardware/cpu-power/PHYSICAL-CLOCKS.rst"
+    },
+    {
+      "address": "0x1000c220",
+      "width": 4,
+      "group": 0,
+      "name": "CPU0-3 ARMPLL_L CON1",
+      "evidence": "../hardware/cpu-power/PHYSICAL-CLOCKS.rst"
+    },
+    {
+      "address": "0x1000c228",
+      "width": 4,
+      "group": 0,
+      "name": "CPU0-3 ARMPLL_L POWER",
+      "evidence": "../hardware/cpu-power/PHYSICAL-CLOCKS.rst"
+    },
+    {
+      "address": "0x102007a0",
+      "width": 4,
+      "group": 0,
+      "name": "CPU0-3 ARMPLL_L CKDIV",
+      "evidence": "../hardware/cpu-power/PHYSICAL-CLOCKS.rst"
+    },
+    {
+      "address": "0x1000c20c",
+      "width": 4,
+      "group": 0,
+      "name": "CPU4-7 ARMPLL CON0",
+      "evidence": "../hardware/cpu-power/PHYSICAL-CLOCKS.rst"
+    },
+    {
+      "address": "0x1000c210",
+      "width": 4,
+      "group": 0,
+      "name": "CPU4-7 ARMPLL CON1",
+      "evidence": "../hardware/cpu-power/PHYSICAL-CLOCKS.rst"
+    },
+    {
+      "address": "0x1000c218",
+      "width": 4,
+      "group": 0,
+      "name": "CPU4-7 ARMPLL POWER",
+      "evidence": "../hardware/cpu-power/PHYSICAL-CLOCKS.rst"
+    },
+    {
+      "address": "0x102007a4",
+      "width": 4,
+      "group": 0,
+      "name": "CPU4-7 ARMPLL CKDIV",
+      "evidence": "../hardware/cpu-power/PHYSICAL-CLOCKS.rst"
+    },
+    {
+      "address": "0x1000c22c",
+      "width": 4,
+      "group": 0,
+      "name": "CCI CCIPLL CON0",
+      "evidence": "../hardware/cpu-power/PHYSICAL-CLOCKS.rst"
+    },
+    {
+      "address": "0x1000c230",
+      "width": 4,
+      "group": 0,
+      "name": "CCI CCIPLL CON1",
+      "evidence": "../hardware/cpu-power/PHYSICAL-CLOCKS.rst"
+    },
+    {
+      "address": "0x1000c238",
+      "width": 4,
+      "group": 0,
+      "name": "CCI CCIPLL POWER",
+      "evidence": "../hardware/cpu-power/PHYSICAL-CLOCKS.rst"
+    },
+    {
+      "address": "0x102007c0",
+      "width": 4,
+      "group": 0,
+      "name": "CCI CCIPLL CKDIV",
+      "evidence": "../hardware/cpu-power/PHYSICAL-CLOCKS.rst"
+    },
+    {
       "address": "0x1000d000",
       "width": 4,
       "group": 1,
@@ -657,6 +811,118 @@
       "name": "I2C0+0x4c"
     },
     {
+      "address": "0x11016004",
+      "width": 2,
+      "group": 2,
+      "name": "I2C5 SLAVE_ADDR",
+      "evidence": "../hardware/power/i2c5-handoff-passive-review.json"
+    },
+    {
+      "address": "0x11016008",
+      "width": 2,
+      "group": 2,
+      "name": "I2C5 INTR_MASK",
+      "evidence": "../hardware/power/i2c5-handoff-passive-review.json"
+    },
+    {
+      "address": "0x1101600c",
+      "width": 2,
+      "group": 2,
+      "name": "I2C5 INTR_STAT",
+      "evidence": "../hardware/power/i2c5-handoff-passive-review.json"
+    },
+    {
+      "address": "0x11016010",
+      "width": 2,
+      "group": 2,
+      "name": "I2C5 CONTROL",
+      "evidence": "../hardware/power/i2c5-handoff-passive-review.json"
+    },
+    {
+      "address": "0x11016014",
+      "width": 2,
+      "group": 2,
+      "name": "I2C5 TRANSFER_LEN",
+      "evidence": "../hardware/power/i2c5-handoff-passive-review.json"
+    },
+    {
+      "address": "0x11016018",
+      "width": 2,
+      "group": 2,
+      "name": "I2C5 TRANSAC_LEN",
+      "evidence": "../hardware/power/i2c5-handoff-passive-review.json"
+    },
+    {
+      "address": "0x1101601c",
+      "width": 2,
+      "group": 2,
+      "name": "I2C5 DELAY_LEN",
+      "evidence": "../hardware/power/i2c5-handoff-passive-review.json"
+    },
+    {
+      "address": "0x11016020",
+      "width": 2,
+      "group": 2,
+      "name": "I2C5 TIMING",
+      "evidence": "../hardware/power/i2c5-handoff-passive-review.json"
+    },
+    {
+      "address": "0x11016024",
+      "width": 2,
+      "group": 2,
+      "name": "I2C5 START",
+      "evidence": "../hardware/power/i2c5-handoff-passive-review.json"
+    },
+    {
+      "address": "0x11016028",
+      "width": 2,
+      "group": 2,
+      "name": "I2C5 EXT_CONF",
+      "evidence": "../hardware/power/i2c5-handoff-passive-review.json"
+    },
+    {
+      "address": "0x1101602c",
+      "width": 2,
+      "group": 2,
+      "name": "I2C5 LTIMING",
+      "evidence": "../hardware/power/i2c5-handoff-passive-review.json"
+    },
+    {
+      "address": "0x11016030",
+      "width": 2,
+      "group": 2,
+      "name": "I2C5 HS",
+      "evidence": "../hardware/power/i2c5-handoff-passive-review.json"
+    },
+    {
+      "address": "0x11016034",
+      "width": 2,
+      "group": 2,
+      "name": "I2C5 IO_CONFIG",
+      "evidence": "../hardware/power/i2c5-handoff-passive-review.json"
+    },
+    {
+      "address": "0x11016044",
+      "width": 2,
+      "group": 2,
+      "name": "I2C5 TRANSFER_LEN_AUX",
+      "evidence": "../hardware/power/i2c5-handoff-passive-review.json"
+    },
+    {
+      "address": "0x11016048",
+      "width": 2,
+      "group": 2,
+      "name": "I2C5 CLOCK_DIV",
+      "evidence": "../hardware/power/i2c5-handoff-passive-review.json"
+    },
+    {
+      "address": "0x1101604c",
+      "width": 2,
+      "group": 2,
+      "name": "I2C5 HW_TIMEOUT",
+      "evidence": "../hardware/power/i2c5-handoff-passive-review.json"
+    },
+    {
       "address": "0x11000080",
       "width": 4,
       "group": 3,
@@ -709,6 +975,76 @@
       "width": 4,
       "group": 3,
       "name": "APDMA0+0x58"
+    },
+    {
+      "address": "0x11000580",
+      "width": 4,
+      "group": 3,
+      "name": "APDMA5 INT_FLAG",
+      "evidence": "../hardware/power/i2c5-handoff-passive-review.json"
+    },
+    {
+      "address": "0x11000584",
+      "width": 4,
+      "group": 3,
+      "name": "APDMA5 INT_EN",
+      "evidence": "../hardware/power/i2c5-handoff-passive-review.json"
+    },
+    {
+      "address": "0x11000588",
+      "width": 4,
+      "group": 3,
+      "name": "APDMA5 EN",
+      "evidence": "../hardware/power/i2c5-handoff-passive-review.json"
+    },
+    {
+      "address": "0x11000598",
+      "width": 4,
+      "group": 3,
+      "name": "APDMA5 CON",
+      "evidence": "../hardware/power/i2c5-handoff-passive-review.json"
+    },
+    {
+      "address": "0x1100059c",
+      "width": 4,
+      "group": 3,
+      "name": "APDMA5 TX_MEM_ADDR",
+      "evidence": "../hardware/power/i2c5-handoff-passive-review.json"
+    },
+    {
+      "address": "0x110005a0",
+      "width": 4,
+      "group": 3,
+      "name": "APDMA5 RX_MEM_ADDR",
+      "evidence": "../hardware/power/i2c5-handoff-passive-review.json"
+    },
+    {
+      "address": "0x110005a4",
+      "width": 4,
+      "group": 3,
+      "name": "APDMA5 TX_LEN",
+      "evidence": "../hardware/power/i2c5-handoff-passive-review.json"
+    },
+    {
+      "address": "0x110005a8",
+      "width": 4,
+      "group": 3,
+      "name": "APDMA5 RX_LEN",
+      "evidence": "../hardware/power/i2c5-handoff-passive-review.json"
+    },
+    {
+      "address": "0x110005d4",
+      "width": 4,
+      "group": 3,
+      "name": "APDMA5 TX_MEM_ADDR2",
+      "evidence": "../hardware/power/i2c5-handoff-passive-review.json"
+    },
+    {
+      "address": "0x110005d8",
+      "width": 4,
+      "group": 3,
+      "name": "APDMA5 RX_MEM_ADDR2",
+      "evidence": "../hardware/power/i2c5-handoff-passive-review.json"
     },
     {
       "address": "0x11230000",

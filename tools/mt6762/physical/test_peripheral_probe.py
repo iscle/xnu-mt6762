@@ -51,7 +51,8 @@ class PeripheralTests(unittest.TestCase):
         self.assertEqual(reads,[int(e['address'],0) for e in record.registers()]*2)
         self.assertTrue(all(e['valid']==3 for e in decoded['registers']))
         # DATA_PORT, PWRAP command/clear and MSDC FIFO reads are forbidden.
-        for forbidden in (0x11007000,0x1000dc20,0x1000dc28,0x1123001c):
+        for forbidden in (0x11007000,0x11016000,0x11016038,0x11016050,
+                          0x1000dc20,0x1000dc28,0x1123001c):
             self.assertNotIn(forbidden,reads)
         # No card CID, CSD, raw EXT_CSD or pointer-directed RAM reads.
         self.assertNotIn(0x48146d84,reads)
@@ -84,7 +85,7 @@ class PeripheralTests(unittest.TestCase):
     def test_decoder_rejects_identity_allowlist_and_false_completion(self):
         data,_,_=self.capture({0x10001090:0xffffffff})
         identity=bytes(range(32))
-        for offset,value,fmt in ((16,255,'B'),(48,3,'I'),(52,0,'I'),(56,1,'I'),
+        for offset,value,fmt in ((8,1,'I'),(16,255,'B'),(48,3,'I'),(52,0,'I'),(56,1,'I'),
                                  (60,249,'I'),(96,0x11007000,'I'),(100,1,'B'),(102,4,'H')):
             bad=bytearray(data);struct.pack_into('<'+fmt,bad,offset,value)
             with self.subTest(offset=offset),self.assertRaises(ValueError):record.decode(bytes(bad),identity)

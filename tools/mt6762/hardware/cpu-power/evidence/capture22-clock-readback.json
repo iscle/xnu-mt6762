@@ -1,0 +1,107 @@
+{
+  "schema": "mt6762-configured-cpu-clocks-v1",
+  "reference_khz": 26000,
+  "domains": {
+    "cpu0_3": {
+      "valid": false,
+      "nominal_khz": null,
+      "stock_getter_rounded_khz": null,
+      "reasons": [
+        "con0: not captured",
+        "con1: not captured",
+        "power: not captured",
+        "ckdiv: not captured"
+      ],
+      "registers": {
+        "con0": {
+          "address": "0x1000c21c",
+          "value": null
+        },
+        "con1": {
+          "address": "0x1000c220",
+          "value": null
+        },
+        "power": {
+          "address": "0x1000c228",
+          "value": null
+        },
+        "ckdiv": {
+          "address": "0x102007a0",
+          "value": null
+        }
+      }
+    },
+    "cpu4_7": {
+      "valid": false,
+      "nominal_khz": null,
+      "stock_getter_rounded_khz": null,
+      "reasons": [
+        "con0: not captured",
+        "con1: not captured",
+        "power: not captured",
+        "ckdiv: not captured"
+      ],
+      "registers": {
+        "con0": {
+          "address": "0x1000c20c",
+          "value": null
+        },
+        "con1": {
+          "address": "0x1000c210",
+          "value": null
+        },
+        "power": {
+          "address": "0x1000c218",
+          "value": null
+        },
+        "ckdiv": {
+          "address": "0x102007a4",
+          "value": null
+        }
+      }
+    },
+    "cci": {
+      "valid": false,
+      "nominal_khz": null,
+      "stock_getter_rounded_khz": null,
+      "reasons": [
+        "con0: not captured",
+        "con1: not captured",
+        "power: not captured",
+        "ckdiv: not captured"
+      ],
+      "registers": {
+        "con0": {
+          "address": "0x1000c22c",
+          "value": null
+        },
+        "con1": {
+          "address": "0x1000c230",
+          "value": null
+        },
+        "power": {
+          "address": "0x1000c238",
+          "value": null
+        },
+        "ckdiv": {
+          "address": "0x102007c0",
+          "value": null
+        }
+      }
+    }
+  },
+  "ownership_granted": false,
+  "dvfs_control_ready": false,
+  "device_access_performed": false,
+  "limitations": [
+    "Configured nominal rates; no hardware frequency-counter measurement.",
+    "Two equal read passes do not prove atomicity or exclude an intervening change.",
+    "This parser does not authenticate capture acquisition or verify the claimed peripheral-record digest.",
+    "No PMIC electrical measurement, calibrated OPP, SSPM liveness, or thermal/current budget proof."
+  ],
+  "input": {
+    "path": "/home/iscle/mt6762-ios-port/hardware/trace-boot-20261025/capture22/peripherals-result.json",
+    "file_sha256": "428b58a4eb1ef6e8e2243217867e5e80e6ffa19aadc5ff103d00cdc30f855c52",
+    "claimed_peripheral_record_sha256": "2bac8a5b1f4c2581912823c17c58237acb16c3cbc9c870e4883040d57337aa66"
+  }
+}

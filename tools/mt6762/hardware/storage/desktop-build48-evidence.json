@@ -1,0 +1,144 @@
+{
+  "synthetic_only": true,
+  "run_completed": true,
+  "kernel_sha256": "8306796a4e5e3ac343103c38b72ae4a974bff19792f6ff7a07c6a160114ce022",
+  "qemu_binary_sha256": "3fe4d9e1a496f8a9f6a88e7e25c23057e6c19c959ae15605ba2e04c54ebda08e",
+  "native_input_actions": [],
+  "kernel_panic_observed": false,
+  "terminal_storage_failure_observed": false,
+  "gauge_clock_fault_injected_seconds": null,
+  "native_input_schedule_sha256": null,
+  "duration_seconds": 1800.008,
+  "desktop_visually_confirmed": true,
+  "first_reviewed_home_snapshot": "desktop-024.png at about1440seconds",
+  "final_visual_observation": "Home icons and dock rendered; magenta background, white widget placeholders and scattered black pixels remain",
+  "final_model": {
+    "lab-i2c-state": {
+      "enabled": true,
+      "synthetic": true,
+      "i2c0": {
+        "transactions": 195564,
+        "dma_reads": 195563,
+        "rx_bytes": 6258018,
+        "last_status": 1
+      },
+      "i2c5": {
+        "transactions": 8784,
+        "dma_reads": 0,
+        "rx_bytes": 8783,
+        "last_status": 1,
+        "psc_control": 4,
+        "psc_status": 0
+      }
+    },
+    "lab-display-state": {
+      "enabled": true,
+      "synthetic": true,
+      "two_layer": false,
+      "framebuffer_pa": 1148125184,
+      "fault": 0,
+      "applied_level": 512,
+      "enable": 1,
+      "duty": 512,
+      "pwm_writes": 0,
+      "commits": 0,
+      "rejected_writes": 0,
+      "reads": {
+        "spm": 18,
+        "mmsys": 2,
+        "ovl": 26,
+        "rdma": 2,
+        "dsi": 16,
+        "pwm": 14
+      }
+    },
+    "lab-power-state": {
+      "enabled": true,
+      "synthetic": true,
+      "fault": 0,
+      "key_mask": 0,
+      "fsm": 0,
+      "commands": 168551,
+      "reads": 157791,
+      "writes": 10760,
+      "rejected": 0,
+      "clears": 157791,
+      "key_reads": 210608,
+      "adc_requests": [
+        1756,
+        1756
+      ],
+      "adc_completions": [
+        1756,
+        1756
+      ],
+      "thermal_enabled": false,
+      "thermal_calibration_synthetic": false,
+      "thermal_requests": [
+        0,
+        0,
+        0
+      ],
+      "thermal_completions": [
+        0,
+        0,
+        0
+      ],
+      "gauge_enabled": true,
+      "gauge_calibration_synthetic": true,
+      "gauge_sample": 100,
+      "gauge_latched_sample": 100,
+      "gauge_control": 0,
+      "gauge_ticks": 3598,
+      "gauge_snapshots": 1812,
+      "gauge_commands": 7248,
+      "bif_enabled": false,
+      "bif_config_synthetic": false,
+      "adc_delay_us": 0,
+      "bif_requests": 0,
+      "bif_completions": 0,
+      "bif_tdet_write_attempts": 0,
+      "bif_trim_reads": 0,
+      "bif_trim_write_attempts": 0
+    },
+    "lab-msdc-state": {
+      "enabled": true,
+      "synthetic": true,
+      "readonly": true,
+      "dma_emulated": false,
+      "irq_delivery": false,
+      "fault": 0,
+      "sectors": 244285440,
+      "commands": 4662987,
+      "cmd8": 1,
+      "cmd13": 3108658,
+      "cmd17": 1554328,
+      "completed": 1554329,
+      "bytes_read": 795816448,
+      "backend_reads": 1554328,
+      "backend_errors": 0,
+      "rejected": 0,
+      "ack_writes": 6217316,
+      "reads": 357558711,
+      "writes": 17097619,
+      "arg": 65536,
+      "command": 141,
+      "irq": 0,
+      "response": 2304,
+      "fifo_bytes": 0,
+      "pending": false,
+      "reading": false
+    }
+  },
+  "evidence_sha256": {
+    "desktop.models.json": "9762ea6092f07da02530a2562055d2447fc050bfc8b24e528970f1606c49c362",
+    "desktop.serial.log": "c36f2d3768b436168d2888a13258525b57d5c0e150becd447cbc1946da3dc2bc",
+    "desktop.png": "c621405ccc1aa5e65d0a0728f7f4414427b42d00cad1423670d58e856c1a9cc0",
+    "desktop-024.png": "d190c85a5aac1a040b6b43746ef96213b7693393d2b1d3d58f31177ab0b3cacc"
+  },
+  "limits": [
+    "Synthetic peripheral models; physical desktop not proven.",
+    "No input schedule applied; donor automatic unlock helper remains.",
+    "Thirty-minute duration includes boot time."
+  ]
+}

@@ -1,0 +1,469 @@
+{
+  "format": "mt6762-i2c5-passive-review-1",
+  "purpose": "Additional passive capture for PSC5425E handoff review; no ownership grant or charger operation",
+  "device_access": false,
+  "charge_enable": false,
+  "ownership_established": false,
+  "sources": {
+    "stock_dt": {
+      "root": "port",
+      "path": "firmware/boot.dts",
+      "sha256": "00dcbf4602559331e085fb04d6bacd1a6b6a4d7fc1f83a85e8d135c87f5d0d6c"
+    },
+    "stock_dtb": {
+      "root": "port",
+      "path": "firmware/boot.bin.dtb",
+      "sha256": "658e181d1a13d930dc09567883e734bdbd4579350c8332ff954a0ecbb2ed08fe"
+    },
+    "pin_fields": {
+      "root": "bsp",
+      "path": "kernel-4.14/drivers/pinctrl/mediatek/pinctrl-mt6765.c",
+      "sha256": "21036f7a2607022e08c9d9b4a557f1c81ed85f898375a533c94c953b0b64a17d"
+    },
+    "pin_functions": {
+      "root": "bsp",
+      "path": "kernel-4.14/include/dt-bindings/pinctrl/mt6765-pinfunc.h",
+      "sha256": "d756f84c8e5a2a3c0c58532d495030541d9d8d6e0728a8d286578aa1b3e49ed1"
+    },
+    "i2c_registers": {
+      "root": "bsp",
+      "path": "kernel-4.14/drivers/i2c/busses/i2c-mtk.h",
+      "sha256": "27ed6f6cc72871bde9817f64460496b8a81bb56c5bde076a7b462f31614124b8"
+    },
+    "i2c_driver": {
+      "root": "bsp",
+      "path": "kernel-4.14/drivers/i2c/busses/i2c-mtk.c",
+      "sha256": "9502fd3c579db93964cef24155a61cdc2d63ac9cc34981d72999d47f1bdebe97"
+    },
+    "native_platform": {
+      "root": "port",
+      "path": "xnu/bsd/dev/mt6762_platform.c",
+      "sha256": "d0843ca3447dadc53045b4d07554401227808a1f22bc1fe914b3aee49099a1f9"
+    },
+    "native_power": {
+      "root": "port",
+      "path": "xnu/bsd/dev/mt6762_power.c",
+      "sha256": "7ff94e17bef844209ffba1ca3c9d26f57112fda58be3ec541a31c4885d72ec5b"
+    },
+    "native_charger": {
+      "root": "port",
+      "path": "xnu/bsd/dev/mt6762_charger_protocol.h",
+      "sha256": "6834df5739130c7ef455bd8d1647fb38bd6e9b198afc8ffa7ee73cf6c3682da6"
+    },
+    "capture_definition": {
+      "root": "port",
+      "path": "xnu/tools/mt6762/physical/peripheral_probe.h",
+      "sha256": "5711d9593384b8183ea29b77fef1ddedd53b6b6946a4944301e0f0e8202c5d1c"
+    },
+    "fallback_audit": {
+      "root": "port",
+      "path": "xnu/tools/mt6762/hardware/power/evidence/bif-fallback-audit.json",
+      "sha256": "2295dd90defb2439d831a7740a723659faede1af2b7c74b613a6fd16fa4d3787"
+    },
+    "manufacturer_source": {
+      "root": "port",
+      "path": "xnu/tools/mt6762/hardware/power/evidence/datasheet-source.json",
+      "sha256": "27ef214cc3db9e295b5125a988530f0dc5890690723edec74a7fc3f42e1950c6"
+    }
+  },
+  "capture": {
+    "name": "capture22",
+    "peripheral_raw_sha256": "2bac8a5b1f4c2581912823c17c58237acb16c3cbc9c870e4883040d57337aa66",
+    "decoded_sha256": "428b58a4eb1ef6e8e2243217867e5e80e6ffa19aadc5ff103d00cdc30f855c52",
+    "all187_records_matched_to_raw": true,
+    "shared_observations": [
+      {
+        "address": "0x100000a0",
+        "name": "TOP+0xa0",
+        "value": "0x1030202",
+        "stable": true,
+        "already_present": true
+      },
+      {
+        "address": "0x10001090",
+        "name": "INFRA+0x90",
+        "value": "0x0",
+        "stable": true,
+        "already_present": true
+      },
+      {
+        "address": "0x10001094",
+        "name": "INFRA+0x94",
+        "value": "0x0",
+        "stable": true,
+        "already_present": true
+      },
+      {
+        "address": "0x1000c26c",
+        "name": "PLL+0x26c",
+        "value": "0xff800081",
+        "stable": true,
+        "already_present": true
+      },
+      {
+        "address": "0x1000c270",
+        "name": "PLL+0x270",
+        "value": "0x180000",
+        "stable": true,
+        "already_present": true
+      },
+      {
+        "address": "0x1000c278",
+        "name": "PLL+0x278",
+        "value": "0x80000001",
+        "stable": true,
+        "already_present": true
+      },
+      {
+        "address": "0x100026c0",
+        "name": "IOCFG_BL+0xc0",
+        "value": "0x3c000",
+        "stable": true,
+        "already_present": true
+      }
+    ],
+    "i2c5_controller_dma_irq_gpio_records_present": 0,
+    "shared_parent_index": 2,
+    "shared_parent_hz": 124800000,
+    "rate_scope": "Existing native parent decode and bus0 capture; not measured I2C5 frequency",
+    "existing_smt_detail": "IOCFG_BL+0xc0=0x3c000; GPIO48/49 SMT bits15/17 are both set",
+    "lk_log_sha256": "96f460172700b53936ec6db5053fbb98ac09bf389ccf58c2539a984a76f1adbb",
+    "lk_log_bytes": 262144,
+    "lk_patterns_searched": [
+      "psc5425",
+      "charger",
+      "bq24158",
+      "eta6947"
+    ],
+    "lk_pattern_matches": [],
+    "lk_negative_scope": "This retained span only; no conclusion that LK never touches the charger"
+  },
+  "new_passive_registers": [
+    {
+      "address": "0x10005360",
+      "width": 4,
+      "group": 0,
+      "name": "GPIO I2C5 MODE",
+      "source": "pin_fields:34;pin_functions:410,414",
+      "detail": "GPIO48/49 low nibbles: function1 for SCL5/SDA5 corresponds to mask0xff/value0x11. Active value unmeasured."
+    },
+    {
+      "address": "0x10005010",
+      "width": 4,
+      "group": 0,
+      "name": "GPIO I2C5 DIR",
+      "source": "pin_fields:53",
+      "detail": "Direction bits16/17; capture before selecting a physical profile."
+    },
+    {
+      "address": "0x10005210",
+      "width": 4,
+      "group": 0,
+      "name": "GPIO I2C5 DIN",
+      "source": "pin_fields:62",
+      "detail": "Input levels bits16/17; idle line levels unmeasured. No pin/output write."
+    },
+    {
+      "address": "0x10002610",
+      "width": 4,
+      "group": 0,
+      "name": "IOCFG_BL I2C5 DRIVE",
+      "source": "pin_fields:894,895",
+      "detail": "Shared three-bit field18..20. Base4 is0x10002600 in stock_dt:748-750. Capture only."
+    },
+    {
+      "address": "0x10002650",
+      "width": 4,
+      "group": 0,
+      "name": "IOCFG_BL I2C5 IES",
+      "source": "pin_fields:129,130",
+      "detail": "Input-enable bits3/5. Base4 is0x10002600 in stock_dt:748-750. Capture only."
+    },
+    {
+      "address": "0x10002670",
+      "width": 4,
+      "group": 0,
+      "name": "IOCFG_BL I2C5 PD",
+      "source": "pin_fields:635,636",
+      "detail": "Pull-down bits3/5. Base4 is0x10002600 in stock_dt:748-750. Capture only."
+    },
+    {
+      "address": "0x10002690",
+      "width": 4,
+      "group": 0,
+      "name": "IOCFG_BL I2C5 PU",
+      "source": "pin_fields:481,482",
+      "detail": "Pull-up bits3/5. Base4 is0x10002600 in stock_dt:748-750. Capture only."
+    },
+    {
+      "address": "0x0c000114",
+      "width": 4,
+      "group": 0,
+      "name": "GICD I2C5 ISENABLER5",
+      "source": "stock_dt:2780;native_platform:initialize_bus",
+      "detail": "INTID162 = SPI130 +32, bit2. Ordinary read; no acknowledge. Pending need not be cleared; enable/active require review before ownership."
+    },
+    {
+      "address": "0x0c000214",
+      "width": 4,
+      "group": 0,
+      "name": "GICD I2C5 ISPENDR5",
+      "source": "stock_dt:2780;native_platform:initialize_bus",
+      "detail": "INTID162 = SPI130 +32, bit2. Ordinary read; no acknowledge. Pending need not be cleared; enable/active require review before ownership."
+    },
+    {
+      "address": "0x0c000314",
+      "width": 4,
+      "group": 0,
+      "name": "GICD I2C5 ISACTIVER5",
+      "source": "stock_dt:2780;native_platform:initialize_bus",
+      "detail": "INTID162 = SPI130 +32, bit2. Ordinary read; no acknowledge. Pending need not be cleared; enable/active require review before ownership."
+    },
+    {
+      "address": "0x11016004",
+      "width": 2,
+      "group": 2,
+      "name": "I2C5 SLAVE_ADDR",
+      "source": "i2c_registers:230-252;i2c_driver:663-724",
+      "detail": "V2 config/status read; group2 requires shared I2C clocks. START is observed only. INTR_STAT uses a separate acknowledge write in i2c_driver:460-461; no write here."
+    },
+    {
+      "address": "0x11016008",
+      "width": 2,
+      "group": 2,
+      "name": "I2C5 INTR_MASK",
+      "source": "i2c_registers:230-252;i2c_driver:663-724",
+      "detail": "V2 config/status read; group2 requires shared I2C clocks. START is observed only. INTR_STAT uses a separate acknowledge write in i2c_driver:460-461; no write here."
+    },
+    {
+      "address": "0x1101600c",
+      "width": 2,
+      "group": 2,
+      "name": "I2C5 INTR_STAT",
+      "source": "i2c_registers:230-252;i2c_driver:663-724",
+      "detail": "V2 config/status read; group2 requires shared I2C clocks. START is observed only. INTR_STAT uses a separate acknowledge write in i2c_driver:460-461; no write here."
+    },
+    {
+      "address": "0x11016010",
+      "width": 2,
+      "group": 2,
+      "name": "I2C5 CONTROL",
+      "source": "i2c_registers:230-252;i2c_driver:663-724",
+      "detail": "V2 config/status read; group2 requires shared I2C clocks. START is observed only. INTR_STAT uses a separate acknowledge write in i2c_driver:460-461; no write here."
+    },
+    {
+      "address": "0x11016014",
+      "width": 2,
+      "group": 2,
+      "name": "I2C5 TRANSFER_LEN",
+      "source": "i2c_registers:230-252;i2c_driver:663-724",
+      "detail": "V2 config/status read; group2 requires shared I2C clocks. START is observed only. INTR_STAT uses a separate acknowledge write in i2c_driver:460-461; no write here."
+    },
+    {
+      "address": "0x11016018",
+      "width": 2,
+      "group": 2,
+      "name": "I2C5 TRANSAC_LEN",
+      "source": "i2c_registers:230-252;i2c_driver:663-724",
+      "detail": "V2 config/status read; group2 requires shared I2C clocks. START is observed only. INTR_STAT uses a separate acknowledge write in i2c_driver:460-461; no write here."
+    },
+    {
+      "address": "0x1101601c",
+      "width": 2,
+      "group": 2,
+      "name": "I2C5 DELAY_LEN",
+      "source": "i2c_registers:230-252;i2c_driver:663-724",
+      "detail": "V2 config/status read; group2 requires shared I2C clocks. START is observed only. INTR_STAT uses a separate acknowledge write in i2c_driver:460-461; no write here."
+    },
+    {
+      "address": "0x11016020",
+      "width": 2,
+      "group": 2,
+      "name": "I2C5 TIMING",
+      "source": "i2c_registers:230-252;i2c_driver:663-724",
+      "detail": "V2 config/status read; group2 requires shared I2C clocks. START is observed only. INTR_STAT uses a separate acknowledge write in i2c_driver:460-461; no write here."
+    },
+    {
+      "address": "0x11016024",
+      "width": 2,
+      "group": 2,
+      "name": "I2C5 START",
+      "source": "i2c_registers:230-252;i2c_driver:663-724",
+      "detail": "V2 config/status read; group2 requires shared I2C clocks. START is observed only. INTR_STAT uses a separate acknowledge write in i2c_driver:460-461; no write here."
+    },
+    {
+      "address": "0x11016028",
+      "width": 2,
+      "group": 2,
+      "name": "I2C5 EXT_CONF",
+      "source": "i2c_registers:230-252;i2c_driver:663-724",
+      "detail": "V2 config/status read; group2 requires shared I2C clocks. START is observed only. INTR_STAT uses a separate acknowledge write in i2c_driver:460-461; no write here."
+    },
+    {
+      "address": "0x1101602c",
+      "width": 2,
+      "group": 2,
+      "name": "I2C5 LTIMING",
+      "source": "i2c_registers:230-252;i2c_driver:663-724",
+      "detail": "V2 config/status read; group2 requires shared I2C clocks. START is observed only. INTR_STAT uses a separate acknowledge write in i2c_driver:460-461; no write here."
+    },
+    {
+      "address": "0x11016030",
+      "width": 2,
+      "group": 2,
+      "name": "I2C5 HS",
+      "source": "i2c_registers:230-252;i2c_driver:663-724",
+      "detail": "V2 config/status read; group2 requires shared I2C clocks. START is observed only. INTR_STAT uses a separate acknowledge write in i2c_driver:460-461; no write here."
+    },
+    {
+      "address": "0x11016034",
+      "width": 2,
+      "group": 2,
+      "name": "I2C5 IO_CONFIG",
+      "source": "i2c_registers:230-252;i2c_driver:663-724",
+      "detail": "V2 config/status read; group2 requires shared I2C clocks. START is observed only. INTR_STAT uses a separate acknowledge write in i2c_driver:460-461; no write here."
+    },
+    {
+      "address": "0x11016044",
+      "width": 2,
+      "group": 2,
+      "name": "I2C5 TRANSFER_LEN_AUX",
+      "source": "i2c_registers:230-252;i2c_driver:663-724",
+      "detail": "V2 config/status read; group2 requires shared I2C clocks. START is observed only. INTR_STAT uses a separate acknowledge write in i2c_driver:460-461; no write here."
+    },
+    {
+      "address": "0x11016048",
+      "width": 2,
+      "group": 2,
+      "name": "I2C5 CLOCK_DIV",
+      "source": "i2c_registers:230-252;i2c_driver:663-724",
+      "detail": "V2 config/status read; group2 requires shared I2C clocks. START is observed only. INTR_STAT uses a separate acknowledge write in i2c_driver:460-461; no write here."
+    },
+    {
+      "address": "0x1101604c",
+      "width": 2,
+      "group": 2,
+      "name": "I2C5 HW_TIMEOUT",
+      "source": "i2c_registers:230-252;i2c_driver:663-724",
+      "detail": "V2 config/status read; group2 requires shared I2C clocks. START is observed only. INTR_STAT uses a separate acknowledge write in i2c_driver:460-461; no write here."
+    },
+    {
+      "address": "0x11000580",
+      "width": 4,
+      "group": 3,
+      "name": "APDMA5 INT_FLAG",
+      "source": "stock_dt:2778;i2c_registers:124-139;i2c_driver:690-738",
+      "detail": "Config/status read; group3 additionally requires APDMA gate. Address words are recorded only, never dereferenced. No DMA command or acknowledge."
+    },
+    {
+      "address": "0x11000584",
+      "width": 4,
+      "group": 3,
+      "name": "APDMA5 INT_EN",
+      "source": "stock_dt:2778;i2c_registers:124-139;i2c_driver:690-738",
+      "detail": "Config/status read; group3 additionally requires APDMA gate. Address words are recorded only, never dereferenced. No DMA command or acknowledge."
+    },
+    {
+      "address": "0x11000588",
+      "width": 4,
+      "group": 3,
+      "name": "APDMA5 EN",
+      "source": "stock_dt:2778;i2c_registers:124-139;i2c_driver:690-738",
+      "detail": "Config/status read; group3 additionally requires APDMA gate. Address words are recorded only, never dereferenced. No DMA command or acknowledge."
+    },
+    {
+      "address": "0x11000598",
+      "width": 4,
+      "group": 3,
+      "name": "APDMA5 CON",
+      "source": "stock_dt:2778;i2c_registers:124-139;i2c_driver:690-738",
+      "detail": "Config/status read; group3 additionally requires APDMA gate. Address words are recorded only, never dereferenced. No DMA command or acknowledge."
+    },
+    {
+      "address": "0x1100059c",
+      "width": 4,
+      "group": 3,
+      "name": "APDMA5 TX_MEM_ADDR",
+      "source": "stock_dt:2778;i2c_registers:124-139;i2c_driver:690-738",
+      "detail": "Config/status read; group3 additionally requires APDMA gate. Address words are recorded only, never dereferenced. No DMA command or acknowledge."
+    },
+    {
+      "address": "0x110005a0",
+      "width": 4,
+      "group": 3,
+      "name": "APDMA5 RX_MEM_ADDR",
+      "source": "stock_dt:2778;i2c_registers:124-139;i2c_driver:690-738",
+      "detail": "Config/status read; group3 additionally requires APDMA gate. Address words are recorded only, never dereferenced. No DMA command or acknowledge."
+    },
+    {
+      "address": "0x110005a4",
+      "width": 4,
+      "group": 3,
+      "name": "APDMA5 TX_LEN",
+      "source": "stock_dt:2778;i2c_registers:124-139;i2c_driver:690-738",
+      "detail": "Config/status read; group3 additionally requires APDMA gate. Address words are recorded only, never dereferenced. No DMA command or acknowledge."
+    },
+    {
+      "address": "0x110005a8",
+      "width": 4,
+      "group": 3,
+      "name": "APDMA5 RX_LEN",
+      "source": "stock_dt:2778;i2c_registers:124-139;i2c_driver:690-738",
+      "detail": "Config/status read; group3 additionally requires APDMA gate. Address words are recorded only, never dereferenced. No DMA command or acknowledge."
+    },
+    {
+      "address": "0x110005d4",
+      "width": 4,
+      "group": 3,
+      "name": "APDMA5 TX_MEM_ADDR2",
+      "source": "stock_dt:2778;i2c_registers:124-139;i2c_driver:690-738",
+      "detail": "Config/status read; group3 additionally requires APDMA gate. Address words are recorded only, never dereferenced. No DMA command or acknowledge."
+    },
+    {
+      "address": "0x110005d8",
+      "width": 4,
+      "group": 3,
+      "name": "APDMA5 RX_MEM_ADDR2",
+      "source": "stock_dt:2778;i2c_registers:124-139;i2c_driver:690-738",
+      "detail": "Config/status read; group3 additionally requires APDMA gate. Address words are recorded only, never dereferenced. No DMA command or acknowledge."
+    }
+  ],
+  "entry_budget": {
+    "existing": 187,
+    "parent_cpu_additions": 12,
+    "new_i2c5": 36,
+    "total": 235,
+    "capacity": 250,
+    "remaining": 15
+  },
+  "exclusions": [
+    "DATA_PORT/FIFO reads, FIFO clear, SOFTRESET, MCU event/command, DMA reset/start/stop/ack writes.",
+    "0x10002620/0x100026b0: DT enhanced-drive/resistor-selection offsets lack exact4.19 field reconciliation in this review.",
+    "No PSC5425E or display-bias device transactions. No captured address pointer is followed."
+  ],
+  "integration_findings": [
+    "Physical producer currently has no measured i2c5-verified ownership profile; shared gate/PLL values alone are insufficient.",
+    "initialize_bus selects inherited DIV/HS profile only for id0 && touch-inherited-probe. Bus5 still uses laboratory expectations; measure bus5 rather than copying bus0 assumptions.",
+    "mt6762_power_init returns from pwrap-inherited-probe after keys setup, before charger initialization. Adding charger flags alone cannot activate this path.",
+    "PSC read-modify-write helper requires caller-exclusive control across the entire sequence. Controller-idle alone is not a transfer of all prior users.",
+    "Existing physical desktop has no charger-control handoff or verified independent disable fallback; autonomous charging remains unproved."
+  ],
+  "next_sequence": [
+    "Append these36 entries to a new build-bound passive record/decoder. Keep installed Image30/capture23 identity unchanged. Clocks precede group2/3; retain two passes without granting ownership.",
+    "Use measured values to define an I2C5 entry profile: shared clocks, GPIO48/49, pads, masked/inactive INTID162, START/IRQ/APDMA idle. Recheck before setup; no guessed reset or clock reparenting.",
+    "Add a separate read-only-charger probe compatible with PWRAP/keys. Require all programmed controller readbacks, including measured bus5 DIV/HS and AUX configuration.",
+    "Read fixed address0x6a register3 via one-byte address write/repeated-START one-byte read. Require ID0xf0, then read control1/status0. No scanning or access to bias address0x3e.",
+    "After bus/ID/control proof and exclusive ownership, use mt6762_psc_disable_owned: reject OPA_MODE, write only Reg1 bit2 if needed, require exact before|4 readback. No charge-enable, voltage/current or reset writes.",
+    "Resolve CE failure/VBUS-POR behavior before a long physical desktop trial. Register readback alone does not establish an independent hardware fallback or battery-temperature protection."
+  ],
+  "manufacturer_scope": {
+    "metadata": "sources.manufacturer_source",
+    "fallback_evidence": "sources.fallback_audit",
+    "facts": [
+      "Reg1 bit2 is active-low charge enable.",
+      "The existing manufacturer audit identifies the32-second watchdog as OTG-specific.",
+      "Stock GPIO42 is named interrupt; supported disable GPIO wiring is not established."
+    ],
+    "limits": "No new analog resistor/cell/NTC calibration and no charge-enable implementation."
+  }
+}

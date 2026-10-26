@@ -36,6 +36,8 @@ DIAGNOSTICS = (
     'a3cbd157a204ee106b0b06bc9c6e9a9ff797025cf612eb72f3ca076d63338add', # Image29: kernel45 retained eMMC R1 response plus native keys
     '685c9736bb489386b417de474e6623226a939ad6eac8593bb514bc3aace41a41', # Image30: kernel48 unreadable BUS_WIDTH fix and retained EXT_CSD fields
     '01852a28ad01b009ad2d88ff4ef84e05a7e428d0202dc22d9f7b25c77dcd336e', # Image31: kernel48 APFS desktop bootstrap; card acceptance/system install pending
+    'c77e7733ee10a28c6d48af2538b507a92761f057bd605790bf7828f49f3681ff', # Image32: kernel50 CPU rail reads and expanded passive CPU/I2C5 register capture
+    '454afd35cb03ba1d6d3de9503a91ed89920690331cfbe80353b824733491c76b', # Image33: kernel50 desktop bootstrap with expanded passive CPU/I2C5 capture
 )
 VBMETA_FLAGS3 = '2f3fb6474d7ff35ac4c48ab2bef71247ba50de4a94de2474b7d1b60cd6654f51'
 

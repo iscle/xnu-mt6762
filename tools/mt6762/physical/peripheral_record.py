@@ -8,6 +8,7 @@ SIZE=4096
 OFFSET=0x4400
 ADDRESS=0x40080000+OFFSET
 MAGIC=b'MTKPER01'
+VERSION=2
 
 def registers():
     table=json.loads((HERE/'peripheral-registers.json').read_text())['registers']
@@ -22,13 +23,13 @@ def registers():
 def initialized(identity):
     if len(identity)!=32:raise ValueError('Require Image identity')
     raw=bytearray(SIZE)
-    struct.pack_into('<8sII32s4I4Q',raw,0,MAGIC,1,SIZE,identity,0,0xffffffff,0,0,0,0,0,0)
+    struct.pack_into('<8sII32s4I4Q',raw,0,MAGIC,VERSION,SIZE,identity,0,0xffffffff,0,0,0,0,0,0)
     for n,e in enumerate(registers()):
         struct.pack_into('<IBBHII',raw,96+n*16,int(e['address'],0),e['width'],e['group'],0,0,0)
     return bytes(raw)
 
 def decode(raw,identity):
-    if len(raw)!=SIZE or raw[:16]!=struct.pack('<8sII',MAGIC,1,SIZE) or raw[16:48]!=identity:
+    if len(raw)!=SIZE or raw[:16]!=struct.pack('<8sII',MAGIC,VERSION,SIZE) or raw[16:48]!=identity:
         raise ValueError('Peripheral record format or Image identity mismatch')
     state,inverse,passes,index=struct.unpack_from('<4I',raw,48)
     if state not in (0,1,2) or inverse!=state^0xffffffff or passes>2 or index>=250:

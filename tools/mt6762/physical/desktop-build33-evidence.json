@@ -1,0 +1,44 @@
+{
+  "purpose": "Physical XNU bootstrap for existing iOS system slice",
+  "kernel_sha256": "4a7bfcb188f2c2250c2e359fec420c4f4abeab77f0da7d897669818125a8baac",
+  "image_sha256": "454afd35cb03ba1d6d3de9503a91ed89920690331cfbe80353b824733491c76b",
+  "root_payload": {
+    "format": "raw-apfs",
+    "bytes": 4194304,
+    "block_size": 4096,
+    "block_count": 1024,
+    "nxsb_checksum_verified": true,
+    "filesystem_contents_verified": false,
+    "sha256": "893dc1cea41d719fcc26416162526f3295b11cdd1b73bb98a9226e25ae93db8e"
+  },
+  "ios_system_slice": {
+    "start_sector": 12566528,
+    "sector_count": 4865552,
+    "sector_size": 512,
+    "read_only": true,
+    "physical_contents_verified": false
+  },
+  "source_inputs_stable": true,
+  "vm_page_size": 16384,
+  "hardware_page_size": 4096,
+  "trace": {
+    "identity": "27b5e400db43395f64697f3c0943bd92c600bd0062402d072ddb181efaa1f81c",
+    "offset": 16384,
+    "physical_address": 1074282496,
+    "size": 256,
+    "initialized_sha256": "5ced0d9fef1784fcf56c77bbf27e845978d515dfd01a8ec5d83f9720e36fd3dd",
+    "physical_retention_proven": false,
+    "final_marker_proves_xnu_entry": false
+  },
+  "normal_image_sha256": "c3501e211345a286b1004a606e4595c19eb71dbf3ad4769abd22d99fecd337c2",
+  "kernel_all_build_checks_passed": true,
+  "packaging_tests_passed": 6,
+  "passive_register_count": 235,
+  "passive_record_version": 2,
+  "physical_storage_admission": "capture24/kernel48",
+  "physical_contents_verified": false,
+  "desktop_image_installed": false,
+  "physical_desktop_proven": false,
+  "charging_proven": false,
+  "apple_userspace_source_unchanged": true
+}
