@@ -1,0 +1,24 @@
+{
+  "kernel_sha256": "d3365d0629efbfea31e293e3699637f7487834f466ae260126dec63e4548364a",
+  "qemu_sha256": "3fe4d9e1a496f8a9f6a88e7e25c23057e6c19c959ae15605ba2e04c54ebda08e",
+  "laboratory_only": true,
+  "standard_charger_probe": {
+    "seconds": 20,
+    "panic": false,
+    "i2c5_transactions": 6,
+    "pmic_writes": 0,
+    "adc_requests": [
+      0,
+      0
+    ],
+    "serial_sha256": "a1810e3b428e5ba8b41094aca9fe456df50778bdfbf3977954da6053e2260f7a"
+  },
+  "passive_observer_attempt": {
+    "panic": true,
+    "reason": "Existing QEMU lab-sspm fixture has no CSRAM mapping; first passive CSRAM access produces data abort. Physical SSPM observer remains disabled.",
+    "serial_sha256": "acba84b1782f58013c6be5cb2dd80e2170cb0a8c856e3e417ede7ad0f664a6f9",
+    "physical_pmic_probe_exercised": false,
+    "pmic_reason": "Existing laboratory PWRAP profile1 is not the physical read-onlyprofile2 required by the new PMIC observer."
+  },
+  "other_validation": "Actual kernel passive PMIC function and deadline worker passed host callback harnesses; emulator does not model physical watchdog reset/DRAM retention."
+}

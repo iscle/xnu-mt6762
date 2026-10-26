@@ -56,7 +56,12 @@ However, car_tune_value=0 DOES NOT mean active CAR_TUNE=0. Its descriptor at
 0xffffff8009887918 uses property 0x32 and info_get (0xffffff8008a85cd8), which
 reads object +0x11c, a manufacturing calibration result. instant_current uses
 active coefficient +0x114. Writing car_tune_value invokes calibration; no such
-write was made. A physical handoff must recover and validate the active value.
+write was made. Reconstructing a historical Android object would require its
+active value. A fresh native initialization can instead reproduce the exact
+stock startup configuration from validated, present live DT cells; see
+``GAUGE-BASELINE.rst`` and its original-code replay. That separate validator
+returns 100/1000 only for the captured board profile and has no default
+fallback, hardware admission or ownership side effect.
 
 Inherited hardware configuration is separately checked before and after every
 snapshot: FGADC_CON0 0x0d08, efuse gain/offset shadows 0x0c8e/0x0c90, manual

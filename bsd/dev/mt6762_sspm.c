@@ -10,6 +10,7 @@
 #include <sys/mt6762_sspm.h>
 #include <sys/sysctl.h>
 #include <sys/systm.h>
+#include <pexpert/pexpert.h>
 #include "mt6762_sspm_protocol.h"
 #include "../../tools/mt6762/hardware/cpu-power/mt6762_sspm_observer.h"
 

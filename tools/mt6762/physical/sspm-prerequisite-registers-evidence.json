@@ -1,0 +1,270 @@
+{
+  "schema": 1,
+  "purpose": "Nine external passive prerequisite observations only; no SSPM access or grants",
+  "record": {
+    "size": 4096,
+    "version": 2,
+    "max_entries": 250,
+    "previous_count": 235,
+    "count": 244,
+    "remaining_entries": 6,
+    "catalog_sha256": "412e0dbc422bd7d87acb7c4cca9df51390e29fecdb8567e89993272cbbcbea8c",
+    "previous_catalog_sha256": "faf39307449be317afc149cfb4cdc74d443b973e6ced177540e966d0bd057b7a",
+    "existing_entries_unchanged_and_order_preserved": true
+  },
+  "artifacts": {
+    "stock_Image_sha256": "82b1919185a49f268a0f8e145a6714d6264c1f66918a90df0d763266147ead4b",
+    "stock_dtb_sha256": "658e181d1a13d930dc09567883e734bdbd4579350c8332ff954a0ecbb2ed08fe",
+    "preloader_sha256": "7e62da99110271864c330cffcef5237e20ca03881b933263af828561d963f674",
+    "tee1_sha256": "e1fa33d9afff0895708a8f214322878fd8b398bca3024006a0695cd770d551c3",
+    "tee2_matches_tee1": true,
+    "preloader_va_mapping": "VA=file_offset+0x200710",
+    "atf_va_mapping": "VA=file_offset+0x47d803c0; exact PL literal0x21cb2c=0x47d805c0 loads tee payload after0x200 partition header; entry file0xc40 maps0x47d81000"
+  },
+  "spans": [
+    {
+      "artifact": "stock_Image",
+      "start": "0xffffff8009051568",
+      "end_exclusive": "0xffffff80090515a8",
+      "sha256": "075eac35598213bead89ddd731d2b61f37a092739b1bc1a9f625b7385989fa15",
+      "fact": "AXI mux descriptor: offset0x40, source[1:0], gate7."
+    },
+    {
+      "artifact": "stock_Image",
+      "start": "0xffffff8009051a68",
+      "end_exclusive": "0xffffff8009051aa8",
+      "sha256": "b0f1cf4905cbe810d1be9eaa7ac53c17e2726eb5722d7effd90726b78bb5a837",
+      "fact": "SSPM mux descriptor: offset0x90, source[1:0], gate7; parent array at0xffffff80090521a0."
+    },
+    {
+      "artifact": "stock_Image",
+      "start": "0xffffff80090521a0",
+      "end_exclusive": "0xffffff80090521b8",
+      "sha256": "d983e32639ec4e2205c7360b8c649bbb4ac456a85487f0771b0435a7730c7961",
+      "fact": "SSPM parent pointers name clk26m, syspll1_d2, syspll_d3."
+    },
+    {
+      "artifact": "stock_Image",
+      "start": "0xffffff80090531e8",
+      "end_exclusive": "0xffffff8009053218",
+      "sha256": "1e7501b624c23a224e78c8153df940d41fca770d20ff23855f75bc2a84b031f2",
+      "fact": "48-byte MCU_PM_BCLK descriptor: axi_ck parent, bit17, gate register struct at0xffffff800905334c (status0xc8, clear0xc4, set0xc0). Exact relationship to every SSPM access remains an inference."
+    },
+    {
+      "artifact": "preloader",
+      "start": "0x224602",
+      "end_exclusive": "0x224636",
+      "sha256": "a6762b51cffa9c592c19f917672a89cf28f6cfc44816159699998dd3c6fde8a9",
+      "fact": "TOP base literal0x22469c=0x10000004. Store at0x224620 writes0x01010201 to TOP0x90; source literal0x2246a4."
+    },
+    {
+      "artifact": "preloader",
+      "start": "0x2280e0",
+      "end_exclusive": "0x228200",
+      "sha256": "d0ed6bfb34d3176b88dc154f2d43ffe1020e50e8570b5bcff6da926b22dda434",
+      "fact": "Caller loads0x10dc00 from literal0x228120, calls0x228128. Initializer reads/writes SECURITY_AO ordinary control words, splits SRAM at0xdc00, enables regions0/3, gives region3/domain0 permission0."
+    },
+    {
+      "artifact": "tee1_atf",
+      "start": "0x47d94814",
+      "end_exclusive": "0x47d9496c",
+      "sha256": "b53ca47618f943351ea4f1aa5142afbec834049af927738a392d1044a442fdab",
+      "fact": "DEVAPC initialization: secure-only lock at0x47d94834, D0/D1/D4/D7 permission walk, then SSPM D3/D5 entries; not a current hardware permission readback."
+    },
+    {
+      "artifact": "tee1_atf",
+      "start": "0x47d9eaf0",
+      "end_exclusive": "0x47d9ecb5",
+      "sha256": "5b5a0339583a08326e460288d7cffec909c5cc1713095f126098ab63086ab298",
+      "fact": "D0/D1/D4 permission table. D0 entries6(SPM),26(SECURITY_AO),52(SRAMROM),86..89(SSPM mailbox partitions) are0. Entry14(DEVAPC AO) is1;85(SSPM configuration partition) is2. Semantic device names corroborated by MT6765 BSP."
+    }
+  ],
+  "bsp_sources": [
+    {
+      "path": "kernel-4.14/drivers/clk/mediatek/clk-mt6765.c",
+      "sha256": "a1bc40dc8f1e9abf150ec34f7c00fbaa69d8e879b4b4df55b265365adcaf39bc"
+    },
+    {
+      "path": "vendor/mediatek/proprietary/bootable/bootloader/preloader/platform/mt6765/src/drivers/pll.c",
+      "sha256": "ebdc1000f9f76c6d05be5c3d70bd58f07d4fafba0082a7c3fa6dda7586e0e982"
+    },
+    {
+      "path": "vendor/mediatek/proprietary/bootable/bootloader/preloader/platform/mt6765/src/security/trustzone/tz_sec_cfg.c",
+      "sha256": "26503de0c4f415b36b8d3b4bbefd3c8c7212445bb1c06664b671419280b1bdef"
+    },
+    {
+      "path": "vendor/mediatek/proprietary/bootable/bootloader/preloader/platform/mt6765/src/security/trustzone/inc/tz_sec_reg.h",
+      "sha256": "a639476a6b01b7d3ce5f112a72ce6eb8061c7be5db302279cead5df657833b1c"
+    },
+    {
+      "path": "vendor/mediatek/proprietary/trustzone/atf/v1.4/plat/mediatek/mt6765/drivers/devapc/devapc.c",
+      "sha256": "2f4416b3c503516f7a0c2960a90fdc55343ba509f306019e38ddbaa7e15efbc9"
+    },
+    {
+      "path": "vendor/mediatek/proprietary/trustzone/atf/v1.4/plat/mediatek/mt6765/drivers/spm/mt_spm_reg.h",
+      "sha256": "ed6c9fdc640c4b09a3a207b684fdf57aeb6be12e0a391d3aa65ef106e4a0bc4f"
+    }
+  ],
+  "capture30": {
+    "peripherals_json_sha256": "8d2aeb36dbd3d59009cdeb3298553999a2d156b6beb2063c00eb79dec5c63e88",
+    "new_addresses_present": 0,
+    "existing_corroborating_values": [
+      {
+        "address": "0x100010c8",
+        "first": 0,
+        "second": 0,
+        "valid": 3,
+        "stable": true
+      },
+      {
+        "address": "0x1000c23c",
+        "first": 3565158785,
+        "second": 3565158785,
+        "valid": 3,
+        "stable": true
+      },
+      {
+        "address": "0x1000c240",
+        "first": 2165637120,
+        "second": 2165637120,
+        "valid": 3,
+        "stable": true
+      },
+      {
+        "address": "0x1000c248",
+        "first": 2147483649,
+        "second": 2147483649,
+        "valid": 3,
+        "stable": true
+      }
+    ]
+  },
+  "additions": [
+    {
+      "address": "0x10000040",
+      "name": "SSPM prerequisite AXI CLK_CFG_0",
+      "width": 4,
+      "group": 0,
+      "candidate_screening": {
+        "mask": "0x83",
+        "expected": "0x1",
+        "evidence_scope": "exact stock AXI selection/gate profile; not a physical readback",
+        "physically_validated": false,
+        "implemented_as_admission": false
+      }
+    },
+    {
+      "address": "0x10000090",
+      "name": "SSPM prerequisite CLK_CFG_5",
+      "width": 4,
+      "group": 0,
+      "candidate_screening": {
+        "mask": "0x83",
+        "expected": "0x1",
+        "evidence_scope": "exact stock SSPM selection/gate profile; not a physical readback",
+        "physically_validated": false,
+        "implemented_as_admission": false
+      }
+    },
+    {
+      "address": "0x10006350",
+      "name": "SSPM prerequisite SYSRAM_CON",
+      "width": 4,
+      "group": 0,
+      "candidate_screening": {
+        "mask": "0xffffffff",
+        "expected": "0xffff0000",
+        "evidence_scope": "BSP-derived conservative all-bank SRAM screening candidate; unvalidated physical bit semantics/bank mapping",
+        "physically_validated": false,
+        "implemented_as_admission": false
+      }
+    },
+    {
+      "address": "0x10006358",
+      "name": "SSPM prerequisite SSPM_SRAM_CON",
+      "width": 4,
+      "group": 0,
+      "candidate_screening": {
+        "mask": "0x10013",
+        "expected": "0x12",
+        "evidence_scope": "BSP-derived SSPM SRAM screening candidate; WFI bit15 excluded; unvalidated physical status semantics",
+        "physically_validated": false,
+        "implemented_as_admission": false
+      }
+    },
+    {
+      "address": "0x1001a010",
+      "name": "SSPM prerequisite SRAMROM_SEC_CTRL",
+      "width": 4,
+      "group": 0,
+      "candidate_screening": {
+        "mask": "0x7",
+        "expected": "0x1",
+        "evidence_scope": "exact preloader region0/domain0 profile; describes protected lower SRAM",
+        "physically_validated": false,
+        "implemented_as_admission": false
+      }
+    },
+    {
+      "address": "0x1001a024",
+      "name": "SSPM prerequisite SRAMROM_SEC_CTRL5",
+      "width": 4,
+      "group": 0,
+      "candidate_screening": {
+        "mask": "0x70000",
+        "expected": "0x0",
+        "evidence_scope": "exact preloader region3/domain0 profile; not current permission readback",
+        "physically_validated": false,
+        "implemented_as_admission": false
+      }
+    },
+    {
+      "address": "0x1001a050",
+      "name": "SSPM prerequisite SRAMROM_SEC_ADDR",
+      "width": 4,
+      "group": 0,
+      "candidate_screening": {
+        "mask": "0xf003fc00",
+        "expected": "0x9000dc00",
+        "evidence_scope": "exact preloader region0/3 enable and split0 profile",
+        "physically_validated": false,
+        "implemented_as_admission": false
+      }
+    },
+    {
+      "address": "0x1001a054",
+      "name": "SSPM prerequisite SRAMROM_SEC_ADDR1",
+      "width": 4,
+      "group": 0,
+      "candidate_screening": {
+        "mask": "0x3fc00",
+        "expected": "0xdc00",
+        "evidence_scope": "exact preloader split1 profile",
+        "physically_validated": false,
+        "implemented_as_admission": false
+      }
+    },
+    {
+      "address": "0x1001a058",
+      "name": "SSPM prerequisite SRAMROM_SEC_ADDR2",
+      "width": 4,
+      "group": 0,
+      "candidate_screening": {
+        "mask": "0x3fc00",
+        "expected": "0xdc00",
+        "evidence_scope": "exact preloader split2 profile",
+        "physically_validated": false,
+        "implemented_as_admission": false
+      }
+    }
+  ],
+  "limits": [
+    "No physical observation of the nine new words yet. Catalog captures every raw value, including failing/unknown predicates.",
+    "These observations do not establish or grant SSPM power, bus ownership, mailbox/IRQ ownership, firmware identity, memory preservation or DVFS readiness.",
+    "SPM SRAM bit meanings/predicates are BSP-derived screening, not independently established physical behavior.",
+    "Source initialization must be bound to the firmware actually booted; it is not proof of unchanged current permissions.",
+    "DEVAPC AO0x1000e000..0x1000efff is secure-only in exact ATF and is excluded; its permission registers must not be read directly from NS XNU.",
+    "CSRAM0x110c00..0x111fff, SSPM0x10400000..0x1049ffff and protected firmware DRAM are excluded.",
+    "The MCU_PM_BCLK gate is observed enabled, but its exact relationship to every SSPM memory access is not independently established."
+  ]
+}

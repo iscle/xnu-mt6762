@@ -79,10 +79,16 @@ configuration words required by ``mt6762_gauge.c``, detector/TDET state, and
 whether old ADC result words are readable. A disabled clock or occupied latch
 is evidence to retain, not a request to reset or clear anything.
 
-Even matching words will leave active software coefficients and exclusive
-gauge/ADC ownership unresolved. The historical stock R_FG=100/CAR_TUNE=1000
-values are not a runtime fallback. Fresh ADC requests and gauge latch writes
-must remain outside this probe. Fresh calibrated temperature/BIF compensation,
+Matching words still leave exclusive gauge/ADC ownership unresolved. The
+separate ``GAUGE-BASELINE.rst`` investigation now establishes a reproducible
+fresh native startup pair R_FG=100/CAR_TUNE=1000 from exact, present live DT
+cells and the original stock initialization code. Its standalone validator
+rejects missing, malformed, ambiguous or disabled profiles rather than using
+historical values as a fallback. This does not reconstruct a previous mutable
+Android object, validate hardware shadows, or confer ownership; none of the
+baseline validator's results is consumed by this PMIC observer. Fresh ADC
+requests and gauge latch writes must remain outside this probe.
+Fresh calibrated temperature/BIF compensation,
 PSC identity and CE-disable readback, and a functioning charge policy are still
 separate missing steps. Neither current nor signed accumulated charge alone
 establishes remaining capacity/SOC. Stock's constant 25 C temperature_get is

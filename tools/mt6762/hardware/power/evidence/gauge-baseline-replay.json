@@ -1,0 +1,646 @@
+{
+  "schema": "mt6762-stock-gauge-baseline-replay-v1",
+  "image_sha256": "82b1919185a49f268a0f8e145a6714d6264c1f66918a90df0d763266147ead4b",
+  "scope": "Replay exact stock ARM64 coefficient initialization offline; no device I/O.\n\nOnly the named initialization blocks and complete scalar multiplication helper\nexecute. OF scalar reads, profiling and debug level are mocked; this is not a\nwhole stock boot. Also retain bounded disassembly of runtime coefficient paths.\n",
+  "physical_hardware_tested": false,
+  "historical_runtime_value_recovered": false,
+  "source_sha256": {
+    "mt6762_gauge_baseline.c": "bf809e874271b71a79406c09102116020bdc8a1431e9f610480692737ac11f35",
+    "mt6762_gauge_baseline.h": "dd448f4eaf2d237967cb15484b2800c047f4f683a8f3db9513592ddc6175317a",
+    "replay_gauge_baseline.py": "74df2c7eafbd6e853d60df12fc3e9e0ce97b50bcb5f1d714c1cce8c3871f35e3"
+  },
+  "physical_dt_inputs": [
+    {
+      "path": "/home/iscle/mt6762-ios-port/firmware/boot.bin.dtb",
+      "sha256": "658e181d1a13d930dc09567883e734bdbd4579350c8332ff954a0ecbb2ed08fe",
+      "fdt_size": 109716,
+      "replay": {
+        "properties": {
+          "R_FG_VALUE": 10,
+          "CAR_TUNE_VALUE": 100
+        },
+        "constructor_pair": [
+          50,
+          1000
+        ],
+        "initialized_pair": [
+          100,
+          1000
+        ],
+        "of_read_calls": [
+          {
+            "property": "CAR_TUNE_VALUE",
+            "present": true
+          },
+          {
+            "property": "R_FG_VALUE",
+            "present": true
+          }
+        ],
+        "active_field_writes": [
+          {
+            "pc": "ffffff8008a8668c",
+            "gauge_offset": "0x110",
+            "size": 8,
+            "value": "3e800000032"
+          },
+          {
+            "pc": "ffffff8008a7ccdc",
+            "gauge_offset": "0x114",
+            "size": 4,
+            "value": "3e8"
+          },
+          {
+            "pc": "ffffff8008a7cd68",
+            "gauge_offset": "0x110",
+            "size": 4,
+            "value": "64"
+          }
+        ]
+      }
+    },
+    {
+      "path": "/home/iscle/mt6762-ios-port/hardware/trace-boot-20261025/capture30/runtime.dtb",
+      "sha256": "1c9bc7534bc3fd98950102d359c1e5d968263a1b1c059cb089874c9c8cdcc6ea",
+      "fdt_size": 166229,
+      "replay": {
+        "properties": {
+          "R_FG_VALUE": 10,
+          "CAR_TUNE_VALUE": 100
+        },
+        "constructor_pair": [
+          50,
+          1000
+        ],
+        "initialized_pair": [
+          100,
+          1000
+        ],
+        "of_read_calls": [
+          {
+            "property": "CAR_TUNE_VALUE",
+            "present": true
+          },
+          {
+            "property": "R_FG_VALUE",
+            "present": true
+          }
+        ],
+        "active_field_writes": [
+          {
+            "pc": "ffffff8008a8668c",
+            "gauge_offset": "0x110",
+            "size": 8,
+            "value": "3e800000032"
+          },
+          {
+            "pc": "ffffff8008a7ccdc",
+            "gauge_offset": "0x114",
+            "size": 4,
+            "value": "3e8"
+          },
+          {
+            "pc": "ffffff8008a7cd68",
+            "gauge_offset": "0x110",
+            "size": 4,
+            "value": "64"
+          }
+        ]
+      }
+    }
+  ],
+  "branch_fixtures": [
+    {
+      "properties": {},
+      "constructor_pair": [
+        50,
+        1000
+      ],
+      "initialized_pair": [
+        50,
+        1000
+      ],
+      "of_read_calls": [
+        {
+          "property": "CAR_TUNE_VALUE",
+          "present": false
+        },
+        {
+          "property": "R_FG_VALUE",
+          "present": false
+        }
+      ],
+      "active_field_writes": [
+        {
+          "pc": "ffffff8008a8668c",
+          "gauge_offset": "0x110",
+          "size": 8,
+          "value": "3e800000032"
+        },
+        {
+          "pc": "ffffff8008a7ccdc",
+          "gauge_offset": "0x114",
+          "size": 4,
+          "value": "3e8"
+        },
+        {
+          "pc": "ffffff8008a7cd68",
+          "gauge_offset": "0x110",
+          "size": 4,
+          "value": "32"
+        }
+      ]
+    },
+    {
+      "properties": {
+        "R_FG_VALUE": 10
+      },
+      "constructor_pair": [
+        50,
+        1000
+      ],
+      "initialized_pair": [
+        100,
+        1000
+      ],
+      "of_read_calls": [
+        {
+          "property": "CAR_TUNE_VALUE",
+          "present": false
+        },
+        {
+          "property": "R_FG_VALUE",
+          "present": true
+        }
+      ],
+      "active_field_writes": [
+        {
+          "pc": "ffffff8008a8668c",
+          "gauge_offset": "0x110",
+          "size": 8,
+          "value": "3e800000032"
+        },
+        {
+          "pc": "ffffff8008a7ccdc",
+          "gauge_offset": "0x114",
+          "size": 4,
+          "value": "3e8"
+        },
+        {
+          "pc": "ffffff8008a7cd68",
+          "gauge_offset": "0x110",
+          "size": 4,
+          "value": "64"
+        }
+      ]
+    },
+    {
+      "properties": {
+        "CAR_TUNE_VALUE": 100
+      },
+      "constructor_pair": [
+        50,
+        1000
+      ],
+      "initialized_pair": [
+        50,
+        1000
+      ],
+      "of_read_calls": [
+        {
+          "property": "CAR_TUNE_VALUE",
+          "present": true
+        },
+        {
+          "property": "R_FG_VALUE",
+          "present": false
+        }
+      ],
+      "active_field_writes": [
+        {
+          "pc": "ffffff8008a8668c",
+          "gauge_offset": "0x110",
+          "size": 8,
+          "value": "3e800000032"
+        },
+        {
+          "pc": "ffffff8008a7ccdc",
+          "gauge_offset": "0x114",
+          "size": 4,
+          "value": "3e8"
+        },
+        {
+          "pc": "ffffff8008a7cd68",
+          "gauge_offset": "0x110",
+          "size": 4,
+          "value": "32"
+        }
+      ]
+    },
+    {
+      "properties": {
+        "R_FG_VALUE": 11,
+        "CAR_TUNE_VALUE": 101
+      },
+      "constructor_pair": [
+        50,
+        1000
+      ],
+      "initialized_pair": [
+        110,
+        1010
+      ],
+      "of_read_calls": [
+        {
+          "property": "CAR_TUNE_VALUE",
+          "present": true
+        },
+        {
+          "property": "R_FG_VALUE",
+          "present": true
+        }
+      ],
+      "active_field_writes": [
+        {
+          "pc": "ffffff8008a8668c",
+          "gauge_offset": "0x110",
+          "size": 8,
+          "value": "3e800000032"
+        },
+        {
+          "pc": "ffffff8008a7ccdc",
+          "gauge_offset": "0x114",
+          "size": 4,
+          "value": "3f2"
+        },
+        {
+          "pc": "ffffff8008a7cd68",
+          "gauge_offset": "0x110",
+          "size": 4,
+          "value": "6e"
+        }
+      ]
+    }
+  ],
+  "direct_call_inventory": {
+    "dt_initializer_calls": [
+      "ffffff8008a800b8"
+    ],
+    "gauge_set_property_calls": [
+      {
+        "address": "ffffff8008a7a220",
+        "property": 3
+      },
+      {
+        "address": "ffffff8008a7a22c",
+        "property": 4
+      },
+      {
+        "address": "ffffff8008a7a47c",
+        "property": 3
+      },
+      {
+        "address": "ffffff8008a7a488",
+        "property": 4
+      },
+      {
+        "address": "ffffff8008a7a794",
+        "property": 3
+      },
+      {
+        "address": "ffffff8008a7aca4",
+        "property": 3
+      },
+      {
+        "address": "ffffff8008a7adac",
+        "property": 4
+      },
+      {
+        "address": "ffffff8008a80ca0",
+        "property": 17
+      },
+      {
+        "address": "ffffff8008a80f94",
+        "property": 36
+      },
+      {
+        "address": "ffffff8008a836a0",
+        "property": 36
+      },
+      {
+        "address": "ffffff8008a8370c",
+        "property": 14
+      },
+      {
+        "address": "ffffff8008a83730",
+        "property": 48
+      },
+      {
+        "address": "ffffff8008a83d24",
+        "property": 10
+      },
+      {
+        "address": "ffffff8008a83d34",
+        "property": 13
+      },
+      {
+        "address": "ffffff8008a83d40",
+        "property": 11
+      },
+      {
+        "address": "ffffff8008a83dc0",
+        "property": 13
+      },
+      {
+        "address": "ffffff8008a83dcc",
+        "property": 12
+      },
+      {
+        "address": "ffffff8008a83dd8",
+        "property": 11
+      },
+      {
+        "address": "ffffff8008a83de4",
+        "property": 10
+      },
+      {
+        "address": "ffffff8008a84074",
+        "property": 13
+      },
+      {
+        "address": "ffffff8008a84080",
+        "property": 11
+      },
+      {
+        "address": "ffffff8008a840d0",
+        "property": 14
+      },
+      {
+        "address": "ffffff8008a840f8",
+        "property": 48
+      },
+      {
+        "address": "ffffff8008a84214",
+        "property": 46
+      },
+      {
+        "address": "ffffff8008a88d34",
+        "property": 24
+      },
+      {
+        "address": "ffffff8008a8a414",
+        "property": 32
+      },
+      {
+        "address": "ffffff8008a8a420",
+        "property": 31
+      },
+      {
+        "address": "ffffff8008a8a42c",
+        "property": 32
+      },
+      {
+        "address": "ffffff8008a8a564",
+        "property": 50
+      },
+      {
+        "address": "ffffff8008a8ab18",
+        "property": 49
+      },
+      {
+        "address": "ffffff8008a8afac",
+        "property": 28
+      },
+      {
+        "address": "ffffff8008a8afd4",
+        "property": 27
+      },
+      {
+        "address": "ffffff8008a8b1ac",
+        "property": 25
+      },
+      {
+        "address": "ffffff8008a8b210",
+        "property": 23
+      },
+      {
+        "address": "ffffff8008a8b244",
+        "property": 31
+      },
+      {
+        "address": "ffffff8008a8b250",
+        "property": 32
+      },
+      {
+        "address": "ffffff8008a8b2b0",
+        "property": 35
+      },
+      {
+        "address": "ffffff8008a8b2d4",
+        "property": 33
+      },
+      {
+        "address": "ffffff8008a8b2f8",
+        "property": 34
+      },
+      {
+        "address": "ffffff8008a8b464",
+        "property": 36
+      },
+      {
+        "address": "ffffff8008a8b528",
+        "property": 30
+      },
+      {
+        "address": "ffffff8008a8b5c4",
+        "property": 11
+      },
+      {
+        "address": "ffffff8008a8b5ec",
+        "property": 10
+      },
+      {
+        "address": "ffffff8008a8b614",
+        "property": 13
+      },
+      {
+        "address": "ffffff8008a8b650",
+        "property": 12
+      },
+      {
+        "address": "ffffff8008a8b70c",
+        "property": 14
+      },
+      {
+        "address": "ffffff8008a8b768",
+        "property": 48
+      },
+      {
+        "address": "ffffff8008a8b7c4",
+        "property": 46
+      },
+      {
+        "address": "ffffff8008a8b9b4",
+        "property": 36
+      },
+      {
+        "address": "ffffff8008a8b9ec",
+        "property": 36
+      },
+      {
+        "address": "ffffff8008a8ba24",
+        "property": 36
+      },
+      {
+        "address": "ffffff8008a8bc8c",
+        "property": 47
+      },
+      {
+        "address": "ffffff8008a8be78",
+        "property": 36
+      },
+      {
+        "address": "ffffff8008a8c440",
+        "property": 39
+      },
+      {
+        "address": "ffffff8008a8c44c",
+        "property": 38
+      },
+      {
+        "address": "ffffff8008a8c4e8",
+        "property": 41
+      },
+      {
+        "address": "ffffff8008a8c4f4",
+        "property": 39
+      },
+      {
+        "address": "ffffff8008a8c500",
+        "property": 40
+      },
+      {
+        "address": "ffffff8008a8c50c",
+        "property": 38
+      },
+      {
+        "address": "ffffff8008a8c628",
+        "property": 37
+      },
+      {
+        "address": "ffffff8008a8c8d8",
+        "property": 36
+      },
+      {
+        "address": "ffffff8008a8ca34",
+        "property": 37
+      },
+      {
+        "address": "ffffff8008a8ce28",
+        "property": 54
+      },
+      {
+        "address": "ffffff8008a8cec8",
+        "property": 42
+      },
+      {
+        "address": "ffffff8008a8d450",
+        "property": 49
+      },
+      {
+        "address": "ffffff8008a8d4e0",
+        "property": 39
+      },
+      {
+        "address": "ffffff8008a8d4ec",
+        "property": 38
+      },
+      {
+        "address": "ffffff8008a8d4f8",
+        "property": 54
+      },
+      {
+        "address": "ffffff8008a8d614",
+        "property": 39
+      },
+      {
+        "address": "ffffff8008a8d620",
+        "property": 38
+      },
+      {
+        "address": "ffffff8008a8d62c",
+        "property": 54
+      },
+      {
+        "address": "ffffff8008a8d698",
+        "property": 37
+      },
+      {
+        "address": "ffffff8008a8d6f0",
+        "property": 37
+      },
+      {
+        "address": "ffffff8008a8d790",
+        "property": 10
+      },
+      {
+        "address": "ffffff8008a8d79c",
+        "property": 11
+      },
+      {
+        "address": "ffffff8008a8d7c8",
+        "property": 37
+      },
+      {
+        "address": "ffffff8008a8d824",
+        "property": 10
+      },
+      {
+        "address": "ffffff8008a8d830",
+        "property": 11
+      },
+      {
+        "address": "ffffff8008a8d850",
+        "property": 37
+      },
+      {
+        "address": "ffffff8008a8d900",
+        "property": 32
+      },
+      {
+        "address": "ffffff8008a8d914",
+        "property": 37
+      },
+      {
+        "address": "ffffff8008a8da58",
+        "property": 37
+      },
+      {
+        "address": "ffffff8008a8dacc",
+        "property": 37
+      },
+      {
+        "address": "ffffff8008a8db84",
+        "property": 37
+      },
+      {
+        "address": "ffffff8008a8dc08",
+        "property": 37
+      },
+      {
+        "address": "ffffff8008a8dcac",
+        "property": 37
+      },
+      {
+        "address": "ffffff8008a8de44",
+        "property": 39
+      },
+      {
+        "address": "ffffff8008a8de50",
+        "property": 38
+      }
+    ],
+    "scope": "Direct B/BL inventory of the exact Image; sysfs callbacks remain indirect runtime writers"
+  },
+  "disassembly_sha256": "019481c4be10788f2aa251c5172dc653bad9c7692684508d5c7765289139c2e5"
+}

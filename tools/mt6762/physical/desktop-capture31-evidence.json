@@ -1,0 +1,42 @@
+{
+  "schema": "mt6762-physical-desktop-capture31-v1",
+  "image": "Image37/kernel52",
+  "kernel_sha256": "b2999d92505ce79238a202ff965066236f97664bec3ddc08e886237e0ddb63e9",
+  "trace_identity": "928dc8c9068ce07fb533552af1e1f2ceac1794f92ceb00d7a96f1d1ba85dd5c2",
+  "capture_sha256": {
+    "trace.bin": "fb2fc20aa60eabfc1d39dbd959c0fb9c9fa49afc1f5cac480306d57007e9754b",
+    "peripherals.bin": "d20b7161cc7dd1844cc211d0d2cab698e3a30f840747d90894e749cfc36ce8d8",
+    "xnu-log.bin": "28cb13c7522898d16074bf766a69178e5d0515d9f4272361b51562379adf9135",
+    "framebuffer.bgra": "7157c7af73cef09266ccee7ca4a0977a9c8cc76dd0fe1debab6cd81ca0a132ee",
+    "runtime.dtb": "2418cd92ebc862f983f15fefd15aeef5163e837ae44f9407af03a26caed53515"
+  },
+  "physical_xnu_execution_proven": true,
+  "system_apfs_mount_proven": true,
+  "apple_launchd_proven": true,
+  "springboard_spawn_proven": true,
+  "watchdog_refresh_attempts_last_reported": 1020,
+  "physical_desktop_proven": false,
+  "framebuffer_observation": "Retained framebuffer remains text console, ending with memory reports; no home screen.",
+  "i2c5_setup": {
+    "div": "0x4",
+    "timing": "0x419",
+    "ltiming": "0x118",
+    "hs": "0x8000",
+    "io": "0x3",
+    "ext": "0x8001",
+    "delay": "0xa",
+    "timeout": "0x190",
+    "top": "0x1030202",
+    "infra0": 0,
+    "infra1": 0,
+    "infra4": 0,
+    "strict_match": false,
+    "setup_only": true,
+    "transactions": 0
+  },
+  "limits": [
+    "Logs can be incomplete after reset; no desktop rendering or physical charging proof.",
+    "Matching bus0 readbacks do not automatically grant bus5 ownership; separate captured profile required.",
+    "No new phone backups or persistent writes were performed during capture31."
+  ]
+}

@@ -1,5 +1,7 @@
 """Exercise the actual passive reader with width-checked MMIO callbacks."""
 import ctypes as C
+import hashlib
+import json
 from pathlib import Path
 import struct
 import subprocess
@@ -82,6 +84,54 @@ class PeripheralTests(unittest.TestCase):
         _,decoded,_=self.capture({0x10000070:0x101,0x1000c23c:0x800001,0x1000c240:1,
                                   0x1000c248:1,0x1000c27c:1,0x1000c280:1,0x1000c288:3})
         self.assertTrue(all(e['valid']==0 for e in decoded['registers'] if e['group']==4))
+    def test_external_sspm_prerequisites_preserve_abi_and_do_not_probe_sspm(self):
+        added=(0x10000040,0x10000090,0x10006350,0x10006358,
+               0x1001a010,0x1001a024,0x1001a050,0x1001a054,0x1001a058)
+        table=record.registers()
+        self.assertEqual(len(table),244)
+        self.assertEqual([e['group'] for e in table],sorted(e['group'] for e in table))
+        for address in added:
+            entries=[e for e in table if int(e['address'],0)==address]
+            self.assertEqual(len(entries),1)
+            self.assertEqual((entries[0]['width'],entries[0]['group']),(4,0))
+            self.assertEqual(entries[0]['evidence'],'sspm-prerequisite-registers-evidence.json')
+        # Capture adverse/unknown prerequisite states too. This catalog is an
+        # observation, not an entry validator or permission to touch SSPM.
+        values={address:0xffffffff for address in added}
+        values.update({0x10001090:0xffffffff,0x10001094:0xffffffff,0x100010c8:0xffffffff})
+        data,decoded,reads=self.capture(values)
+        self.assertEqual(len(data),4096)
+        self.assertEqual(struct.unpack_from('<II',data,8),(2,4096))
+        self.assertEqual(decoded['last_index'],243)
+        self.assertEqual(data[96+244*16:],bytes(96))
+        for address in added:
+            self.assertEqual(reads.count(address),2)
+            entry=next(e for e in decoded['registers'] if int(e['address'],0)==address)
+            self.assertEqual((entry['first'],entry['second'],entry['valid']),(0xffffffff,0xffffffff,3))
+        self.assertFalse(decoded['ownership_granted'])
+        self.assertFalse(decoded['mmio_writes'])
+        for address in reads:
+            self.assertFalse(0x110c00<=address<0x112000)  # CSRAM is not admitted.
+            self.assertFalse(0x10400000<=address<0x104a0000)  # No SSPM block.
+            self.assertFalse(0x1000e000<=address<0x1000f000)  # Secure-only DEVAPC AO.
+    def test_sspm_catalog_provenance_and_preserved_prior_entries(self):
+        evidence=json.loads((HERE/'sspm-prerequisite-registers-evidence.json').read_text())
+        raw=(HERE/'peripheral-registers.json').read_bytes()
+        self.assertEqual(hashlib.sha256(raw).hexdigest(),evidence['record']['catalog_sha256'])
+        additions=evidence['additions']
+        self.assertEqual(len(additions),9)
+        for entry in additions:
+            self.assertFalse(entry['candidate_screening']['physically_validated'])
+            self.assertFalse(entry['candidate_screening']['implemented_as_admission'])
+        # Reconstruct the prior235-entry catalog exactly: no existing entry,
+        # relative order, field or format was silently changed by this scope.
+        previous=json.loads(raw)
+        added={entry['address'] for entry in additions}
+        previous['registers']=[e for e in previous['registers'] if e['address'] not in added]
+        previous['purpose']='Passive peripheral, CPU clock and bounded LK RAM observations; no ownership grants'
+        self.assertEqual(len(previous['registers']),235)
+        before=(json.dumps(previous,indent=2)+'\n').encode()
+        self.assertEqual(hashlib.sha256(before).hexdigest(),evidence['record']['previous_catalog_sha256'])
     def test_decoder_rejects_identity_allowlist_and_false_completion(self):
         data,_,_=self.capture({0x10001090:0xffffffff})
         identity=bytes(range(32))

@@ -1,6 +1,6 @@
 {
   "format": 2,
-  "purpose": "Passive peripheral, CPU clock and bounded LK RAM observations; no ownership grants",
+  "purpose": "Passive peripheral, CPU clock, external SSPM prerequisite and bounded LK RAM observations; no ownership grants",
   "registers": [
     {
       "address": "0x10000070",
@@ -671,6 +671,69 @@
       "group": 0,
       "name": "CCI CCIPLL CKDIV",
       "evidence": "../hardware/cpu-power/PHYSICAL-CLOCKS.rst"
+    },
+    {
+      "address": "0x10000040",
+      "width": 4,
+      "group": 0,
+      "name": "SSPM prerequisite AXI CLK_CFG_0",
+      "evidence": "sspm-prerequisite-registers-evidence.json"
+    },
+    {
+      "address": "0x10000090",
+      "width": 4,
+      "group": 0,
+      "name": "SSPM prerequisite CLK_CFG_5",
+      "evidence": "sspm-prerequisite-registers-evidence.json"
+    },
+    {
+      "address": "0x10006350",
+      "width": 4,
+      "group": 0,
+      "name": "SSPM prerequisite SYSRAM_CON",
+      "evidence": "sspm-prerequisite-registers-evidence.json"
+    },
+    {
+      "address": "0x10006358",
+      "width": 4,
+      "group": 0,
+      "name": "SSPM prerequisite SSPM_SRAM_CON",
+      "evidence": "sspm-prerequisite-registers-evidence.json"
+    },
+    {
+      "address": "0x1001a010",
+      "width": 4,
+      "group": 0,
+      "name": "SSPM prerequisite SRAMROM_SEC_CTRL",
+      "evidence": "sspm-prerequisite-registers-evidence.json"
+    },
+    {
+      "address": "0x1001a024",
+      "width": 4,
+      "group": 0,
+      "name": "SSPM prerequisite SRAMROM_SEC_CTRL5",
+      "evidence": "sspm-prerequisite-registers-evidence.json"
+    },
+    {
+      "address": "0x1001a050",
+      "width": 4,
+      "group": 0,
+      "name": "SSPM prerequisite SRAMROM_SEC_ADDR",
+      "evidence": "sspm-prerequisite-registers-evidence.json"
+    },
+    {
+      "address": "0x1001a054",
+      "width": 4,
+      "group": 0,
+      "name": "SSPM prerequisite SRAMROM_SEC_ADDR1",
+      "evidence": "sspm-prerequisite-registers-evidence.json"
+    },
+    {
+      "address": "0x1001a058",
+      "width": 4,
+      "group": 0,
+      "name": "SSPM prerequisite SRAMROM_SEC_ADDR2",
+      "evidence": "sspm-prerequisite-registers-evidence.json"
     },
     {
       "address": "0x1000d000",
