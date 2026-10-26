@@ -64,6 +64,9 @@ SMP_KERNELS = {
     # fresh build passed, QEMU observed8/8 CPUs and205 IIG runtime checks.
     # This pin admits packaging, not physical8-core validation.
     'bcc01522daf9bb430e8fd8df3d2b29a34bc3bf52674b978d936520eee1def60b',
+    # Kernel57 preserves that SMP entry; fresh build/205 IIG checks and
+    # 600-second eight-core bulk-PIO desktop test passed in the local model.
+    'fb484061d76d4cabfa0316575f0cff46f9bd8df8cd252ed3612d1eefee6035e8',
 }
 # Capture34 exhausted the old20ms software wait before the inherited DDR
 # controller's approximately109ms data timeout. Allow its existing hardware

@@ -48,6 +48,7 @@ DIAGNOSTICS = (
     '857bb39916e74a86fa67bf64e6930fe7be896c98570f28384fceaf08e5d36543', # Image41: same kernel54/two cores; bounded1s software wait for inherited eMMC data timeout
     'ada26d13744a70201472725f0c25e506e429fee3db49abd6f28be9dcd11308f5', # Image42: HakiOS kernel56/helper2; existing two-core handoff, first-frame console release
     '0dc5ee9810ac8cc48b4e80e084e62e8f465c7695a1e5e935e1e9f1c375372523', # Image43: same HakiOS kernel56/helper2 with all eight cores requested
+    '6d41a34328a603f960ef7c32dab5fd581f22db73db713e7c0f6f451ed32b4bde', # Image44: kernel57 bulk PIO, helper6 startup/LaunchServices observations, eight cores
 )
 VBMETA_FLAGS3 = '2f3fb6474d7ff35ac4c48ab2bef71247ba50de4a94de2474b7d1b60cd6654f51'
 
