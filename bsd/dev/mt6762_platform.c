@@ -20,6 +20,8 @@ extern kern_return_t thread_terminate(thread_t);
 #include "../../tools/mt6762/hardware/display-touch/mt6762_touch_entry.h"
 #include "../../tools/mt6762/hardware/i2c/native_setup.h"
 #include "../../tools/mt6762/hardware/power/mt6762_charger_entry.h"
+#include "../../tools/mt6762/hardware/watchdog/trial_deadline.h"
+extern unsigned mt6762_trial_flush_log(uint32_t *,uint32_t *);
 
 static int ready;
 static DTEntry handoff;
@@ -359,6 +361,38 @@ void mt6762_platform_init(void)
     initialize_bus(&buses[0],0);initialize_bus(&buses[1],5);
 }
 static uintptr_t watchdog;
+static unsigned watchdog_trial_seconds;
+struct mtk_trial_record mt6762_trial_record __attribute__((aligned(64)))={
+    .magic=UINT64_C(0x4c414952544b544d),.version=1
+};
+static void watchdog_clean_line(uintptr_t address,void *unused)
+{
+    (void)unused;
+    __asm__ volatile("dc cvac, %0"::"r"(address):"memory");
+}
+static void watchdog_trial_end(const struct mtk_trial_deadline *trial,
+    unsigned count,uint64_t last_ns,uint64_t now_ns)
+{
+    struct mtk_trial_record *r=&mt6762_trial_record;
+    r->state=2;r->seconds=trial->seconds;r->attempts=count;
+    r->flags=MTK_TRIAL_CONCURRENT_LOG;
+    r->first_feed_ns=trial->first_ns;r->last_feed_ns=last_ns;r->expired_ns=now_ns;
+    r->mode=r32(watchdog,0);r->length=r32(watchdog,4);r->status=r32(watchdog,0xc);
+    r->nonrst=r32(watchdog,0x20);r->nonrst2=r32(watchdog,0x24);
+    r->req_mode=r32(watchdog,0x30);r->req_irq=r32(watchdog,0x34);
+    kprintf("MT6762_TRIAL expired seconds=%u attempts=%u first_ns=%llu last_ns=%llu now_ns=%llu; permanently stopping refresh, reset/retention unproved\n",
+        r->seconds,count,r->first_feed_ns,last_ns,now_ns);
+    kprintf("MT6762_TRIAL RGU mode=%08x length=%08x status=%08x nonrst=%08x nonrst2=%08x req=%08x irq=%08x\n",
+        r->mode,r->length,r->status,r->nonrst,r->nonrst2,r->req_mode,r->req_irq);
+    (void)mtk_trial_clean_range((uintptr_t)r,sizeof(*r),watchdog_clean_line,NULL);
+    __asm__ volatile("dsb sy":::"memory");
+    /* Do not return through loader_return(), which quiesces unrelated devices.
+     * Clean fixed owned allocations without changing logging/ring semantics. */
+    r->flags=mt6762_trial_flush_log(&r->log_length_before,&r->log_length_after);
+    r->state=3;
+    (void)mtk_trial_clean_range((uintptr_t)r,sizeof(*r),watchdog_clean_line,NULL);
+    __asm__ volatile("dsb sy":::"memory");
+}
 static int watchdog_matches(void)
 {
     return r32(watchdog,0)==0x7d && (r32(watchdog,4)&0xffe0)==0xf000 &&
@@ -367,7 +401,8 @@ static int watchdog_matches(void)
 static void watchdog_worker(void *parameter,wait_result_t wait_result)
 {
     (void)parameter;(void)wait_result;
-    unsigned count=0;uint64_t previous=0;
+    unsigned count=0;uint64_t previous=0,last_ns=0;
+    struct mtk_trial_deadline trial={.seconds=watchdog_trial_seconds};
     for(;;) {
         uint64_t now,ns,deadline;clock_get_uptime(&now);
         absolutetime_to_nanoseconds(now-previous,&ns);
@@ -375,9 +410,22 @@ static void watchdog_worker(void *parameter,wait_result_t wait_result)
             kprintf("MT6762_WATCHDOG stopped: inherited state changed or scheduling gap; attempts=%u\n",count);
             break;
         }
+        uint64_t now_ns;absolutetime_to_nanoseconds(now,&now_ns);
+        if(mtk_trial_expired(&trial,now_ns)) {
+            watchdog_trial_end(&trial,count,last_ns,now_ns);
+            break; /* This worker issues no further refreshes; no rearm/fallback. */
+        }
         /* Exact stock ping: never change enable, period, reset/IRQ routing. */
         __asm__ volatile("dsb st":::"memory");
         w32(watchdog,8,0x1971);previous=now;++count;
+        last_ns=now_ns;
+        if(trial.seconds && !trial.started) {
+            mtk_trial_fed(&trial,now_ns);
+            mt6762_trial_record.state=1;mt6762_trial_record.seconds=trial.seconds;
+            mt6762_trial_record.first_feed_ns=now_ns;
+            kprintf("MT6762_TRIAL armed seconds=%u first_feed_ns=%llu; inherited watchdog policy unchanged\n",
+                trial.seconds,now_ns);
+        }
         if(count==1 || count%30==0)
             kprintf("MT6762_WATCHDOG refresh attempts=%u gap_ms=%llu\n",count,count==1?0:ns/1000000);
         clock_interval_to_deadline(1000,NSEC_PER_MSEC,&deadline);
@@ -390,6 +438,10 @@ void mt6762_watchdog_init(void)
 {
     thread_t thread;
     if(watchdog || !ready || !flag("watchdog-refresh-owned"))return;
+    char argument[32]={0};
+    if(PE_parse_boot_arg_str("mt6762_trial_seconds",argument,sizeof(argument)) &&
+        !mtk_trial_parse(argument,sizeof(argument),&watchdog_trial_seconds))
+        kprintf("MT6762_TRIAL ignored invalid seconds; expected decimal0 or60..1800, deadline disabled\n");
     watchdog=(uintptr_t)mt6762_map_mmio(0x10007000,0x1000);
     if(!watchdog || !watchdog_matches()) {
         kprintf("MT6762_WATCHDOG refused inherited profile\n");return;

@@ -215,6 +215,44 @@ struct loader_live loader_live = {
 	.magic2 = 0x324556494c554e58ULL, .sound = loader_sound,
 };
 
+#if defined(ARM64_BOARD_CONFIG_MT6762)
+#include "../../tools/mt6762/hardware/watchdog/trial_deadline.h"
+unsigned mt6762_trial_flush_log(uint32_t *before,uint32_t *after);
+static void
+mt6762_trial_clean_log_line(uintptr_t address,void *unused)
+{
+	(void)unused;
+	__asm__ volatile("dc cvac, %0"::"r"(address):"memory");
+}
+/* A bounded best-effort PoC clean, NOT a frozen or linearized log snapshot.
+ * Taking loader_log_lock while cleaning1.5MiB would block interrupt writers;
+ * their existing bounded-spin fallback can bypass that lock anyway. Instead
+ * clean every allocated log cache line, independent of its changing length,
+ * then the actual private ring metadata. Do not copy or change shared data.
+ * Concurrent/post-clean writes can remain dirty; reset may lose DRAM entirely. */
+unsigned
+mt6762_trial_flush_log(uint32_t *before,uint32_t *after)
+{
+	unsigned flags=MTK_TRIAL_CONCURRENT_LOG;
+	*before=os_atomic_load(&loader_log_len,relaxed);
+	__asm__ volatile("dsb sy":::"memory");
+#define CLEAN_TRIAL_OBJECT(object) \
+	(void)mtk_trial_clean_range((uintptr_t)&(object),sizeof(object),mt6762_trial_clean_log_line,NULL)
+	CLEAN_TRIAL_OBJECT(loader_log);
+	CLEAN_TRIAL_OBJECT(loader_log_len);
+	CLEAN_TRIAL_OBJECT(loader_log_ring_at);
+	CLEAN_TRIAL_OBJECT(loader_log_wrapped);
+	CLEAN_TRIAL_OBJECT(loader_log_linear);
+	CLEAN_TRIAL_OBJECT(loader_live);
+#undef CLEAN_TRIAL_OBJECT
+	__asm__ volatile("dsb sy":::"memory");
+	*after=os_atomic_load(&loader_log_len,relaxed);
+	if(*before>sizeof(loader_log) || *after>sizeof(loader_log))
+		flags|=MTK_TRIAL_LOG_LENGTH_INVALID;
+	return flags;
+}
+#endif
+
 /* Valid from the first instruction of C code: does not depend on gVirtBase/gPhysBase being set up. */
 static inline uint64_t
 static_kvtophys(const void *va)
