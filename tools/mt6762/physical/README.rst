@@ -10,8 +10,12 @@ readback1023 ->256 ->1023. ``--expand-memory`` uses the captured
 without granting ownership. ``--native-touch-probe`` additionally checks the
 inherited bus and permits version/DMA/gesture diagnostics. Image18 reached PID1
 but refused touch because the kernel omitted the INFRA check's mapping; Image19
-fixes that coverage and reports the first mismatched register. Touch acceptance
-requires a matching real-device capture after this fix.
+fixes that coverage. Capture19 confirms entry acceptance, but the native I2C
+setup readback then fails before any touch transaction. Image21/kernel38
+retains every setup readback and adds the read-only LK PWRAP probe; its physical
+result is pending. Capture19 also validates the bounded LK card metadata
+(RCA1, sector addressing and244,285,440sectors), without granting storage
+ownership. See ../hardware/display-touch/physical-build36-evidence.json and the card audit.
 Touch, charging, keys and the physical iOS desktop remain incomplete.
 
 Physical trial status: the dumped LK's fastboot boot path panics before XNU
@@ -100,6 +104,18 @@ untested and is omitted from the current touch trial.
 
 Validation
 ----------
+
+The optional ``--native-msdc-probe`` requires ``--native-pwrap-probe``.
+It checks the exact LK getter and synchronous completion code, host/card
+linkage, masked GIC111, idle DMA/controller/FIFO, PLL parents, electrical pads
+and unchanged tuning twice. Only then does it populate the initially empty
+storage handoff. The kernel independently reads the PMIC rails and performs
+CMD13/EXT_CSD/CMD13 before publishing a read-only disk. No cold reset, clock
+change, card mode switch, DMA launch or storage write is performed. This
+producer has passed host tests against the retained capture19 profile,45
+invalid-state cases and7 changing-state cases; physical acceptance is pending.
+``audit_lk_msdc.py`` also executes the original DMA-stop routine on modeled
+MMIO, including refusal to return while DMA remains active.
 
 Run the host suite from the XNU root::
 

@@ -180,9 +180,21 @@ static void initialize_bus(struct native_bus *b,unsigned id)
     bw16(b,0x2c,timing.ltiming);bw16(b,0x30,0);bw16(b,0x28,timing.ext);
     bw16(b,0x34,3);bw16(b,0x1c,0xa);bw16(b,0x4c,timing.timeout);
     barrier(b);
-    if (br16(b,0x48)!=timing.clock_div || br16(b,0x20)!=timing.timing ||
-        br16(b,0x2c)!=timing.ltiming || br16(b,0x30) ||
-        br16(b,0x34)!=3 || !clocks_stable()) {
+    /* Capture every readback before deciding: short-circuit comparisons hid
+     * the first physical setup failure from the retained no-UART log. */
+    uint16_t actual_div=br16(b,0x48),actual_timing=br16(b,0x20);
+    uint16_t actual_ltiming=br16(b,0x2c),actual_hs=br16(b,0x30);
+    uint16_t actual_io=br16(b,0x34),actual_ext=br16(b,0x28);
+    uint16_t actual_delay=br16(b,0x1c),actual_timeout=br16(b,0x4c);
+    int stable=clocks_stable();
+    kprintf("MT6762_I2C_SETUP bus=%u div=%x/%x timing=%x/%x ltiming=%x/%x hs=%x/0 io=%x/3 clocks=%u\n",
+        id,actual_div,timing.clock_div,actual_timing,timing.timing,
+        actual_ltiming,timing.ltiming,actual_hs,actual_io,stable);
+    kprintf("MT6762_I2C_SETUP_AUX bus=%u ext=%x/%x delay=%x/a timeout=%x/%x top=%x infra0=%x infra1=%x\n",
+        id,actual_ext,timing.ext,actual_delay,actual_timeout,timing.timeout,
+        r32(top,0xa0),r32(infra,0x90),r32(infra,0x94));
+    if (actual_div!=timing.clock_div || actual_timing!=timing.timing ||
+        actual_ltiming!=timing.ltiming || actual_hs || actual_io!=3 || !stable) {
         b->engine.faulted=1;printf("MT6762: I2C%u setup readback failed\n",id);return;
     }
     b->engine.initialized=1;

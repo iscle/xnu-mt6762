@@ -27,6 +27,8 @@ DIAGNOSTICS = (
     '0aab6a6f6333c0f2eed13728b8d77c0696ca6fa1cc1553d232b186dc98075b6e', # Image16: bounded expanded RAM and passive peripheral record
     '79cd2eaa36baea81a3aa3c916417d3dbf7de903f6287a6ed4a6e2a1b7d78b424', # Image18: inherited touch version/DMA probe, watchdog unchanged
     '17d812e16407974f934d56bf3dca63efb66303e82b26790e1ca1d738dc739347', # Image19: touch INFRA mapping fix and bounded LK card metadata
+    '77d0183f98f523f3180a811c4b71cc9800af4a1203a4c56d95b87cf5e78393a8', # Image21: retained I2C setup values and read-only LK PWRAP probe
+    'c1920f7877a8c48f6e1c1439ffd86681225153c77e02b95794be22406ab06551', # Image23: guarded synchronous LK storage probe, fully passing kernel41 build
 )
 VBMETA_FLAGS3 = '2f3fb6474d7ff35ac4c48ab2bef71247ba50de4a94de2474b7d1b60cd6654f51'
 

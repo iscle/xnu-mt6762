@@ -1,0 +1,83 @@
+{
+  "synthetic_only": true,
+  "physical_hardware_tested": false,
+  "passed": true,
+  "errors": [],
+  "kernel_sha256": "a04aabcf6916facb3f4e1b59707f15ded9f63bc893e4708adf7eba3e87eefa81",
+  "qemu_binary_sha256": "9417efd892c3311871781e653b9b8a4f051bfe3bfc8984e3da2ed636241da95b",
+  "image_sha256_before": "a4f5c133a820530a1aff82ee645ade10605c91b718f4ff341dc5ba279b4131c1",
+  "image_sha256_after": "a4f5c133a820530a1aff82ee645ade10605c91b718f4ff341dc5ba279b4131c1",
+  "sector_count": 256,
+  "slice_start_sector": 16,
+  "ios_slice": true,
+  "guest_scalars": {
+    "ios_slice": 1,
+    "char_open": 1,
+    "blocksize_error": 0,
+    "blockcount_error": 0,
+    "writable_error": 0,
+    "blocksize": 512,
+    "blockcount": 256,
+    "writable": 0,
+    "write_open": -30,
+    "block_open": 2,
+    "negative_seek": -1,
+    "negative_read": -22,
+    "negative_buffer": 165
+  },
+  "native_sysctls": {
+    "mt6762_msdc_ready": {
+      "value": 1,
+      "error": 0
+    },
+    "mt6762_msdc_fault": {
+      "value": 0,
+      "error": 0
+    },
+    "mt6762_msdc_last_error": {
+      "value": 0,
+      "error": 0
+    },
+    "mt6762_msdc_reads": {
+      "value": 294,
+      "error": 0
+    },
+    "mt6762_msdc_sectors": {
+      "value": 288,
+      "error": 0
+    }
+  },
+  "guest_ranges": [
+    {
+      "offset": 480,
+      "count": 64,
+      "result": 64,
+      "fnv1a": 542588677
+    },
+    {
+      "offset": 0,
+      "count": 131072,
+      "result": 131072,
+      "fnv1a": 386682309
+    },
+    {
+      "offset": 131056,
+      "count": 32,
+      "result": 16,
+      "fnv1a": 674005861
+    },
+    {
+      "offset": 131072,
+      "count": 512,
+      "result": 0,
+      "fnv1a": 1388775365
+    },
+    {
+      "offset": 131584,
+      "count": 512,
+      "result": 0,
+      "fnv1a": 1388775365
+    }
+  ],
+  "report_sha256": "de683f645b9c5ea59be30b89668cc8392165d39eb36e4b385212bafc770ae771"
+}

@@ -45,8 +45,12 @@ else
 EXPORT_SOURCE_ARCH_CONFIG_LC := $(CURRENT_ARCH_CONFIG_LC)
 endif
 
+# MT6762 has no Apple DART/UAT/PPL IOMMU implementation. Its private export
+# manifest must describe the compiled board; all export checks still run.
+arch_exports = $(if $(and $(filter MT6762,$(CURRENT_MACHINE_CONFIG)),$(filter Private,$(1))),Private.arm64.mt6762.exports,$(1).$(EXPORT_SOURCE_ARCH_CONFIG_LC).exports)
+
 EXPORTS_FILES := $(foreach symbolset,$(SYMBOL_COMPONENT_LIST),$(symbolset).exports \
-	$(symbolset).$(EXPORT_SOURCE_ARCH_CONFIG_LC).exports \
+	$(call arch_exports,$(symbolset)) \
 	$(notdir $(wildcard $(SOURCE)/$(symbolset).$(EXPORT_SOURCE_ARCH_CONFIG_LC).$(PLATFORM).exports))) \
 	Unused.exports
 
@@ -117,21 +121,23 @@ build_symbol_set_plists: $(KEXT_PLIST_BUILD) $(OBJPATH)/symbolsets.plist
 $(TARGET)/allsymbols: $(OBJPATH)/$(KERNEL_FILE_NAME)
 	$(_v)$(NM) -gj $< | sort -u > $@
 
+# The Linux cctools port seeks while writing a symbolset; /dev/null is not a
+# seekable output. Keep both checked artifacts in the per-configuration target.
 check_all_exports: $(TARGET)/allsymbols $(KEXT_CREATE_SYMBOL_SET)
 	$(_v)$(KEXT_CREATE_SYMBOL_SET)					\
 		$(ARCH_FLAGS_$(CURRENT_ARCH_CONFIG))			\
 		-import $(TARGET)/allsymbols				\
 		$(foreach symbolset,$(filter-out Private,$(SYMBOL_COMPONENT_LIST)),	\
 			-export $(SOURCE)/$(symbolset).exports		\
-			-export $(SOURCE)/$(symbolset).$(EXPORT_SOURCE_ARCH_CONFIG_LC).exports)	\
-		-output /dev/null $(_vstdout)
+			-export $(SOURCE)/$(call arch_exports,$(symbolset)))	\
+		-output $(TARGET)/check-public-exports.symbolset $(_vstdout)
 	$(_v)$(KEXT_CREATE_SYMBOL_SET)					\
 		$(ARCH_FLAGS_$(CURRENT_ARCH_CONFIG))			\
 		-import $(TARGET)/allsymbols				\
 		$(foreach symbolset,$(filter-out Unsupported,$(SYMBOL_COMPONENT_LIST)),	\
 			-export $(SOURCE)/$(symbolset).exports		\
-			-export $(SOURCE)/$(symbolset).$(EXPORT_SOURCE_ARCH_CONFIG_LC).exports)	\
-		-output /dev/null $(_vstdout)
+			-export $(SOURCE)/$(call arch_exports,$(symbolset)))	\
+		-output $(TARGET)/check-private-exports.symbolset $(_vstdout)
 
 $(OBJPATH)/$(MD_SUPPORTED_KPI_FILENAME): $(EXPORTS_FILES)
 	@$(LOG_SUPPORTED_KPI) "$(CURRENT_ARCH_CONFIG_LC)"

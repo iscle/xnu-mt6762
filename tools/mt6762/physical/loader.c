@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: MIT
- * Temporary, one-core XNU diagnostic entry. No storage, clock, PMIC, watchdog,
- * touch or USB configuration. Runtime FDT reservations gate all RAM use.
+ * One-core XNU diagnostic entry. Optional native grants require live admission;
+ * this loader writes no peripheral registers. Runtime FDT gates all RAM use.
  */
 #include <stdint.h>
 #include <stddef.h>
@@ -11,6 +11,7 @@
 #include "display_probe.h"
 #include "pwm_probe.h"
 #include "native_display.h"
+#include "native_storage.h"
 #include "peripheral_probe.h"
 #include "../hardware/display-touch/mt6762_touch_entry.h"
 #include "../hardware/power/mt6762_pwrap_entry.h"
@@ -79,7 +80,7 @@ static uint32_t display_read(void *context, uint64_t address)
 { (void)context; return read32(address); }
 static void display_barrier(void *context)
 { (void)context; __asm__ volatile("dsb sy" ::: "memory"); }
-#if PAYLOAD_NATIVE_PWRAP_PROBE
+#if PAYLOAD_NATIVE_PWRAP_PROBE || PAYLOAD_NATIVE_MSDC_PROBE
 static uint32_t pwrap_entry_read(void *context,uint32_t address)
 {(void)context;return read32(address);}
 #endif
@@ -153,6 +154,11 @@ const struct entry_result *loader_main(uint64_t fdt_address, uint64_t original_e
     if(!mt6762_pwrap_entry_ok(pwrap_entry_read,NULL))
         stop("inherited PWRAP read profile",11);
 #endif
+#if PAYLOAD_NATIVE_MSDC_PROBE
+    struct mt6762_storage_profile storage;
+    if(!mt6762_storage_profile_read(pwrap_entry_read,NULL,&storage))
+        stop("inherited synchronous LK eMMC profile",12);
+#endif
     struct mtk_fdt_range source = {(uintptr_t)image_start, (uintptr_t)image_end-(uintptr_t)image_start};
     uint64_t physical, memory_size=MTK_FDT_WINDOW_SIZE;
 #if PAYLOAD_EXPAND_MEMORY
@@ -205,6 +211,13 @@ const struct entry_result *loader_main(uint64_t fdt_address, uint64_t original_e
 #if PAYLOAD_NATIVE_PWRAP_PROBE
     for(unsigned n=0;n<sizeof(payload_pwrap_flags)/sizeof(payload_pwrap_flags[0]);n++)
         memcpy(adt+payload_pwrap_flags[n],&granted,sizeof(granted));
+#endif
+#if PAYLOAD_NATIVE_MSDC_PROBE
+    _Static_assert(sizeof(payload_msdc_values)==sizeof(storage),"storage field/ADT patch count");
+    for(unsigned n=0;n<sizeof(payload_msdc_values)/sizeof(payload_msdc_values[0]);n++)
+        memcpy(adt+payload_msdc_values[n],(const unsigned char *)&storage+n*4,4);
+    for(unsigned n=0;n<sizeof(payload_msdc_flags)/sizeof(payload_msdc_flags[0]);n++)
+        memcpy(adt+payload_msdc_flags[n],&granted,sizeof(granted));
 #endif
 #endif
     put64(args, 16, physical);

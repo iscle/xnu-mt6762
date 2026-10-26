@@ -1,0 +1,126 @@
+{
+  "stock_lk_sha256": "5badc0dc942b0babdca3da13c7e07f3b5f1e57b66d503414b7f80effe8ce891a",
+  "bounded_code": [
+    {
+      "start": "0x48050fc4",
+      "end": "0x4805101c",
+      "sha256": "2657ab8abb6a7a2ca27ddf7c0f987601cc8a3eb5bb225991bd0e136e22488d12"
+    },
+    {
+      "start": "0x48050da8",
+      "end": "0x48050fc0",
+      "sha256": "9ae1d9c18bd70f7cd9f19eaed1d1fba07c3abfc1d62aa44615032d6f8039c53e"
+    },
+    {
+      "start": "0x48050ca0",
+      "end": "0x48050cf4",
+      "sha256": "cd70738b18465def8ab42a98387ed384d17a25aa988d8c1e7eedda063cbb48fc"
+    },
+    {
+      "start": "0x48050924",
+      "end": "0x48050936",
+      "sha256": "63dc6547dc524d7c89499bb8f3b75cbec30205ae356dca1f1ba2d877188daa3a"
+    },
+    {
+      "start": "0x4804e0c8",
+      "end": "0x4804e0d4",
+      "sha256": "f7ceb0930e45422012e9d8692f4927474374704fec86c377a957828da76344a6"
+    }
+  ],
+  "callback": "0x48050fc5",
+  "transfer": "0x48050da8",
+  "ordered_direct_calls": {
+    "0x48051012": "0x48050da8",
+    "0x48050e66": "0x48050c68",
+    "0x48050e70": "0x48050cf4",
+    "0x48050e78": "0x48050ca0",
+    "0x48050e84": "0x48050798",
+    "0x48050eb0": "0x4804eea0"
+  },
+  "cases": [
+    {
+      "busy_reads": 0,
+      "returned": true,
+      "passed": true,
+      "dma_status_reads": 1,
+      "ordered_mmio_writes": [
+        [
+          "0x11230098",
+          "0x2"
+        ],
+        [
+          "0x11230000",
+          "0x2200199"
+        ],
+        [
+          "0x11230010",
+          "0x100"
+        ]
+      ]
+    },
+    {
+      "busy_reads": 1,
+      "returned": true,
+      "passed": true,
+      "dma_status_reads": 2,
+      "ordered_mmio_writes": [
+        [
+          "0x11230098",
+          "0x2"
+        ],
+        [
+          "0x11230000",
+          "0x2200199"
+        ],
+        [
+          "0x11230010",
+          "0x100"
+        ]
+      ]
+    },
+    {
+      "busy_reads": 7,
+      "returned": true,
+      "passed": true,
+      "dma_status_reads": 8,
+      "ordered_mmio_writes": [
+        [
+          "0x11230098",
+          "0x2"
+        ],
+        [
+          "0x11230000",
+          "0x2200199"
+        ],
+        [
+          "0x11230010",
+          "0x100"
+        ]
+      ]
+    },
+    {
+      "busy_reads": null,
+      "returned": false,
+      "passed": true,
+      "dma_status_reads": 656,
+      "ordered_mmio_writes": [
+        [
+          "0x11230098",
+          "0x2"
+        ]
+      ]
+    }
+  ],
+  "findings": [
+    "Captured blk_read resolves to this synchronous DMA callback.",
+    "The normal transfer path calls DMA start, wait, stop and cache maintenance before return; no FEATURE_NONBLOCKING_RW early return is present at this call site.",
+    "DMA stop polls DMA_CFG bit0 clear before restoring PIO bit3, masking its data IRQs and clearing private descriptor bookkeeping.",
+    "host+0x74 is a debug command pointer assigned from the caller stack and not cleared; nonzero alone does not prove an outstanding command."
+  ],
+  "limitations": [
+    "Unicorn models DMA completion; this is not a physical storage test.",
+    "The stock stop wait is unbounded; it is audited, never called by the new driver.",
+    "Runtime handoff still requires captured exact-LK linkage, idle controller/DMA/FIFO, masked GIC, clocks/pads/rails, and live CMD13/EXT_CSD."
+  ],
+  "phone_access": false
+}

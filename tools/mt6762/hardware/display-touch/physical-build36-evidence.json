@@ -1,0 +1,33 @@
+{
+  "physical_image": "Image19/kernel36",
+  "kernel_sha256": "11f719183e2c2ce2fe94e2426714ae29cd32d0d5c6733889cad6611a07fb6054",
+  "normal_boot_sha256": "4de4fdaf5e9845cf05f68e4e2c56a4bef5653a4d15e09790b6e76619866d865f",
+  "trace_identity": "83c0c64c5d5f17ba97ab9bec4c1167f58d37d948c9986302c1bbfe7a1c9bb70e",
+  "trace_sha256": "c2aa62209497156762032ad5cbfddc759732e7cc0dc333c5e900402da1ea51e0",
+  "xnu_log_sha256": "9dfc7caa2c64b1985c0297155f30f4c066b6914c20dd20ba54f04a066152b66c",
+  "framebuffer_sha256": "b53e56423cceef3761d360248a7ea0865b9d094731ce6084c4e5a21456f23d86",
+  "runtime_memory": {
+    "physical_base": 3489660928,
+    "usable_bytes": 4024434688,
+    "actual_bytes": 4024434688
+  },
+  "diagnostic_pid1": true,
+  "driverkit_selftest_cases_per_pass": 205,
+  "driverkit_selftest_passes": 2,
+  "touch_entry_rejected": false,
+  "i2c_setup_readback_failed": true,
+  "visual_evidence": "Recovered framebuffer shows MT6762: I2C0 setup readback failed and unavailable I2C0 prerequisites failed",
+  "touch_transfers_attempted": false,
+  "physical_touch_acceptance": false,
+  "lk_card_metadata": {
+    "valid": true,
+    "sectors": 244285440,
+    "ocr": 3237970048,
+    "rca": 1,
+    "state_ready": 66141,
+    "ownership_granted": false,
+    "authority": "stable exact-LK software metadata; requires live CMD13 and EXT_CSD"
+  },
+  "peripheral_record_sha256": "6d679ce307760714b066514a215ca9d981914bfdd3bb445397379dd76e13f131",
+  "next_diagnostic": "Image21/kernel38 retains all timing/control readbacks and read-only PWRAP identity/rail observations; result pending"
+}

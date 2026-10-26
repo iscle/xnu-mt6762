@@ -1,0 +1,27 @@
+{
+  "synthetic_model_only": true,
+  "physical_hardware_tested": false,
+  "kernel_sha256": "1ad41c908775fce90a14a999e401882dd8439f082393c4b7db364a4fdac11338",
+  "qemu_binary_sha256": "9417efd892c3311871781e653b9b8a4f051bfe3bfc8984e3da2ed636241da95b",
+  "native_i2c0_ready": true,
+  "native_i2c5_ready": true,
+  "touch_version_accepted": true,
+  "touch_dma_reads": 816,
+  "queue_downs": 13,
+  "queue_moves": 189,
+  "queue_ups": 13,
+  "queue_held_at_end": 0,
+  "buttons_down": [
+    1,
+    2,
+    3
+  ],
+  "buttons_matching_up": [
+    1,
+    2,
+    3
+  ],
+  "buttons_held_at_end": [],
+  "kernel_panic_observed": false,
+  "report_sha256": "0edeca3da8b53f7c32ea45b248a4bcf625f231c5c85a765a4879afcb31823332"
+}

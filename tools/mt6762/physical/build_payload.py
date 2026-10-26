@@ -69,23 +69,28 @@ def main():
     parser.add_argument('--refresh-watchdog',action='store_true',help='refresh the measured inherited watchdog without reconfiguring it')
     parser.add_argument('--native-pwrap-probe',action='store_true',
                         help='admit inherited LK WACS2 for bounded read-only PMIC/rail observations')
+    parser.add_argument('--native-msdc-probe',action='store_true',
+                        help='admit exact synchronous LK eMMC handoff; kernel must verify rails/CMD13/EXT_CSD')
     args = parser.parse_args()
     if args.brightness_pulse and not args.native_display:
         parser.error('--brightness-pulse requires --native-display')
     if (args.native_touch_probe or args.refresh_watchdog or args.native_pwrap_probe) and not (args.native_display and args.probe_peripherals):
         parser.error('touch/watchdog/PWRAP requires native display and passive peripheral capture')
+    if args.native_msdc_probe and not args.native_pwrap_probe:
+        parser.error('native MSDC requires the read-only PWRAP probe')
     out = args.out.resolve()
     if out.exists():
         parser.error('output must be new')
     source_paths = [HERE/name for name in ('start.S','loader.c','loader.ld',
         'fdt_handoff.c','fdt_handoff.h','diagnostic_console.h','loader_trace.h',
         'trace_record.py','display_probe.h','display_record.py','pwm_probe.h','pwm_record.py',
-        'native_display.h','peripheral_probe.h','peripheral_record.py','peripheral-registers.json',
+        'native_display.h','native_storage.h','peripheral_probe.h','peripheral_record.py','peripheral-registers.json',
         'build_payload.py','bootimg.py')]
     source_paths += [Path(prepare.__file__), HERE.parent/'hardware/display-touch/mt6762_display_core.h']
     source_paths += [HERE.parent/'hardware/display-touch/mt6762_touch_entry.h']
     source_paths += [HERE.parent/'hardware/power/mt6762_pwrap_entry.h']
-    sources_before = {str(p.relative_to(HERE.parent)):sha(p.read_bytes()) for p in source_paths}
+    source_paths += [HERE.parents[2]/'bsd/dev/mt6762_msdc_clock.h']
+    sources_before = {os.path.relpath(p,HERE.parent):sha(p.read_bytes()) for p in source_paths}
     original_kernel = args.kernel.read_bytes()
     original_diagnostic = args.diagnostic.read_bytes()
     trace_identity = hashlib.sha256(os.urandom(32) + original_kernel +
@@ -143,6 +148,20 @@ def main():
         if args.native_pwrap_probe:
             props.update({name:prepare.u32(0) for name in pwrap_flags})
             props['pwrap-profile']=prepare.u32(2)
+        msdc_flags=('msdc-owned','msdc-inherited-verified','msdc-irq-owned','msdc-clock-owned',
+            'msdc-pads-owned','msdc-rails-preserved','msdc-tuning-preserved',
+            'msdc-card-quiesced','msdc-writes-drained','msdc-sector-addressed',
+            'msdc-ocr-verified','msdc-handoff-producer-version')
+        # Same uint32 field order as native_storage.h; values begin unavailable.
+        msdc_values=('msdc-sector-count','msdc-ocr','msdc-rca','msdc-cfg','msdc-sdc-cfg',
+            'msdc-pad-drive','msdc-hclk-hz','msdc-card-clock-hz','msdc-pll-con0',
+            'msdc-pll-con1','msdc-pll-power','msdc-mainpll-con0','msdc-mainpll-con1',
+            'msdc-mainpll-power')+tuple(f'msdc-top-tune-{i}' for i in range(12))+tuple(
+            f'msdc-controller-tune-{i}' for i in range(18))
+        if args.native_msdc_probe:
+            assert len(msdc_values)==44
+            props.update({name:prepare.u32(0) for name in msdc_flags+msdc_values})
+            props['msdc-timeout-us']=prepare.u32(20000)
         chosen['children'].append(dict(name='mt6762-handoff',props=props,children=[]))
     adt = encode_adt(tree)
     _, end, positions = decode_adt(adt)
@@ -175,6 +194,7 @@ def main():
     constants['NATIVE_TOUCH_PROBE']=int(args.native_touch_probe)
     constants['REFRESH_WATCHDOG']=int(args.refresh_watchdog)
     constants['NATIVE_PWRAP_PROBE']=int(args.native_pwrap_probe)
+    constants['NATIVE_MSDC_PROBE']=int(args.native_msdc_probe)
     if args.native_display:
         native_path='/device-tree/chosen/mt6762-handoff/'
         constants.update({k:positions[native_path+name] for k,name in (
@@ -194,6 +214,9 @@ def main():
             header+=f'#define PAYLOAD_ADT_WATCHDOG_PATCH {positions[native_path+"watchdog-refresh-owned"]}\n'
         if args.native_pwrap_probe:
             header+='static const unsigned payload_pwrap_flags[] = {'+','.join(str(positions[native_path+name]) for name in pwrap_flags)+'};\n'
+        if args.native_msdc_probe:
+            for kind,names in (('flags',msdc_flags),('values',msdc_values)):
+                header+=f'static const unsigned payload_msdc_{kind}[] = '+'{'+','.join(str(positions[native_path+name]) for name in names)+'};\n'
     (out/'payload_layout.h').write_text(header)
     assembly = '.section .payload,"a"\n'
     for name in blobs:
@@ -247,7 +270,7 @@ def main():
     command_line=[sys.executable,str(HERE/'bootimg.py'),'pack','--template',str(args.template),
         '--kernel',str(out/'Image'),'--gzip-kernel','--ramdisk',str(out/'unused-initramfs.gz'),'--output',str(image_path)]
     commands.append(command_line);subprocess.run(command_line,check=True)
-    sources_after = {str(p.relative_to(HERE.parent)):sha(p.read_bytes()) for p in source_paths}
+    sources_after = {os.path.relpath(p,HERE.parent):sha(p.read_bytes()) for p in source_paths}
     if sources_before != sources_after or template_sha != sha(args.template.read_bytes()):
         raise ValueError('build inputs changed during compilation; discard candidate')
     report=dict(format=1,purpose='Temporary physical XNU diagnostic, not full iOS userspace',
@@ -262,12 +285,14 @@ def main():
         conditional_native_grants=(['display','brightness'] if args.native_display else [])+
             (['i2c0-touch-operability-probe'] if args.native_touch_probe else [])+
             (['pwrap-read-only-probe'] if args.native_pwrap_probe else [])+
+            (['msdc-inherited-read-only-probe'] if args.native_msdc_probe else [])+
             (['watchdog-refresh'] if args.refresh_watchdog else []),
         native_display_requested=args.native_display,brightness_pulse_requested=args.brightness_pulse,
         passive_peripheral_probe=args.probe_peripherals,
         expand_memory_requested=args.expand_memory,
         native_touch_probe_requested=args.native_touch_probe,watchdog_refresh_requested=args.refresh_watchdog,
         native_pwrap_probe_requested=args.native_pwrap_probe,
+        native_msdc_probe_requested=args.native_msdc_probe,
         peripheral_trace=dict(offset=peripheral_record.OFFSET,physical_address=peripheral_record.ADDRESS,
             size=peripheral_record.SIZE,initialized_sha256=sha(peripheral_record.initialized(trace_identity)),
             register_writes=False,native_ownership=False),

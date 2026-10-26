@@ -12,8 +12,9 @@ at/newroot, calls the port's existing one-shot root-switch facility, and
 executes the existing helper init at/redwood/sbin/init. It neither rebuilds
 nor patches Apple's userspace binaries. The tiny RAM filesystem remains
 available at/redwood. The system APFS can therefore stay on eMMC rather than
-occupy several GiB as a RAM disk. Its physical handoff producer is incomplete;
-the current real-phone diagnostic does not enable MSDC or include iOS.
+occupy several GiB as a RAM disk. The optional physical handoff producer now
+checks the captured LK profile; its real-device admission/card test is pending.
+The installed real-phone diagnostic does not enable MSDC or include iOS.
 
 Kernel33 mounted the unchanged system APFS and ran launchd in QEMU, but its
 PIO transport latched a timeout under concurrent process startup. A host
@@ -40,4 +41,10 @@ now samples status once more at deadline expiry for both command and data
 waits. Backwards-clock and bounded no-progress failures remain terminal.
 Host regression tests reproduce a completion arriving between the status
 and deadline reads. The long-run evidence records the failure, not a desktop
-success; another emulator boot is required after rebuilding.
+success. The kernel37 retry subsequently rendered the iOS home screen through
+the modeled eMMC backend (snapshot016, about960seconds). It completed the
+1800-second run with the home screen still visible,792,837,632bytes read,
+zero backend errors and no terminal storage failure or kernel panic. This
+duration includes boot. No gesture schedule was applied in that run, and
+the donor's automatic unlock helper remains. See desktop-build37-evidence.json;
+physical card acceptance remains a separate test.

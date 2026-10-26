@@ -1,12 +1,13 @@
 /* SPDX-License-Identifier: MIT
  * Owned inherited MSDC0 PIO consumer. No cold init, DMA, reset or media writes.
- * Physical producer is not implemented: the ADT schema is a required contract,
- * not evidence that LK/Android ownership has actually been transferred.
+ * The optional physical producer admits only the audited synchronous LK
+ * handoff. Live rail/card checks below remain mandatory before publication.
  */
 #include <sys/mt6762_msdc.h>
 #if defined(ARM64_BOARD_CONFIG_MT6762)
 #include <kern/clock.h>
 #include <libkern/libkern.h>
+#include <pexpert/pexpert.h>
 #include <sys/errno.h>
 #include <sys/mt6762_platform.h>
 #include <sys/mt6762_power.h>
@@ -215,6 +216,7 @@ void mt6762_storage_init(void)
     lab=flag("lab-fixture");
     if(!lab && physical_contract()) {
         last_error=MT6762_MSDC_OWNERSHIP;
+        kprintf("MT6762_MSDC refused physical handoff contract\n");
         printf("MT6762 MSDC: physical producer/clock/pad/rail/tuning contract missing; unavailable\n");return;
     }
     controller=(uintptr_t)mt6762_map_mmio(0x11230000,0x10000);
@@ -227,6 +229,9 @@ void mt6762_storage_init(void)
     int error=mt6762_msdc_init(&engine,&io,&config);
     if(error) {
         last_error=error;fault=engine.faulted?1:0;
+        kprintf("MT6762_MSDC refused error=%d command=%x argument=%x phase=%u bytes=%u irq=%x stalled_us=%llu\n",
+            error,engine.last_command,engine.last_argument,engine.wait_phase,
+            engine.data_bytes,engine.last_irq,engine.stalled_us);
         printf("MT6762 MSDC: inherited admission/card read failed %d; no reset\n",error);return;
     }
     error=mt6762_msdc_publish(config.sector_count,read_sector);
@@ -236,6 +241,8 @@ void mt6762_storage_init(void)
     }
     __atomic_store_n(&sectors,(int)count,__ATOMIC_RELEASE);
     __atomic_store_n(&ready,1,__ATOMIC_RELEASE);
+    kprintf("MT6762_MSDC_READY lab=%u sectors=%u hz=%u rca=%u readonly=1\n",
+        lab,count,config.card_clock_hz,config.rca);
     printf("MT6762 MSDC: %s inherited PIO, %u sectors, %u Hz, read-only /dev/mtkemmc0; no reset/DMA\n",
         lab?"SYNTHETIC LAB":"verified handoff",count,config.card_clock_hz);
 }

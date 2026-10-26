@@ -1,0 +1,22 @@
+{
+  "image": "Image23/kernel41",
+  "kernel_sha256": "a04aabcf6916facb3f4e1b59707f15ded9f63bc893e4708adf7eba3e87eefa81",
+  "raw_boot_sha256": "c1920f7877a8c48f6e1c1439ffd86681225153c77e02b95794be22406ab06551",
+  "normal_boot_sha256": "56d9c5fc203aff8bea837db9f5404edbe2d4c0c5fd9a655a2e8a366cbb5a8f93",
+  "all_kernel_build_checks_passed": true,
+  "loader_freestanding_build_passed": true,
+  "image_source_inputs_stable": true,
+  "host_profile_fixture": "native-storage-fixture.json",
+  "negative_profile_states": 45,
+  "changing_profile_states": 7,
+  "initial_storage_grants": 0,
+  "dynamic_storage_values": 44,
+  "storage_flag_count": 12,
+  "adt_patch_offsets_checked": true,
+  "kernel_storage_emulator_test": "../hardware/storage/slice-build41-evidence.json",
+  "physical_storage_acceptance": false,
+  "installed": false,
+  "storage_writes": false,
+  "watchdog_refresh_enabled": false,
+  "next_trial_dependency": "Installed Image21/kernel38 capture20 I2C/PWRAP observations are pending"
+}

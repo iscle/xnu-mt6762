@@ -1,0 +1,147 @@
+{
+  "synthetic_only": true,
+  "run_completed": true,
+  "kernel_sha256": "dc386ea3c788a35e22a08a3f7e5d3fcf71f204964ff2e323ebfb7d2432bde8ff",
+  "qemu_binary_sha256": "9417efd892c3311871781e653b9b8a4f051bfe3bfc8984e3da2ed636241da95b",
+  "native_input_actions": [],
+  "kernel_panic_observed": false,
+  "terminal_storage_failure_observed": false,
+  "gauge_clock_fault_injected_seconds": null,
+  "native_input_schedule_sha256": null,
+  "duration_seconds": 1800.009,
+  "desktop_visually_confirmed": true,
+  "first_reviewed_home_snapshot": "desktop-016.png at about960seconds",
+  "final_visual_observation": "SpringBoard home screen with wallpaper, app icons and dock; two widget placeholders remain white",
+  "final_model": {
+    "lab-i2c-state": {
+      "enabled": true,
+      "synthetic": true,
+      "i2c0": {
+        "transactions": 194560,
+        "dma_reads": 194559,
+        "rx_bytes": 6225890,
+        "last_status": 1
+      },
+      "i2c5": {
+        "transactions": 8759,
+        "dma_reads": 0,
+        "rx_bytes": 8758,
+        "last_status": 1,
+        "psc_control": 4,
+        "psc_status": 0
+      }
+    },
+    "lab-display-state": {
+      "enabled": true,
+      "synthetic": true,
+      "two_layer": false,
+      "framebuffer_pa": 1148125184,
+      "fault": 0,
+      "applied_level": 512,
+      "enable": 1,
+      "duty": 512,
+      "pwm_writes": 0,
+      "commits": 0,
+      "rejected_writes": 0,
+      "reads": {
+        "spm": 18,
+        "mmsys": 2,
+        "ovl": 26,
+        "rdma": 2,
+        "dsi": 16,
+        "pwm": 14
+      }
+    },
+    "lab-power-state": {
+      "enabled": true,
+      "synthetic": true,
+      "fault": 0,
+      "key_mask": 0,
+      "fsm": 0,
+      "commands": 168162,
+      "reads": 157412,
+      "writes": 10750,
+      "rejected": 0,
+      "clears": 157412,
+      "key_reads": 210012,
+      "adc_requests": [
+        1751,
+        1751
+      ],
+      "adc_completions": [
+        1751,
+        1751
+      ],
+      "thermal_enabled": false,
+      "thermal_calibration_synthetic": false,
+      "thermal_requests": [
+        0,
+        0,
+        0
+      ],
+      "thermal_completions": [
+        0,
+        0,
+        0
+      ],
+      "gauge_enabled": true,
+      "gauge_calibration_synthetic": true,
+      "gauge_sample": 100,
+      "gauge_latched_sample": 100,
+      "gauge_control": 0,
+      "gauge_ticks": 3599,
+      "gauge_snapshots": 1812,
+      "gauge_commands": 7248,
+      "bif_enabled": false,
+      "bif_config_synthetic": false,
+      "adc_delay_us": 0,
+      "bif_requests": 0,
+      "bif_completions": 0,
+      "bif_tdet_write_attempts": 0,
+      "bif_trim_reads": 0,
+      "bif_trim_write_attempts": 0
+    },
+    "lab-msdc-state": {
+      "enabled": true,
+      "synthetic": true,
+      "readonly": true,
+      "dma_emulated": false,
+      "irq_delivery": false,
+      "fault": 0,
+      "sectors": 244285440,
+      "commands": 4645534,
+      "cmd8": 1,
+      "cmd13": 3097023,
+      "cmd17": 1548510,
+      "completed": 1548511,
+      "bytes_read": 792837632,
+      "backend_reads": 1548510,
+      "backend_errors": 0,
+      "rejected": 0,
+      "ack_writes": 6194044,
+      "reads": 356212310,
+      "writes": 17033623,
+      "arg": 65536,
+      "command": 141,
+      "irq": 256,
+      "response": 2304,
+      "fifo_bytes": 0,
+      "pending": false,
+      "reading": false
+    }
+  },
+  "evidence_sha256": {
+    "desktop.models.json": "bc6ae0b8557b53a7af886df97bd6a96fac4beb974845255afb353f5f26273ab8",
+    "desktop.serial.log": "be4c649a4a2362f6d412ce1b844e89fa8b9d4d474143ae3d433526ec06cc499f",
+    "desktop.bgra": "e20eb7b26635874492202a58f47a0a8861ce9cc44ff777ab6ce9d1f1ff39396e",
+    "desktop.png": "f8b8415b3361d74449fa0ebd53eda4a435c628f0fc8c2e682360fdffa10a829d",
+    "desktop-016.png": "a1f36266ce33fee85ccef40db640e78e03270b9c79d3e9dd1b876afa3c5573a9",
+    "desktop.host-scheduling.json": "4098c12932318f0c2cc0b26ba5f5522b3cfd70db6d7fbd89ac9309f43b5a303f"
+  },
+  "limits": [
+    "Emulated eMMC with a real read-only file backend; physical storage is not yet accepted.",
+    "No synthetic gesture schedule was applied in this run; automatic donor unlock helper remains.",
+    "The30minute bound includes boot time; home screen was first reviewed at about16minutes.",
+    "Physical touch, charging, power/volume events and desktop remain incomplete."
+  ]
+}
