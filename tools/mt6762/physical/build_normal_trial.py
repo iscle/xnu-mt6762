@@ -16,6 +16,7 @@ from build_recovery_trial import AVBTOOL, PARTITION_SIZE
 
 STOCK_BOOT = '95f362d6c5e018fb588ce1101a75120157079571e8749e349141a5a906f09296'
 DIAGNOSTICS = (
+    '0b40b04f2006600663eb62b3c196716cfe29b388759e1cac27c4d54d6d84f1c9', # Image51: kernel59 guarded channel1 voltage observer and reuse diagnostics
     '85e752179b10aa5bd922253a61c52b523d321bd1f50e14ab1e6520e246ccdd15', # Image50: kernel58 inherited battery/current observers, read-only connectivity survey
     'f5287195f43aee30e555325290aac890ff899dbe04c12d97e5a259be1a9c0b58', # Image5
     'd484161ced6f942984794005d2ac1f8710e33dff49a1e15e8e7ecfbc0725112a', # Image6: empty LK placeholder

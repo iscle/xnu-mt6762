@@ -1,0 +1,608 @@
+{
+  "schema": "mt6762-vbat-profile-source-v1",
+  "physical_new_observer_execution_proven": false,
+  "provenance": [
+    {
+      "path": "/home/iscle/mt6762-ios-port/firmware/Image",
+      "sha256": "82b1919185a49f268a0f8e145a6714d6264c1f66918a90df0d763266147ead4b"
+    },
+    {
+      "path": "/home/iscle/Documents/mini_iphone_dump_2/preloader.bin",
+      "sha256": "7e62da99110271864c330cffcef5237e20ca03881b933263af828561d963f674"
+    },
+    {
+      "path": "/mnt/0da18f53-c547-40a2-a7c3-b08e84d1aab4/alps/aosp-docker/workspace/kernel-4.14/include/linux/mfd/mt6357/registers.h",
+      "sha256": "6933e2382bde5f9487cc633b9e6167a4a93675a8f08eb8fae01315db0a0e8bbe"
+    },
+    {
+      "path": "/home/iscle/mt6762-ios-port/hardware/trace-boot-20261025/capture44/xnu-log-ordered.bin",
+      "sha256": "4eb9b9fb33eca61b4e852a257ac17160e117646c6e6140711fca13fd51279f2d"
+    },
+    {
+      "path": "/home/iscle/mt6762-ios-port/hardware/trace-boot-20261025/capture44/runtime.dtb",
+      "sha256": "0b0be023b2702abddae9ffca00579cf13c41c3383b323f566ba04b678768e8cc"
+    },
+    {
+      "path": "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/tools/mt6762/hardware/power/mt6762_vbat_profile.h",
+      "sha256": "8870e720544fa1640f5c671ac7c945a03b923238f01a96d8f93d0ff7c3e61f00"
+    },
+    {
+      "path": "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/tools/mt6762/hardware/power/mt6762_vbat_fdt.c",
+      "sha256": "51c268e367dfed5fc3ec7870e0838990d8c66e55c57270305029ae3aa4f86b87"
+    },
+    {
+      "path": "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/bsd/dev/mt6762_power.c",
+      "sha256": "1276ecec892a6ba36cdd4172b42be4c94bfa4b892fe1cd0885165ed5226cd5df"
+    },
+    {
+      "path": "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/bsd/dev/mt6762_vbat_observer.c",
+      "sha256": "fb5b86a5bf9625aa6be740fc299681e1f3a047d9c7fbcbc69fb9a5cc15084480"
+    },
+    {
+      "path": "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/bsd/dev/mt6762_battery_observer.c",
+      "sha256": "616ff4e9459090484e2d4cb665c6a851c0429c504b98441e9f9e8fa3cf199a6f"
+    },
+    {
+      "path": "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/bsd/dev/mt6762_bif_protocol.h",
+      "sha256": "e5dc02027285b5612979c9da667a189035bbf664dbf37eccbd04226f3b5b6b57"
+    },
+    {
+      "path": "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/bsd/dev/mt6762_power_protocol.h",
+      "sha256": "2488c25e65d224d925da65a6156f2fcd2988ebe27413f43b0d8b94445a69df10"
+    },
+    {
+      "path": "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/tools/mt6762/hardware/power/test_vbat_profile.py",
+      "sha256": "9456b37e2dd06a657e3097c60173cdfb9c773c7ac16847e8d5a9700bc8242f25"
+    },
+    {
+      "path": "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/tools/mt6762/hardware/power/test_vbat_observer_integration.c",
+      "sha256": "b2bc9e73f17839e0382028f2105069ea8b3ec79131b034efb225cbd67ebbc955"
+    },
+    {
+      "path": "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/tools/mt6762/hardware/power/test_vbat_observer_integration.py",
+      "sha256": "0f582ee7aa3e8d795e18c4741405e70cc45ad7fbd77ca55a56d7211d4d5d6d5b"
+    },
+    {
+      "path": "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/tools/mt6762/hardware/power/test_battery_observer_integration.c",
+      "sha256": "2ea0d3bcaa7d916b1c218936a067ed2f4b0c5ca78f0335181a8bab5da284f034"
+    },
+    {
+      "path": "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/tools/mt6762/hardware/power/emulate_stock_vbat.py",
+      "sha256": "888e5ef98eeb3cbde5a274a5aec8ce7c367386cc4b88ca24ee335da9155d5b51"
+    },
+    {
+      "path": "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/tools/mt6762/hardware/power/audit_vbat_profile.py",
+      "sha256": "30de9bf69ddd213d11e81375a5b09317022e15a40a9fefb0e483dcbbe6991cbe"
+    },
+    {
+      "path": "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/tools/mt6762/hardware/power/evidence/vbat-stock-disassembly.txt",
+      "sha256": "d5dec370b0397a18f327ad52457ca2f454c537dc3558b4c939ef20bef648aef8"
+    },
+    {
+      "path": "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/tools/mt6762/hardware/power/evidence/stock-vbat-vectors.json",
+      "sha256": "ba5d9a10fb2e5256f04805e001bd54f5aaff6adcaf09c317f1eaec25e890dbd1"
+    }
+  ],
+  "field_catalog": [
+    {
+      "name": "RG_AUXADC_AO_1M_CK_PDN",
+      "address": 3980,
+      "mask": 1,
+      "shift": 0,
+      "source_line": 7646
+    },
+    {
+      "name": "RG_AUXADC_1M_CK_PDN_HWEN",
+      "address": 3980,
+      "mask": 1,
+      "shift": 1,
+      "source_line": 7650
+    },
+    {
+      "name": "RG_AUXADC_1M_CK_PDN",
+      "address": 3980,
+      "mask": 1,
+      "shift": 2,
+      "source_line": 7654
+    },
+    {
+      "name": "RG_AUXADC_CK_PDN_HWEN",
+      "address": 3980,
+      "mask": 1,
+      "shift": 3,
+      "source_line": 7658
+    },
+    {
+      "name": "RG_AUXADC_CK_PDN",
+      "address": 3980,
+      "mask": 1,
+      "shift": 4,
+      "source_line": 7662
+    },
+    {
+      "name": "RG_AUXADC_RNG_CK_PDN_HWEN",
+      "address": 3980,
+      "mask": 1,
+      "shift": 5,
+      "source_line": 7666
+    },
+    {
+      "name": "RG_AUXADC_RNG_CK_PDN",
+      "address": 3980,
+      "mask": 1,
+      "shift": 6,
+      "source_line": 7670
+    },
+    {
+      "name": "RG_AUXADC_32K_CK_PDN_HWEN",
+      "address": 3980,
+      "mask": 1,
+      "shift": 7,
+      "source_line": 7674
+    },
+    {
+      "name": "RG_AUXADC_32K_CK_PDN",
+      "address": 3980,
+      "mask": 1,
+      "shift": 8,
+      "source_line": 7678
+    },
+    {
+      "name": "RG_AUXADC_1K_CK_PDN",
+      "address": 3980,
+      "mask": 1,
+      "shift": 9,
+      "source_line": 7682
+    },
+    {
+      "name": "RG_AUXADC_CK_DIVSEL",
+      "address": 3982,
+      "mask": 1,
+      "shift": 0,
+      "source_line": 7686
+    },
+    {
+      "name": "RG_AUXADC_CK_TSTSEL",
+      "address": 3982,
+      "mask": 1,
+      "shift": 1,
+      "source_line": 7690
+    },
+    {
+      "name": "RG_AUXADC_INTRP_CK_PDN",
+      "address": 3982,
+      "mask": 1,
+      "shift": 2,
+      "source_line": 7694
+    },
+    {
+      "name": "RG_AUXADC_RST",
+      "address": 3984,
+      "mask": 1,
+      "shift": 0,
+      "source_line": 7698
+    },
+    {
+      "name": "RG_AUXADC_REG_RST",
+      "address": 3984,
+      "mask": 1,
+      "shift": 1,
+      "source_line": 7702
+    },
+    {
+      "name": "BANK_HK_TOP_SWRST",
+      "address": 3984,
+      "mask": 1,
+      "shift": 2,
+      "source_line": 7706
+    },
+    {
+      "name": "BANK_AUXADC_SWRST",
+      "address": 3984,
+      "mask": 1,
+      "shift": 3,
+      "source_line": 7710
+    },
+    {
+      "name": "BANK_AUXADC_DIG_1_SWRST",
+      "address": 3984,
+      "mask": 1,
+      "shift": 4,
+      "source_line": 7714
+    },
+    {
+      "name": "BANK_AUXADC_DIG_2_SWRST",
+      "address": 3984,
+      "mask": 1,
+      "shift": 5,
+      "source_line": 7718
+    },
+    {
+      "name": "BANK_AUXADC_DIG_3_SWRST",
+      "address": 3984,
+      "mask": 1,
+      "shift": 6,
+      "source_line": 7722
+    },
+    {
+      "name": "BANK_AUXADC_DIG_4_SWRST",
+      "address": 3984,
+      "mask": 1,
+      "shift": 7,
+      "source_line": 7726
+    },
+    {
+      "name": "AUXADC_RNG_EN",
+      "address": 4414,
+      "mask": 1,
+      "shift": 0,
+      "source_line": 8746
+    },
+    {
+      "name": "AUXADC_TEST_MODE",
+      "address": 4414,
+      "mask": 1,
+      "shift": 3,
+      "source_line": 8750
+    },
+    {
+      "name": "AUXADC_START_SWCTRL",
+      "address": 4414,
+      "mask": 1,
+      "shift": 6,
+      "source_line": 8762
+    },
+    {
+      "name": "AUXADC_TS_VBE_SEL_SWCTRL",
+      "address": 4414,
+      "mask": 1,
+      "shift": 10,
+      "source_line": 8770
+    },
+    {
+      "name": "AUXADC_VBUF_EN_SWCTRL",
+      "address": 4414,
+      "mask": 1,
+      "shift": 12,
+      "source_line": 8778
+    },
+    {
+      "name": "AUXADC_OUT_SEL",
+      "address": 4414,
+      "mask": 1,
+      "shift": 13,
+      "source_line": 8782
+    },
+    {
+      "name": "AUXADC_DATA_REUSE_EN",
+      "address": 4428,
+      "mask": 1,
+      "shift": 8,
+      "source_line": 8914
+    },
+    {
+      "name": "AUXADC_CH0_DATA_REUSE_EN",
+      "address": 4428,
+      "mask": 1,
+      "shift": 9,
+      "source_line": 8918
+    },
+    {
+      "name": "AUXADC_CH1_DATA_REUSE_EN",
+      "address": 4428,
+      "mask": 1,
+      "shift": 10,
+      "source_line": 8922
+    },
+    {
+      "name": "AUXADC_DCXO_DATA_REUSE_EN",
+      "address": 4428,
+      "mask": 1,
+      "shift": 11,
+      "source_line": 8926
+    },
+    {
+      "name": "AUXADC_SW_GAIN_TRIM",
+      "address": 4318,
+      "mask": 32767,
+      "shift": 0,
+      "source_line": 8270
+    },
+    {
+      "name": "AUXADC_SW_OFFSET_TRIM",
+      "address": 4320,
+      "mask": 32767,
+      "shift": 0,
+      "source_line": 8274
+    },
+    {
+      "name": "AUXADC_TRIM_CH1_SEL",
+      "address": 4410,
+      "mask": 3,
+      "shift": 2,
+      "source_line": 8694
+    }
+  ],
+  "preloader_table_tuples": [
+    {
+      "offset": 229336,
+      "address": 3980,
+      "value": 170,
+      "mask": 1023,
+      "shift": 0
+    },
+    {
+      "offset": 229344,
+      "address": 3982,
+      "value": 0,
+      "mask": 1,
+      "shift": 0
+    },
+    {
+      "offset": 229464,
+      "address": 4428,
+      "value": 256,
+      "mask": 259,
+      "shift": 0
+    }
+  ],
+  "capture44_adc_passes": [
+    [
+      [
+        8,
+        22320
+      ],
+      [
+        10,
+        22320
+      ],
+      [
+        4318,
+        32714
+      ],
+      [
+        4320,
+        15
+      ],
+      [
+        4384,
+        20
+      ],
+      [
+        4390,
+        882
+      ],
+      [
+        4392,
+        32899
+      ],
+      [
+        4398,
+        16384
+      ],
+      [
+        4402,
+        48
+      ],
+      [
+        4406,
+        25186
+      ],
+      [
+        4410,
+        38352
+      ],
+      [
+        4412,
+        16469
+      ],
+      [
+        4104,
+        1
+      ],
+      [
+        4514,
+        4032
+      ],
+      [
+        4516,
+        56
+      ],
+      [
+        4518,
+        428
+      ],
+      [
+        4520,
+        76
+      ],
+      [
+        4522,
+        4059
+      ],
+      [
+        4524,
+        13
+      ]
+    ],
+    [
+      [
+        8,
+        22320
+      ],
+      [
+        10,
+        22320
+      ],
+      [
+        4318,
+        32714
+      ],
+      [
+        4320,
+        15
+      ],
+      [
+        4384,
+        20
+      ],
+      [
+        4390,
+        882
+      ],
+      [
+        4392,
+        32899
+      ],
+      [
+        4398,
+        16384
+      ],
+      [
+        4402,
+        48
+      ],
+      [
+        4406,
+        25186
+      ],
+      [
+        4410,
+        38352
+      ],
+      [
+        4412,
+        16469
+      ],
+      [
+        4104,
+        1
+      ],
+      [
+        4514,
+        4032
+      ],
+      [
+        4516,
+        56
+      ],
+      [
+        4518,
+        428
+      ],
+      [
+        4520,
+        76
+      ],
+      [
+        4522,
+        4059
+      ],
+      [
+        4524,
+        13
+      ]
+    ]
+  ],
+  "unobserved_control_addresses": [
+    3980,
+    3982,
+    3984,
+    4414,
+    4428
+  ],
+  "live_dt_properties_hex": {
+    "/pwrap@1000d000/main_pmic/pmic_auxadc/compatible": "6d6564696174656b2c706d69632d617578616463006d6564696174656b2c6d74363335372d61757861646300",
+    "/pwrap@1000d000/main_pmic/pmic_auxadc/#io-channel-cells": "00000001",
+    "/pwrap@1000d000/main_pmic/pmic_auxadc/phandle": "00000027",
+    "/pwrap@1000d000/main_pmic/pmic_auxadc/isense/channel": "00000001",
+    "/pwrap@1000d000/main_pmic/pmic_auxadc/isense/resistance-ratio": "0000000300000001",
+    "/pwrap@1000d000/main_pmic/pmic_auxadc/isense/avg-num": "00000080",
+    "/pwrap@1000d000/main_pmic/mtk_gauge/compatible": "6d6564696174656b2c6d74363335372d676175676500",
+    "/pwrap@1000d000/main_pmic/mtk_gauge/io-channels": "00000027000000030000002700000001000000270000000e000000270000000f0000002700000010",
+    "/pwrap@1000d000/main_pmic/mtk_gauge/io-channel-names": "706d69635f626174746572795f74656d7000706d69635f626174746572795f766f6c7461676500706d69635f6269665f766f6c7461676500706d69635f7074696d5f766f6c7461676500706d69635f7074696d5f7200"
+  },
+  "required_masks": [
+    {
+      "address": 3980,
+      "mask": 1023,
+      "value": 170
+    },
+    {
+      "address": 3982,
+      "mask": 7,
+      "value": 0
+    },
+    {
+      "address": 3984,
+      "mask": 255,
+      "value": 0
+    },
+    {
+      "address": 4414,
+      "mask": 13385,
+      "value": 0
+    },
+    {
+      "address": 4428,
+      "mask": 1280,
+      "value": 0
+    }
+  ],
+  "original_request_read": {
+    "function": "0xffffff8008b6aab8",
+    "request": 4366,
+    "value": 2,
+    "result": 4234,
+    "avg_wait_us": [
+      1280,
+      1290
+    ]
+  },
+  "original_processed_conversion": {
+    "function": "0xffffff8008b6b8fc",
+    "resolution": 15,
+    "ratio": [
+      3,
+      1
+    ],
+    "unit_mv": 1800,
+    "conversion_callback": 0,
+    "software_calibration_callback": 0,
+    "probe_hook_stores": [
+      "0xffffff8008b6b24c: DCXO convert",
+      "0xffffff8008b6b250: VBIF convert",
+      "0xffffff8008b6b254: BAT_TEMP calibration"
+    ],
+    "scope": "Original cold descriptor plus init-probe writes; no reconstruction of mutable historical Android object."
+  },
+  "reuse_boundary": {
+    "global_bit": 8,
+    "channel1_bit": 10,
+    "preloader_sets_global_bit": true,
+    "get_auxadc_out_reads_or_writes_114c": false,
+    "boolean_coupling_proven": false,
+    "policy": "Require both disabled; observe/log and refuse if either enabled. Do not infer independence from field names or issue a guessed configuration write."
+  },
+  "per_acquisition": {
+    "private_writes_max": 1,
+    "only_write": [
+      4366,
+      2
+    ],
+    "configuration_reads": 48,
+    "freshness": "post-request READY low then high, bounded timeout, rail rejection, unchanged full profile, <=2s acquisition lease",
+    "no_automatic_retry": true,
+    "public_pwrap_writes": false,
+    "charger_control": false,
+    "ntc_or_bif_or_tdet_writes": false
+  },
+  "validation": {
+    "host_wacs_faults": 215,
+    "host_config_changes": 48,
+    "host_expiry_positions": 54,
+    "fdt_tests": 7,
+    "original_arm64_vectors": 9,
+    "absolute_physical_voltage_calibration_claimed": false
+  }
+}

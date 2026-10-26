@@ -22,6 +22,9 @@
 #if PAYLOAD_NATIVE_GAUGE_OBSERVER
 #include "../hardware/power/mt6762_gauge_baseline.h"
 #endif
+#if PAYLOAD_NATIVE_VBAT_OBSERVER
+#include "native_vbat.h"
+#endif
 #if PAYLOAD_PROBE_CONNECTIVITY
 #include "connectivity_probe.h"
 #include "../hardware/connectivity-power/pwrap_readonly.h"
@@ -194,6 +197,20 @@ static int gauge_observer_admit(uint64_t fdt_address,uint32_t values[8])
     return 1;
 }
 #endif
+#if PAYLOAD_NATIVE_VBAT_OBSERVER
+static int vbat_entry_read(void *context,uint16_t reg,uint16_t *value)
+{
+    struct connectivity_context *c=context;
+    const struct mt6762_wacs_io wacs={c,connectivity_wacs_read,
+        connectivity_wacs_write,connectivity_delay};
+    if(connectivity_acquire(c))return -1;
+    int error=connectivity_admit(c);
+    if(!error)error=mt6762_wacs_transfer_profile(&wacs,MT6762_WACS_LK22,0,reg,value);
+    connectivity_release(c);
+    if(error)c->transport_fault=1;
+    return error;
+}
+#endif
 #endif
 #if PAYLOAD_PROBE_PERIPHERALS
 static uint32_t peripheral_read(void *context,uint32_t address,unsigned width)
@@ -297,6 +314,17 @@ const struct entry_result *loader_main(uint64_t fdt_address, uint64_t original_e
     text(gauge_admitted?"Gauge observer profile admitted; no latch command issued by loader\r\n":
         "Gauge observer profile unavailable; battery status observer remains enabled\r\n");
 #endif
+#if PAYLOAD_NATIVE_VBAT_OBSERVER
+    uint32_t vbat_values[6]={0};
+    struct mt6762_vbat_entry_report vbat_report;
+    const struct mt6762_vbat_entry_io vbat_io={&connectivity_context,vbat_entry_read,peripheral_ticks};
+    int vbat_admitted=mt6762_vbat_admit((void *)(uintptr_t)fdt_address,0x80000,&vbat_io,vbat_values,&vbat_report);
+    text(vbat_admitted?"Battery ADC profile admitted; loader issued reads only\r\n":
+        "Battery ADC profile unavailable; voltage remains unknown\r\n");
+    text("Battery ADC admission status=");hex(vbat_report.status);
+    text(" reads=");hex(vbat_report.reads);text(" reuse=");hex(vbat_report.reuse_word);
+    text(" passes=");hex(vbat_report.reuse_passes);text("\r\n");
+#endif
 #if PAYLOAD_NATIVE_BUTTONS_PROBE
     if(!mt6762_keys_entry_ok(peripheral_read,NULL))
         stop("inherited keypad read profile",14);
@@ -379,6 +407,18 @@ const struct entry_result *loader_main(uint64_t fdt_address, uint64_t original_e
         _Static_assert(sizeof(payload_gauge_observer_values)==sizeof(gauge_values),"gauge patch count");
         for(unsigned n=0;n<8;n++)memcpy(adt+payload_gauge_observer_values[n],&gauge_values[n],4);
         memcpy(adt+PAYLOAD_ADT_GAUGE_OBSERVER_PATCH,&granted,4);
+    }
+#endif
+#if PAYLOAD_NATIVE_VBAT_OBSERVER
+    const uint32_t vbat_diagnostics[]={vbat_report.status,vbat_report.reads,
+        vbat_report.reuse_word,vbat_report.reuse_passes};
+    _Static_assert(sizeof(payload_vbat_observer_diagnostics)==sizeof(vbat_diagnostics),"voltage diagnostic count");
+    /* Retain observations on refusal without granting the consumer access. */
+    for(unsigned n=0;n<4;n++)memcpy(adt+payload_vbat_observer_diagnostics[n],&vbat_diagnostics[n],4);
+    if(vbat_admitted) {
+        _Static_assert(sizeof(payload_vbat_observer_values)==sizeof(vbat_values),"voltage patch count");
+        for(unsigned n=0;n<6;n++)memcpy(adt+payload_vbat_observer_values[n],&vbat_values[n],4);
+        memcpy(adt+PAYLOAD_ADT_VBAT_OBSERVER_PATCH,&granted,4);
     }
 #endif
 #if PAYLOAD_REFRESH_WATCHDOG

@@ -24,6 +24,8 @@ cc -std=c11 -Wall -Wextra -Werror -g test_gauge_probe.c -o "$testdir/test-gauge-
 "$testdir/test-gauge-probe"
 python3 test_gauge_latch_integration.py
 python3 test_battery_observer_integration.py
+python3 test_vbat_profile.py
+python3 test_vbat_observer_integration.py
 python3 test_wacs_delay.py
 python3 test_gauge_baseline.py
 python3 - "$testdir/gauge_vectors.h" <<'GAUGE'

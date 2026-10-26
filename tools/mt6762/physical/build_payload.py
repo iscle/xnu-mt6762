@@ -83,6 +83,10 @@ CHARGER_READONLY_FLAGS = CHARGER_SETUP_FLAGS[:-1] + ('charger-readonly-probe',)
 BATTERY_OBSERVER_FLAGS = CHARGER_SETUP_FLAGS[:-1] + ('battery-inherited-observer',)
 GAUGE_OBSERVER_VALUES = ('fgauge-baseline-version','fgauge-rfg','fgauge-car-tune',
     'fgauge-con0','fgauge-efuse-gain','fgauge-efuse-offset','fgauge-adjust-offset','fgauge-gain')
+VBAT_OBSERVER_VALUES = ('vbat-adc-profile-version','vbat-adc-clock0',
+    'vbat-adc-clock1','vbat-adc-reset','vbat-adc-test','vbat-adc-reuse')
+VBAT_OBSERVER_DIAGNOSTICS = ('vbat-observation-status','vbat-observation-reads',
+    'vbat-observed-reuse','vbat-observed-reuse-passes')
 # Reviewed frozen kernel: secondary EL2 descent, firmware queries and cache
 # handoff; original-entry tests and an eight-core QEMU run passed.
 SMP_KERNELS = {
@@ -97,6 +101,9 @@ SMP_KERNELS = {
     # Kernel58 adds inherited battery reporting; unchanged SMP entry and
     # all seven secondary CPUs observed online in its eight-core QEMU boot.
     '0b0c4d8f28ccb96bf2779f13345c447acfd9892b3dd4e58d8a1695ca5a299293',
+    # Kernel59 adds the narrow inherited voltage observer; its180-second
+    # eight-core smoke passed with the same secondary-entry implementation.
+    '55eeb77c99b595590c6c14c5d1b3dc05d2c65ebf2b0332647cc77ec83fd9c11b',
 }
 # Capture34 exhausted the old20ms software wait before the inherited DDR
 # controller's approximately109ms data timeout. Allow its existing hardware
@@ -139,22 +146,27 @@ def require_charger_readonly_kernel(kernel,requested):
         raise ValueError('native charger reads require the bounded six-transaction kernel implementation')
 
 
-def battery_observer_properties(gauge=False):
+def battery_observer_properties(gauge=False,vbat=False):
     props=charger_setup_properties()
     del props['charger-setup-only']
     props['battery-inherited-observer']=prepare.u32(0)
     if gauge:
         props.update({name:prepare.u32(0) for name in
             ('fgauge-inherited-observer',)+GAUGE_OBSERVER_VALUES})
+    if vbat:
+        props.update({name:prepare.u32(0) for name in
+            ('vbat-inherited-observer',)+VBAT_OBSERVER_VALUES+VBAT_OBSERVER_DIAGNOSTICS})
     return props
 
 
-def require_battery_observer_kernel(kernel,battery,gauge):
+def require_battery_observer_kernel(kernel,battery,gauge,vbat=False):
     if battery and (b'MT6762_PSC_OBSERVER_ADMITTED reads=3,1,0 min_period_us=500000\n\0' not in kernel or
                     b'MT6762_BATTERY_OBSERVER_READY' not in kernel):
         raise ValueError('battery observer requires repeated read-only transport and native publisher')
     if gauge and b'MT6762_GAUGE_OBSERVER_READY' not in kernel:
         raise ValueError('gauge observer requires the private bounded inherited latch implementation')
+    if vbat and b'MT6762_VBAT_OBSERVER_READY channel=1 max_requests_per_sample=1\n\0' not in kernel:
+        raise ValueError('voltage observer requires the private bounded inherited ADC implementation')
 
 
 def trial_bootarg(kernel,seconds,refresh_watchdog):
@@ -213,6 +225,8 @@ def main():
                         help='publish fresh PMIC/PSC battery and charging observations; no charger-control writes')
     parser.add_argument('--native-gauge-observer',action='store_true',
                         help='with battery observer, admit bounded gauge latch commands for coherent current/CAR')
+    parser.add_argument('--native-vbat-observer',action='store_true',
+                        help='with battery observer, admit one channel1 ADC request per fresh voltage sample')
     args = parser.parse_args()
     if args.brightness_pulse and not args.native_display:
         parser.error('--brightness-pulse requires --native-display')
@@ -230,6 +244,8 @@ def main():
         parser.error('battery observer requires inherited PWRAP and buttons admission')
     if args.native_gauge_observer and not (args.native_battery_observer and args.probe_connectivity):
         parser.error('gauge observer requires battery observer and bounded connectivity read transport')
+    if args.native_vbat_observer and not (args.native_battery_observer and args.probe_connectivity):
+        parser.error('voltage observer requires battery observer and bounded connectivity read transport')
     if args.probe_connectivity and not (args.native_pwrap_probe and args.probe_peripherals):
         parser.error('connectivity survey requires the inherited read-only PWRAP and peripheral probes')
     if bool(args.bootstrap_apfs) != bool(args.ios_system_slice):
@@ -255,6 +271,8 @@ def main():
     source_paths += [HERE.parent/'hardware/power/mt6762_charger_entry.h']
     source_paths += [HERE.parent/'hardware/power/mt6762_gauge_baseline.h',
                      HERE.parent/'hardware/power/mt6762_gauge_baseline.c']
+    source_paths += [HERE/'native_vbat.h',HERE.parent/'hardware/power/mt6762_vbat_profile.h',
+                     HERE.parent/'hardware/power/mt6762_vbat_fdt.c']
     source_paths += [HERE.parents[2]/'bsd/dev/mt6762_msdc_clock.h']
     source_paths += [HERE/'connectivity_probe.h', CONNECTIVITY_DIR/'record.py',
         CONNECTIVITY_DIR/'registers.json', CONNECTIVITY_DIR/'pwrap_readonly.h',
@@ -265,7 +283,8 @@ def main():
     require_smp_kernel(original_kernel,args.cpus)
     require_charger_setup_kernel(original_kernel,args.native_charger_setup_probe)
     require_charger_readonly_kernel(original_kernel,args.native_charger_readonly_probe)
-    require_battery_observer_kernel(original_kernel,args.native_battery_observer,args.native_gauge_observer)
+    require_battery_observer_kernel(original_kernel,args.native_battery_observer,
+                                    args.native_gauge_observer,args.native_vbat_observer)
     trial_arg = trial_bootarg(original_kernel,args.trial_seconds,args.refresh_watchdog)
     root_path = args.bootstrap_apfs or args.diagnostic
     if args.bootstrap_apfs and root_path.stat().st_size > desktop_ramdisk.MAX_BOOTSTRAP_BYTES:
@@ -336,7 +355,7 @@ def main():
         if args.native_charger_readonly_probe:
             props.update(charger_readonly_properties())
         if args.native_battery_observer:
-            props.update(battery_observer_properties(args.native_gauge_observer))
+            props.update(battery_observer_properties(args.native_gauge_observer,args.native_vbat_observer))
         if args.refresh_watchdog:props['watchdog-refresh-owned']=prepare.u32(0)
         pwrap_flags=('pwrap-verified','pwrap-inherited-probe')
         if args.native_pwrap_probe:
@@ -410,6 +429,7 @@ def main():
     constants['NATIVE_CHARGER_READONLY_PROBE']=int(args.native_charger_readonly_probe)
     constants['NATIVE_BATTERY_OBSERVER']=int(args.native_battery_observer)
     constants['NATIVE_GAUGE_OBSERVER']=int(args.native_gauge_observer)
+    constants['NATIVE_VBAT_OBSERVER']=int(args.native_vbat_observer)
     constants['IOS_SYSTEM_SLICE']=int(ios_slice is not None)
     if ios_slice:
         constants['IOS_SYSTEM_START']=ios_slice['start_sector']
@@ -445,6 +465,10 @@ def main():
         if args.native_gauge_observer:
             header+='static const unsigned payload_gauge_observer_values[] = {'+','.join(str(positions[native_path+name]) for name in GAUGE_OBSERVER_VALUES)+'};\n'
             header+=f'#define PAYLOAD_ADT_GAUGE_OBSERVER_PATCH {positions[native_path+"fgauge-inherited-observer"]}u\n'
+        if args.native_vbat_observer:
+            header+='static const unsigned payload_vbat_observer_values[] = {'+','.join(str(positions[native_path+name]) for name in VBAT_OBSERVER_VALUES)+'};\n'
+            header+='static const unsigned payload_vbat_observer_diagnostics[] = {'+','.join(str(positions[native_path+name]) for name in VBAT_OBSERVER_DIAGNOSTICS)+'};\n'
+            header+=f'#define PAYLOAD_ADT_VBAT_OBSERVER_PATCH {positions[native_path+"vbat-inherited-observer"]}u\n'
         if args.native_msdc_probe:
             for kind,names in (('flags',msdc_flags),('values',msdc_values)):
                 header+=f'static const unsigned payload_msdc_{kind}[] = '+'{'+','.join(str(positions[native_path+name]) for name in names)+'};\n'
@@ -479,11 +503,13 @@ def main():
               '-Wall','-Wextra','-Werror','-I'+str(HERE),'-I'+str(out)]
     commands = []
     for source in (HERE/'start.S',HERE/'loader.c',HERE/'fdt_handoff.c',HERE/'psci/psci_fdt.c',
-                   HERE.parent/'hardware/power/mt6762_gauge_baseline.c',out/'payload.S',out/'trace.S'):
+                   HERE.parent/'hardware/power/mt6762_gauge_baseline.c',
+                   HERE.parent/'hardware/power/mt6762_vbat_fdt.c',out/'payload.S',out/'trace.S'):
         command_line = common+['-c',str(source),'-o',str(out/(source.stem+'.o'))]
         commands.append(command_line);subprocess.run(command_line,check=True)
     command_line = [str(args.llvm/'ld.lld'),'-T',str(HERE/'loader.ld'),'-o',str(out/'loader.elf')]
-    command_line += [str(out/(name+'.o')) for name in ('start','loader','fdt_handoff','psci_fdt','mt6762_gauge_baseline','payload','trace')]
+    command_line += [str(out/(name+'.o')) for name in ('start','loader','fdt_handoff','psci_fdt',
+        'mt6762_gauge_baseline','mt6762_vbat_fdt','payload','trace')]
     commands.append(command_line);subprocess.run(command_line,check=True)
     command_line = [str(args.llvm/'llvm-objcopy'),'-O','binary',str(out/'loader.elf'),str(out/'Image')]
     commands.append(command_line);subprocess.run(command_line,check=True)
@@ -538,6 +564,7 @@ def main():
             (['i2c5-inherited-six-PSC-reads'] if args.native_charger_readonly_probe else [])+
             (['battery-inherited-readonly-observer'] if args.native_battery_observer else [])+
             (['gauge-inherited-bounded-latch-observer'] if args.native_gauge_observer else [])+
+            (['vbat-inherited-channel1-request-observer'] if args.native_vbat_observer else [])+
             (['watchdog-refresh'] if args.refresh_watchdog else []),
         native_display_requested=args.native_display,brightness_pulse_requested=args.brightness_pulse,
         passive_peripheral_probe=args.probe_peripherals,
@@ -558,6 +585,8 @@ def main():
         native_charger_readonly_probe_requested=args.native_charger_readonly_probe,
         native_battery_observer_requested=args.native_battery_observer,
         native_gauge_observer_requested=args.native_gauge_observer,
+        native_vbat_observer_requested=args.native_vbat_observer,
+        vbat_loader_pmic_writes=False,
         charger_transactions_granted=False,charger_control_granted=False,
         conditional_charger_read_transaction_limit=6 if args.native_charger_readonly_probe else 0,
         peripheral_trace=dict(offset=peripheral_record.OFFSET,physical_address=peripheral_record.ADDRESS,

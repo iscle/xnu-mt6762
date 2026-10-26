@@ -115,6 +115,29 @@ extent. Building this image neither writes the phone nor establishes desktop
 or watchdog acceptance. The legacy output filename remains
 ``mt6762-xnu-diagnostic-boot.img``; the manifest identifies the root payload.
 
+The optional ``--native-battery-observer`` publishes fresh battery presence
+and charger status through the native power source. It requires the inherited
+PWRAP and button probes. ``--native-gauge-observer`` adds the bounded gauge
+latch sequence for current and relative charge; ``--native-vbat-observer``
+adds a single channel1 ADC request per voltage sample. Both require the
+connectivity survey's bounded read transport. These options require matching
+kernel implementations and begin with all handoff values and grants cleared.
+
+The voltage producer resolves the actual runtime FDT's battery-voltage route
+and its channel1,3:1,128-average profile. It reads24 PMIC words twice with a
+100ms total deadline, requiring matching complete passes and the stock
+readiness predicates. The loader issues PMIC reads only. On success it passes
+the five complete live clock/reset/test/reuse words and the versioned narrow
+capability to the kernel; otherwise voltage remains unavailable. The consumer
+rechecks configuration around each conversion and requires a fresh READY
+transition. Separate ``vbat-observation-*`` and ``vbat-observed-reuse*``
+diagnostics retain admission status, completed-read count and any observed
+reuse word even on refusal; those fields never grant access. Status codes
+are defined in ``native_vbat.h``. Global or channel1 data reuse is currently
+refused, pending proof of its freshness semantics on the shipped setup.
+This does not grant general ADC, charger or rail control and does
+not supply a battery percentage. See ``../hardware/power/BATTERY-OBSERVER.rst``.
+
 The physical Image enters at0x40080000 with the bootloader's runtime FDT in x0.
 It admits a little-endian, MMU/data-cache-off Cortex-A53 at EL1 or EL2 and a
 13MHz counter. EL1 entry preserves the existing GZ hypervisor state. EL2 entry

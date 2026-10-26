@@ -25,6 +25,7 @@
 static LCK_GRP_DECLARE(power_lck_group,"mt6762-power");
 static LCK_MTX_DECLARE(pwrap_mutex,&power_lck_group);
 static LCK_MTX_DECLARE(adc_mutex,&power_lck_group);
+static LCK_MTX_DECLARE(battery_observer_mutex,&power_lck_group);
 static volatile uint8_t *pwrap, *keypad;
 static volatile uint8_t *keys_gpio,*keys_gic;
 static int keys_only,keys_fault;

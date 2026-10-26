@@ -31,7 +31,7 @@ def function(name, source=SOURCE):
 with tempfile.TemporaryDirectory(prefix='mt6762-battery-observer-') as directory:
     temporary = Path(directory)
     (temporary / 'battery_observer_power_functions.c').write_text(
-        function('verified') + function('pwrap_transfer') + function('mt6762_pwrap_read16') + function('mt6762_pwrap_write16'))
+        function('verified') + function('pwrap_transfer') + function('mt6762_pwrap_read16') + function('mt6762_pwrap_write16') + function('adc_observed'))
     gauge = (HERE.parents[3] / 'bsd/dev/mt6762_gauge.c').read_text()
     observation = re.search(r'struct gauge_observation \{.*?\n\};', gauge, re.S).group()
     (temporary / 'battery_observer_gauge_getters.c').write_text(observation + '\n' +

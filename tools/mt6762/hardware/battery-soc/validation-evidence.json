@@ -1,0 +1,22 @@
+{
+  "format": 1,
+  "result": "PASS",
+  "tests": 21,
+  "command": "BS_PROFILE_DTB=/private/capture44/runtime.dtb python3 tools/mt6762/hardware/battery-soc/test_battery_soc.py -v",
+  "dtb_sha256": "0b0be023b2702abddae9ffca00579cf13c41c3383b323f566ba04b678768e8cc",
+  "physical_measurements": false,
+  "kernel_integrated": false,
+  "charger_control": false,
+  "interval": "conditional model only; not a physical confidence bound",
+  "model_capacity_uah": 2200000,
+  "model_capacity_measured": false,
+  "source_sha256": {
+    "tools/mt6762/hardware/battery-soc/battery_soc.h": "9b6303340416951ad50cafa7585b59a0e0004ccae0a2b88fa438c3354315fe4c",
+    "tools/mt6762/hardware/battery-soc/profile_sha256.h": "90b716b692d83ee8170205c01792b28a8ab5522a125bbe9784698eb9def4d38c",
+    "tools/mt6762/hardware/battery-soc/profile_sha256.c": "fda9e05f1c97077360d1cb87f95e42d619e84c1fb01d8cc99972ab886b4c45d1",
+    "tools/mt6762/hardware/battery-soc/battery_soc.c": "9850c3c0318b6b9a62108e22236f6f2611406838ee028c4b9d40fc93443ad316",
+    "tools/mt6762/hardware/battery-soc/test_battery_soc.py": "56674544333eb793a838046b2d0c6cace35fe99346682b4528cdbca89d2b1452",
+    "tools/mt6762/hardware/battery-soc/README.rst": "4b9b922965b437e0ce9e8a1b21e087f5a99c825a4b249c1b1ab88e4d71a81bc3"
+  },
+  "private_findings_sha256": "fd2d10bef5ba58da73ac5f67f1c4311eb7569a5cb6b9fd500037a198195b37ff"
+}

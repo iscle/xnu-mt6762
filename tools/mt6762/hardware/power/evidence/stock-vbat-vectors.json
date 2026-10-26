@@ -1,0 +1,184 @@
+{
+  "schema": "mt6762-original-vbat-replay-v1",
+  "image_sha256": "82b1919185a49f268a0f8e145a6714d6264c1f66918a90df0d763266147ead4b",
+  "method": "Unmodified mt635x_auxadc_read_raw and get_auxadc_out ARM64; DT ratio/avg and exact static register descriptor; mocked locks/regmap/time/logging.",
+  "physical_hardware_tested": false,
+  "readiness_transition_proven": false,
+  "boundary": "Original stock waits then accepts ready-high. Native observer additionally requires post-request ready-low and rejects rails/late results.",
+  "descriptor_resolution": 15,
+  "conversion_callback": 0,
+  "calibration_callback": 0,
+  "cases": [
+    {
+      "raw": 0,
+      "millivolts": 0,
+      "requests": [
+        [
+          4366,
+          2
+        ]
+      ],
+      "reads": [
+        4234
+      ],
+      "sleep_ranges_us": [
+        [
+          1280,
+          1290
+        ]
+      ]
+    },
+    {
+      "raw": 1,
+      "millivolts": 0,
+      "requests": [
+        [
+          4366,
+          2
+        ]
+      ],
+      "reads": [
+        4234
+      ],
+      "sleep_ranges_us": [
+        [
+          1280,
+          1290
+        ]
+      ]
+    },
+    {
+      "raw": 6,
+      "millivolts": 0,
+      "requests": [
+        [
+          4366,
+          2
+        ]
+      ],
+      "reads": [
+        4234
+      ],
+      "sleep_ranges_us": [
+        [
+          1280,
+          1290
+        ]
+      ]
+    },
+    {
+      "raw": 10000,
+      "millivolts": 1647,
+      "requests": [
+        [
+          4366,
+          2
+        ]
+      ],
+      "reads": [
+        4234
+      ],
+      "sleep_ranges_us": [
+        [
+          1280,
+          1290
+        ]
+      ]
+    },
+    {
+      "raw": 20000,
+      "millivolts": 3295,
+      "requests": [
+        [
+          4366,
+          2
+        ]
+      ],
+      "reads": [
+        4234
+      ],
+      "sleep_ranges_us": [
+        [
+          1280,
+          1290
+        ]
+      ]
+    },
+    {
+      "raw": 25000,
+      "millivolts": 4119,
+      "requests": [
+        [
+          4366,
+          2
+        ]
+      ],
+      "reads": [
+        4234
+      ],
+      "sleep_ranges_us": [
+        [
+          1280,
+          1290
+        ]
+      ]
+    },
+    {
+      "raw": 28000,
+      "millivolts": 4614,
+      "requests": [
+        [
+          4366,
+          2
+        ]
+      ],
+      "reads": [
+        4234
+      ],
+      "sleep_ranges_us": [
+        [
+          1280,
+          1290
+        ]
+      ]
+    },
+    {
+      "raw": 32766,
+      "millivolts": 5399,
+      "requests": [
+        [
+          4366,
+          2
+        ]
+      ],
+      "reads": [
+        4234
+      ],
+      "sleep_ranges_us": [
+        [
+          1280,
+          1290
+        ]
+      ]
+    },
+    {
+      "raw": 32767,
+      "millivolts": 5399,
+      "requests": [
+        [
+          4366,
+          2
+        ]
+      ],
+      "reads": [
+        4234
+      ],
+      "sleep_ranges_us": [
+        [
+          1280,
+          1290
+        ]
+      ]
+    }
+  ]
+}

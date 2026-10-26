@@ -11,14 +11,22 @@
 #include "../../../../bsd/dev/mt6762_power_protocol.h"
 #include "../../../../bsd/dev/mt6762_charger_protocol.h"
 #include "../../../../bsd/sys/mt6762_power.h"
+#include "mt6762_vbat_profile.h"
 static int pwrap_mutex;
 static int pwrap_ready,pwrap_fault,pwrap_read_only,adc_ready,charger_ready,charger_owned;
 static uint32_t pwrap_profile;
 static uint64_t now_us,lock_delay,interval_preemption,transaction_delay,separation_us;
+static int adc_mutex,battery_observer_mutex,adc_voltage_requests,adc_voltage_samples,adc_voltage_min,adc_voltage_max,battery_adc_mv;
+static unsigned gauge_writes,adc_requests,adc_reads,adc_stale,adc_timeout,adc_delay_late;
+static uint64_t adc_lock_delay;
+static uint16_t adc_raw,adc_controls[5];
+static void pwrap_delay(void *unused,unsigned us)
+{(void)unused;assert(us==1280 || us==200);now_us+=us;if(adc_delay_late)now_us+=2000000;}
 static unsigned lock_calls,lock_delay_at,late_at;
 static void lck_mtx_lock(int *m) {
     assert(!*m);*m=1;
     if(m==&pwrap_mutex && ++lock_calls==lock_delay_at)now_us+=lock_delay;
+    if(m==&adc_mutex)now_us+=adc_lock_delay;
 }
 static void lck_mtx_unlock(int *m){assert(*m);*m=0;}
 static void clock_get_uptime(uint64_t *v){*v=now_us;}
@@ -43,7 +51,9 @@ static struct prop properties[]={
     {"fgauge-owned",0},{"fgauge-calibration-verified",0},{"adc-verified",0},
     {"charger-verified",0},{"charger-control-owned",0},{"pwrap-write-owned",0},{"lab-fixture",0},
     {"battery-inherited-observer",1},{"fgauge-inherited-observer",0},
-    {"charger-readonly-probe",0},{"charger-setup-only",0}
+    {"charger-readonly-probe",0},{"charger-setup-only",0},
+    {"vbat-inherited-observer",0},{"vbat-adc-profile-version",1},{"vbat-adc-clock0",0xaa},
+    {"vbat-adc-clock1",0},{"vbat-adc-reset",0},{"vbat-adc-test",0},{"vbat-adc-reuse",0}
 };
 static int missing_property;
 static int mt6762_handoff_u32(const char *name,uint32_t *value) {
@@ -60,6 +70,13 @@ static uint64_t ticks,tick_delta;
 static uint16_t external_word,present_word;
 static int mt6762_pwrap_write16(uint16_t,uint16_t);
 static uint16_t pmic_read(uint16_t reg) {
+    if(reg==0x108a) {
+        assert(adc_requests);
+        unsigned ready=adc_stale || (adc_reads++ && !adc_timeout);
+        return (ready?0x8000:0)|adc_raw;
+    }
+    for(unsigned i=0;i<MT6762_VBAT_ENTRY_COUNT;i++)if(reg==mt6762_vbat_entry_regs[i])
+        return i<MT6762_VBAT_FIXED_COUNT?mt6762_vbat_fixed_values[i]:adc_controls[i-MT6762_VBAT_FIXED_COUNT];
     switch(reg) {
     case 8:return 0x5730;case 0xc0c:return 4;case 0xd08:return 0x129;
     case 0x24:return external_word;case 0xe08:return present_word;
@@ -73,7 +90,9 @@ static uint16_t pmic_read(uint16_t reg) {
 }
 static void pmic_write(uint16_t reg,uint16_t value) {
     static const uint16_t order[]={1,9,8,0};
-    assert(reg==0xd0a && pmic_writes<128 && value==order[pmic_writes%4]);
+    if(reg==0x110e) {assert(value==2);pmic_writes++;adc_requests++;adc_reads=0;return;}
+    assert(reg==0xd0a && pmic_writes<128 && value==order[gauge_writes%4]);
+    gauge_writes++;
     pmic_writes++;
     if(value==1) {
         if(requests++)ticks=(ticks+tick_delta)&((1ull<<33)-1);
@@ -149,12 +168,17 @@ static void mt6762_battery_report(const struct mt6762_battery_sample *sample)
 {
     assert(!battery_observer_mutex && !pwrap_mutex);
     assert(sample->size==sizeof(*sample));
-    assert(!(sample->valid & (MT6762_BAT_SOC|MT6762_BAT_TEMP|MT6762_BAT_VOLTAGE)));
+    assert(!(sample->valid & (MT6762_BAT_SOC|MT6762_BAT_TEMP)));
     published=*sample;reports++;
 }
 static void reset(void)
 {
     reset_transport();
+    adc_mutex=adc_voltage_requests=adc_voltage_samples=0;
+    adc_voltage_min=adc_voltage_max=battery_adc_mv=-1;
+    gauge_writes=adc_requests=adc_reads=adc_stale=adc_timeout=adc_delay_late=0;
+    adc_lock_delay=0;
+    adc_raw=25000;adc_controls[0]=0xaa;adc_controls[1]=adc_controls[2]=adc_controls[3]=adc_controls[4]=0;
     memset(&battery_observer,0,sizeof(battery_observer));battery_observer_mutex=0;
     gauge_mutex=valid=0;memset(&observation,0,sizeof(observation));
     memset(&published,0,sizeof(published));reports=0;
@@ -162,6 +186,8 @@ static void reset(void)
     external_word=0xe;present_word=5;i2c_ready=1;power_valid=power_errors=0;charger_state=-1;
     properties[0].value=0;properties[17].value=1;
     properties[18].value=properties[19].value=properties[20].value=0;
+    properties[21].value=0;properties[22].value=1;properties[23].value=0xaa;
+    properties[24].value=properties[25].value=properties[26].value=properties[27].value=0;
 }
 static void start(unsigned gauge)
 {
@@ -189,6 +215,7 @@ static int snapshot(void)
     }
     return error;
 }
+#ifndef MT6762_VBAT_TEST
 int main(void)
 {
     int api_current=123;
@@ -328,3 +355,4 @@ int main(void)
     }
     printf("actual inherited battery observer: %u WACS faults, %u config changes, 70 expiry positions, PSC/status/lease/period/budget/cleanup/cache gates PASS\n",transport_cases,config_cases);
 }
+#endif

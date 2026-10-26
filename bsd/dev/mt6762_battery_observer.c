@@ -1,13 +1,16 @@
 /* Included by mt6762_power.c. Inherited hardware observation, not a charging
- * controller: no CE, limit, ADC, calibration, TDET or rail writes. The optional
- * gauge capability permits one exact four-write latch transaction per sample. */
-static LCK_MTX_DECLARE(battery_observer_mutex,&power_lck_group);
+ * controller: no CE, limit, calibration, TDET or rail writes. Separate optional
+ * gauge/voltage capabilities admit only their exact latch/request sequence. */
+#include "../../tools/mt6762/hardware/power/mt6762_vbat_profile.h"
 static struct {
     unsigned started,active,fault,gauge,gauge_fault,samples,gauge_samples,have_ticks;
+    unsigned vbat,vbat_fault,vbat_samples;
     uint64_t next,last_start,last_ticks,acquired,expires;
     int current;
     int64_t charge;
     struct gauge_latch_context *gauge_context;
+    struct vbat_observer_context *vbat_context;
+    uint16_t vbat_entry[MT6762_VBAT_ENTRY_COUNT];
     struct mt6762_gauge_probe_profile profile;
 } battery_observer;
 struct battery_observer_lease {uint64_t start,end;};
@@ -132,6 +135,8 @@ int mt6762_inherited_gauge_snapshot(int *current,int64_t *charge,uint64_t *acqui
     return error;
 }
 
+#include "mt6762_vbat_observer.c"
+
 static void battery_inherited_poll(void)
 {
     struct mt6762_battery_sample sample={.size=sizeof(sample)};
@@ -172,6 +177,8 @@ static void battery_inherited_poll(void)
     }
     if(battery_observer.gauge && !battery_observer.gauge_fault)
         (void)battery_observer_gauge_sample(&lease,&sample);
+    if(battery_observer.vbat && !battery_observer.vbat_fault)
+        (void)vbat_observer_sample(&lease,&sample);
     stage="completion";error=-ETIMEDOUT;
     if(pwrap_fault || !battery_observer_lease_ok(&lease))goto failed;
     clock_get_uptime(&now);
@@ -206,6 +213,8 @@ static int battery_inherited_admit(void)
     if(!verified("pwrap-inherited-probe") || !gauge_latch_wrapper_ok() || !mt6762_i2c_ready(5))return 0;
     battery_observer.gauge=verified("fgauge-inherited-observer");
     if(battery_observer.gauge && !gauge_latch_handoff(&battery_observer.profile))return 0;
+    battery_observer.vbat=verified("vbat-inherited-observer");
+    if(battery_observer.vbat && !vbat_observer_handoff())return 0;
     battery_observer.active=1;
     return 1;
 }
@@ -226,5 +235,6 @@ static void battery_inherited_start(void)
     thread_deallocate(thread);
     kprintf("MT6762_BATTERY_OBSERVER_READY readonly_charger=1 interval_ms=1000 expiry_ms=2000\n");
     if(battery_observer.gauge)kprintf("MT6762_GAUGE_OBSERVER_READY max_writes_per_sample=4\n");
+    if(battery_observer.vbat)kprintf("MT6762_VBAT_OBSERVER_READY channel=1 max_requests_per_sample=1\n");
 }
 #endif

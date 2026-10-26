@@ -1,0 +1,99 @@
+{
+  "format": 1,
+  "implementation": "original freestanding exact-profile CONSYS RAM staging; default off; no integration",
+  "primary_module_sha256": "f428dbafe454e89d0c5f4a49bda616d4cceb58b6bbfd24228bb6480b5be45ca3",
+  "primary_launcher_sha256": "abd15a19a7b6f6769b708fba0c24dcc99e150b59dacd8670084762954a998e4c",
+  "private_audit": "hardware/hakios-migration-20261026/wifi-native/rompatch/evidence.json",
+  "private_audit_sha256": "a9eac4197ed4300d4e9f06b73fa62b81c15357baff0f52b16d3cfbe7c4375007",
+  "primary_instruction_ranges": {
+    "module_rom_stage": ".text+0x25d0c (0x580 bytes)",
+    "module_header_skip": ".text+0x25ec0..0x25f28: 48-byte header",
+    "module_destination": ".text+0x25f1c..0x25f58: low24-bit offset and size check",
+    "module_copy": ".text+0x26018..0x26068: map, memcpy_toio, unmap",
+    "module_debug_time": ".text+0x26178..0x26194",
+    "launcher_normalization": "VA0x62b8, 0x6358..0x638c: raw target low byte cleared; type byte31",
+    "held_reset_power": "module reset/power sequence; existing reviewed connectivity-power/conn_power.c",
+    "remap": "module consys_emi_set_remapping_reg .text+0x317c: low12 of 0x10001380 from CONSYS base>>24"
+  },
+  "image_profiles": [
+    {
+      "name": "soc1_0_ram_bt_1_1_hdr.bin",
+      "sha256": "15925c532503674391d7a60bf852a547cd8c6c69892b8d41771e23ed0a56535c",
+      "bytes": 571085,
+      "header_bytes": 48,
+      "rom_type": 0,
+      "firmware_target": "0xf0080000",
+      "consys_emi_offset": "0x80000",
+      "body_bytes": 571037,
+      "body_sha256": "affa622069f44ee3810081eed94a56ea9d86068c1544c256ca62c51085ab874e",
+      "end_offset": "0x10b69d",
+      "debug_buildtime_offset": "0x68300"
+    },
+    {
+      "name": "soc1_0_ram_wifi_1_1_hdr.bin",
+      "sha256": "04dd6417ccec83fa83a2cf0de44b686178465024dd5d84dc108ebe4239cfacd7",
+      "bytes": 196208,
+      "header_bytes": 48,
+      "rom_type": 3,
+      "firmware_target": "0xf0140000",
+      "consys_emi_offset": "0x140000",
+      "body_bytes": 196160,
+      "body_sha256": "edd815de21fe4e35cf2b0b04f4586c792945312a76de3dcd33f418532fe03818",
+      "end_offset": "0x16fe40",
+      "debug_buildtime_offset": "0x68310"
+    },
+    {
+      "name": "soc1_0_ram_mcu_1_1_hdr.bin",
+      "sha256": "755b4858a22a5072e3fd7b506f2de982a745f9b10754980429227a01a7ff3d24",
+      "bytes": 105940,
+      "header_bytes": 48,
+      "rom_type": 4,
+      "firmware_target": "0xf0000000",
+      "consys_emi_offset": "0x0",
+      "body_bytes": 105892,
+      "body_sha256": "8289e958ebf15f3b9ce7c6095326a8cf3658ab01ac76abfecd18bccdd2fa0137",
+      "end_offset": "0x19da4",
+      "debug_buildtime_offset": "0x68320"
+    }
+  ],
+  "implementation_differences": [
+    "full SHA-256 identity gate for all 3 sources before first destination write",
+    "checked wide ranges and aliases",
+    "bounded 1024-byte copies with publish/invalidate/readback",
+    "explicit mapping/short-copy/error propagation instead of stock silent success",
+    "staged-body hash comparison and stable live ownership/state checks"
+  ],
+  "tests": {
+    "command": "bash test.sh <private BT RAM> <private Wi-Fi RAM> <private MCU RAM>",
+    "exact_image_scenarios": 89,
+    "result": "PASS",
+    "transfers": 857,
+    "observations": 5141,
+    "bytes_verified": 873137,
+    "portable_primitive_run": "PASS; exact-image run explicitly skipped without originals",
+    "aarch64": "clang11 --target=aarch64-none-elf -ffreestanding -fno-builtin -Wall -Wextra -Werror -O2; both real translation units compile; symbol union has no external runtime dependency",
+    "gcc_analyzer": "GCC16.1.1 -fanalyzer actual compilation of conn_rom.c and sha256.c PASS",
+    "sanitizers": "NOT RUN: linker lacks /usr/lib64/libasan.so.8.0.0 and /usr/lib64/libubsan.so.1.0.0; no tools installed",
+    "host_workspace_bytes": 2352,
+    "host_report_bytes": 224
+  },
+  "hardware_actions": false,
+  "reset_release": false,
+  "firmware_distributed": false,
+  "limitations": [
+    "adapter prerequisites and actual measurements are not established by this library",
+    "deadline cannot recover a bus-stalled/nonreturning callback",
+    "source buffers require real immutable ownership; detecting violated ownership can follow partial writes",
+    "source hash does not establish physical FW compatibility or header CRC algorithm",
+    "actual reservation/remap/access/cache/rail/clock state must be established in executing boot"
+  ],
+  "files_sha256": {
+    "README.rst": "8aa2ff402bab218f7f2f91e53fce62946b3c9b7cdfae56481c6013abf6468e81",
+    "conn_rom.c": "ee3b30dad3f99a5c5a7bed1367c8bda201741dd491f8e81a65ee9fa1da70a4dc",
+    "conn_rom.h": "b187d3d5552441db942ff306d245ce91b5a74ce04b7d22376e77f3d4c9482fb1",
+    "sha256.c": "e9d3d9ffce3df68cf47e29ea87799ceaa1698fa6ea9cbe85aa5adf9cd42a2ca3",
+    "sha256.h": "9cc15cdeb5863f719c93e0a637169f9d7cc1995f1dff65011b436d07670b4d90",
+    "test.sh": "6413f107a107da39395611c2dc2fa546efeac8b5b85f4841fbbcd2900000a08d",
+    "test_conn_rom.c": "6b6ac5bfbd35c181fd687649277613a4b5e9a104309c54dcd7e4675ce739a773"
+  }
+}
