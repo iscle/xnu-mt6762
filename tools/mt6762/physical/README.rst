@@ -49,6 +49,17 @@ CPU decoder reports nominal configured rates only; see
 ../hardware/cpu-power/PHYSICAL-CLOCKS.rst and
 ../hardware/power/i2c5-handoff-passive-review.json. Physical results are pending.
 
+Image33 uses the same kernel50 and expanded observations with the small APFS
+desktop bootstrap. The2,491,162,624-byte iOS system slice and complete normal
+boot image have been installed and read back successfully; see
+desktop-build33-evidence.json and
+../hardware/storage/physical-system-install-evidence.json. The first physical
+desktop attempt is arranged on battery while charging control remains unfinished.
+Kernel48's30-minute emulator run reached the home screen without panic or
+terminal storage failure, with a magenta background and white widget placeholders;
+see ../hardware/storage/desktop-build48-evidence.json. This does not establish
+physical desktop operation.
+
 Physical trial status: the dumped LK's fastboot boot path panics before XNU
 entry. Its caller passes the download pointer to a routine that instead looks
 up an absent cached boot image. The retained log says ``boot image is NULL``

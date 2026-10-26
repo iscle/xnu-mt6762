@@ -1,0 +1,21 @@
+{
+  "start_sector": 12566528,
+  "sector_count": 4865552,
+  "sector_size": 512,
+  "read_only": true,
+  "physical_contents_verified": true,
+  "source_sha256": "9329e9c9bf46d6890798bb15d0d0036ec8c9235abf7d77edbacdd346992454a0",
+  "full_readback_sha256": "9329e9c9bf46d6890798bb15d0d0036ec8c9235abf7d77edbacdd346992454a0",
+  "backup_sha256": "4aba6824ae9a9a2702e48c2f46b7ab8d4a10fdd3d818bebb89676860d1d2e094",
+  "bytes_written": 2491162624,
+  "reset_requested": false,
+  "partition_table_written": false,
+  "mtkclient_commit": "fa97df7df41140e60f215f24eea82cb46faf9ff0",
+  "seccfg_source_sha256": "274743b51dd3b8a648fb0cc96bd872205d8f892ac88082a7b3737671b05a0be7",
+  "installation_method": "guarded existing DA, bounded4MiB chunks with full immediate readback",
+  "capture_prerequisite": "capture24 Image30/kernel48 native MSDC admission",
+  "journal_sha256": "9fff18e06539f68ff0b49957eb3eaa43e968340379a7ff47fa685ce40a494d2f",
+  "physical_filesystem_mount_proven": false,
+  "physical_desktop_proven": false,
+  "apple_system_source_preserved": true
+}

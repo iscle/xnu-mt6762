@@ -6,7 +6,8 @@ Native XNU integration
 ``native-io=1`` accepted by ``mt6762_platform_init``. This is source under
 validation, not a working physical-device charging implementation. Physical
 capture20 confirms profile2 read-only PMIC identification and rail reads.
-ADC, gauge, charging and native button events remain unaccepted. The ordinary
+Capture24 additionally confirms native Power/Volume Up/Volume Down press and
+release events. ADC, gauge and charging remain unaccepted. The ordinary
 QEMU boot has none of these native flags.
 
 Ownership and readiness
@@ -43,7 +44,9 @@ Ownership and readiness
   operations or battery publication. ``--native-buttons-probe`` requests this
   path in the physical builder; both grants begin zero. Kernel43 compiles
   this path, with host admission tests and the existing emulated input
-  regression passing. Physical key events remain pending. Captured values are
+  regression passing. Capture24/kernel48 records two press/release pairs for
+  each of the three physical buttons; see ../storage/capture24-native-evidence.json.
+  Physical iOS event delivery remains untested. Captured values are
   in physical-keys-profile.json; emulator results are in native-build43-evidence.json.
 * ``charger-verified=1`` plus an independently ready I2C5 bus permits access
   to PSC5425E at 0x6a. A real handoff additionally requires

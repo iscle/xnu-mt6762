@@ -16,7 +16,7 @@
     "sector_count": 4865552,
     "sector_size": 512,
     "read_only": true,
-    "physical_contents_verified": false
+    "physical_contents_verified": true
   },
   "source_inputs_stable": true,
   "vm_page_size": 16384,
@@ -36,9 +36,20 @@
   "passive_register_count": 235,
   "passive_record_version": 2,
   "physical_storage_admission": "capture24/kernel48",
-  "physical_contents_verified": false,
-  "desktop_image_installed": false,
+  "physical_contents_verified": true,
+  "desktop_image_installed": true,
   "physical_desktop_proven": false,
   "charging_proven": false,
-  "apple_userspace_source_unchanged": true
+  "apple_userspace_source_unchanged": true,
+  "boot_readback_sha256": "c3501e211345a286b1004a606e4595c19eb71dbf3ad4769abd22d99fecd337c2",
+  "preserved_partition_sha256": {
+    "lk": "8b94cdf939ee6318c5d47b8e4feacef2d3ea0a3b1d37f292752bd6d4875c6849",
+    "lk2": "5badc0dc942b0babdca3da13c7e07f3b5f1e57b66d503414b7f80effe8ce891a",
+    "para": "5744b4afa6da419c0c5382034ab3757a6627d0ff9ca3778398313cf10f1e80d8",
+    "recovery": "2a4d62a60690c59e26a0004b6efaea56f433059a6f84b6109d113c1d7a364173",
+    "seccfg": "bb95c846d18259d48c89ae93540dc2fe438f8ca9c07dd812b3c76555f0744b4e",
+    "vbmeta": "2f3fb6474d7ff35ac4c48ab2bef71247ba50de4a94de2474b7d1b60cd6654f51"
+  },
+  "system_full_readback_sha256": "9329e9c9bf46d6890798bb15d0d0036ec8c9235abf7d77edbacdd346992454a0",
+  "physical_trial": "Prepared to boot on battery; USB reconnect reader arms immediately after unplug"
 }

@@ -3,9 +3,12 @@ MT6762 inherited eMMC PIO investigation
 
 This package implements an inherited-state MSDC0 read protocol, native wrapper
 and read-only BSD adapter for the exact phone's controller. The native path is
-tested against a QEMU fixture backed by actual file bytes. No physical storage
-access was performed. A physical bootloader, cold initialization and ownership
-handoff producer remain unimplemented. Root images currently remain RAM-backed.
+tested against a QEMU fixture backed by actual file bytes and the inherited
+normal-boot path on the phone. Capture24/Image30/kernel48 confirms successful
+CMD13/CMD8/CMD13 admission:244,285,440sectors at47,999,984Hz, read-only.
+See ``capture24-native-evidence.json``. The measured LK handoff producer is
+``../../physical/native_storage.h``. Cold initialization and storage writes
+from XNU remain unimplemented. Physical iOS filesystem boot remains unproven.
 
 Evidence boundary
 -----------------
@@ -77,7 +80,7 @@ The narrow consumer requires PIO mode already selected. LK or Android may
 leave DMA selected; the consumer does not silently change it. No controller
 reset, stop, retuning, card SWITCH, partition switch, queue disable, clock,
 pad, rail, crypto-key, DMA, erase or storage-write operation is implemented.
-A separate validated handoff producer is still required.
+The physical loader validates the captured synchronous LK handoff separately.
 
 The core independently checks exact supplied CFG/SDC_CFG readback, CFG
 MODE/PIO/CKSTB set and RESET clear, 8-bit controller width, INTEN0, no inherited
@@ -89,10 +92,12 @@ reads keys nor establishes the plaintext meaning of encrypted Android data.
 
 Initialization sends only CMD13, CMD8 EXT_CSD, CMD13. Actual EXT_CSD must
 confirm user-area partition selection(179 low3bits0), card command queue
-disabled(15==0), sector count(212..215) equal to the handoff, and bus-width/
-HS_TIMING compatible with controller CKMOD. Supported narrow pairs are
-SDR8-bit(width2)/HS orHS200 with mode0/1, DDR8-bit(width6)/HS with mode2,
-or DDR8-bit/HS400 with mode3. Enhanced strobe is rejected. A failed CMD8
+disabled(15==0), sector count(212..215) equal to the handoff, and readable
+HS_TIMING/CARD_TYPE compatible with controller CKMOD and decoded rate.
+BUS_WIDTH[183] is write-only and has no defined readback: all byte values
+are ignored. The host must already be in the captured eight-bit configuration.
+Modes0/1 accept supported SDR HS/HS200, mode2 supported HS DDR up to52MHz,
+and mode3 supported HS400 up to200MHz. A failed CMD8
 never causes a queue or partition switch. The previous owner must quiesce
 the card before initial commands; successful CMD8 corroborates that contract.
 
@@ -104,7 +109,8 @@ completion bits are acknowledged W1C, and acknowledgement readback is checked.
 Errors take priority over simultaneous completion. Reads drain64bytes through
 sixteen32-bit RXDATA accesses; receiving all512bytes alone is insufficient
 without a new data completion and successful final CMD13. Conservative R1
-status checks reject error/locked/exception states.
+status checks reject errors and locked states. EXCEPTION_EVENT alone is a
+notification and does not reject an otherwise ready TRAN response.
 
 Every read stages512bytes privately; caller output changes only after complete
 success. LBA/capacity checks precede MMIO. Timeouts have both an absolute-time
@@ -125,13 +131,15 @@ uiomove so a user page fault cannot recursively deadlock the controller.
 One-shot registration publishes readiness with release/acquire ordering; failed
 registration removes nodes/major numbers without publishing callbacks.
 GIC111 stays masked and no ISR consumes polling completion flags. Virtio and
-Qualcomm UFS transports are not involved. Partition windows are not implemented.
+Qualcomm UFS transports are not involved. An explicitly bounded read-only
+``/dev/mtkios0`` slice can expose the separately installed iOS system extent.
 
-Read-only media transport still does not place iOS on the phone. GPT parsing,
-authorization of any future iOS partition, APFS image layout and later write/
-data-volume support are separate work. Existing Android encrypted userdata
-must not be treated as plaintext APFS. No existing partition is modified or
-selected for replacement by this investigation.
+Read-only media transport still does not place iOS on the phone. The separate
+host installer writes a raw APFS system image into an explicitly selected
+userdata extent and verifies readback. Existing Android encrypted userdata
+is never interpreted as plaintext APFS. See ``../../physical/desktop_ramdisk.py``
+and ``../../physical/install_system_slice.py``. XNU data-volume writes remain
+separate work.
 
 Validation status
 -----------------
@@ -204,11 +212,12 @@ Physical admission additionally requires all of these assertions, each1:
 ``msdc-handoff-producer-version``. The preserved ``msdc-ocr`` must have ready
 and sector-addressing bits31/30 set. Assertions do not produce the ownership
 transfer: a real producer must quiesce other users, drain their work and
-capture/verify the state before jumping. No such producer is implemented yet.
+capture/verify the state before jumping. The measured normal LK path is
+implemented in the physical loader; arbitrary boot paths are not admitted.
 
 Physical register readback additionally requires:
 
-* ``msdc-pad-drive`` equal to one of the exact dumped DT normal/fast encodings,
+* ``msdc-pad-drive`` equal to the measured LK GEAR1 or exact dumped DT normal/fast encodings,
   matching the actual driver-strength fields; known mux/trap/pulls as above.
   TDSEL mask0x00fffff0 and RDSEL mask0xfffffffc must be zero. Selected BSP
   ``msdc_emmc_power`` calls both setters with flag2 (nonCUSTOM), which writes
