@@ -7,9 +7,14 @@ readback. Capture27 mounted the small RAM bootstrap and exposed /dev/mtkios0,
 but the project PID1 faulted before mounting that system volume. Its direct
 C entry received an eight-byte-aligned Darwin argument stack and triggered
 EXC_ARM_SP_ALIGN at the first stack-saving instruction. Image35 adds an
-assembly entry that aligns SP before entering C; its physical retry is
-pending. Apple's installed executables are unchanged. See
-../../physical/desktop-capture27-evidence.json and
+assembly entry that aligns SP before entering C. Capture30 verified that
+correction on the phone: it mounted the physical iOS APFS volume, switched
+roots, ran Apple launchd and spawned SpringBoard. The retained screen still
+showed diagnostic syscall text, not the desktop. Image37 restricts those
+syscall prints to the project bootstrap while retaining fatal exception
+tracing for all processes; its physical result is pending. Apple's installed
+executables are unchanged. See
+../../physical/desktop-capture30-evidence.json and
 physical-system-install-evidence.json. The entries below retain earlier
 bring-up results; their pending states are superseded by this paragraph.
 

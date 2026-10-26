@@ -1,0 +1,444 @@
+{
+  "schema": "mt6762-pmic-entry-source-audit-v1",
+  "stock_image_sha256": "82b1919185a49f268a0f8e145a6714d6264c1f66918a90df0d763266147ead4b",
+  "provenance": [
+    {
+      "path": "/mnt/0da18f53-c547-40a2-a7c3-b08e84d1aab4/alps/aosp-docker/workspace/kernel-4.14/include/linux/mfd/mt6357/registers.h",
+      "sha256": "6933e2382bde5f9487cc633b9e6167a4a93675a8f08eb8fae01315db0a0e8bbe"
+    },
+    {
+      "path": "/mnt/0da18f53-c547-40a2-a7c3-b08e84d1aab4/alps/aosp-docker/workspace/kernel-4.14/drivers/iio/adc/mt635x-auxadc.c",
+      "sha256": "90d918ee3a8191e392604827a81bab9189da2ec5370ef783289391ebd16d7a42"
+    },
+    {
+      "path": "/home/iscle/mt6762-ios-port/xnu/tools/mt6762/hardware/power/evidence/gauge-protocol-disassembly.txt",
+      "sha256": "da59c9066cd7c5c2a48f4b6cd9b56f246a07c20ce6bf048f6adde1cbfba8610a"
+    },
+    {
+      "path": "/home/iscle/mt6762-ios-port/xnu/tools/mt6762/hardware/power/evidence/gauge-init-disassembly.txt",
+      "sha256": "af110d1831cab156430ad6920bbbfca3b95c680a5cb83d1e124902eca3ffeb1d"
+    },
+    {
+      "path": "/home/iscle/mt6762-ios-port/xnu/tools/mt6762/hardware/power/evidence/gauge-sysfs-coefficients.json",
+      "sha256": "2b5e60d5e139d402433df40733c310f2618518570d71ce38863b4f247460c432"
+    },
+    {
+      "path": "/home/iscle/mt6762-ios-port/xnu/tools/mt6762/hardware/power/evidence/battery-presence-disassembly.txt",
+      "sha256": "c734535cf661be57249c2f5d082cae1929c8feac7e507a701bca2549e0d6914f"
+    },
+    {
+      "path": "/home/iscle/mt6762-ios-port/xnu/tools/mt6762/hardware/power/evidence/ntc-compensation-bif-disassembly.txt",
+      "sha256": "a84bc89da6ed615c2fdda1937f8edc21711fcb82c0d937c72fde01465e621a82"
+    }
+  ],
+  "register_catalog": [
+    {
+      "address": "0008",
+      "width": 2,
+      "label": "HWCID",
+      "source_line": 26
+    },
+    {
+      "address": "0c0c",
+      "width": 2,
+      "label": "BM_TOP_CKPDN_CON0",
+      "source_line": 439
+    },
+    {
+      "address": "0d08",
+      "width": 2,
+      "label": "FGADC_CON0",
+      "source_line": 481
+    },
+    {
+      "address": "0d0a",
+      "width": 2,
+      "label": "FGADC_CON1",
+      "source_line": 482
+    },
+    {
+      "address": "0c8e",
+      "width": 2,
+      "label": "FGADC_ANA_ELR0",
+      "source_line": 475
+    },
+    {
+      "address": "0c90",
+      "width": 2,
+      "label": "FGADC_ANA_ELR1",
+      "source_line": 476
+    },
+    {
+      "address": "0d94",
+      "width": 2,
+      "label": "FGADC_OFFSET_CON1",
+      "source_line": 518
+    },
+    {
+      "address": "0d96",
+      "width": 2,
+      "label": "FGADC_GAIN_CON0",
+      "source_line": 519
+    },
+    {
+      "address": "0e08",
+      "width": 2,
+      "label": "BATON_ANA_CON0",
+      "source_line": 530
+    },
+    {
+      "address": "108a",
+      "width": 2,
+      "label": "AUXADC_ADC1",
+      "source_line": 563
+    },
+    {
+      "address": "108e",
+      "width": 2,
+      "label": "AUXADC_ADC3",
+      "source_line": 565
+    },
+    {
+      "address": "109e",
+      "width": 2,
+      "label": "AUXADC_ADC11",
+      "source_line": 573
+    },
+    {
+      "address": "1236",
+      "width": 2,
+      "label": "AUXADC_CHR_TOP_CON2",
+      "source_line": 702
+    }
+  ],
+  "captures": [
+    {
+      "number": 26,
+      "path": "/home/iscle/mt6762-ios-port/hardware/trace-boot-20261025/capture26/xnu-log.bin",
+      "sha256": "874119f688a57332d2e37a0ec0aaead89dc95c7e5c82888bc1cb0dd82524c87f",
+      "samples_deduplicated": [
+        {
+          "pass_index": 0,
+          "address": "0024",
+          "error": 0,
+          "value": "000e"
+        },
+        {
+          "pass_index": 0,
+          "address": "014c",
+          "error": 0,
+          "value": "1225"
+        },
+        {
+          "pass_index": 0,
+          "address": "1988",
+          "error": 0,
+          "value": "0001"
+        },
+        {
+          "pass_index": 0,
+          "address": "1958",
+          "error": 0,
+          "value": "0001"
+        },
+        {
+          "pass_index": 0,
+          "address": "1c20",
+          "error": 0,
+          "value": "0300"
+        },
+        {
+          "pass_index": 0,
+          "address": "1996",
+          "error": 0,
+          "value": "c200"
+        },
+        {
+          "pass_index": 0,
+          "address": "1966",
+          "error": 0,
+          "value": "c200"
+        },
+        {
+          "pass_index": 0,
+          "address": "14a2",
+          "error": 0,
+          "value": "3b2d"
+        },
+        {
+          "pass_index": 0,
+          "address": "14a4",
+          "error": 0,
+          "value": "0043"
+        },
+        {
+          "pass_index": 0,
+          "address": "19cc",
+          "error": 0,
+          "value": "3d23"
+        },
+        {
+          "pass_index": 0,
+          "address": "19ce",
+          "error": 0,
+          "value": "0003"
+        },
+        {
+          "pass_index": 1,
+          "address": "0024",
+          "error": 0,
+          "value": "000e"
+        },
+        {
+          "pass_index": 1,
+          "address": "014c",
+          "error": 0,
+          "value": "1225"
+        },
+        {
+          "pass_index": 1,
+          "address": "1988",
+          "error": 0,
+          "value": "0001"
+        },
+        {
+          "pass_index": 1,
+          "address": "1958",
+          "error": 0,
+          "value": "0001"
+        },
+        {
+          "pass_index": 1,
+          "address": "1c20",
+          "error": 0,
+          "value": "0300"
+        },
+        {
+          "pass_index": 1,
+          "address": "1996",
+          "error": 0,
+          "value": "c200"
+        },
+        {
+          "pass_index": 1,
+          "address": "1966",
+          "error": 0,
+          "value": "c200"
+        },
+        {
+          "pass_index": 1,
+          "address": "14a2",
+          "error": 0,
+          "value": "3b2d"
+        },
+        {
+          "pass_index": 1,
+          "address": "14a4",
+          "error": 0,
+          "value": "0043"
+        },
+        {
+          "pass_index": 1,
+          "address": "19cc",
+          "error": 0,
+          "value": "3d23"
+        },
+        {
+          "pass_index": 1,
+          "address": "19ce",
+          "error": 0,
+          "value": "0003"
+        }
+      ],
+      "missing_observer_addresses": [
+        "0008",
+        "0c0c",
+        "0d08",
+        "0d0a",
+        "0c8e",
+        "0c90",
+        "0d94",
+        "0d96",
+        "0e08",
+        "108a",
+        "108e",
+        "109e",
+        "1236"
+      ],
+      "pmic_identification_logged": true
+    },
+    {
+      "number": 27,
+      "path": "/home/iscle/mt6762-ios-port/hardware/trace-boot-20261025/capture27/xnu-log.bin",
+      "sha256": "1968ab23cb2896a4a49cae6868dfca7c15a6aa5137d01b717cc49c5f16eaac2f",
+      "samples_deduplicated": [
+        {
+          "pass_index": 0,
+          "address": "0024",
+          "error": 0,
+          "value": "000e"
+        },
+        {
+          "pass_index": 0,
+          "address": "014c",
+          "error": 0,
+          "value": "1225"
+        },
+        {
+          "pass_index": 0,
+          "address": "1988",
+          "error": 0,
+          "value": "0001"
+        },
+        {
+          "pass_index": 0,
+          "address": "1958",
+          "error": 0,
+          "value": "0001"
+        },
+        {
+          "pass_index": 0,
+          "address": "1c20",
+          "error": 0,
+          "value": "0300"
+        },
+        {
+          "pass_index": 0,
+          "address": "1996",
+          "error": 0,
+          "value": "c200"
+        },
+        {
+          "pass_index": 0,
+          "address": "1966",
+          "error": 0,
+          "value": "c200"
+        },
+        {
+          "pass_index": 0,
+          "address": "14a2",
+          "error": 0,
+          "value": "3b2d"
+        },
+        {
+          "pass_index": 0,
+          "address": "14a4",
+          "error": 0,
+          "value": "0043"
+        },
+        {
+          "pass_index": 0,
+          "address": "19cc",
+          "error": 0,
+          "value": "3d23"
+        },
+        {
+          "pass_index": 0,
+          "address": "19ce",
+          "error": 0,
+          "value": "0003"
+        },
+        {
+          "pass_index": 1,
+          "address": "0024",
+          "error": 0,
+          "value": "000e"
+        },
+        {
+          "pass_index": 1,
+          "address": "014c",
+          "error": 0,
+          "value": "1225"
+        },
+        {
+          "pass_index": 1,
+          "address": "1988",
+          "error": 0,
+          "value": "0001"
+        },
+        {
+          "pass_index": 1,
+          "address": "1958",
+          "error": 0,
+          "value": "0001"
+        },
+        {
+          "pass_index": 1,
+          "address": "1c20",
+          "error": 0,
+          "value": "0300"
+        },
+        {
+          "pass_index": 1,
+          "address": "1996",
+          "error": 0,
+          "value": "c200"
+        },
+        {
+          "pass_index": 1,
+          "address": "1966",
+          "error": 0,
+          "value": "c200"
+        },
+        {
+          "pass_index": 1,
+          "address": "14a2",
+          "error": 0,
+          "value": "3b2d"
+        },
+        {
+          "pass_index": 1,
+          "address": "14a4",
+          "error": 0,
+          "value": "0043"
+        },
+        {
+          "pass_index": 1,
+          "address": "19cc",
+          "error": 0,
+          "value": "3d23"
+        },
+        {
+          "pass_index": 1,
+          "address": "19ce",
+          "error": 0,
+          "value": "0003"
+        }
+      ],
+      "missing_observer_addresses": [
+        "0008",
+        "0c0c",
+        "0d08",
+        "0d0a",
+        "0c8e",
+        "0c90",
+        "0d94",
+        "0d96",
+        "0e08",
+        "108a",
+        "108e",
+        "109e",
+        "1236"
+      ],
+      "pmic_identification_logged": true
+    }
+  ],
+  "implemented_scope": {
+    "passes": 2,
+    "maximum_read_transactions": 26,
+    "pmic_write_transactions": 0,
+    "atomic_measurements": false,
+    "adc_freshness_established": false,
+    "calibration_granted": false,
+    "ownership_granted": false,
+    "charging_policy_enabled": false
+  },
+  "unresolved": [
+    "physical observer execution/readbacks",
+    "active R_FG/CAR_TUNE software coefficients at the next gauge handoff",
+    "exclusive gauge latch and ADC channel ownership",
+    "fresh coherent current/CAR and fresh ADC conversion admission",
+    "NTC/BIF compensation and safe restoration/control ownership",
+    "PSC identity, CE-disable/readback and charging policy"
+  ]
+}

@@ -228,9 +228,11 @@ def main():
     top_offset = prepare.align(args_offset+736)
     command = 'debug=0x14e serial=3 keepsyms=1 -v -enable_kprintf_spam rd=md0 cpus=1 mt6762_iig_selftest=1'
     if ios_slice:
-        # No UART/crash reporter: retain existing userspace exception and
-        # application-console diagnostics for the first physical desktop boots.
-        command += ' systrace=1 applog=1'
+        # Keep fatal exception tracing for every process, but limit failed-BSD
+        # syscall printing to the small bootstrap. SpringBoard performs many
+        # expected ENOENT probes; capture30 showed these filling the physical
+        # console during startup. The exception tracer ignores systrace_name.
+        command += ' systrace=1 systrace_name=launchd applog=1'
     if args.brightness_pulse:
         command += ' mt6762_brightness_diagnostic=1'
     boot_args = prepare.boot_args(prepare.PHYS+adt_offset,len(adt),prepare.PHYS+top_offset,command)

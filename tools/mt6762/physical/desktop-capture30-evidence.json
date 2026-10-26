@@ -1,0 +1,22 @@
+{
+  "capture": "capture30",
+  "image": "Image35/kernel51",
+  "kernel_sha256": "4521bbd6627984bbfeee6f945c1b67a7f17a36e3f1018078559947247800d8f3",
+  "xnu_log_sha256": "621c565e615f477f78b9258fdb7ee429f4571dd25c036f4221e4afc691540c4f",
+  "trace_sha256": "3834fef80dd0ae6ef56f414136ef66c3b8bf73fbb9e8815a0627f0eadfd47030",
+  "framebuffer_sha256": "f27194270134070e60674b07417815f0b3c6203afc96ec65f387a8f1f19e5f11",
+  "bootstrap_stack_fix_physically_verified": true,
+  "ios_system_apfs_mounted": true,
+  "apple_launchd_running": true,
+  "springboard_spawned": true,
+  "last_watchdog_refresh_attempts": 570,
+  "kernel_panic_in_retained_log": false,
+  "physical_desktop_proven": false,
+  "framebuffer_content": "Diagnostic console with SpringBoard ENOENT syscall traces and memory status; no home screen",
+  "next_change": "Limit failed-syscall printing to bootstrap process while retaining all-process fatal exception reporting; also kernel52 setup-only charger observation",
+  "limits": [
+    "No wall-clock correlation established from this retained record.",
+    "No physical charging/gauge/DVFS operation proved.",
+    "Verbose syscall logging is a plausible startup cost, not yet a measured sole cause of delay."
+  ]
+}

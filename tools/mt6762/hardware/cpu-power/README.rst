@@ -10,6 +10,9 @@ added XNU readback module; DVFS control remains disabled.
 Read-only stock Android observations and exact stock kernel evidence establish
 frequency limits and the selected nominal table. Native clock/voltage changes,
 SSPM coordination, EEM calibration and thermal limits remain unvalidated.
+``SSPM-OBSERVATION.rst`` documents the bounded native inherited-state diagnostic
+and its exact-stock provenance. This separate read-only admission does not
+grant firmware ownership or enable DVFS.
 
 Run ./test.sh for host validation. No binaries are included; temporary test
 executables are removed. The tests check real-table maximum frequencies,

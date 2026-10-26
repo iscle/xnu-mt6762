@@ -6,6 +6,11 @@ readback-only CPU milestone. No native CPU initialization command, performance
 vote, voltage write, reset, firmware load or direct PLL fallback is implemented.
 No physical device has executed this path.
 
+``SSPM-OBSERVATION.rst`` describes the separate, subsequently added passive
+diagnostic. It requires only an explicit observation admission and never enters
+this active transport. It records the inherited state needed to investigate
+ownership without asserting ownership first.
+
 Admission
 ---------
 

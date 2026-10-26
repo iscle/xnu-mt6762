@@ -20,6 +20,7 @@
 #include "mt6762_thermal_protocol.h"
 #include "../../tools/mt6762/hardware/power/mt6762_pwrap_entry.h"
 #include "../../tools/mt6762/hardware/power/mt6762_keys_entry.h"
+#include "../../tools/mt6762/hardware/power/mt6762_pmic_entry.h"
 
 static LCK_GRP_DECLARE(power_lck_group,"mt6762-power");
 static LCK_MTX_DECLARE(pwrap_mutex,&power_lck_group);
@@ -124,6 +125,31 @@ int mt6762_pwrap_read16(uint16_t address,uint16_t *value)
 int mt6762_pwrap_write16(uint16_t address,uint16_t value)
 {
     return pwrap_transfer(1,address,&value);
+}
+
+static int pmic_entry_read(void *unused,uint16_t address,uint16_t *value)
+{(void)unused;return mt6762_pwrap_read16(address,value);}
+static void pmic_entry_probe(void)
+{
+    /* Only extend the inherited read-only observation path. No ADC/gauge
+     * ownership or calibration grant is inferred from matching raw words. */
+    if(!pwrap_ready || !pwrap_read_only || pwrap_fault)return;
+    kprintf("MT6762_PMIC_ENTRY_BEGIN version=1 passes=2 registers=%u conversion_requested=0 gauge_commands=0\n",
+        MT6762_PMIC_ENTRY_COUNT);
+    for(unsigned pass=0;pass<2;pass++) {
+        struct mt6762_pmic_entry_observation value;
+        struct mt6762_pmic_entry_failure failure;
+        int error=mt6762_pmic_entry_observe(pmic_entry_read,NULL,&value,&failure);
+        if(error) {
+            kprintf("MT6762_PMIC_ENTRY_FAILED pass=%u index=%u address=%04x error=%d transport=%d value=%04x\n",
+                pass,failure.index,failure.address,error,failure.error,failure.value);
+            return;
+        }
+        for(unsigned i=0;i<MT6762_PMIC_ENTRY_COUNT;i++)
+            kprintf("MT6762_PMIC_ENTRY pass=%u index=%u address=%04x value=%04x\n",
+                pass,i,mt6762_pmic_entry_regs[i],value.value[i]);
+        kprintf("MT6762_PMIC_ENTRY_COMPLETE pass=%u measurement_valid=0 ownership_grant=0\n",pass);
+    }
 }
 
 /* The handoff grants exclusive AP ownership of initialized ADC channels.
@@ -371,6 +397,7 @@ void mt6762_power_init(void)
             kprintf("MT6762_PWRAP_SAMPLE pass=%u address=%04x error=%d value=%04x\n",pass,regs[i],error,value);
             if(error)return;
         }
+        pmic_entry_probe();
         /* Separate observation grant; bus5 still needs its own validated
          * handoff and setup. Do not enter normal ADC/charger policy below. */
         if(verified("charger-readonly-probe")) {

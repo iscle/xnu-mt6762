@@ -1,0 +1,16 @@
+{
+  "image": "Image37/kernel52",
+  "boot_sha256": "e0cb80e14dc14b9f0dfe2957f1d617f3564745c9b944bb21f14d8322b3ee0e29",
+  "raw_image_sha256": "e83d7382f91afc7fdfac9e47c7b631778f47b4497fb792e44ccd37c5c33dfc41",
+  "kernel_sha256": "b2999d92505ce79238a202ff965066236f97664bec3ddc08e886237e0ddb63e9",
+  "trace_identity": "928dc8c9068ce07fb533552af1e1f2ceac1794f92ceb00d7a96f1d1ba85dd5c2",
+  "installed_full_readback_verified": true,
+  "additional_phone_backup_created": false,
+  "boot_command_line": "debug=0x14e serial=3 keepsyms=1 -v -enable_kprintf_spam rd=md0 cpus=1 mt6762_iig_selftest=1 systrace=1 systrace_name=launchd applog=1",
+  "charger_setup_only": true,
+  "charger_transactions_granted": false,
+  "charger_control_granted": false,
+  "physical_execution_proven": false,
+  "reset_request_sent": true,
+  "initial_startup_capture_unarmed_seconds": 60
+}

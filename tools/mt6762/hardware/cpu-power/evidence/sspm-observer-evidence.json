@@ -1,0 +1,111 @@
+{
+  "image_sha256": "82b1919185a49f268a0f8e145a6714d6264c1f66918a90df0d763266147ead4b",
+  "elf_sha256": "643474799f7c300f2d3c7f5130f697ee359929f13db0750f4dd7b9d648af14fc",
+  "spans": [
+    {
+      "name": "init_cpuhvfs_debug_repo",
+      "start": "0xffffff8009619f00",
+      "end_exclusive": "0xffffff8009619f78",
+      "sha256": "f6ddaab18575ed8301add43357af9ea2e2eb2007d52e5440c311229176a01a04"
+    },
+    {
+      "name": "cpuhvfs_pvt_tbl_create",
+      "start": "0xffffff8009619b24",
+      "end_exclusive": "0xffffff8009619dd0",
+      "sha256": "943f27a5402a1ea6d33f15bc08deba64b736c841873cb1c3c7ed9c27b6c73857"
+    },
+    {
+      "name": "cpuhvfs_get_cur_dvfs_freq_idx",
+      "start": "0xffffff800867b230",
+      "end_exclusive": "0xffffff800867b268",
+      "sha256": "3644a5985d70a928a1c15559b622d64819f2fea2f044dc7666cdda44cf7f7bca"
+    },
+    {
+      "name": "cpuhvfs_get_volt",
+      "start": "0xffffff800867b304",
+      "end_exclusive": "0xffffff800867b33c",
+      "sha256": "82200959331ea787cf41778553b3636651987ed4ac3c36756915f25353a8d557"
+    },
+    {
+      "name": "cpuhvfs_set_cluster_load_freq",
+      "start": "0xffffff800867b4f8",
+      "end_exclusive": "0xffffff800867b5dc",
+      "sha256": "fa8580d20a2dc03f4249f3c4d2076c910957750da41ab1ba9e8b6b1f76fe5ab8"
+    },
+    {
+      "name": "sspm_mbox_read",
+      "start": "0xffffff80088095b0",
+      "end_exclusive": "0xffffff8008809614",
+      "sha256": "e4b443c16c6597683372816ac7b764c16a2c2b94f92ecd160546fc2c12395baa"
+    },
+    {
+      "name": "sspm_mbox_polling",
+      "start": "0xffffff8008809678",
+      "end_exclusive": "0xffffff8008809760",
+      "sha256": "aae0a87ea4fc9119d426cb6b75e35caf8783f1f46c6fe8ecad0b930f88a5cb78"
+    },
+    {
+      "name": "sspm_mbox_irq_handler",
+      "start": "0xffffff8008809b54",
+      "end_exclusive": "0xffffff8008809bdc",
+      "sha256": "053a743db1e12bc771431f6cb01f934a0cd203213cf0518748f2e489d82fb583"
+    }
+  ],
+  "bsp_sources": [
+    {
+      "path": "kernel-4.14/drivers/misc/mediatek/base/power/cpufreq_v1/src/mtk_cpufreq_hybrid.c",
+      "sha256": "a74a298e8056c7c3ace715b5090eb37042fc2459ce403164ee59d66a8cd1e2d5"
+    },
+    {
+      "path": "kernel-4.14/drivers/misc/mediatek/sspm/v1/sspm_mbox.c",
+      "sha256": "d82e5f1eab648944d097f6add463f753359e06fb1079459c995c81488bdfe38c"
+    },
+    {
+      "path": "vendor/mediatek/proprietary/bootable/bootloader/preloader/platform/mt6765/src/core/main.c",
+      "sha256": "7939595a876ba1f4f2035f0b00e7d9178446363230b258d429d64f848d687cd5"
+    }
+  ],
+  "execution": {
+    "passed": true,
+    "guards_written_by_ap": [
+      "0x55aa55aa",
+      "0xaa55aa55",
+      "0x55aa55aa",
+      "0xaa55aa55",
+      "0x55aa55aa"
+    ],
+    "ppm_defaults": [
+      15,
+      15
+    ],
+    "eem_current_index_vote_words_zero": true,
+    "pvt_region_unchanged": true,
+    "old_repository_backed_up": true,
+    "modeled_callbacks": {
+      "0xffffff800809ef9c": "ftrace_noop",
+      "0xffffff800809316c": "memcpy_fromio_model",
+      "0xffffff800809328c": "memset_io_model"
+    },
+    "cpu_ipi_or_firmware_execution": false,
+    "scope": "Exact AP initializer only; RAM and three callbacks modeled, no physical state."
+  },
+  "capture_coverage": [
+    {
+      "capture": 26,
+      "peripherals_json_sha256": "62d606d00f15efccf1d4a3f08acfbb6c5068fefea8b3d639fa3693493092cfe3",
+      "register_count": 235,
+      "sspm_csram_registers_present": 0
+    },
+    {
+      "capture": 27,
+      "peripherals_json_sha256": "474017839f63184bea9532a7481f66bccb345e2b8bce71f36664fe7868ec2dfb",
+      "register_count": 235,
+      "sspm_csram_registers_present": 0
+    }
+  ],
+  "limits": [
+    "Captures26/27 do not observe SSPM registers/CSRAM or establish firmware preservation.",
+    "Guard/table representation, empty pins and disabled IRQ do not grant ownership or initialization.",
+    "The observer remains opt-in and has not executed on the physical phone."
+  ]
+}

@@ -41,6 +41,7 @@ DIAGNOSTICS = (
     '423cf35d2332abcc75282ba2314e3d71043e08a996cf85395ee5d1559c2bb22d', # Image34: kernel51 desktop with existing userspace exception/application tracing
     '5cc8787f0dbc7627ce1ba282c237e994a0f7168e7db7837756bc76ed219a080b', # Image35: kernel51, aligned project bootstrap entry after physical SP-alignment fault
     '3947a4012aa6dfbae60fd2b30a0f25abb98bdae8f0741ec957f9a7f358d62c6e', # Image36: kernel52, corrected bootstrap and setup-only inherited I2C5 observation
+    'e83d7382f91afc7fdfac9e47c7b631778f47b4497fb792e44ccd37c5c33dfc41', # Image37: kernel52 charger setup-only; restrict syscall logging to project bootstrap
 )
 VBMETA_FLAGS3 = '2f3fb6474d7ff35ac4c48ab2bef71247ba50de4a94de2474b7d1b60cd6654f51'
 

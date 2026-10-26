@@ -23,6 +23,9 @@ cc -std=c11 -Wall -Wextra -Werror -g -I "$testdir" test_native_cpufreq.c -o "$te
 PYTHONDONTWRITEBYTECODE=1 python3 test_clock_snapshot.py
 cc -std=c11 -Wall -Wextra -Werror -g test_native_sspm.c -o "$testdir/test-native-sspm"
 "$testdir/test-native-sspm"
+cc -std=c11 -Wall -Wextra -Werror -g -I "$testdir" test_sspm_observer.c -o "$testdir/test-sspm-observer"
+"$testdir/test-sspm-observer"
+PYTHONDONTWRITEBYTECODE=1 python3 test_sspm_observation.py
 python3 - "$testdir/thermal_slopes.h" <<'THERMAL'
 import json,sys
 from pathlib import Path
