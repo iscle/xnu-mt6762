@@ -33,6 +33,7 @@ DIAGNOSTICS = (
     'b0c0a3368981ee98f7b67e3c0918be3533d9d7ba65760713142d9991aa78c580', # Image25: APFS bootstrap for bounded eMMC iOS slice; physical result pending
     '3da6756329e3e859cdd2d6be3aae22024851f7cc4ccd7cd863937747002958ef', # Image26: kernel43 inherited read-only power/volume probe
     '7a6c42436822cdfee2e778673b4d78ad985d25fe81f7971d97a52a99091ffb9c', # Image27: kernel43 APFS bootstrap with native button probe
+    'a3cbd157a204ee106b0b06bc9c6e9a9ff797025cf612eb72f3ca076d63338add', # Image29: kernel45 retained eMMC R1 response plus native keys
 )
 VBMETA_FLAGS3 = '2f3fb6474d7ff35ac4c48ab2bef71247ba50de4a94de2474b7d1b60cd6654f51'
 

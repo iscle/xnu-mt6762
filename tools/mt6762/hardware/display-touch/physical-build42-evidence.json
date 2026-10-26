@@ -1,0 +1,219 @@
+{
+  "image": "Image24/kernel42",
+  "capture": "capture21",
+  "kernel_sha256": "00e0e3ff3a77319e707040ac70dd45c7ea1b25511be8fac68c9740a4206e9eeb",
+  "retained_log_sha256": "17074603c336fec3f820a090c5a4b1cfbc56a3271994f25bf1e2e091f138d1bc",
+  "physical_xnu_pid1_proven": true,
+  "vm_page_size": 16384,
+  "hardware_page_size": 4096,
+  "i2c0_ready": true,
+  "touch_version_response": "0007",
+  "touch_dma_first_frame": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  "touch_event_count": 32,
+  "touch_events": [
+    [
+      1,
+      0,
+      21503,
+      35223
+    ],
+    [
+      2,
+      0,
+      20309,
+      31923
+    ],
+    [
+      2,
+      0,
+      19285,
+      29774
+    ],
+    [
+      2,
+      0,
+      18261,
+      28009
+    ],
+    [
+      2,
+      0,
+      16554,
+      25323
+    ],
+    [
+      2,
+      0,
+      15871,
+      24249
+    ],
+    [
+      2,
+      0,
+      14847,
+      22484
+    ],
+    [
+      2,
+      0,
+      14506,
+      21870
+    ],
+    [
+      2,
+      0,
+      14165,
+      21333
+    ],
+    [
+      2,
+      0,
+      13653,
+      20642
+    ],
+    [
+      2,
+      0,
+      13311,
+      20412
+    ],
+    [
+      2,
+      0,
+      13141,
+      20259
+    ],
+    [
+      2,
+      0,
+      13141,
+      20105
+    ],
+    [
+      2,
+      0,
+      13141,
+      20028
+    ],
+    [
+      3,
+      0,
+      13141,
+      20028
+    ],
+    [
+      1,
+      0,
+      28330,
+      30388
+    ],
+    [
+      2,
+      0,
+      27818,
+      31079
+    ],
+    [
+      2,
+      0,
+      26964,
+      32460
+    ],
+    [
+      2,
+      0,
+      26282,
+      33918
+    ],
+    [
+      2,
+      0,
+      25087,
+      38215
+    ],
+    [
+      2,
+      0,
+      24916,
+      40287
+    ],
+    [
+      2,
+      0,
+      24575,
+      42129
+    ],
+    [
+      2,
+      0,
+      23892,
+      44892
+    ],
+    [
+      2,
+      0,
+      23722,
+      45889
+    ],
+    [
+      2,
+      0,
+      23380,
+      47347
+    ],
+    [
+      2,
+      0,
+      23039,
+      47885
+    ],
+    [
+      2,
+      0,
+      23039,
+      48345
+    ],
+    [
+      2,
+      0,
+      23380,
+      48575
+    ],
+    [
+      2,
+      0,
+      23722,
+      48805
+    ],
+    [
+      2,
+      0,
+      24404,
+      49112
+    ],
+    [
+      2,
+      0,
+      25770,
+      49650
+    ],
+    [
+      2,
+      0,
+      28159,
+      50263
+    ]
+  ],
+  "retained_touch_event_limit": 32,
+  "complete_gestures_visible": 1,
+  "physical_touch_transport_and_gesture_proven": true,
+  "physical_desktop_touch_acceptance": false,
+  "msdc_admission_passed": false,
+  "msdc_error": -7,
+  "msdc_command": "0x8d",
+  "msdc_argument": "0x10000",
+  "msdc_irq": "0x100",
+  "msdc_data_bytes": 0,
+  "msdc_r1_value_not_retained": true,
+  "system_installed": false
+}

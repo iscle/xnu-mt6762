@@ -18,6 +18,8 @@
 static struct mt6762_msdc engine;
 static uintptr_t controller,gic,top,infra,pll,gpio,pads,tuning;
 static int started,lab,ready,fault,last_error,reads,sectors;
+static uint32_t last_response;
+static int response_observed;
 static uint32_t expected_pad_drive,expected_hclk;
 static uint32_t top_tune[12],controller_tune[18];
 static const uint16_t tune_regs[18]={0x04,0xb0,0xb4,0xb8,0xf0,0xf4,0xf8,0xfc,
@@ -126,10 +128,16 @@ static int admit(void *unused)
         clocks_stable() && irq_quiet()?0:-1;
 }
 static uint32_t read32(void *unused,uint32_t offset)
-{(void)unused;return r32(controller,offset);}
+{
+    (void)unused;
+    uint32_t value=r32(controller,offset);
+    if(offset==0x40) {last_response=value;response_observed=1;}
+    return value;
+}
 static void write32(void *unused,uint32_t offset,uint32_t value)
 {
     (void)unused;
+    if(offset==0x34) {last_response=0;response_observed=0;}
     *(volatile uint32_t *)(controller+offset)=value;
     __asm__ volatile("dsb sy":::"memory");
 }
@@ -229,9 +237,9 @@ void mt6762_storage_init(void)
     int error=mt6762_msdc_init(&engine,&io,&config);
     if(error) {
         last_error=error;fault=engine.faulted?1:0;
-        kprintf("MT6762_MSDC refused error=%d command=%x argument=%x phase=%u bytes=%u irq=%x stalled_us=%llu\n",
+        kprintf("MT6762_MSDC refused error=%d command=%x argument=%x phase=%u bytes=%u irq=%x stalled_us=%llu response_seen=%d r1=%x\n",
             error,engine.last_command,engine.last_argument,engine.wait_phase,
-            engine.data_bytes,engine.last_irq,engine.stalled_us);
+            engine.data_bytes,engine.last_irq,engine.stalled_us,response_observed,last_response);
         printf("MT6762 MSDC: inherited admission/card read failed %d; no reset\n",error);return;
     }
     error=mt6762_msdc_publish(config.sector_count,read_sector);

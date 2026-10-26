@@ -16,11 +16,14 @@ retains every setup readback and adds the read-only LK PWRAP probe. Capture20
 identifies DIV0x0004 versus0x0404 and HS0x8000 versus0 as the setup mismatch;
 kernel42 corrects only these exact profile expectations. Capture20 also
 confirms read-only PWRAP profile2, PMIC ID0x5730 and two identical successful
-reads of each eMMC rail register. Physical touch transactions and native
-storage admission are pending Image24. Capture19 validates bounded LK card metadata
+reads of each eMMC rail register. Capture21/Image24 confirms touch version0007,
+native32-byte DMA and a complete physical down/drag/up gesture. Its eMMC probe
+completes the first CMD13 but rejects card status with error-7 before data
+transfer. Image29/kernel45 retains the exact R1 response to distinguish its
+cause. Capture19 validates bounded LK card metadata
 (RCA1, sector addressing and244,285,440sectors), without granting storage
 ownership. See ../hardware/display-touch/physical-build36-evidence.json and the card audit.
-Touch, charging, keys and the physical iOS desktop remain incomplete.
+Touch integration with the physical desktop, charging and keys remain incomplete.
 The optional ``--native-buttons-probe`` (kernel43 onward) requires the
 read-only PWRAP probe and separately admits the captured keypad configuration.
 It polls power/volume state without changing pins, clocks, IRQs or reset

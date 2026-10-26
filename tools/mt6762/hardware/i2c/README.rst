@@ -2,9 +2,10 @@ MT6765-family I2C transaction core
 ================================
 
 This portable core is connected to XNU's native platform worker. Emulated
-FIFO/DMA transactions and input events have run; physical capture20 reached
-the inherited I2C0 setup check and refused its readback before any touch
-transaction. Physical touch communication and gestures remain unverified.
+FIFO/DMA transactions and input events have run. Physical capture21/kernel42
+now passes inherited I2C0 setup, reads touch version0007, receives32-byte DMA
+packets and reports a complete down/drag/up gesture. Touch operation within
+the physical iOS desktop remains untested.
 
 Evidence: the supplied stock DT's mediatek,i2c_common node selects version2,
 DMA support2 (33-bit), clock divider5, LTIMING and MT6765 counter constraints.
@@ -55,7 +56,8 @@ Required native integration
 Neither successful host tests nor setting ``initialized`` supplies these
 prerequisites. The native integration checks inherited clock/IRQ/pad state,
 allocates a private coherent DMA buffer and polls from a worker. Physical
-DMA and reset recovery remain unaccepted. Run ``bash test.sh`` for host tests.
+reset recovery remains unaccepted. Physical touch DMA has now run without
+resetting the controller. Run ``bash test.sh`` for host tests.
 
 Measured setup readback
 -----------------------
@@ -67,8 +69,10 @@ profile these exact readback expectations; programming is unchanged. The
 emulated profile retains its original expectations. Unknown profiles,
 unmeasured dividers and other mismatches fail. This observation does not
 establish the undocumented bits' meaning. Kernel42 includes this correction;
-its physical transaction result is pending. See
-../display-touch/physical-build38-evidence.json.
+capture21 confirms successful physical transactions and gestures. See
+../display-touch/physical-build38-evidence.json and physical-build42-evidence.json
+in that directory. Event logging stops after32 events; the incomplete second
+gesture in that log is not evidence of a missing release.
 
 Clock dependency evidence
 -------------------------
@@ -102,7 +106,8 @@ against the exact stock controller and boot state before native initialization.
 These tables are source/DT observations; the native handoff additionally
 checks the captured clock and controller state. No physical clock reparenting
 has been attempted. APDMA channel addressing alone does not prove cache
-coherency or IOMMU routing, and physical touch DMA remains unverified.
+coherency or IOMMU routing in general. The measured inherited path has now
+completed native touch DMA; other APDMA devices remain separate work.
 
 The exact stock Image independently corroborates these tables: ``ifr_clks``
 records at VAs0xffffff80090523e8 (ID11) and0xffffff8009052a28 (ID38) carry
