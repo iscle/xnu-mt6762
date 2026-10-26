@@ -81,6 +81,16 @@ programmed100kHz setup. Host tests reject every differing bit in all three
 words for both laboratory and measured profiles. This does not extend the
 measured I2C0 DIV/HS behavior to the untested physical I2C5 controller.
 
+An explicit physical ``--native-charger-setup-probe`` now admits only the
+capture26 inherited I2C5 entry profile and records the programmed setup.
+Bus5 retains the strict synthetic post-write comparison; its entry DIV4 and
+HS0x8000 are not accepted as post-write proof. A separate setup-only latch
+always blocks transfer readiness, even after matching readbacks. No PSC or
+display-bias transaction is granted. The inherited bus5 path also checks the
+captured INFRA0xc8 bits18/19/20 before/after setup and before transfers, without
+changing those dedicated gates. See ../power/CHARGER-ENTRY.rst for the exact
+entry record, producer/consumer checks and trial limits.
+
 Clock dependency evidence
 -------------------------
 

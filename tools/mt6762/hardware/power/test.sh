@@ -11,6 +11,8 @@ cc -std=c11 -Wall -Wextra -Werror -g test_native_power.c -o "$testdir/test-nativ
 "$testdir/test-native-power"
 cc -std=c11 -Wall -Wextra -Werror -g test_native_charger.c -o "$testdir/test-native-charger"
 "$testdir/test-native-charger"
+python3 test_charger_entry.py
+python3 test_charger_setup.py
 python3 - "$testdir/gauge_vectors.h" <<'GAUGE'
 import json,sys
 from pathlib import Path

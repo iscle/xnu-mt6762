@@ -1,0 +1,22 @@
+{
+  "image": "Image35/kernel51",
+  "image_sha256": "fc37c3168cdc2a569a2c0ce69e9a2546735ededafdfd7ba52ad788edde851eeb",
+  "raw_image_sha256": "5cc8787f0dbc7627ce1ba282c237e994a0f7168e7db7837756bc76ed219a080b",
+  "kernel_sha256": "4521bbd6627984bbfeee6f945c1b67a7f17a36e3f1018078559947247800d8f3",
+  "trace_identity": "7b02c9d948e3665d931362edfc895cf7e60f51dab3aa8f04ee0d86c041a28d53",
+  "bootstrap_sha256": "f749024a376321a6d5ba31ff674103b4520420c67b6e61908ced37f505a1ba32",
+  "bootstrap_apfs_sha256": "257662180416efb4902a6ab13fb3667c2d332273939c03b73e81cdf79d62f4e6",
+  "project_bootstrap_only_root_file_changed": true,
+  "other_root_files_unchanged": 471,
+  "ios_system_rewritten": false,
+  "boot_full_readback_verified": true,
+  "backup_created": false,
+  "user_backup_preference": "No further phone backups; user has full dump",
+  "physical_boot_proven": false,
+  "capture29": "Prior Image34 trace identity; cannot infer Image35 execution",
+  "tests": {
+    "startup_stack_cases": 18,
+    "boot_packaging_and_input_checks": 9,
+    "installer_ordering_failure_cases": 5
+  }
+}

@@ -16,6 +16,7 @@
 #include "../hardware/display-touch/mt6762_touch_entry.h"
 #include "../hardware/power/mt6762_pwrap_entry.h"
 #include "../hardware/power/mt6762_keys_entry.h"
+#include "../hardware/power/mt6762_charger_entry.h"
 
 extern unsigned char image_start[], image_end[];
 extern const unsigned char xnu_blob[], diagnostic_blob[], adt_blob[], args_blob[];
@@ -146,6 +147,19 @@ const struct entry_result *loader_main(uint64_t fdt_address, uint64_t original_e
     if(!mt6762_touch_entry_ok(peripheral_read,NULL))
         stop("inherited touch bus",9);
 #endif
+#if PAYLOAD_NATIVE_CHARGER_SETUP_PROBE
+    struct mt6762_charger_entry_failure charger_failure;
+    if(!mt6762_charger_entry_detail(peripheral_read,NULL,&charger_failure)) {
+        text("I2C5 entry mismatch address=");hex(charger_failure.address);
+        text(" mask=");hex(charger_failure.mask);text(" expected=");hex(charger_failure.expected);
+        text(" actual=");hex(charger_failure.actual);text(" pass=");hex(charger_failure.pass);
+        text(" width=");hex(charger_failure.width);text("\r\n");
+        /* Preserve address/pass/width in the existing committed detail word.
+         * Low16 bits15 identify this refusal; trace layout stays unchanged. */
+        stop("inherited charger setup entry",((uint64_t)charger_failure.address<<32)|
+            ((uint64_t)charger_failure.pass<<24)|((uint64_t)charger_failure.width<<16)|15);
+    }
+#endif
 #if PAYLOAD_REFRESH_WATCHDOG
     if(read32(0x10007000)!=0x7d || (read32(0x10007004)&0xffe0)!=0xf000 ||
        read32(0x10007030)!=0x3f0036 || read32(0x10007034)!=0x3b0034)
@@ -220,6 +234,10 @@ const struct entry_result *loader_main(uint64_t fdt_address, uint64_t original_e
     for(unsigned n=0;n<sizeof(payload_touch_flags)/sizeof(payload_touch_flags[0]);n++)
         memcpy(adt+payload_touch_flags[n],&granted,sizeof(granted));
 #endif
+#if PAYLOAD_NATIVE_CHARGER_SETUP_PROBE
+    for(unsigned n=0;n<sizeof(payload_charger_setup_flags)/sizeof(payload_charger_setup_flags[0]);n++)
+        memcpy(adt+payload_charger_setup_flags[n],&granted,sizeof(granted));
+#endif
 #if PAYLOAD_REFRESH_WATCHDOG
     memcpy(adt+PAYLOAD_ADT_WATCHDOG_PATCH,&granted,sizeof(granted));
 #endif
@@ -259,6 +277,9 @@ const struct entry_result *loader_main(uint64_t fdt_address, uint64_t original_e
     text("\r\nNative display/PWM handoff admitted.\r\n");
 #if PAYLOAD_NATIVE_TOUCH_PROBE
     text("Inherited I2C0 probe admitted; touch version and DMA checks required.\r\n");
+#endif
+#if PAYLOAD_NATIVE_CHARGER_SETUP_PROBE
+    text("Inherited I2C5 setup-only probe admitted; PSC/bias transactions disabled.\r\n");
 #endif
 #if PAYLOAD_REFRESH_WATCHDOG
     text("Inherited watchdog refresh requested; configuration preserved.\r\n");

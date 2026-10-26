@@ -19,6 +19,7 @@ extern uint64_t kvtophys(vm_offset_t);
 extern kern_return_t thread_terminate(thread_t);
 #include "../../tools/mt6762/hardware/display-touch/mt6762_touch_entry.h"
 #include "../../tools/mt6762/hardware/i2c/native_setup.h"
+#include "../../tools/mt6762/hardware/power/mt6762_charger_entry.h"
 
 static int ready;
 static DTEntry handoff;
@@ -28,8 +29,10 @@ static LCK_GRP_DECLARE(mt6762_i2c_group,"mt6762-i2c");
 static LCK_MTX_DECLARE(mt6762_i2c_lock,&mt6762_i2c_group);
 static LCK_MTX_DECLARE(mt6762_attach_lock,&mt6762_i2c_group);
 static int attached, initialized;
-struct native_bus { struct mtk_i2c_v2 engine; uintptr_t base,dma,dma_page; unsigned id; size_t dma_used; };
+struct native_bus { struct mtk_i2c_v2 engine; uintptr_t base,dma,dma_page; unsigned id,setup_only; size_t dma_used; };
 static struct native_bus buses[2];
+static int charger_entry_admitted;
+static int charger_entry_check(void);
 
 static int property(const char *name, void *out, unsigned size)
 {
@@ -131,6 +134,11 @@ static int clocks_stable(void)
     return !clock_rate(&hz) && hz==parent_hz && !(r32(top,0xa0)&0x80) &&
         !(r32(infra,0x90)&(1u<<11)) && !(r32(infra,0x94)&(1u<<18));
 }
+static int bus_clocks_stable(unsigned id)
+{
+    return clocks_stable() && (id!=5 || !flag("charger-inherited-probe") ||
+        mt6762_charger_i2c5_gates_ok(r32(infra,0xc8)));
+}
 static void initialize_bus(struct native_bus *b,unsigned id)
 {
     struct mtk_i2c_timing timing;
@@ -138,6 +146,15 @@ static void initialize_bus(struct native_bus *b,unsigned id)
     unsigned scl=id==0 ? 83 : 48,sda=id==0 ? 82 : 49,irq=id==0 ? 116 : 162;
     const char *verified=id==0 ? "i2c0-verified" : "i2c5-verified";
     if (!flag(verified)) return;
+    b->setup_only=id==5 && flag("charger-setup-only");
+    if(id==5 && (flag("charger-inherited-probe") || b->setup_only)) {
+        if(!charger_entry_admitted || !charger_entry_check()) {
+            kprintf("MT6762_CHARGER_ENTRY refused bus5 setup; other buses unchanged\n");return;
+        }
+    }
+    if(id==5 && flag("charger-inherited-probe") && !bus_clocks_stable(id)) {
+        kprintf("MT6762_CHARGER_ENTRY clocks changed before bus5 setup\n");return;
+    }
     if (mt6762_handoff_u32(id==0 ? "i2c0-hz" : "i2c5-hz",&hz) ||
         mtk_i2c_v2_timing(parent_hz,5,hz,&timing) ||
         pin_mode(scl)!=1 || pin_mode(sda)!=1) {
@@ -187,7 +204,7 @@ static void initialize_bus(struct native_bus *b,unsigned id)
     uint16_t actual_ltiming=br16(b,0x2c),actual_hs=br16(b,0x30);
     uint16_t actual_io=br16(b,0x34),actual_ext=br16(b,0x28);
     uint16_t actual_delay=br16(b,0x1c),actual_timeout=br16(b,0x4c);
-    int stable=clocks_stable();
+    int stable=bus_clocks_stable(id);
     unsigned inherited_profile=id==0 && flag("touch-inherited-probe");
     kprintf("MT6762_I2C_SETUP bus=%u div=%x/%x timing=%x/%x ltiming=%x/%x hs=%x/0 io=%x/3 clocks=%u\n",
         id,actual_div,timing.clock_div,actual_timing,timing.timing,
@@ -196,8 +213,19 @@ static void initialize_bus(struct native_bus *b,unsigned id)
         id,actual_ext,timing.ext,actual_delay,actual_timeout,timing.timeout,
         r32(top,0xa0),r32(infra,0x90),r32(infra,0x94));
     kprintf("MT6762_I2C_SETUP_PROFILE bus=%u inherited=%u\n",id,inherited_profile);
-    if (!mt6762_i2c_setup_ok(&timing,inherited_profile,actual_div,actual_timing,
-            actual_ltiming,actual_hs,actual_io,actual_ext,actual_delay,actual_timeout) || !stable) {
+    if(id==5 && flag("charger-inherited-probe"))
+        kprintf("MT6762_I2C_SETUP_GATES bus=5 infra4=%x mask=%x setup_only=%u\n",
+            r32(infra,0xc8),MT6762_CHARGER_I2C5_GATE_MASK,b->setup_only);
+    int setup_ok=mt6762_i2c_setup_ok(&timing,inherited_profile,actual_div,actual_timing,
+        actual_ltiming,actual_hs,actual_io,actual_ext,actual_delay,actual_timeout) && stable;
+    if(b->setup_only) {
+        /* Keep the DMA page pinned and never publish transfer readiness, even
+         * if strict laboratory readbacks happen to match physical bus5. */
+        b->engine.faulted=1;
+        kprintf("MT6762_I2C_SETUP_ONLY bus=%u strict=%u transactions=0\n",id,setup_ok);
+        return;
+    }
+    if (!setup_ok) {
         b->engine.faulted=1;printf("MT6762: I2C%u setup readback failed\n",id);return;
     }
     b->engine.initialized=1;
@@ -232,11 +260,40 @@ static int touch_entry_check(void)
         failure.address,failure.width,failure.pass,failure.actual,failure.mask,failure.expected);
     return 0;
 }
+static uintptr_t charger_entry_maps[MT6762_CHARGER_ENTRY_REGIONS];
+static uint32_t charger_entry_read(void *unused,uint32_t address,unsigned width)
+{
+    (void)unused;
+    for(unsigned i=0;i<MT6762_CHARGER_ENTRY_REGIONS;i++) {
+        uint32_t base=mt6762_charger_entry_base(i);
+        if(address<base || address-base>0x1000-width)continue;
+        uintptr_t p=charger_entry_maps[i]+address-base;
+        uint32_t value=width==2?*(volatile uint16_t *)p:*(volatile uint32_t *)p;
+        barrier(NULL);return value;
+    }
+    return UINT32_MAX;
+}
+static int charger_entry_check(void)
+{
+    for(unsigned i=0;i<MT6762_CHARGER_ENTRY_REGIONS;i++) {
+        if(charger_entry_maps[i])continue;
+        uint32_t base=mt6762_charger_entry_base(i);
+        charger_entry_maps[i]=(uintptr_t)mt6762_map_mmio(base,0x1000);
+        if(!charger_entry_maps[i]) {
+            kprintf("MT6762_CHARGER_ENTRY mapping failed address=%x\n",base);return 0;
+        }
+    }
+    struct mt6762_charger_entry_failure failure;
+    if(mt6762_charger_entry_detail(charger_entry_read,NULL,&failure))return 1;
+    kprintf("MT6762_CHARGER_ENTRY mismatch address=%x width=%u pass=%u value=%x mask=%x expected=%x\n",
+        failure.address,failure.width,failure.pass,failure.actual,failure.mask,failure.expected);
+    return 0;
+}
 int mt6762_i2c_ready(unsigned bus)
 {
     if (bus!=0 && bus!=5) return 0;
     struct native_bus *b=&buses[bus==5];
-    return ready && b->engine.initialized && !b->engine.faulted;
+    return ready && !b->setup_only && b->engine.initialized && !b->engine.faulted;
 }
 int mt6762_i2c_transfer(unsigned bus,unsigned addr,const void *tx,size_t nt,void *rx,size_t nr)
 {
@@ -249,7 +306,7 @@ int mt6762_i2c_transfer(unsigned bus,unsigned addr,const void *tx,size_t nt,void
     lck_mtx_lock(&mt6762_i2c_lock);
     int result=-1;
     if (mt6762_i2c_ready(bus)) {
-        if (!clocks_stable()) b->engine.faulted=1;
+        if (!bus_clocks_stable(bus)) b->engine.faulted=1;
         else {result=mtk_i2c_v2_transfer(&b->engine,msgs,n);if (b->engine.faulted)result=-1;else if(result==(int)n)result=0;}
     }
     lck_mtx_unlock(&mt6762_i2c_lock);
@@ -278,6 +335,10 @@ void mt6762_platform_init(void)
     if(flag("touch-inherited-probe") && !touch_entry_check()) {
         kprintf("MT6762_TOUCH_ENTRY refused live clock/pad/reset/EINT/controller state\n");return;
     }
+    /* Before the existing shared gate writes, independently admit only bus5.
+     * Recheck immediately before bus5 setup after any bus0 initialization. */
+    if(flag("charger-inherited-probe"))
+        charger_entry_admitted=charger_entry_check();
     gpio=(uintptr_t)mt6762_map_mmio(0x10005000,0x1000);
     if (!flag("dma-direct") || !flag("i2c-pads-verified") ||
         mt6762_handoff_u32("i2c-parent-index",&parent_index) || parent_index>4 ||
