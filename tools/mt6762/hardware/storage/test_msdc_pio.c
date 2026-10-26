@@ -5,7 +5,7 @@
 enum {NONE,CMD_CRC,CMD_TIMEOUT,DATA_CRC,SHORT_DATA,NO_DONE,DROP_ACK,LOST_OWNER,BAD_STATUS,DATA_DONE_ERROR};
 struct fixture {
     uint32_t cfg,sdc,irq,block,arg,command,fifo_pos;
-    uint32_t dma,cq,queue,crypto,inten,busy;
+    uint32_t dma,cq,queue,crypto,inten,busy,r1_flags;
     uint64_t time;
     unsigned reads,writes,commands,admitted,fault,data_active,ext_bad,time_mode,preempt,late_command,late_data;
     unsigned opcodes[32],count;
@@ -37,7 +37,7 @@ static uint32_t read32(void *ctx,uint32_t reg)
     case 0x23c:return f->cq;
     case 0x670:return f->crypto;
     case 0x50:return f->block;
-    case 0x40:return f->fault==BAD_STATUS?0xb00:0x900;
+    case 0x40:return (f->fault==BAD_STATUS?0xb00:0x900)|f->r1_flags;
     case 0x14:
         if(!f->data_active)return 0;
         if(f->late_data && f->fifo_pos==128) {
@@ -86,15 +86,18 @@ static void delay_us(void *ctx,uint32_t n)
 static void setup(struct fixture *f)
 {
     memset(f,0,sizeof(*f));f->cfg=0x89;f->sdc=0x20000;f->crypto=4;f->admitted=1;
-    f->ext[212]=8;f->ext[183]=2;f->ext[185]=2;f->ext[196]=0x56;
+    f->ext[212]=8;f->ext[185]=2;f->ext[196]=0x56;
     for(unsigned i=0;i<512;i++)f->sector[i]=(uint8_t)(i*7+3);
 }
-static int initialize(struct mt6762_msdc *s,struct fixture *f)
+static int initialize_as(struct mt6762_msdc *s,struct fixture *f,
+    uint32_t host_cfg,uint32_t host_sdc,uint32_t hz)
 {
     struct mt6762_msdc_io io={f,admit,read32,write32,time_us,delay_us};
-    struct mt6762_msdc_config cfg={8,1,0x89,0x20000,100,200000000};
+    struct mt6762_msdc_config cfg={8,1,host_cfg,host_sdc,100,hz};
     return mt6762_msdc_init(s,&io,&cfg);
 }
+static int initialize(struct mt6762_msdc *s,struct fixture *f)
+{return initialize_as(s,f,0x89,0x20000,200000000);}
 int main(void)
 {
     struct fixture f;struct mt6762_msdc s={0};uint8_t output[512];
@@ -107,6 +110,18 @@ int main(void)
     assert(mt6762_msdc_read512(&s,UINT64_MAX,output)==MT6762_MSDC_ARGUMENT);
     assert(f.reads==reads && f.writes==writes && !s.faulted);
     assert(initialize(&s,&f)==MT6762_MSDC_FAULTED);
+    /* Linux/BSP MMC treats R1 EXCEPTION_EVENT as a separate BKOPS notification,
+     * not a transfer failure. All actual status errors remain terminal. */
+    setup(&f);memset(&s,0,sizeof(s));f.r1_flags=1u<<6;
+    assert(!initialize(&s,&f));
+    memset(output,0xa5,sizeof(output));assert(!mt6762_msdc_read512(&s,2,output));
+    assert(!memcmp(output,f.sector,512));
+    for(unsigned bit=7;bit<32;bit++) {
+        if(bit>7 && bit<13)continue; /* READY and current-state fields */
+        setup(&f);memset(&s,0,sizeof(s));f.r1_flags=(1u<<6)|(1u<<bit);
+        assert(initialize(&s,&f)==MT6762_MSDC_CARD && s.faulted);
+        assert(f.commands==1); /* no data transfer after a rejected CMD13 */
+    }
     setup(&f);memset(&s,0,sizeof(s));assert(!initialize(&s,&f));f.preempt=1;
     memset(output,0xa5,sizeof(output));assert(!mt6762_msdc_read512(&s,2,output));
     assert(!memcmp(output,f.sector,512) && !s.faulted);
@@ -145,13 +160,40 @@ int main(void)
         if(!test)assert(!f.reads);
     }
     /* Actual EXT_CSD, not metadata alone, must confirm card state/capacity. */
-    const unsigned offsets[]={15,179,183,185,212};
+    const unsigned offsets[]={15,179,185,212};
     for(unsigned i=0;i<sizeof(offsets)/sizeof(offsets[0]);i++) {
         setup(&f);memset(&s,0,sizeof(s));f.ext[offsets[i]]^=1;
         assert(initialize(&s,&f)==MT6762_MSDC_CARD && s.faulted);
     }
     setup(&f);memset(&s,0,sizeof(s));f.ext[196]=0x20; /*1.2V-only HS200*/
     assert(initialize(&s,&f)==MT6762_MSDC_CARD && s.faulted);
+    /* BUS_WIDTH[183] is write-only; no readback value may reject a valid
+     * CRC-checked transfer. Cover both emulated HS200 and captured48MHz DDR. */
+    for(unsigned value=0;value<256;value++) {
+        setup(&f);memset(&s,0,sizeof(s));f.ext[183]=(uint8_t)value;
+        assert(!initialize(&s,&f));
+        setup(&f);memset(&s,0,sizeof(s));f.ext[183]=(uint8_t)value;
+        f.cfg=0x02200199;f.sdc=0x09020000;f.ext[185]=1;
+        assert(!initialize_as(&s,&f,f.cfg,f.sdc,47999984));
+        assert(!mt6762_msdc_read512(&s,2,output));
+        assert(!memcmp(output,f.sector,512));
+    }
+    /* Inherited host width, readable timing, capability and frequency still
+     * fail independently. No card write/reset or retry is introduced. */
+    for(unsigned invalid=0;invalid<5;invalid++) {
+        setup(&f);memset(&s,0,sizeof(s));f.cfg=0x02200199;f.sdc=0x09020000;
+        f.ext[185]=1;uint32_t hz=47999984;
+        switch(invalid) {
+        case 0:f.sdc=0x09010000;break;
+        case 1:f.ext[185]=2;break;
+        case 2:f.ext[196]&=~4u;break;
+        case 3:hz=52000001;break;
+        case 4:f.cfg=(f.cfg&~0x300000u)|0x300000;break;
+        }
+        int error=initialize_as(&s,&f,f.cfg,f.sdc,hz);
+        if(!invalid)assert(error==MT6762_MSDC_ARGUMENT && !f.writes);
+        else assert(error==MT6762_MSDC_CARD && s.faulted);
+    }
     setup(&f);memset(&s,0,sizeof(s));assert(!initialize(&s,&f));writes=f.writes;
     assert(mt6762_msdc_data512(&s,24,0,output)==MT6762_MSDC_ARGUMENT && f.writes==writes);
     puts("PASS: inherited MSDC admission, EXT_CSD proof, complete512-byte PIO, bounds, terminal faults and unchanged failed output");

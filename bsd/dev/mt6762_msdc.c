@@ -20,6 +20,8 @@ static uintptr_t controller,gic,top,infra,pll,gpio,pads,tuning;
 static int started,lab,ready,fault,last_error,reads,sectors;
 static uint32_t last_response;
 static int response_observed;
+static uint32_t issued_command,ext_bytes;
+static uint8_t ext_snapshot[512];
 static uint32_t expected_pad_drive,expected_hclk;
 static uint32_t top_tune[12],controller_tune[18];
 static const uint16_t tune_regs[18]={0x04,0xb0,0xb4,0xb8,0xf0,0xf4,0xf8,0xfc,
@@ -132,12 +134,18 @@ static uint32_t read32(void *unused,uint32_t offset)
     (void)unused;
     uint32_t value=r32(controller,offset);
     if(offset==0x40) {last_response=value;response_observed=1;}
+    if(offset==0x1c && issued_command==0x02000888 && ext_bytes<=508) {
+        for(unsigned i=0;i<4;i++)ext_snapshot[ext_bytes++]=(uint8_t)(value>>(i*8));
+    }
     return value;
 }
 static void write32(void *unused,uint32_t offset,uint32_t value)
 {
     (void)unused;
-    if(offset==0x34) {last_response=0;response_observed=0;}
+    if(offset==0x34) {
+        last_response=0;response_observed=0;issued_command=value;
+        if(value==0x02000888)ext_bytes=0;
+    }
     *(volatile uint32_t *)(controller+offset)=value;
     __asm__ volatile("dsb sy":::"memory");
 }
@@ -235,6 +243,14 @@ void mt6762_storage_init(void)
     }
     struct mt6762_msdc_io io={NULL,admit,read32,write32,time_us,delay_us};
     int error=mt6762_msdc_init(&engine,&io,&config);
+    if(ext_bytes==512) {
+        uint32_t card_sectors=(uint32_t)ext_snapshot[212]|((uint32_t)ext_snapshot[213]<<8)|
+            ((uint32_t)ext_snapshot[214]<<16)|((uint32_t)ext_snapshot[215]<<24);
+        kprintf("MT6762_MSDC_EXT bytes=%u sectors=%u cqe=%x partition=%x bus_width=%x timing=%x revision=%x card_type=%x bkops=%x events=%x\n",
+            ext_bytes,card_sectors,ext_snapshot[15],ext_snapshot[179],ext_snapshot[183],
+            ext_snapshot[185],ext_snapshot[192],ext_snapshot[196],ext_snapshot[246],
+            ext_snapshot[54]|((unsigned)ext_snapshot[55]<<8));
+    }
     if(error) {
         last_error=error;fault=engine.faulted?1:0;
         kprintf("MT6762_MSDC refused error=%d command=%x argument=%x phase=%u bytes=%u irq=%x stalled_us=%llu response_seen=%d r1=%x\n",

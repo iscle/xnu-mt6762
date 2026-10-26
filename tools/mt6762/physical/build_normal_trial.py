@@ -34,6 +34,8 @@ DIAGNOSTICS = (
     '3da6756329e3e859cdd2d6be3aae22024851f7cc4ccd7cd863937747002958ef', # Image26: kernel43 inherited read-only power/volume probe
     '7a6c42436822cdfee2e778673b4d78ad985d25fe81f7971d97a52a99091ffb9c', # Image27: kernel43 APFS bootstrap with native button probe
     'a3cbd157a204ee106b0b06bc9c6e9a9ff797025cf612eb72f3ca076d63338add', # Image29: kernel45 retained eMMC R1 response plus native keys
+    '685c9736bb489386b417de474e6623226a939ad6eac8593bb514bc3aace41a41', # Image30: kernel48 unreadable BUS_WIDTH fix and retained EXT_CSD fields
+    '01852a28ad01b009ad2d88ff4ef84e05a7e428d0202dc22d9f7b25c77dcd336e', # Image31: kernel48 APFS desktop bootstrap; card acceptance/system install pending
 )
 VBMETA_FLAGS3 = '2f3fb6474d7ff35ac4c48ab2bef71247ba50de4a94de2474b7d1b60cd6654f51'
 

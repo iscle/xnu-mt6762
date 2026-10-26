@@ -1,0 +1,43 @@
+From bf5a3a7e92a124dd86fc393293bf6a1a7b417cba Mon Sep 17 00:00:00 2001
+From: Iscle <albertiscle9@gmail.com>
+Date: Mon, 26 Oct 2026 10:26:21 +0100
+Subject: [PATCH] arm/mt6762: stop fabricating readable eMMC bus width in local
+ lab
+
+---
+ hw/misc/mt6762_msdc_lab.c     | 5 ++++-
+ tests/mt6762/test_lab_msdc.py | 2 +-
+ 2 files changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/hw/misc/mt6762_msdc_lab.c b/hw/misc/mt6762_msdc_lab.c
+index 24cce24..fdb652c 100644
+--- a/hw/misc/mt6762_msdc_lab.c
++++ b/hw/misc/mt6762_msdc_lab.c
+@@ -65,7 +65,10 @@ static void msdc_command_complete(void *opaque)
+         memset(s->data, 0, sizeof(s->data));
+         s->data[179] = s->fault == MT6762_MSDC_FAULT_EXTCSD_PARTITION ? 1 : 0;
+         s->data[15] = s->fault == MT6762_MSDC_FAULT_EXTCSD_QUEUE ? 1 : 0;
+-        s->data[183] = s->fault == MT6762_MSDC_FAULT_EXTCSD_BUS ? 1 : 2;
++        /* BUS_WIDTH is write-only. Zero is a fixture readback, not proof of
++         * one-bit mode. The legacy extcsd-bus knob varies this undefined
++         * readback; a driver must not treat it as active bus configuration. */
++        s->data[183] = s->fault == MT6762_MSDC_FAULT_EXTCSD_BUS ? 1 : 0;
+         s->data[185] = s->fault == MT6762_MSDC_FAULT_EXTCSD_TIMING ? 3 : 2;
+         s->data[192] = 8;
+         s->data[196] = 0x56; /* Synthetic HS52/DDR1.8/HS2001.8/HS4001.8. */
+diff --git a/tests/mt6762/test_lab_msdc.py b/tests/mt6762/test_lab_msdc.py
+index 9974eb0..f4dab34 100644
+--- a/tests/mt6762/test_lab_msdc.py
++++ b/tests/mt6762/test_lab_msdc.py
+@@ -105,7 +105,7 @@ def instance(label, enabled=True):
+             lab.w(0xc, 0x100)
+             ext = lab.drain()
+             assert len(ext) == 512 and ext[15] == 0 and ext[179] == 0
+-            assert ext[183] == ext[185] == 2 and ext[192] == 8 and ext[196] == 0x56
++            assert ext[183] == 0 and ext[185] == 2 and ext[192] == 8 and ext[196] == 0x56
+             assert int.from_bytes(ext[212:216], "little") == 8
+             assert lab.r(0xc) == 0x1000
+             lab.w(0xc, 0x100)  # W1C must preserve the unrelated data-done flag.
+-- 
+2.55.0
+

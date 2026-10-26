@@ -101,7 +101,10 @@ static inline int mt6762_msdc_command(struct mt6762_msdc *s,uint32_t command,
             *r1=mt6762_msdc_r(s,0x40);
             error=mt6762_msdc_ack(s,owned);
             if(error)return error;
-            if(*r1&0xffffe0c0u)return MT6762_MSDC_CARD;
+            /* eMMC R1 bit6 is EXCEPTION_EVENT, an EXT_CSD/BKOPS notification,
+             * not a failed command. Keep switch/error/locked-card checks.
+             * This read-only transport does not start background operations. */
+            if(*r1&0xffffe080u)return MT6762_MSDC_CARD;
             return 0;
         }
         /* A scheduler gap can occur between the status read and clock read.
@@ -188,11 +191,12 @@ static inline int mt6762_msdc_init(struct mt6762_msdc *s,
     uint32_t sectors=(uint32_t)ext[212]|((uint32_t)ext[213]<<8)|
         ((uint32_t)ext[214]<<16)|((uint32_t)ext[215]<<24);
     unsigned mode=(config->expected_cfg>>20)&3, timing=ext[185]&15;
+    /* BUS_WIDTH[183] has no defined readback. The inherited host8-bit mode
+     * was checked before commands and throughout the CRC-checked EXT_CSD
+     * transfer. Validate only readable card state against that host mode. */
     if(sectors!=config->sector_count || (ext[179]&7) || ext[15] ||
-       !mt6762_msdc_card_rate_ok(timing,ext[183],ext[196],config->card_clock_hz) ||
-       (mode<2 && (ext[183]!=2 || (timing!=1 && timing!=2))) ||
-       (mode==2 && (ext[183]!=6 || timing!=1)) ||
-       (mode==3 && (ext[183]!=6 || timing!=3)))return mt6762_msdc_fail(s,MT6762_MSDC_CARD);
+       !mt6762_msdc_card_rate_ok(timing,mode,ext[196],config->card_clock_hz))
+        return mt6762_msdc_fail(s,MT6762_MSDC_CARD);
     s->initialized=1;
     return 0;
 }

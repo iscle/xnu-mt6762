@@ -14,9 +14,14 @@ nor patches Apple's userspace binaries. The tiny RAM filesystem remains
 available at/redwood. The system APFS can therefore stay on eMMC rather than
 occupy several GiB as a RAM disk. The optional physical handoff producer now
 checks the captured LK profile; its real-device admission/card test is pending.
-Image24/kernel42 enables the native MSDC probe. Capture21 completes CMD13 but
-rejects card status with error-7; no data command or storage write follows.
-The next diagnostic retains the R1 value missing from that log. Image25
+Image24/kernel42 enables the native MSDC probe. Capture21 rejects card
+validation with error-7. Capture22/Image29/kernel45 records final R1=0x900,
+which proves EXT_CSD data transfer completed before metadata rejection. The
+earlier first-CMD13 interpretation was incorrect: the byte counter resets
+for each command. BUS_WIDTH[183] is write-only and cannot validate card state;
+the corrected driver checks inherited host mode and readable timing/capability
+fields after the CRC-checked transfer. See ext-csd-validation-evidence.json.
+The corrected build still requires physical acceptance. Image25
 packages the same4MiB bootstrap used by the successful
 emulator run and a bounded userdata slice, but is not installed. Its builder
 and manifest checks passed. The separate ``physical/install_system_slice.py``

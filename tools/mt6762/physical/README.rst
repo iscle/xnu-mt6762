@@ -18,16 +18,21 @@ kernel42 corrects only these exact profile expectations. Capture20 also
 confirms read-only PWRAP profile2, PMIC ID0x5730 and two identical successful
 reads of each eMMC rail register. Capture21/Image24 confirms touch version0007,
 native32-byte DMA and a complete physical down/drag/up gesture. Its eMMC probe
-completes the first CMD13 but rejects card status with error-7 before data
-transfer. Image29/kernel45 retains the exact R1 response to distinguish its
-cause. Capture19 validates bounded LK card metadata
+rejects card validation with error-7. Capture22/Image29/kernel45 retains
+R1=0x900 from the final CMD13: the512-byte EXT_CSD transfer completed and the
+failure is in subsequent metadata validation. This corrects the earlier
+interpretation of the per-command byte counter as total transferred bytes.
+EXT_CSD BUS_WIDTH is write-only; the driver now uses admitted host mode with
+readable card timing/capabilities instead. Physical confirmation is pending.
+Capture19 validates bounded LK card metadata
 (RCA1, sector addressing and244,285,440sectors), without granting storage
 ownership. See ../hardware/display-touch/physical-build36-evidence.json and the card audit.
 Touch integration with the physical desktop, charging and keys remain incomplete.
 The optional ``--native-buttons-probe`` (kernel43 onward) requires the
 read-only PWRAP probe and separately admits the captured keypad configuration.
 It polls power/volume state without changing pins, clocks, IRQs or reset
-policy. Hardware event validation is pending; see ../hardware/power/NATIVE.rst.
+policy. Capture22 confirms worker startup; hardware event validation is pending.
+See ../hardware/power/NATIVE.rst.
 
 Physical trial status: the dumped LK's fastboot boot path panics before XNU
 entry. Its caller passes the download pointer to a routine that instead looks

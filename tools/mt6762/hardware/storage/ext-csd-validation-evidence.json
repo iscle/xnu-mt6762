@@ -1,0 +1,210 @@
+{
+  "source_url": "https://android.googlesource.com/platform/external/mmc-utils/+/65601e71933244e232734562ca5c8e69b9543742/mmc_cmds.c",
+  "source_sha256": "6ab2697aa99e308dbb35af9095f666e1d9a6582d3ba64f1fd0c732b6a24e63a8",
+  "source_commit": "65601e71933244e232734562ca5c8e69b9543742",
+  "source_line": 1228,
+  "source_fact": "EXT_CSD BUS_WIDTH byte183 is not readable.",
+  "capture": "capture22/Image29/kernel45",
+  "kernel_sha256": "2fb16636a19e2b06d0505070e0d79f7a547928d72ea481901125b2f5ea077d79",
+  "log_sha256": "fb49f4d7f10c36fe4b364eeb534c9b1cd1fa22e8432b0479c3934917ffaee7c0",
+  "log_bytes": 5289,
+  "msdc_error": -7,
+  "last_command": "0x8d",
+  "last_r1": "0x900",
+  "response_seen": true,
+  "inference": "Final EXT_CSD metadata validation rejected the card after a completed512-byte transfer and final successful CMD13. Earlier first-CMD13 interpretation is superseded.",
+  "physical_ext_csd_fields_captured": false,
+  "corrected_build_physically_accepted": false,
+  "keys_worker_ready": true,
+  "physical_key_transitions_captured": false,
+  "system_slice_installed": false,
+  "validation_change": "Read controller CKMOD plus8-bit SDC_CFG, then require CRC-checked data and readable card timing/capability/capacity/partition/CQE fields. Ignore unreadable byte183.",
+  "separate_r1_fix": "Bit6 EXCEPTION_EVENT is informational; retain all previous real error checks. Capture22 did not contain this notification.",
+  "host_regressions": [
+    "All256 BUS_WIDTH readback bytes accepted in otherwise valid HS200 and captured48MHz DDR profiles",
+    "Incorrect host width, timing, capability, excessive clock and mode still rejected",
+    "R1 exception notification accepted; true status errors remain terminal",
+    "Existing bounded transfer/CRC/timeout/ownership faults still passed"
+  ],
+  "corrected_kernel_sha256": "8306796a4e5e3ac343103c38b72ae4a974bff19792f6ff7a07c6a160114ce022",
+  "all_build_checks_passed": true,
+  "qemu_local_commit": "bf5a3a7e92a124dd86fc393293bf6a1a7b417cba",
+  "qemu_model_default_bus_width_readback": 0,
+  "qemu_qtest_passed": true,
+  "kernel_emulator_regressions": [
+    {
+      "case": "none",
+      "passed": true,
+      "result_sha256": "c5458a9ffce42598bd04aac56fa2e788f1ec690bcb7c555f2684f2a91aace87a",
+      "native_sysctls": {
+        "mt6762_msdc_ready": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_msdc_fault": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_last_error": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_reads": {
+          "value": 294,
+          "error": 0
+        },
+        "mt6762_msdc_sectors": {
+          "value": 288,
+          "error": 0
+        }
+      },
+      "final_model": {
+        "enabled": true,
+        "synthetic": true,
+        "readonly": true,
+        "dma_emulated": false,
+        "irq_delivery": false,
+        "fault": 0,
+        "sectors": 288,
+        "commands": 885,
+        "cmd8": 1,
+        "cmd13": 590,
+        "cmd17": 294,
+        "completed": 295,
+        "bytes_read": 151040,
+        "backend_reads": 294,
+        "backend_errors": 0,
+        "rejected": 0,
+        "ack_writes": 1180,
+        "reads": 67852,
+        "writes": 3245,
+        "arg": 65536,
+        "command": 141,
+        "irq": 0,
+        "response": 2304,
+        "fifo_bytes": 0,
+        "pending": false,
+        "reading": false
+      },
+      "qemu_binary_sha256": "3fe4d9e1a496f8a9f6a88e7e25c23057e6c19c959ae15605ba2e04c54ebda08e"
+    },
+    {
+      "case": "extcsd-bus",
+      "passed": true,
+      "result_sha256": "ea99a82d7fcfc7eb65cd84fd5ce9d180371c3c04d65facf03c6710774898b978",
+      "native_sysctls": {
+        "mt6762_msdc_ready": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_msdc_fault": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_last_error": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_reads": {
+          "value": 294,
+          "error": 0
+        },
+        "mt6762_msdc_sectors": {
+          "value": 288,
+          "error": 0
+        }
+      },
+      "final_model": {
+        "enabled": true,
+        "synthetic": true,
+        "readonly": true,
+        "dma_emulated": false,
+        "irq_delivery": false,
+        "fault": 15,
+        "sectors": 288,
+        "commands": 885,
+        "cmd8": 1,
+        "cmd13": 590,
+        "cmd17": 294,
+        "completed": 295,
+        "bytes_read": 151040,
+        "backend_reads": 294,
+        "backend_errors": 0,
+        "rejected": 0,
+        "ack_writes": 1180,
+        "reads": 67854,
+        "writes": 3245,
+        "arg": 65536,
+        "command": 141,
+        "irq": 0,
+        "response": 2304,
+        "fifo_bytes": 0,
+        "pending": false,
+        "reading": false
+      },
+      "qemu_binary_sha256": "3fe4d9e1a496f8a9f6a88e7e25c23057e6c19c959ae15605ba2e04c54ebda08e"
+    },
+    {
+      "case": "extcsd-timing",
+      "passed": true,
+      "result_sha256": "d61d9ca36a10570e857b2dfe246e4341353637db3033d3437217cdc54446fbfd",
+      "native_sysctls": {
+        "mt6762_msdc_ready": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_fault": {
+          "value": 1,
+          "error": 0
+        },
+        "mt6762_msdc_last_error": {
+          "value": -7,
+          "error": 0
+        },
+        "mt6762_msdc_reads": {
+          "value": 0,
+          "error": 0
+        },
+        "mt6762_msdc_sectors": {
+          "value": 0,
+          "error": 0
+        }
+      },
+      "final_model": {
+        "enabled": true,
+        "synthetic": true,
+        "readonly": true,
+        "dma_emulated": false,
+        "irq_delivery": false,
+        "fault": 16,
+        "sectors": 288,
+        "commands": 3,
+        "cmd8": 1,
+        "cmd13": 2,
+        "cmd17": 0,
+        "completed": 1,
+        "bytes_read": 512,
+        "backend_reads": 0,
+        "backend_errors": 0,
+        "rejected": 0,
+        "ack_writes": 4,
+        "reads": 231,
+        "writes": 11,
+        "arg": 65536,
+        "command": 141,
+        "irq": 0,
+        "response": 2304,
+        "fifo_bytes": 0,
+        "pending": false,
+        "reading": false
+      },
+      "qemu_binary_sha256": "3fe4d9e1a496f8a9f6a88e7e25c23057e6c19c959ae15605ba2e04c54ebda08e"
+    }
+  ],
+  "physical_trial": {
+    "image": "Image30/kernel48",
+    "boot_sha256": "8ff8f2a6eab47f8524fb2ed9c1c648b0dc387d6b4d45c20b597c3451805db511",
+    "installed_full_readback_verified": true,
+    "capture_pending": "capture23"
+  }
+}

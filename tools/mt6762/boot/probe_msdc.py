@@ -46,6 +46,8 @@ def main():
     if args.expect_admission_rejected and args.fault_after_first_read:parser.error('Rejected admission cannot use delayed faults')
     if args.expect_no_commands and not args.expect_admission_rejected:parser.error('Zero-command assertion requires rejected admission')
     if args.fault_after_first_read and args.fault=='none':parser.error('Select a fault to inject')
+    if args.fault_after_first_read and args.fault=='extcsd-bus':
+        parser.error('Write-only BUS_WIDTH readback variation is a startup regression, not a transfer fault')
     if args.clear_after_error and not args.fault_after_first_read:parser.error('Clearing requires delayed fault injection')
     manifest=json.loads(args.manifest.read_text())
     metadata=manifest.get('native_lab_msdc_image')
@@ -137,12 +139,14 @@ def main():
     if cpus!=list(range(1,manifest.get('cpu_count',1))):errors.append('Secondary CPU online proof incomplete')
     if not states or not states[-1]['state'].get('readonly'):errors.append('Model did not confirm read-only backend')
     if any(v['error'] for v in diagnostics.values()) or len(diagnostics)!=5:errors.append('Native storage diagnostics unavailable')
-    if (args.fault in ('none','backend-error') or args.fault_after_first_read) and not args.expect_admission_rejected:
+    if (args.fault in ('none','extcsd-bus','backend-error') or args.fault_after_first_read) and not args.expect_admission_rejected:
         if not (scalars.get('char_open',-1)>=0 and scalars.get('write_open')==-30 and
                 scalars.get('blocksize')==512 and scalars.get('blockcount')==sectors and
                 scalars.get('writable')==0 and all(scalars.get(k)==0 for k in ('blocksize_error','blockcount_error','writable_error'))):
             errors.append('Device geometry/read-only admission proof failed')
-    if args.fault=='none' and not args.expect_admission_rejected:
+    # Legacy model knob changes an undefined BUS_WIDTH readback byte. Both
+    # zero and nonzero values must allow otherwise valid read-only access.
+    if args.fault in ('none','extcsd-bus') and not args.expect_admission_rejected:
         wanted=[('char',0),('char',1),('char',sectors-1),('block',0)] if sectors>1 else [('char',0),('char',0),('block',0)]
         if [(r['kind'],r['lba']) for r in reads]!=wanted:errors.append('Expected raw and block reads missing')
         if any(r['result']!=512 or r['fnv1a']!=expected[r['lba']] for r in reads):errors.append('Guest bytes differ from real backing-file sectors')

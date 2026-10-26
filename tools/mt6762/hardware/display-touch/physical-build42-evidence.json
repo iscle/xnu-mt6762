@@ -214,6 +214,7 @@
   "msdc_argument": "0x10000",
   "msdc_irq": "0x100",
   "msdc_data_bytes": 0,
+  "msdc_data_bytes_scope": "Last command only; CMD13 resets this counter. Does not establish total bytes read or which CMD13 failed.",
   "msdc_r1_value_not_retained": true,
   "system_installed": false
 }
