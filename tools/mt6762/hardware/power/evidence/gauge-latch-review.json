@@ -1,0 +1,821 @@
+{
+  "schema": "mt6762-hakios-finite-gauge-review-v1",
+  "result": "PASS",
+  "source_inputs_stable": true,
+  "input_sha256": {
+    "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/bsd/dev/mt6762_power.c": "aa4d1a88302731b8a73aaf605fa166df8fb6b2082d6e14c3772b0865f3c57d5f",
+    "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/bsd/dev/mt6762_gauge_latch_probe.c": "72a3711e0c4b90e1e7c8a49668b57af6025144eb46fbe86116bbea64921cc6d8",
+    "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/bsd/dev/mt6762_gauge_protocol.h": "0561a82b2071e407f612d9949ddb1b29cb546cde2462356b03ba1f58a286fb96",
+    "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/bsd/dev/mt6762_power_protocol.h": "2488c25e65d224d925da65a6156f2fcd2988ebe27413f43b0d8b94445a69df10",
+    "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/tools/mt6762/hardware/power/mt6762_pmic_entry.h": "4e97d1ab3bb36cb0e84a9ba222bfabf27221fc7a85a0f63f33b199aa10f1b961",
+    "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/tools/mt6762/hardware/power/mt6762_gauge_probe.h": "c210a682b69e7eea210d6abb0069ceae6d5e62d9dc67ec5964b705034accadcd",
+    "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/tools/mt6762/hardware/power/test_gauge_probe.c": "d03e1ebe2d2a96ae7f84c2e5bf9a1d978565299827330f40078b32896a4189ed",
+    "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/tools/mt6762/hardware/power/test_gauge_latch_integration.c": "666dda82e5364e9df1c51466ff46a8acf77a8f96bc728779c87e38e2464f4dcc",
+    "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/tools/mt6762/hardware/power/test_gauge_latch_integration.py": "61a4f16743ec960765e80a061df740abdc9f3b5b9b3af56c1f6bf8b078ce0ff3",
+    "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/tools/mt6762/hardware/power/test_pmic_entry.c": "a02c50983844daf66c2ad58245a5f09fdbc0f2a378fb80798dbf3693ee5f529a",
+    "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/tools/mt6762/hardware/power/test_pmic_entry_integration.py": "faf9bb599d188df6b937a8f559010809390ef108def68fd6bbad06df7825fbc3",
+    "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/tools/mt6762/hardware/power/test_gauge_baseline.py": "8d0e12c98861f8ab1726b90b3679b7da3e0de7d2765da0f9c41d75afa464c8b3",
+    "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/tools/mt6762/hardware/power/test.sh": "ad03df08cdf6ba9e422c134c2a2259e8f8dcf74e0a2deac42e0d637bdd25fb9f",
+    "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/tools/mt6762/hardware/power/audit_gauge_latch.py": "ade72cb6dbcbc1c98eb520bc6da308e7f69c482bc7f4cc0dbddd59ce896527f5",
+    "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/tools/mt6762/hardware/power/audit_adc_entry.py": "b0a599ea00b4eb0344b874d069a680da31f7d3735caefd4afdcaa7ab01a5e335",
+    "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/tools/mt6762/hardware/power/GAUGE-LATCH-PROBE.rst": "306ce16e51294460185fead5f1709d8c427f0db2b6dad751a09aed507b3e1fa5",
+    "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/tools/mt6762/hardware/power/evidence/gauge-protocol-disassembly.txt": "da59c9066cd7c5c2a48f4b6cd9b56f246a07c20ce6bf048f6adde1cbfba8610a",
+    "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/tools/mt6762/hardware/power/evidence/gauge-baseline-replay.json": "a0c7ab76c1fa73e4520dae8e3e50f505ee819391101def5c51e606a75c5a045c",
+    "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/tools/mt6762/hardware/power/evidence/stock-gauge-vectors.json": "15474010184bfda58555ebe624155fab1118831067c33a6070c4a7d951f367a0"
+  },
+  "unchanged_protocol_sha256": {
+    "bsd/dev/mt6762_gauge_protocol.h": "0561a82b2071e407f612d9949ddb1b29cb546cde2462356b03ba1f58a286fb96",
+    "bsd/dev/mt6762_power_protocol.h": "2488c25e65d224d925da65a6156f2fcd2988ebe27413f43b0d8b94445a69df10"
+  },
+  "unchanged_public_pwrap_function_sha256": {
+    "pwrap_transfer": "8a519f0732c7f47f57b889f3e3c03ab65e8c33b1a5af6bb69c2f2aa624d62145",
+    "mt6762_pwrap_write16": "a9989800203fd11e1a0db4689a40378f86a00edd5a9d6a347509425b764c1c35",
+    "mt6762_pwrap_read16": "0b1d4ccc6c77d26e96195df004de900a9170f7cdf4279f0f09806de9d9f703cd"
+  },
+  "capture_context": [
+    {
+      "capture": 33,
+      "log_path": "/home/iscle/mt6762-ios-port/hardware/trace-boot-20261025/capture33/xnu-log.bin",
+      "log_sha256": "73275964fb858aea490204611b4de11ee019ac02a18192ec5461b0219aa3e9d4",
+      "log_bytes": 98170,
+      "raw_record_count": 26,
+      "deduplicated_records": 26,
+      "trace_result_sha256": "83a1a5b88d1198f3c7503b408571c027bf347ca435c21517ef182bc2e207c955",
+      "trace_sha256": "5b7b12a1cd056d3851d7a47d6104634756c735360594ab7aab444a3598c15451",
+      "retention_proven": false,
+      "pmic_records": [
+        {
+          "pass_number": 0,
+          "index": 0,
+          "address": "0008",
+          "value": "5730"
+        },
+        {
+          "pass_number": 0,
+          "index": 1,
+          "address": "0c0c",
+          "value": "0004"
+        },
+        {
+          "pass_number": 0,
+          "index": 2,
+          "address": "0d08",
+          "value": "0129"
+        },
+        {
+          "pass_number": 0,
+          "index": 3,
+          "address": "0d0a",
+          "value": "0000"
+        },
+        {
+          "pass_number": 0,
+          "index": 4,
+          "address": "0c8e",
+          "value": "0416"
+        },
+        {
+          "pass_number": 0,
+          "index": 5,
+          "address": "0c90",
+          "value": "0001"
+        },
+        {
+          "pass_number": 0,
+          "index": 6,
+          "address": "0d94",
+          "value": "0000"
+        },
+        {
+          "pass_number": 0,
+          "index": 7,
+          "address": "0d96",
+          "value": "0416"
+        },
+        {
+          "pass_number": 0,
+          "index": 8,
+          "address": "0e08",
+          "value": "0005"
+        },
+        {
+          "pass_number": 0,
+          "index": 9,
+          "address": "108a",
+          "value": "e558"
+        },
+        {
+          "pass_number": 0,
+          "index": 10,
+          "address": "108e",
+          "value": "84be"
+        },
+        {
+          "pass_number": 0,
+          "index": 11,
+          "address": "109e",
+          "value": "0000"
+        },
+        {
+          "pass_number": 0,
+          "index": 12,
+          "address": "1236",
+          "value": "0000"
+        },
+        {
+          "pass_number": 1,
+          "index": 0,
+          "address": "0008",
+          "value": "5730"
+        },
+        {
+          "pass_number": 1,
+          "index": 1,
+          "address": "0c0c",
+          "value": "0004"
+        },
+        {
+          "pass_number": 1,
+          "index": 2,
+          "address": "0d08",
+          "value": "0129"
+        },
+        {
+          "pass_number": 1,
+          "index": 3,
+          "address": "0d0a",
+          "value": "0000"
+        },
+        {
+          "pass_number": 1,
+          "index": 4,
+          "address": "0c8e",
+          "value": "0416"
+        },
+        {
+          "pass_number": 1,
+          "index": 5,
+          "address": "0c90",
+          "value": "0001"
+        },
+        {
+          "pass_number": 1,
+          "index": 6,
+          "address": "0d94",
+          "value": "0000"
+        },
+        {
+          "pass_number": 1,
+          "index": 7,
+          "address": "0d96",
+          "value": "0416"
+        },
+        {
+          "pass_number": 1,
+          "index": 8,
+          "address": "0e08",
+          "value": "0005"
+        },
+        {
+          "pass_number": 1,
+          "index": 9,
+          "address": "108a",
+          "value": "e558"
+        },
+        {
+          "pass_number": 1,
+          "index": 10,
+          "address": "108e",
+          "value": "84be"
+        },
+        {
+          "pass_number": 1,
+          "index": 11,
+          "address": "109e",
+          "value": "0000"
+        },
+        {
+          "pass_number": 1,
+          "index": 12,
+          "address": "1236",
+          "value": "0000"
+        }
+      ],
+      "additional_adc_record_present": false,
+      "gauge_latch_record_present": false,
+      "adc_measurement_fresh": false
+    },
+    {
+      "capture": 34,
+      "log_path": "/home/iscle/mt6762-ios-port/hardware/trace-boot-20261025/capture34/xnu-log.bin",
+      "log_sha256": "21ffa3ebfc4a6598d604ad24042bb89a5f8a9272bc376df60e21974f41e141d7",
+      "log_bytes": 136052,
+      "raw_record_count": 52,
+      "deduplicated_records": 26,
+      "trace_result_sha256": "441aec45c9b66133c0b6f0756fd1e56bd935224f4a42c0065c0a7015d3501386",
+      "trace_sha256": "b6dc95601ee267e852d93ba671a144034859b87fa06a796aeef2fd1d104bf997",
+      "retention_proven": false,
+      "pmic_records": [
+        {
+          "pass_number": 0,
+          "index": 0,
+          "address": "0008",
+          "value": "5730"
+        },
+        {
+          "pass_number": 0,
+          "index": 1,
+          "address": "0c0c",
+          "value": "0004"
+        },
+        {
+          "pass_number": 0,
+          "index": 2,
+          "address": "0d08",
+          "value": "0129"
+        },
+        {
+          "pass_number": 0,
+          "index": 3,
+          "address": "0d0a",
+          "value": "0000"
+        },
+        {
+          "pass_number": 0,
+          "index": 4,
+          "address": "0c8e",
+          "value": "0416"
+        },
+        {
+          "pass_number": 0,
+          "index": 5,
+          "address": "0c90",
+          "value": "0001"
+        },
+        {
+          "pass_number": 0,
+          "index": 6,
+          "address": "0d94",
+          "value": "0000"
+        },
+        {
+          "pass_number": 0,
+          "index": 7,
+          "address": "0d96",
+          "value": "0416"
+        },
+        {
+          "pass_number": 0,
+          "index": 8,
+          "address": "0e08",
+          "value": "0005"
+        },
+        {
+          "pass_number": 0,
+          "index": 9,
+          "address": "108a",
+          "value": "e5b2"
+        },
+        {
+          "pass_number": 0,
+          "index": 10,
+          "address": "108e",
+          "value": "8529"
+        },
+        {
+          "pass_number": 0,
+          "index": 11,
+          "address": "109e",
+          "value": "0000"
+        },
+        {
+          "pass_number": 0,
+          "index": 12,
+          "address": "1236",
+          "value": "0000"
+        },
+        {
+          "pass_number": 1,
+          "index": 0,
+          "address": "0008",
+          "value": "5730"
+        },
+        {
+          "pass_number": 1,
+          "index": 1,
+          "address": "0c0c",
+          "value": "0004"
+        },
+        {
+          "pass_number": 1,
+          "index": 2,
+          "address": "0d08",
+          "value": "0129"
+        },
+        {
+          "pass_number": 1,
+          "index": 3,
+          "address": "0d0a",
+          "value": "0000"
+        },
+        {
+          "pass_number": 1,
+          "index": 4,
+          "address": "0c8e",
+          "value": "0416"
+        },
+        {
+          "pass_number": 1,
+          "index": 5,
+          "address": "0c90",
+          "value": "0001"
+        },
+        {
+          "pass_number": 1,
+          "index": 6,
+          "address": "0d94",
+          "value": "0000"
+        },
+        {
+          "pass_number": 1,
+          "index": 7,
+          "address": "0d96",
+          "value": "0416"
+        },
+        {
+          "pass_number": 1,
+          "index": 8,
+          "address": "0e08",
+          "value": "0005"
+        },
+        {
+          "pass_number": 1,
+          "index": 9,
+          "address": "108a",
+          "value": "e5b2"
+        },
+        {
+          "pass_number": 1,
+          "index": 10,
+          "address": "108e",
+          "value": "8529"
+        },
+        {
+          "pass_number": 1,
+          "index": 11,
+          "address": "109e",
+          "value": "0000"
+        },
+        {
+          "pass_number": 1,
+          "index": 12,
+          "address": "1236",
+          "value": "0000"
+        }
+      ],
+      "additional_adc_record_present": false,
+      "gauge_latch_record_present": false,
+      "adc_measurement_fresh": false
+    },
+    {
+      "capture": 35,
+      "log_path": "/home/iscle/mt6762-ios-port/hardware/trace-boot-20261025/capture35/xnu-log.bin",
+      "log_sha256": "ee4ebd4740ec810f3a5b5170e9a9c56849d1a375b0cdcae28adb89ac274afa0d",
+      "log_bytes": 177042,
+      "raw_record_count": 26,
+      "deduplicated_records": 26,
+      "trace_result_sha256": "1487b50ae21e72ba18ca143c53cc5ce3eba6feec6c4a7e9c16ee04c2954fe044",
+      "trace_sha256": "8f18b6a93fdee2c00ff6ebacada0205c54bc1f44aa6b364709de95f213a2c565",
+      "retention_proven": false,
+      "pmic_records": [
+        {
+          "pass_number": 0,
+          "index": 0,
+          "address": "0008",
+          "value": "5730"
+        },
+        {
+          "pass_number": 0,
+          "index": 1,
+          "address": "0c0c",
+          "value": "0004"
+        },
+        {
+          "pass_number": 0,
+          "index": 2,
+          "address": "0d08",
+          "value": "0129"
+        },
+        {
+          "pass_number": 0,
+          "index": 3,
+          "address": "0d0a",
+          "value": "0000"
+        },
+        {
+          "pass_number": 0,
+          "index": 4,
+          "address": "0c8e",
+          "value": "0416"
+        },
+        {
+          "pass_number": 0,
+          "index": 5,
+          "address": "0c90",
+          "value": "0001"
+        },
+        {
+          "pass_number": 0,
+          "index": 6,
+          "address": "0d94",
+          "value": "0000"
+        },
+        {
+          "pass_number": 0,
+          "index": 7,
+          "address": "0d96",
+          "value": "0416"
+        },
+        {
+          "pass_number": 0,
+          "index": 8,
+          "address": "0e08",
+          "value": "0005"
+        },
+        {
+          "pass_number": 0,
+          "index": 9,
+          "address": "108a",
+          "value": "e520"
+        },
+        {
+          "pass_number": 0,
+          "index": 10,
+          "address": "108e",
+          "value": "8530"
+        },
+        {
+          "pass_number": 0,
+          "index": 11,
+          "address": "109e",
+          "value": "0000"
+        },
+        {
+          "pass_number": 0,
+          "index": 12,
+          "address": "1236",
+          "value": "0000"
+        },
+        {
+          "pass_number": 1,
+          "index": 0,
+          "address": "0008",
+          "value": "5730"
+        },
+        {
+          "pass_number": 1,
+          "index": 1,
+          "address": "0c0c",
+          "value": "0004"
+        },
+        {
+          "pass_number": 1,
+          "index": 2,
+          "address": "0d08",
+          "value": "0129"
+        },
+        {
+          "pass_number": 1,
+          "index": 3,
+          "address": "0d0a",
+          "value": "0000"
+        },
+        {
+          "pass_number": 1,
+          "index": 4,
+          "address": "0c8e",
+          "value": "0416"
+        },
+        {
+          "pass_number": 1,
+          "index": 5,
+          "address": "0c90",
+          "value": "0001"
+        },
+        {
+          "pass_number": 1,
+          "index": 6,
+          "address": "0d94",
+          "value": "0000"
+        },
+        {
+          "pass_number": 1,
+          "index": 7,
+          "address": "0d96",
+          "value": "0416"
+        },
+        {
+          "pass_number": 1,
+          "index": 8,
+          "address": "0e08",
+          "value": "0005"
+        },
+        {
+          "pass_number": 1,
+          "index": 9,
+          "address": "108a",
+          "value": "e520"
+        },
+        {
+          "pass_number": 1,
+          "index": 10,
+          "address": "108e",
+          "value": "8530"
+        },
+        {
+          "pass_number": 1,
+          "index": 11,
+          "address": "109e",
+          "value": "0000"
+        },
+        {
+          "pass_number": 1,
+          "index": 12,
+          "address": "1236",
+          "value": "0000"
+        }
+      ],
+      "additional_adc_record_present": false,
+      "gauge_latch_record_present": false,
+      "adc_measurement_fresh": false
+    },
+    {
+      "capture": 36,
+      "log_path": "/home/iscle/mt6762-ios-port/hardware/trace-boot-20261025/capture36/xnu-log.bin",
+      "log_sha256": "84237acde964d7bd4d39b96f5f3375139e160fad2291717596c675b1d505711e",
+      "log_bytes": 439205,
+      "raw_record_count": 26,
+      "deduplicated_records": 26,
+      "trace_result_sha256": "1487b50ae21e72ba18ca143c53cc5ce3eba6feec6c4a7e9c16ee04c2954fe044",
+      "trace_sha256": "8f18b6a93fdee2c00ff6ebacada0205c54bc1f44aa6b364709de95f213a2c565",
+      "retention_proven": false,
+      "pmic_records": [
+        {
+          "pass_number": 0,
+          "index": 0,
+          "address": "0008",
+          "value": "5730"
+        },
+        {
+          "pass_number": 0,
+          "index": 1,
+          "address": "0c0c",
+          "value": "0004"
+        },
+        {
+          "pass_number": 0,
+          "index": 2,
+          "address": "0d08",
+          "value": "0129"
+        },
+        {
+          "pass_number": 0,
+          "index": 3,
+          "address": "0d0a",
+          "value": "0000"
+        },
+        {
+          "pass_number": 0,
+          "index": 4,
+          "address": "0c8e",
+          "value": "0416"
+        },
+        {
+          "pass_number": 0,
+          "index": 5,
+          "address": "0c90",
+          "value": "0001"
+        },
+        {
+          "pass_number": 0,
+          "index": 6,
+          "address": "0d94",
+          "value": "0000"
+        },
+        {
+          "pass_number": 0,
+          "index": 7,
+          "address": "0d96",
+          "value": "0416"
+        },
+        {
+          "pass_number": 0,
+          "index": 8,
+          "address": "0e08",
+          "value": "0005"
+        },
+        {
+          "pass_number": 0,
+          "index": 9,
+          "address": "108a",
+          "value": "e4c7"
+        },
+        {
+          "pass_number": 0,
+          "index": 10,
+          "address": "108e",
+          "value": "8512"
+        },
+        {
+          "pass_number": 0,
+          "index": 11,
+          "address": "109e",
+          "value": "0000"
+        },
+        {
+          "pass_number": 0,
+          "index": 12,
+          "address": "1236",
+          "value": "0000"
+        },
+        {
+          "pass_number": 1,
+          "index": 0,
+          "address": "0008",
+          "value": "5730"
+        },
+        {
+          "pass_number": 1,
+          "index": 1,
+          "address": "0c0c",
+          "value": "0004"
+        },
+        {
+          "pass_number": 1,
+          "index": 2,
+          "address": "0d08",
+          "value": "0129"
+        },
+        {
+          "pass_number": 1,
+          "index": 3,
+          "address": "0d0a",
+          "value": "0000"
+        },
+        {
+          "pass_number": 1,
+          "index": 4,
+          "address": "0c8e",
+          "value": "0416"
+        },
+        {
+          "pass_number": 1,
+          "index": 5,
+          "address": "0c90",
+          "value": "0001"
+        },
+        {
+          "pass_number": 1,
+          "index": 6,
+          "address": "0d94",
+          "value": "0000"
+        },
+        {
+          "pass_number": 1,
+          "index": 7,
+          "address": "0d96",
+          "value": "0416"
+        },
+        {
+          "pass_number": 1,
+          "index": 8,
+          "address": "0e08",
+          "value": "0005"
+        },
+        {
+          "pass_number": 1,
+          "index": 9,
+          "address": "108a",
+          "value": "e4c7"
+        },
+        {
+          "pass_number": 1,
+          "index": 10,
+          "address": "108e",
+          "value": "8512"
+        },
+        {
+          "pass_number": 1,
+          "index": 11,
+          "address": "109e",
+          "value": "0000"
+        },
+        {
+          "pass_number": 1,
+          "index": 12,
+          "address": "1236",
+          "value": "0000"
+        }
+      ],
+      "additional_adc_record_present": false,
+      "gauge_latch_record_present": false,
+      "adc_measurement_fresh": false
+    }
+  ],
+  "executed_host_tests": [
+    {
+      "test": "test_gauge_probe",
+      "compile_command": [
+        "cc",
+        "-std=c11",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-g",
+        "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/tools/mt6762/hardware/power/test_gauge_probe.c",
+        "-o",
+        "/tmp/mt6762-gauge-audit-19atqgos/test_gauge_probe"
+      ],
+      "stdout": "gauge finite policy: exact profile, exhaustive address/value rejection, phase/budget/sticky failure, leases PASS\n",
+      "result": "PASS"
+    },
+    {
+      "test": "test_pmic_entry",
+      "compile_command": [
+        "cc",
+        "-std=c11",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-g",
+        "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/tools/mt6762/hardware/power/test_pmic_entry.c",
+        "-o",
+        "/tmp/mt6762-gauge-audit-19atqgos/test_pmic_entry"
+      ],
+      "stdout": "passive PMIC entry: fixed reads, raw busy/stale state, atomic failure, no retry PASS\npassive ADC entry: independent fixed19-word record, raw config, wrong-ID/partial stop PASS\n",
+      "result": "PASS"
+    },
+    {
+      "test": "test_gauge_latch_integration.py",
+      "command": [
+        "/usr/bin/python3",
+        "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/tools/mt6762/hardware/power/test_gauge_latch_integration.py"
+      ],
+      "stdout": "actual gauge latch/WACS integration: 248 transport faults, 32 config changes, 64 expiry positions, phase/lease/cleanup/public-write gates PASS\n",
+      "stderr": "",
+      "result": "PASS"
+    },
+    {
+      "test": "test_pmic_entry_integration.py",
+      "command": [
+        "/usr/bin/python3",
+        "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/tools/mt6762/hardware/power/test_pmic_entry_integration.py"
+      ],
+      "stdout": "native PMIC/ADC probes: old records preserved, readonly gates, all64 failures, identity stop, no measurement grants PASS\n",
+      "stderr": "",
+      "result": "PASS"
+    },
+    {
+      "test": "test_gauge_baseline.py",
+      "command": [
+        "/usr/bin/python3",
+        "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/tools/mt6762/hardware/power/test_gauge_baseline.py"
+      ],
+      "stdout": "",
+      "stderr": ".........\n----------------------------------------------------------------------\nRan 9 tests in 0.090s\n\nOK\n",
+      "result": "PASS"
+    }
+  ],
+  "host_sanitizers_executed": false,
+  "policy": {
+    "opt_in": "fgauge-latch-probe=1",
+    "samples": 2,
+    "maximum_attempted_writes": 8,
+    "write_address": "0d0a",
+    "write_sequence_per_sample": [
+      "0001",
+      "0009",
+      "0008",
+      "0000"
+    ],
+    "acquisition_lease_ms": 2000,
+    "minimum_sample_separation_ms": 1000,
+    "retry_count": 0,
+    "speculative_cleanup_writes": 0,
+    "baseline_rfg": 100,
+    "baseline_car_tune": 1000,
+    "public_pwrap_writes_allowed": false,
+    "battery_measurement_published": false,
+    "adc_request_allowed": false,
+    "charge_enable_allowed": false
+  },
+  "physical_new_probe_executed": false,
+  "kernel_built": false,
+  "device_accessed": false,
+  "limitations": [
+    "Host MMIO/clock/mutex fixtures do not prove physical firmware exclusion",
+    "Capture33-36 raw ADC values are stale without requested conversion",
+    "No absolute calibration, capacity/SOC or charging policy is established",
+    "An uncertain failed latch remains untouched until parent-controlled recovery"
+  ]
+}

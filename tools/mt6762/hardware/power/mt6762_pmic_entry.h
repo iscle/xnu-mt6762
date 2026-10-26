@@ -60,4 +60,57 @@ static inline int mt6762_pmic_entry_observe(mt6762_pmic_entry_read read,
     *out=next;
     return 0;
 }
+
+/* Independent version1 ADC configuration record. Keep the preceding13-word
+ * record and API unchanged for existing physical capture decoders. HWCID is
+ * reread first; the remaining18 ordinary words fill the missing SWCID and
+ * native BIF configuration inventory. This does not request conversions or
+ * infer calibration from equality, zero/nonzero values or chip revision. */
+#define MT6762_PMIC_ADC_ENTRY_COUNT 19u
+static const uint16_t mt6762_pmic_adc_entry_regs[MT6762_PMIC_ADC_ENTRY_COUNT]={
+    0x0008, /* HWCID: independent identity guard for this pass. */
+    0x000a, /* SWCID. */
+    0x10de, /* AUXADC_DIG_1_ELR0: inherited software gain trim. */
+    0x10e0, /* AUXADC_DIG_1_ELR1: inherited software offset trim. */
+    0x1120, /* AUXADC_CON0; not SET/CLR aliases. */
+    0x1126, /* AUXADC_CON1. */
+    0x1128, /* AUXADC_CON2. */
+    0x112e, /* AUXADC_CON5. */
+    0x1132, /* AUXADC_CON7. */
+    0x1136, /* AUXADC_CON9. */
+    0x113a, /* AUXADC_CON11. */
+    0x113c, /* AUXADC_CON12. */
+    0x1008, /* AUXADC_ANA_CON0. */
+    0x11a2, /* AUXADC_DIG_3_ELR0. */
+    0x11a4, /* AUXADC_DIG_3_ELR1. */
+    0x11a6, /* AUXADC_DIG_3_ELR2. */
+    0x11a8, /* AUXADC_DIG_3_ELR3. */
+    0x11aa, /* AUXADC_DIG_3_ELR4. */
+    0x11ac  /* AUXADC_DIG_3_ELR5. */
+};
+struct mt6762_pmic_adc_entry_observation {
+    uint16_t value[MT6762_PMIC_ADC_ENTRY_COUNT];
+};
+static inline int mt6762_pmic_adc_entry_observe(mt6762_pmic_entry_read read,
+    void *context,struct mt6762_pmic_adc_entry_observation *out,
+    struct mt6762_pmic_entry_failure *failure)
+{
+    struct mt6762_pmic_adc_entry_observation next;
+    if(!read || !out) {
+        if(failure)*failure=(struct mt6762_pmic_entry_failure){0,0,0,-1};
+        return -1;
+    }
+    for(unsigned i=0;i<MT6762_PMIC_ADC_ENTRY_COUNT;i++) {
+        uint16_t value=0;
+        int error=read(context,mt6762_pmic_adc_entry_regs[i],&value);
+        if(error || (!i && (value>>8)!=0x57)) {
+            if(failure)*failure=(struct mt6762_pmic_entry_failure){
+                i,mt6762_pmic_adc_entry_regs[i],error?0:value,error};
+            return error?-2:-3;
+        }
+        next.value[i]=value;
+    }
+    *out=next;
+    return 0;
+}
 #endif

@@ -145,6 +145,28 @@ int mt6762_pwrap_write16(uint16_t address,uint16_t value)
 
 static int pmic_entry_read(void *unused,uint16_t address,uint16_t *value)
 {(void)unused;return mt6762_pwrap_read16(address,value);}
+static void pmic_adc_entry_probe(void)
+{
+    /* Configuration evidence only. This API cannot request a conversion,
+     * change TDET/trim, or confer ADC calibration/channel ownership. */
+    if(!pwrap_ready || !pwrap_read_only || pwrap_fault)return;
+    kprintf("MT6762_ADC_ENTRY_BEGIN version=1 passes=2 registers=%u conversion_requested=0 gauge_commands=0\n",
+        MT6762_PMIC_ADC_ENTRY_COUNT);
+    for(unsigned pass=0;pass<2;pass++) {
+        struct mt6762_pmic_adc_entry_observation value;
+        struct mt6762_pmic_entry_failure failure;
+        int error=mt6762_pmic_adc_entry_observe(pmic_entry_read,NULL,&value,&failure);
+        if(error) {
+            kprintf("MT6762_ADC_ENTRY_FAILED pass=%u index=%u address=%04x error=%d transport=%d value=%04x\n",
+                pass,failure.index,failure.address,error,failure.error,failure.value);
+            return;
+        }
+        for(unsigned i=0;i<MT6762_PMIC_ADC_ENTRY_COUNT;i++)
+            kprintf("MT6762_ADC_ENTRY pass=%u index=%u address=%04x value=%04x\n",
+                pass,i,mt6762_pmic_adc_entry_regs[i],value.value[i]);
+        kprintf("MT6762_ADC_ENTRY_COMPLETE pass=%u measurement_valid=0 ownership_grant=0 calibration_grant=0\n",pass);
+    }
+}
 static void pmic_entry_probe(void)
 {
     /* Only extend the inherited read-only observation path. No ADC/gauge
@@ -166,7 +188,12 @@ static void pmic_entry_probe(void)
                 pass,i,mt6762_pmic_entry_regs[i],value.value[i]);
         kprintf("MT6762_PMIC_ENTRY_COMPLETE pass=%u measurement_valid=0 ownership_grant=0\n",pass);
     }
+    /* Preserve every version1 PMIC record. A failed earlier pass returns
+     * before this separate record and never starts additional reads. */
+    pmic_adc_entry_probe();
 }
+
+#include "mt6762_gauge_latch_probe.c"
 
 /* The handoff grants exclusive AP ownership of initialized ADC channels.
  * BIF additionally requires an already-clear TDET bit. Native code has no
@@ -414,6 +441,7 @@ void mt6762_power_init(void)
             if(error)return;
         }
         pmic_entry_probe();
+        gauge_latch_probe();
         /* Separate observation grant; bus5 still needs its own validated
          * handoff and setup. Do not enter normal ADC/charger policy below. */
         if(verified("charger-readonly-probe")) {

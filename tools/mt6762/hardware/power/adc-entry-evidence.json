@@ -1,0 +1,233 @@
+{
+  "schema": "mt6762-passive-adc-entry-source-audit-v1",
+  "physical_new_observer_execution_proven": false,
+  "provenance": [
+    {
+      "path": "/mnt/0da18f53-c547-40a2-a7c3-b08e84d1aab4/alps/aosp-docker/workspace/kernel-4.14/include/linux/mfd/mt6357/registers.h",
+      "sha256": "6933e2382bde5f9487cc633b9e6167a4a93675a8f08eb8fae01315db0a0e8bbe"
+    },
+    {
+      "path": "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/tools/mt6762/hardware/power/mt6762_pmic_entry.h",
+      "sha256": "4e97d1ab3bb36cb0e84a9ba222bfabf27221fc7a85a0f63f33b199aa10f1b961"
+    },
+    {
+      "path": "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/bsd/dev/mt6762_power.c",
+      "sha256": "aa4d1a88302731b8a73aaf605fa166df8fb6b2082d6e14c3772b0865f3c57d5f"
+    },
+    {
+      "path": "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/bsd/dev/mt6762_bif_observer.c",
+      "sha256": "56d7b9113283dffec397245d280b1b0e80d323d9ce12277584dee4fe0359ce44"
+    },
+    {
+      "path": "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/tools/mt6762/hardware/power/test_pmic_entry.c",
+      "sha256": "a02c50983844daf66c2ad58245a5f09fdbc0f2a378fb80798dbf3693ee5f529a"
+    },
+    {
+      "path": "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/tools/mt6762/hardware/power/test_pmic_entry_integration.py",
+      "sha256": "faf9bb599d188df6b937a8f559010809390ef108def68fd6bbad06df7825fbc3"
+    },
+    {
+      "path": "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/tools/mt6762/hardware/power/audit_adc_entry.py",
+      "sha256": "b0a599ea00b4eb0344b874d069a680da31f7d3735caefd4afdcaa7ab01a5e335"
+    },
+    {
+      "path": "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/tools/mt6762/hardware/power/evidence/ntc-compensation-bif-disassembly.txt",
+      "sha256": "a84bc89da6ed615c2fdda1937f8edc21711fcb82c0d937c72fde01465e621a82"
+    }
+  ],
+  "register_catalog": [
+    {
+      "label": "HWCID",
+      "address": "0008",
+      "width": 2,
+      "source_line": 26,
+      "purpose": "identity guard"
+    },
+    {
+      "label": "SWCID",
+      "address": "000a",
+      "width": 2,
+      "source_line": 27,
+      "purpose": "raw inherited configuration"
+    },
+    {
+      "label": "AUXADC_DIG_1_ELR0",
+      "address": "10de",
+      "width": 2,
+      "source_line": 605,
+      "purpose": "raw inherited configuration"
+    },
+    {
+      "label": "AUXADC_DIG_1_ELR1",
+      "address": "10e0",
+      "width": 2,
+      "source_line": 606,
+      "purpose": "raw inherited configuration"
+    },
+    {
+      "label": "AUXADC_CON0",
+      "address": "1120",
+      "width": 2,
+      "source_line": 623,
+      "purpose": "raw inherited configuration"
+    },
+    {
+      "label": "AUXADC_CON1",
+      "address": "1126",
+      "width": 2,
+      "source_line": 626,
+      "purpose": "raw inherited configuration"
+    },
+    {
+      "label": "AUXADC_CON2",
+      "address": "1128",
+      "width": 2,
+      "source_line": 627,
+      "purpose": "raw inherited configuration"
+    },
+    {
+      "label": "AUXADC_CON5",
+      "address": "112e",
+      "width": 2,
+      "source_line": 630,
+      "purpose": "raw inherited configuration"
+    },
+    {
+      "label": "AUXADC_CON7",
+      "address": "1132",
+      "width": 2,
+      "source_line": 632,
+      "purpose": "raw inherited configuration"
+    },
+    {
+      "label": "AUXADC_CON9",
+      "address": "1136",
+      "width": 2,
+      "source_line": 634,
+      "purpose": "raw inherited configuration"
+    },
+    {
+      "label": "AUXADC_CON11",
+      "address": "113a",
+      "width": 2,
+      "source_line": 636,
+      "purpose": "raw inherited configuration"
+    },
+    {
+      "label": "AUXADC_CON12",
+      "address": "113c",
+      "width": 2,
+      "source_line": 637,
+      "purpose": "raw inherited configuration"
+    },
+    {
+      "label": "AUXADC_ANA_CON0",
+      "address": "1008",
+      "width": 2,
+      "source_line": 557,
+      "purpose": "raw inherited configuration"
+    },
+    {
+      "label": "AUXADC_DIG_3_ELR0",
+      "address": "11a2",
+      "width": 2,
+      "source_line": 663,
+      "purpose": "raw inherited configuration"
+    },
+    {
+      "label": "AUXADC_DIG_3_ELR1",
+      "address": "11a4",
+      "width": 2,
+      "source_line": 664,
+      "purpose": "raw inherited configuration"
+    },
+    {
+      "label": "AUXADC_DIG_3_ELR2",
+      "address": "11a6",
+      "width": 2,
+      "source_line": 665,
+      "purpose": "raw inherited configuration"
+    },
+    {
+      "label": "AUXADC_DIG_3_ELR3",
+      "address": "11a8",
+      "width": 2,
+      "source_line": 666,
+      "purpose": "raw inherited configuration"
+    },
+    {
+      "label": "AUXADC_DIG_3_ELR4",
+      "address": "11aa",
+      "width": 2,
+      "source_line": 667,
+      "purpose": "raw inherited configuration"
+    },
+    {
+      "label": "AUXADC_DIG_3_ELR5",
+      "address": "11ac",
+      "width": 2,
+      "source_line": 668,
+      "purpose": "raw inherited configuration"
+    }
+  ],
+  "earlier_capture": {
+    "path": "/home/iscle/mt6762-ios-port/hardware/trace-boot-20261025/capture33/xnu-log.bin",
+    "sha256": "73275964fb858aea490204611b4de11ee019ac02a18192ec5461b0219aa3e9d4",
+    "new_record_present": false,
+    "missing_addresses": [
+      "000a",
+      "10de",
+      "10e0",
+      "1120",
+      "1126",
+      "1128",
+      "112e",
+      "1132",
+      "1136",
+      "113a",
+      "113c",
+      "1008",
+      "11a2",
+      "11a4",
+      "11a6",
+      "11a8",
+      "11aa",
+      "11ac"
+    ]
+  },
+  "format": {
+    "prefix": "MT6762_ADC_ENTRY",
+    "version": 1,
+    "passes": 2,
+    "registers_per_pass": 19,
+    "max_additional_reads": 38,
+    "hardware_id_guard_first_in_each_pass": true,
+    "original_prefix": "MT6762_PMIC_ENTRY",
+    "original_version": 1,
+    "original_registers_per_pass": 13,
+    "original_passes": 2,
+    "original_decoder_unchanged": true
+  },
+  "execution": {
+    "read_only_pwrap_required": true,
+    "fault_free_pwrap_required": true,
+    "original_two_passes_must_complete": true,
+    "stop_at_first_failure": true,
+    "retries": 0,
+    "partial_pass_published": false,
+    "raw_words_may_differ_between_passes": true
+  },
+  "grants": {
+    "adc_request_writes": 0,
+    "latch_commands": 0,
+    "trim_writes": 0,
+    "tdet_writes": 0,
+    "pmic_writes": 0,
+    "calibration_granted": false,
+    "adc_owned": false,
+    "gauge_owned": false,
+    "charger_control": false,
+    "measurement_valid": false
+  },
+  "scope": "Two sequential raw configuration observations, not an atomic measurement, fresh conversion, calibration or ownership proof."
+}

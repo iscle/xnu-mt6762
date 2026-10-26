@@ -18,6 +18,9 @@ cc -std=c11 -Wall -Wextra -Werror -g test_charger_postsetup.c -o "$testdir/test-
 cc -std=c11 -Wall -Wextra -Werror -g test_pmic_entry.c -o "$testdir/test-pmic-entry"
 "$testdir/test-pmic-entry"
 python3 test_pmic_entry_integration.py
+cc -std=c11 -Wall -Wextra -Werror -g test_gauge_probe.c -o "$testdir/test-gauge-probe"
+"$testdir/test-gauge-probe"
+python3 test_gauge_latch_integration.py
 python3 test_wacs_delay.py
 python3 test_gauge_baseline.py
 python3 - "$testdir/gauge_vectors.h" <<'GAUGE'

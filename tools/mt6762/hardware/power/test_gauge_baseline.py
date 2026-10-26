@@ -134,7 +134,8 @@ class BaselineTests(unittest.TestCase):
             self.parse(mutated)
 
     def test_retained_real_dt_inputs(self):
-        port=HERE.parents[4]
+        xnu=HERE.parents[3]
+        port=xnu.parents[2] if xnu.parent.name=='xnu-src' else xnu.parent
         sources={'firmware/boot.bin.dtb':'658e181d1a13d930dc09567883e734bdbd4579350c8332ff954a0ecbb2ed08fe',
             'hardware/trace-boot-20261025/capture30/runtime.dtb':'1c9bc7534bc3fd98950102d359c1e5d968263a1b1c059cb089874c9c8cdcc6ea'}
         if not all((port/name).exists() for name in sources):self.skipTest('retained physical DT inputs not present')
