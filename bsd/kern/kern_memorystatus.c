@@ -223,7 +223,7 @@ MACRO_END
 /* General tunables */
 
 /*
- * redwood: the memory there is to manage. max_mem is the whole of the kernel's memory window, and
+ * hakios: the memory there is to manage. max_mem is the whole of the kernel's memory window, and
  * here more than half of that window is the system image -- a RAM disk the kernel boots from, which
  * is nobody's to use or to give back. Thresholds that are per cent of max_mem had idle daemons
  * killed with a quarter of the usable memory still available, and the window server not long after.

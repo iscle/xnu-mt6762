@@ -3155,7 +3155,7 @@ spawn_validate_persona(struct _posix_spawn_persona_info *px_persona)
 	struct persona *persona = NULL;
 
 	/*
-	 * redwood: two of the three checks below cannot be passed in this port, and both stand in
+	 * hakios: two of the three checks below cannot be passed in this port, and both stand in
 	 * the way of something ordinary. The entitlement is one nobody carries here (nothing is
 	 * signed, AMFI is a stub), and the persona is one nobody makes -- yet a package manager
 	 * becomes root by asking for exactly this: Sileo spawns apt and dpkg into persona 99 with
@@ -3217,7 +3217,7 @@ spawn_persona_adopt(proc_t p, struct _posix_spawn_persona_info *px_persona)
 
 	if (persona == NULL) {
 		/*
-		 * redwood: there are no personas in this port -- nothing makes them, and
+		 * hakios: there are no personas in this port -- nothing makes them, and
 		 * kpersona_find_by_type() answers "no such process" to everyone who asks. iOS's own
 		 * programs get along without them, but a package manager becomes root by way of one:
 		 * Sileo asks posix_spawn for persona 99 with OVERRIDE and uid 0 (its APTWrapper), and

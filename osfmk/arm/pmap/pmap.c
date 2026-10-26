@@ -6879,7 +6879,7 @@ void
 pmap_sync_page_attributes_phys(
 	ppnum_t pp)
 {
-	/* (redwood: the page number is 32 bits wide and memory goes on above 4 GB: widen before shifting) */
+	/* (hakios: the page number is 32 bits wide and memory goes on above 4 GB: widen before shifting) */
 	flush_dcache((vm_offset_t) pp << PAGE_SHIFT, PAGE_SIZE, TRUE);
 }
 
