@@ -74,6 +74,13 @@ capture21 confirms successful physical transactions and gestures. See
 in that directory. Event logging stops after32 events; the incomplete second
 gesture in that log is not evidence of a missing release.
 
+The setup check also requires exact EXT_CONF, DELAY_LEN and timeout readback.
+These three words were previously logged without affecting acceptance. The
+physical capture records0x8001,0x000a and0x0190 respectively, matching the
+programmed100kHz setup. Host tests reject every differing bit in all three
+words for both laboratory and measured profiles. This does not extend the
+measured I2C0 DIV/HS behavior to the untested physical I2C5 controller.
+
 Clock dependency evidence
 -------------------------
 

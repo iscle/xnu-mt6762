@@ -197,7 +197,7 @@ static void initialize_bus(struct native_bus *b,unsigned id)
         r32(top,0xa0),r32(infra,0x90),r32(infra,0x94));
     kprintf("MT6762_I2C_SETUP_PROFILE bus=%u inherited=%u\n",id,inherited_profile);
     if (!mt6762_i2c_setup_ok(&timing,inherited_profile,actual_div,actual_timing,
-            actual_ltiming,actual_hs,actual_io) || !stable) {
+            actual_ltiming,actual_hs,actual_io,actual_ext,actual_delay,actual_timeout) || !stable) {
         b->engine.faulted=1;printf("MT6762: I2C%u setup readback failed\n",id);return;
     }
     b->engine.initialized=1;

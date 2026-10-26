@@ -1,0 +1,34 @@
+{
+  "synthetic_only": true,
+  "physical_hardware_tested": false,
+  "kernel_sha256": "28ad010c1ff1e043b34c8a5ea65db8b72776b61ec365629d9be8aabb3032dada",
+  "full_capture_sha256": "2fcee14898679bc3fa4e10d36eb76d536f88b382d19bf845cb66cefbe2d5a39a",
+  "source_change": "Validate EXT_CONF, DELAY_LEN and timeout readbacks in addition to existing setup fields",
+  "host_tests_passed": true,
+  "new_host_fault_vectors": 96,
+  "runtime": {
+    "qemu_binary_sha256": "3fe4d9e1a496f8a9f6a88e7e25c23057e6c19c959ae15605ba2e04c54ebda08e",
+    "buttons_down": [
+      1,
+      2,
+      3
+    ],
+    "buttons_matching_up": [
+      1,
+      2,
+      3
+    ],
+    "buttons_held_at_end": [],
+    "native_power_accepted": true,
+    "native_i2c0_ready": true,
+    "native_i2c5_ready": true,
+    "touch_dma_reads": 2099,
+    "kernel_panic_observed": false,
+    "queue_observer_ready": true,
+    "queue_downs": 33,
+    "queue_moves": 491,
+    "queue_ups": 33,
+    "queue_matching_releases": 33,
+    "queue_held_at_end": 0
+  }
+}

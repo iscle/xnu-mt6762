@@ -101,21 +101,33 @@ int main(void) {
     assert(mtk_i2c_v2_timing(26000000,5,100000,&timing)==0);
     assert(timing.clock_div==0x404 && timing.timing==27 && timing.ltiming==26);
     assert(timing.ext==0x8001 && timing.timeout==386);
-    assert(mt6762_i2c_setup_ok(&timing,0,0x404,27,26,0,3));
+    assert(mt6762_i2c_setup_ok(&timing,0,0x404,27,26,0,3,timing.ext,0xa,timing.timeout));
     /* Independently retained physical capture20 after the same vendor writes. */
     assert(mtk_i2c_v2_timing(124800000,5,100000,&timing)==0);
     assert(timing.clock_div==0x404 && timing.timing==0x419 && timing.ltiming==0x118);
-    assert(!mt6762_i2c_setup_ok(&timing,0,4,0x419,0x118,0x8000,3));
-    assert(mt6762_i2c_setup_ok(&timing,1,4,0x419,0x118,0x8000,3));
-    assert(!mt6762_i2c_setup_ok(&timing,1,5,0x419,0x118,0x8000,3));
-    assert(!mt6762_i2c_setup_ok(&timing,1,4,0x418,0x118,0x8000,3));
-    assert(!mt6762_i2c_setup_ok(&timing,1,4,0x419,0x119,0x8000,3));
-    assert(!mt6762_i2c_setup_ok(&timing,1,4,0x419,0x118,0x8001,3));
-    assert(!mt6762_i2c_setup_ok(&timing,1,4,0x419,0x118,0,3));
-    assert(!mt6762_i2c_setup_ok(&timing,1,4,0x419,0x118,0x8000,0));
-    assert(!mt6762_i2c_setup_ok(&timing,2,4,0x419,0x118,0x8000,3));
+    assert(!mt6762_i2c_setup_ok(&timing,0,4,0x419,0x118,0x8000,3,timing.ext,0xa,timing.timeout));
+    assert(mt6762_i2c_setup_ok(&timing,1,4,0x419,0x118,0x8000,3,timing.ext,0xa,timing.timeout));
+    assert(!mt6762_i2c_setup_ok(&timing,1,5,0x419,0x118,0x8000,3,timing.ext,0xa,timing.timeout));
+    assert(!mt6762_i2c_setup_ok(&timing,1,4,0x418,0x118,0x8000,3,timing.ext,0xa,timing.timeout));
+    assert(!mt6762_i2c_setup_ok(&timing,1,4,0x419,0x119,0x8000,3,timing.ext,0xa,timing.timeout));
+    assert(!mt6762_i2c_setup_ok(&timing,1,4,0x419,0x118,0x8001,3,timing.ext,0xa,timing.timeout));
+    assert(!mt6762_i2c_setup_ok(&timing,1,4,0x419,0x118,0,3,timing.ext,0xa,timing.timeout));
+    assert(!mt6762_i2c_setup_ok(&timing,1,4,0x419,0x118,0x8000,0,timing.ext,0xa,timing.timeout));
+    assert(!mt6762_i2c_setup_ok(&timing,2,4,0x419,0x118,0x8000,3,timing.ext,0xa,timing.timeout));
+    /* EXT_CONF, DELAY_LEN and timeout were formerly logged but unchecked.
+     * Reject every differing bit, including upper/reserved bits, in both the
+     * measured physical profile and the synthetic setup profile. */
+    for(unsigned profile=0;profile<2;profile++)for(unsigned bit=0;bit<16;bit++) {
+        uint16_t div=profile?4:0x404,hs=profile?0x8000:0;
+        assert(!mt6762_i2c_setup_ok(&timing,profile,div,0x419,0x118,hs,3,
+            timing.ext^(1u<<bit),0xa,timing.timeout));
+        assert(!mt6762_i2c_setup_ok(&timing,profile,div,0x419,0x118,hs,3,
+            timing.ext,0xa^(1u<<bit),timing.timeout));
+        assert(!mt6762_i2c_setup_ok(&timing,profile,div,0x419,0x118,hs,3,
+            timing.ext,0xa,timing.timeout^(1u<<bit)));
+    }
     timing.clock_div=0x505;
-    assert(!mt6762_i2c_setup_ok(&timing,1,4,0x419,0x118,0x8000,3));
+    assert(!mt6762_i2c_setup_ok(&timing,1,4,0x419,0x118,0x8000,3,timing.ext,0xa,timing.timeout));
     assert(mtk_i2c_v2_timing(26000000,5,400000,&timing)==0);
     assert(timing.timing==7 && timing.ltiming==8 && timing.ext==0x1801);
     assert(mtk_i2c_v2_timing(26000000,0,100000,&timing)<0);
