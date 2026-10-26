@@ -1,0 +1,156 @@
+{
+  "format": 1,
+  "scope": "offline exact-stock SoC WMT negotiation; no hardware access",
+  "module": {
+    "name": "wmt_drv.ko",
+    "bytes": 1591024,
+    "sha256": "f428dbafe454e89d0c5f4a49bda616d4cceb58b6bbfd24228bb6480b5be45ca3"
+  },
+  "source_files": {
+    "core/wmt_core.c": "119b653327849872ff86f2d909e43b7e0fa6c36c9218d4a04887a4c60b87cd74",
+    "core/wmt_ic_soc.c": "73c32282d15aff6713dfdbcf42ed642deb6c5496a838b3db4ad7fd26425078cb",
+    "core/stp_core.c": "8ca8df348b28a841c2d05bacbd6a7e12a59265006b00cce340ae9e12a33069ac",
+    "core/include/stp_core.h": "503ba84175ad45dbc256fe589832e219d82eab0da2461257722ed3a8150d98fb",
+    "linux/osal.c": "5a51d57b09d97503a85b4910ce1f916b6a6d1c0fe7139e44a8f179017c366c5a",
+    "platform/mt6765.c": "a77509dc27b3e5a5d746a97e3e7c023da1bafd5a31426ba1985fa438370e8fe5",
+    "include/wmt_plat.h": "647b41808f5474d080fdbb15ba22884255a57ef84cb8e6d7ffe1ff61970eaaab"
+  },
+  "implementation": {
+    "wmt_protocol.c": "f7cf71122d4719690aa9d8f5ded8f3a18a9c353b2adbf345ce973e2e6ea8a6da",
+    "wmt_protocol.h": "b8dd7e7e1c97936027a683f3361c5eca3548452e6d9a9a13fcc82c0f7f5dfed5",
+    "test_wmt_protocol.py": "1da5a3070850d217d04a33943bb799ca4b337f8770532435b4b4bead73fb252e",
+    "WMT-PROTOCOL.rst": "b768cf27ae992c99278d07de6d78719418b38457e7da88ac2253b05a8efde3a7"
+  },
+  "stock_tables": [
+    {
+      "name": "WMT_QUERY_STP_CMD",
+      "section": ".data",
+      "offset": "0x2e18",
+      "bytes": "0104010004"
+    },
+    {
+      "name": "WMT_QUERY_STP_EVT",
+      "section": ".data",
+      "offset": "0x2e36",
+      "bytes": "020406000004db0e6801"
+    },
+    {
+      "name": "WMT_QUERY_STP_EVT_DEFAULT",
+      "section": ".data",
+      "offset": "0x2e1d",
+      "bytes": "02040600000411000000"
+    },
+    {
+      "name": "WMT_SET_STP_CMD",
+      "section": ".data",
+      "offset": "0x2e27",
+      "bytes": "0104050003db0e6801"
+    },
+    {
+      "name": "WMT_SET_STP_EVT",
+      "section": ".data",
+      "offset": "0x2e30",
+      "bytes": "020402000003"
+    }
+  ],
+  "relocations": [
+    {
+      "section": ".rela.text",
+      "offset": "0x2642c",
+      "target_symbol": "",
+      "target_section": ".data",
+      "addend": "0x2da0"
+    },
+    {
+      "section": ".rela.text",
+      "offset": "0x26490",
+      "target_symbol": "",
+      "target_section": ".data",
+      "addend": "0x2dc8"
+    },
+    {
+      "section": ".rela.text",
+      "offset": "0x26560",
+      "target_symbol": "osal_sleep_ms",
+      "target_section": ".text",
+      "addend": "0x0"
+    },
+    {
+      "section": ".rela.text",
+      "offset": "0x26564",
+      "target_symbol": "",
+      "target_section": ".data",
+      "addend": "0x2df0"
+    },
+    {
+      "section": ".rela.data",
+      "offset": "0x2dc8",
+      "target_symbol": "",
+      "target_section": ".data",
+      "addend": "0x2e27"
+    },
+    {
+      "section": ".rela.data",
+      "offset": "0x2dd8",
+      "target_symbol": "",
+      "target_section": ".data",
+      "addend": "0x2e30"
+    },
+    {
+      "section": ".rela.data",
+      "offset": "0x2de8",
+      "target_symbol": "",
+      "target_section": ".rodata.str1.1",
+      "addend": "0x16cec"
+    },
+    {
+      "section": ".rela.data",
+      "offset": "0x2df0",
+      "target_symbol": "",
+      "target_section": ".data",
+      "addend": "0x2e18"
+    },
+    {
+      "section": ".rela.data",
+      "offset": "0x2e00",
+      "target_symbol": "",
+      "target_section": ".data",
+      "addend": "0x2e36"
+    },
+    {
+      "section": ".rela.data",
+      "offset": "0x2e10",
+      "target_symbol": "",
+      "target_section": ".rodata.str1.1",
+      "addend": "0x24f67"
+    }
+  ],
+  "tests": {
+    "command": "python3 -m unittest discover -s tools/mt6762/hardware/connectivity -p 'test_*.py'",
+    "protocol_count": 26,
+    "existing_count": 20,
+    "result": "PASS",
+    "physical_tested": false
+  },
+  "limits": [
+    "Caller PDA patch/reset attestation is explicit, not independently proved by this parser.",
+    "STP options verified is not firmware-boot/radio/scan readiness.",
+    "No retransmission, reset, power, DMA, scan or calibration commands."
+  ],
+  "stock_pda_profile": {
+    "symbol": "mtk_wcn_emi_addr_info",
+    "section": ".data",
+    "offset": "0x448",
+    "size": 80,
+    "pda_field_offset": "0x24",
+    "pda_dl_patch_flag": 1
+  },
+  "crc": {
+    "shipped_table_sha256": "961656eaf43bdf70937151a003627324be86c28ca32285f58edd5f5c73c51b79",
+    "query_crc16": "0xf36c",
+    "polynomial_reflected": "0xa001",
+    "initial": 0,
+    "final_xor": 0,
+    "wire_endian": "little"
+  }
+}

@@ -1,0 +1,173 @@
+{
+  "elf": "/home/iscle/mt6762-ios-port/emulator/stock.elf",
+  "elf_sha256": "643474799f7c300f2d3c7f5130f697ee359929f13db0750f4dd7b9d648af14fc",
+  "image": "/home/iscle/mt6762-ios-port/firmware/Image",
+  "image_sha256": "82b1919185a49f268a0f8e145a6714d6264c1f66918a90df0d763266147ead4b",
+  "reconstructed_base": "0xffffff8008080000",
+  "all_selected_bytes_equal_Image": true,
+  "functions": [
+    {
+      "name": "hal_btif_irq_handler",
+      "va": "0xffffff8008831318",
+      "image_offset": "0x7b1318",
+      "size_inferred_to_next_symbol": 628,
+      "sha256": "de474639ea53d0a21dfede1ba883614674d4912e526ad1d30da0fa34ee30cb34"
+    },
+    {
+      "name": "hal_btif_wakeup",
+      "found": false
+    },
+    {
+      "name": "hal_btif_is_tx_allow",
+      "va": "0xffffff8008831a3c",
+      "image_offset": "0x7b1a3c",
+      "size_inferred_to_next_symbol": 140,
+      "sha256": "1bfe864e9aaad825adcf75654a33326c4d10702c5356d77af57ced8fd1826108"
+    },
+    {
+      "name": "hal_btif_is_tx_complete",
+      "va": "0xffffff8008831960",
+      "image_offset": "0x7b1960",
+      "size_inferred_to_next_symbol": 220,
+      "sha256": "6cdd5e26cd230fbe3c1d9b44585beb831ae18030c1de8bd74dafbe41e794fe89"
+    },
+    {
+      "name": "hal_btif_info_get",
+      "va": "0xffffff80088308a8",
+      "image_offset": "0x7b08a8",
+      "size_inferred_to_next_symbol": 768,
+      "sha256": "417d3f7363c0ba348535f410d68b79179c8d11622a26e248e40831262140dc50"
+    },
+    {
+      "name": "hal_btif_hw_init",
+      "va": "0xffffff8008830fb4",
+      "image_offset": "0x7b0fb4",
+      "size_inferred_to_next_symbol": 548,
+      "sha256": "4c78ec60469f159c3a2c981b877886351d6d8768c695547fa12684d22e017128"
+    },
+    {
+      "name": "hal_btif_rx_mode_ctrl",
+      "va": "0xffffff80088312ac",
+      "image_offset": "0x7b12ac",
+      "size_inferred_to_next_symbol": 108,
+      "sha256": "05dbc67ad645776cbd26dc0b856bd1d70c036130a437b5f181e5ab3cc6bd3612"
+    },
+    {
+      "name": "hal_btif_tx_mode_ctrl",
+      "va": "0xffffff8008831240",
+      "image_offset": "0x7b1240",
+      "size_inferred_to_next_symbol": 108,
+      "sha256": "2f6ae5898b23791a8307391ab88106d6a7359bf4bcb879ae3796d95fbd2cc7d5"
+    },
+    {
+      "name": "hal_btif_loopback_ctrl",
+      "va": "0xffffff80088311d8",
+      "image_offset": "0x7b11d8",
+      "size_inferred_to_next_symbol": 104,
+      "sha256": "c72d85bbc49d98002817e3931079996504682ad4a17c5097d27f42252b230476"
+    },
+    {
+      "name": "hal_btif_rx_ier_ctrl",
+      "found": false
+    },
+    {
+      "name": "hal_btif_tx_ier_ctrl",
+      "found": false
+    },
+    {
+      "name": "btif_rx_irq_handler",
+      "found": false
+    },
+    {
+      "name": "btif_tx_irq_handler",
+      "found": false
+    },
+    {
+      "name": "hal_btif_send_data",
+      "va": "0xffffff80088315e8",
+      "image_offset": "0x7b15e8",
+      "size_inferred_to_next_symbol": 372,
+      "sha256": "7aba5cbdc17ae486059b36c5d357756e0327423953523434ee17afbdb18d493d"
+    },
+    {
+      "name": "hal_btif_is_tx_complete",
+      "va": "0xffffff8008831960",
+      "image_offset": "0x7b1960",
+      "size_inferred_to_next_symbol": 220,
+      "sha256": "6cdd5e26cd230fbe3c1d9b44585beb831ae18030c1de8bd74dafbe41e794fe89"
+    },
+    {
+      "name": "hal_btif_clk_ctrl",
+      "va": "0xffffff8008830df4",
+      "image_offset": "0x7b0df4",
+      "size_inferred_to_next_symbol": 448,
+      "sha256": "b8df1522928468f52be070a9a7e9f762909896e60df2e3b98d2f7487966bc458"
+    },
+    {
+      "name": "hal_btif_pm_ops",
+      "va": "0xffffff8008831ac8",
+      "image_offset": "0x7b1ac8",
+      "size_inferred_to_next_symbol": 76,
+      "sha256": "a5fd12162754b286c3e7b22737d870174f0e494972b4b15812835a7c056d14f8"
+    },
+    {
+      "name": "hal_btif_rx_cb_reg",
+      "va": "0xffffff800883158c",
+      "image_offset": "0x7b158c",
+      "size_inferred_to_next_symbol": 92,
+      "sha256": "c063504b0d19dded2b15a54d7208751ce263b7aa6d91165c4a55630f80d02063"
+    },
+    {
+      "name": "btif_new_handshake_ctrl",
+      "found": false
+    },
+    {
+      "name": "mtk_wcn_btif_wakeup_consys",
+      "va": "0xffffff800882d99c",
+      "image_offset": "0x7ad99c",
+      "size_inferred_to_next_symbol": 56,
+      "sha256": "576626b10748b2dec9928b893cd166f4151499852c983a205238138e6122bb31"
+    },
+    {
+      "name": "mtk_wcn_btif_open",
+      "va": "0xffffff800882d370",
+      "image_offset": "0x7ad370",
+      "size_inferred_to_next_symbol": 760,
+      "sha256": "631007470777be7e93ef9bb9b7e465045a2679f50e221a35db018980e553e5e4"
+    }
+  ],
+  "format": 1,
+  "scope": "Offline original stock register audit and bounded PIO/WMT host tests; no physical execution",
+  "descriptor": {
+    "name": "mtk_btif_info",
+    "va": "0xffffff800984a010",
+    "bytes_0_to_32": "0000000000000000f09f840980ffffff10000000080000000800000001000000",
+    "tx_fifo_size_at_0x10": 16,
+    "rx_fifo_size_at_0x14": 8,
+    "tx_threshold_at_0x18": 8,
+    "rx_threshold_at_0x1c": 1
+  },
+  "tests": {
+    "host_pio": "PASS, C99/O2/-Wall/-Wextra/-Werror",
+    "host_wmt_composition": "PASS, exact default query through eight-byte RX FIFO/backpressured peer",
+    "freestanding_cortex_a53": "PASS, clang11, both implementation objects",
+    "sanitizers": "unavailable: GCC ASan/UBSan runtime shared libraries absent; no sanitized run",
+    "physical_hardware": false
+  },
+  "implementation_sha256": {
+    "README.rst": "edd4c6c9d7272468e8c6728d79042dae008a2f57f5117005828688a68b40a16b",
+    "btif_pio.c": "875a1aa1a1e4f66ff4f3e912faecc7ba6f211913189321edbea0a627638cdb60",
+    "btif_pio.h": "edee772b48ebb3ec6db247651a2bf87ec9781b41d4f15e65c704415a04bf3648",
+    "btif_wmt.c": "5204509a46c7a006f4b71c7886673b762bcffe0138a3ce45fbafba0949c61740",
+    "btif_wmt.h": "a6baeddac43acd6bf42f14b870d343b860a9c6b8fc965bbfa6d01521e6a57f57",
+    "test.py": "701659fdb4f20305b166c8b0a070f56a1b7d99aca13a40b729faf2e668b47516",
+    "test_btif.c": "eba9218ead84fa7f21d525bb14d5a1e0d1268b6a5494d7deae933a4d01852a7e",
+    "test_wmt_transport.c": "80a74db31e084b98cceaa4b594ec2a62bc9ce0120cc14667843ddbcda68d641f"
+  },
+  "limits": [
+    "Not linked into XNU startup yet",
+    "Grant values require independent hardware owner checks",
+    "Peer backpressure is a model assumption",
+    "Default option reply is not patch, firmware, radio, scan, association or network readiness"
+  ]
+}

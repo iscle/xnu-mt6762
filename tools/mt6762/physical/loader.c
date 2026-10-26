@@ -1,6 +1,7 @@
 /* SPDX-License-Identifier: MIT
  * XNU diagnostic entry. Optional native grants require live admission;
- * this loader writes no peripheral registers. Runtime FDT gates all RAM use.
+ * The optional connectivity survey issues WACS2 READ commands/acknowledgments;
+ * it never writes PMIC state. Runtime FDT gates all RAM use.
  */
 #include <stdint.h>
 #include <stddef.h>
@@ -18,6 +19,14 @@
 #include "../hardware/power/mt6762_pwrap_entry.h"
 #include "../hardware/power/mt6762_keys_entry.h"
 #include "../hardware/power/mt6762_charger_entry.h"
+#if PAYLOAD_NATIVE_GAUGE_OBSERVER
+#include "../hardware/power/mt6762_gauge_baseline.h"
+#endif
+#if PAYLOAD_PROBE_CONNECTIVITY
+#include "connectivity_probe.h"
+#include "../hardware/connectivity-power/pwrap_readonly.h"
+extern volatile struct mt6762_connectivity_record physical_connectivity;
+#endif
 
 extern unsigned char image_start[], image_end[];
 extern const unsigned char xnu_blob[], diagnostic_blob[], adt_blob[], args_blob[];
@@ -83,9 +92,108 @@ static uint32_t display_read(void *context, uint64_t address)
 { (void)context; return read32(address); }
 static void display_barrier(void *context)
 { (void)context; __asm__ volatile("dsb sy" ::: "memory"); }
-#if PAYLOAD_NATIVE_PWRAP_PROBE || PAYLOAD_NATIVE_MSDC_PROBE
+#if PAYLOAD_NATIVE_PWRAP_PROBE || PAYLOAD_NATIVE_MSDC_PROBE || PAYLOAD_PROBE_CONNECTIVITY
 static uint32_t pwrap_entry_read(void *context,uint32_t address)
 {(void)context;return read32(address);}
+#endif
+#if PAYLOAD_PROBE_CONNECTIVITY
+static uint64_t peripheral_ticks(void *context);
+/* Called only on the primary loader CPU, with interrupts masked, before XNU
+ * or any secondary is started. WACS2 is the admitted inherited LK channel;
+ * other PWRAP masters/arbitration/cipher/configuration stay untouched. */
+struct connectivity_context { unsigned busy,timer_fault,transport_fault; };
+static struct connectivity_context connectivity_context;
+static uint32_t connectivity_wacs_read(void *context,uint32_t offset)
+{
+    struct connectivity_context *c=context;
+    if(c->timer_fault)return 0; /* INIT_DONE absent: existing protocol fails. */
+    if(offset!=0xc24)stop("connectivity WACS read offset",17);
+    return read32(0x1000d000+offset);
+}
+static void connectivity_wacs_write(void *context,uint32_t offset,uint32_t value)
+{
+    struct connectivity_context *c=context;
+    if(c->timer_fault)return;
+    if(!((offset==0xc20 && !(value&0x80000000u)) || (offset==0xc28 && value==1)))
+        stop("connectivity WACS non-read operation",17);
+    *(volatile uint32_t *)(uintptr_t)(0x1000d000+offset)=value;
+    __asm__ volatile("dsb sy":::"memory");
+}
+static void connectivity_delay(void *context,unsigned us)
+{
+    struct connectivity_context *c=context;
+    uint64_t begin=peripheral_ticks(NULL);
+    if(us>10){c->timer_fault=1;return;}
+    for(unsigned i=0;i<100000;i++) {
+        if(peripheral_ticks(NULL)-begin>=(uint64_t)us*13)return;
+        __asm__ volatile("yield":::"memory");
+    }
+    c->timer_fault=1;
+}
+static int connectivity_acquire(void *context)
+{
+    struct connectivity_context *c=context;
+    if(c->busy || c->timer_fault || c->transport_fault)return -1003;
+    c->busy=1;return 0;
+}
+static void connectivity_release(void *context)
+{((struct connectivity_context *)context)->busy=0;}
+static int connectivity_admit(void *context)
+{
+    struct connectivity_context *c=context;
+    return c->busy && !c->timer_fault && mt6762_pwrap_entry_ok(pwrap_entry_read,NULL)?0:-1004;
+}
+static int connectivity_ap_read(void *context,uint32_t address,uint32_t *value)
+{
+    (void)context;
+    /* Recheck the wrapper gate for each ordinary automation word, in addition
+     * to the survey's same-pass snapshot check. No CONSYS-domain reads. */
+    if(address>=0x1000d000 && address<0x1000e000 && (read32(0x10001090)&2))
+        return MT6762_CONNECTIVITY_PWRAP_GATED;
+    *value=read32(address);return 0;
+}
+static void connectivity_survey(void)
+{
+    const struct mt6762_wacs_io wacs={&connectivity_context,connectivity_wacs_read,
+        connectivity_wacs_write,connectivity_delay};
+    struct mt6762_connectivity_pwrap pwrap={&connectivity_context,&wacs,
+        connectivity_acquire,connectivity_release,connectivity_admit,0};
+    const struct mt6762_connectivity_io io={&pwrap,connectivity_ap_read,
+        mt6762_connectivity_pwrap_read,peripheral_ticks,display_barrier,13000000,
+        MT6762_CONNECTIVITY_DEFAULT_BUDGET_US};
+    uint8_t identity[32];
+    for(unsigned i=0;i<32;i++)identity[i]=physical_trace.identity[i];
+    int error=mt6762_connectivity_capture(&io,&physical_connectivity,identity,1);
+    if(error)connectivity_context.transport_fault=1;
+    text("Connectivity power survey (PMIC read-only), result=");hex((uint64_t)(int64_t)error);
+    text("; radio activation not requested.\r\n");
+}
+#if PAYLOAD_NATIVE_GAUGE_OBSERVER
+static int gauge_observer_admit(uint64_t fdt_address,uint32_t values[8])
+{
+    struct mt6762_gauge_baseline baseline;
+    if(mt6762_gauge_baseline_from_fdt((void *)(uintptr_t)fdt_address,0x80000,&baseline))
+        return 0;
+    const struct mt6762_wacs_io wacs={&connectivity_context,connectivity_wacs_read,
+        connectivity_wacs_write,connectivity_delay};
+    static const uint16_t regs[]={8,0xc0c,0xd0a,0xd08,0xc8e,0xc90,0xd94,0xd96};
+    static const uint16_t expected[]={0x5730,4,0,0x129,0x416,1,0,0x416};
+    for(unsigned pass=0;pass<2;pass++)for(unsigned i=0;i<8;i++) {
+        uint16_t value;
+        /* Separate fixed gauge inventory; connectivity's PMIC allowlist stays
+         * unchanged. This path also emits WACS READ commands only. */
+        if(connectivity_acquire(&connectivity_context))return 0;
+        int error=connectivity_admit(&connectivity_context);
+        if(!error)error=mt6762_wacs_transfer_profile(&wacs,MT6762_WACS_LK22,0,regs[i],&value);
+        connectivity_release(&connectivity_context);
+        if(error) {connectivity_context.transport_fault=1;return 0;}
+        if(value!=expected[i])return 0;
+    }
+    values[0]=baseline.version;values[1]=baseline.r_fg;values[2]=baseline.car_tune;
+    for(unsigned i=0;i<5;i++)values[i+3]=expected[i+3];
+    return 1;
+}
+#endif
 #endif
 #if PAYLOAD_PROBE_PERIPHERALS
 static uint32_t peripheral_read(void *context,uint32_t address,unsigned width)
@@ -158,7 +266,7 @@ const struct entry_result *loader_main(uint64_t fdt_address, uint64_t original_e
     if(!mt6762_touch_entry_ok(peripheral_read,NULL))
         stop("inherited touch bus",9);
 #endif
-#if PAYLOAD_NATIVE_CHARGER_SETUP_PROBE || PAYLOAD_NATIVE_CHARGER_READONLY_PROBE
+#if PAYLOAD_NATIVE_CHARGER_SETUP_PROBE || PAYLOAD_NATIVE_CHARGER_READONLY_PROBE || PAYLOAD_NATIVE_BATTERY_OBSERVER
     struct mt6762_charger_entry_failure charger_failure;
     if(!mt6762_charger_entry_detail(peripheral_read,NULL,&charger_failure)) {
         text("I2C5 entry mismatch address=");hex(charger_failure.address);
@@ -179,6 +287,15 @@ const struct entry_result *loader_main(uint64_t fdt_address, uint64_t original_e
 #if PAYLOAD_NATIVE_PWRAP_PROBE
     if(!mt6762_pwrap_entry_ok(pwrap_entry_read,NULL))
         stop("inherited PWRAP read profile",11);
+#endif
+#if PAYLOAD_PROBE_CONNECTIVITY
+    connectivity_survey();
+#endif
+#if PAYLOAD_NATIVE_GAUGE_OBSERVER
+    uint32_t gauge_values[8]={0};
+    int gauge_admitted=gauge_observer_admit(fdt_address,gauge_values);
+    text(gauge_admitted?"Gauge observer profile admitted; no latch command issued by loader\r\n":
+        "Gauge observer profile unavailable; battery status observer remains enabled\r\n");
 #endif
 #if PAYLOAD_NATIVE_BUTTONS_PROBE
     if(!mt6762_keys_entry_ok(peripheral_read,NULL))
@@ -252,6 +369,17 @@ const struct entry_result *loader_main(uint64_t fdt_address, uint64_t original_e
 #if PAYLOAD_NATIVE_CHARGER_READONLY_PROBE
     for(unsigned n=0;n<sizeof(payload_charger_readonly_flags)/sizeof(payload_charger_readonly_flags[0]);n++)
         memcpy(adt+payload_charger_readonly_flags[n],&granted,sizeof(granted));
+#endif
+#if PAYLOAD_NATIVE_BATTERY_OBSERVER
+    for(unsigned n=0;n<sizeof(payload_battery_observer_flags)/sizeof(payload_battery_observer_flags[0]);n++)
+        memcpy(adt+payload_battery_observer_flags[n],&granted,sizeof(granted));
+#endif
+#if PAYLOAD_NATIVE_GAUGE_OBSERVER
+    if(gauge_admitted) {
+        _Static_assert(sizeof(payload_gauge_observer_values)==sizeof(gauge_values),"gauge patch count");
+        for(unsigned n=0;n<8;n++)memcpy(adt+payload_gauge_observer_values[n],&gauge_values[n],4);
+        memcpy(adt+PAYLOAD_ADT_GAUGE_OBSERVER_PATCH,&granted,4);
+    }
 #endif
 #if PAYLOAD_REFRESH_WATCHDOG
     memcpy(adt+PAYLOAD_ADT_WATCHDOG_PATCH,&granted,sizeof(granted));

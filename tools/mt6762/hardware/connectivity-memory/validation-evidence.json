@@ -1,0 +1,56 @@
+{
+  "format": 1,
+  "result": "PASS",
+  "scope": "host C parser/planner only; no device or physical RAM operations",
+  "tests": 20,
+  "command": "CM_CAPTURE40=/private/capture40/runtime.dtb python3 tools/mt6762/hardware/connectivity-memory/test_conn_memory.py -v",
+  "capture40_sha256": "f34de72d965209afeabad918867f32d12fa84ccf910939d7205cb0b205f01ef9",
+  "capture40": {
+    "fdt_bank": [
+      "0x40000000",
+      "0x1c0000000"
+    ],
+    "lk_free_slots": 18,
+    "lk_reserved_entries": 28,
+    "bank_bytes": 6442450944,
+    "free_bytes": 5711499264,
+    "reserved_bytes": 730951680,
+    "proposal_only": [
+      {
+        "owner": "CONSYS",
+        "base": "0xa0000000",
+        "size": "0x400000"
+      },
+      {
+        "owner": "Wi-Fi",
+        "base": "0xa1000000",
+        "size": "0x300000"
+      }
+    ],
+    "alignment": "0x1000000",
+    "kernel_managed": [
+      "0xd0000000",
+      "0x1bfe00000"
+    ],
+    "hardware_granted": false
+  },
+  "workspace_bytes": 7080,
+  "source_sha256": {
+    "tools/mt6762/hardware/connectivity-memory/conn_memory.c": "fd6afed43fe6a93bcf56cfe771ab85849d6b85f1ced4a429d040b828c61aafcc",
+    "tools/mt6762/hardware/connectivity-memory/conn_memory.h": "afb9f5944d2c9b55093fafeaad1ee2a536579c051c56f791b09789ae0b55d0f4",
+    "tools/mt6762/hardware/connectivity-memory/test_conn_memory.py": "5d8fd0b75bb5ebf96d6a63c9cd2f13a99dadf68fc8a97e7111d728d91c5ce5eb",
+    "tools/mt6762/hardware/connectivity-memory/README.rst": "4b881fe07d199f471c58cff45ba929b15e4cbb465d1e4a4bd20cc31a1ca90f51",
+    "tools/mt6762/physical/fdt_handoff.c": "a69f20cde654038909db83f3ffe2d8046669e81626c18a08f8e24f5bc3396c7e",
+    "tools/mt6762/physical/fdt_handoff.h": "55f3d7b5e001087a58265a14ec12572d1c1697149689840de5b3a2cdbdcacc4f"
+  },
+  "evidence_sources": {
+    "BSP_lk_lib/mblock/mblock_v2.h": "a4378d6ac4a48586432af77d1f75a768c3631093713c3a04120f09113101e77a",
+    "BSP_lk_lib/mblock/mblock_v2.c": "565b6fe3803e0e31cc6ccd20438028c466ede08960561c8368223c913bf173c7"
+  },
+  "limitations": [
+    "Live-boot validation/atomic reservation commit not integrated",
+    "Caller must provide all live allocation exclusions and stable immutable FDT",
+    "No secure EMI, remap, mapping, power, DMA or firmware ownership admitted",
+    "No physical test or retention claim"
+  ]
+}

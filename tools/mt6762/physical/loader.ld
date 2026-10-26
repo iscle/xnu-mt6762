@@ -22,6 +22,9 @@ SECTIONS
     .peripheral_trace : ALIGN(64) {
         KEEP(*(.peripheral_trace))
     } :image
+    .connectivity_trace : ALIGN(64) {
+        KEEP(*(.connectivity_trace))
+    } :image
     .text : ALIGN(8) {
         *(.text .text.*)
     } :image
@@ -64,6 +67,8 @@ ASSERT(physical_trace == 0x40084000 && SIZEOF(.trace) == 256, "fixed trace layou
 ASSERT(physical_display == 0x40084100 && SIZEOF(.display_trace) == 512, "fixed display record layout")
 ASSERT(physical_pwm == 0x40084300 && SIZEOF(.pwm_trace) == 256, "fixed PWM record layout")
 ASSERT(physical_peripherals == 0x40084400 && SIZEOF(.peripheral_trace) == 4096, "fixed peripheral record layout")
+ASSERT(physical_connectivity == 0x40085400 && SIZEOF(.connectivity_trace) == 4096, "fixed connectivity survey layout")
+ASSERT(physical_connectivity + SIZEOF(.connectivity_trace) <= 0x40090000, "connectivity survey outside reserved DA prefix")
 ASSERT(physical_peripherals + SIZEOF(.peripheral_trace) <= 0x40090000, "peripheral record outside reserved DA prefix")
 ASSERT(physical_pwm + SIZEOF(.pwm_trace) <= 0x40090000, "PWM record outside reserved DA prefix")
 ASSERT(physical_display + SIZEOF(.display_trace) <= 0x40090000, "display record outside reserved DA prefix")

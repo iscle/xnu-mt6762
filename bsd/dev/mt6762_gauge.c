@@ -27,6 +27,9 @@ struct gauge_observation {
     int64_t charge_uah;
     uint64_t acquired_abs,expires_abs;
 };
+#ifndef MT6762_GAUGE_HOST_TEST
+extern int mt6762_inherited_gauge_snapshot(int *,int64_t *,uint64_t *,uint64_t *);
+#endif
 static struct gauge_observation observation;
 static int raw_current=-1,have_ticks;
 static uint64_t last_ticks;
@@ -35,6 +38,10 @@ static int observation_read(struct gauge_observation *out)
     uint64_t now;
     int e=-ENXIO;
     if(!out)return -EINVAL;
+#ifndef MT6762_GAUGE_HOST_TEST
+    e=mt6762_inherited_gauge_snapshot(&out->current_ua,&out->charge_uah,&out->acquired_abs,&out->expires_abs);
+    if(e!=-ENXIO)return e;
+#endif
     lck_mtx_lock(&gauge_mutex);
     clock_get_uptime(&now);
     if(valid && now>=observation.acquired_abs && now<observation.expires_abs) {

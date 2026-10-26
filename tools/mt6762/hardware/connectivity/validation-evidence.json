@@ -1,0 +1,280 @@
+{
+  "profile": "mt6762-stock-connac-20231228-v1",
+  "profile_sha256": "29647c7d08f9af023db357174e61d1a11125540dc4c530fee3eb756d914c6517",
+  "phone_access": false,
+  "hardware_authorized": false,
+  "artifacts": {
+    "wlan_drv_gen4m.ko": {
+      "bytes": 3924568,
+      "sha256": "d2d54547286801da14e54d2e33236648045a3f543d4eb0d532a982e95c1c2394",
+      "exact_stock_identity": true,
+      "structure": {}
+    },
+    "wmt_drv.ko": {
+      "bytes": 1591024,
+      "sha256": "f428dbafe454e89d0c5f4a49bda616d4cceb58b6bbfd24228bb6480b5be45ca3",
+      "exact_stock_identity": true,
+      "structure": {}
+    },
+    "wmt_chrdev_wifi.ko": {
+      "bytes": 76720,
+      "sha256": "eb72d11c610cc2d8efde246056911dc93719d8ad14d744b1206e93c882a63af6",
+      "exact_stock_identity": true,
+      "structure": {}
+    },
+    "connfem.ko": {
+      "bytes": 68496,
+      "sha256": "036826b5151bcb9bd7a9749bde024d9620815c5d33cd78ad4f9a01ecf1e8010d",
+      "exact_stock_identity": true,
+      "structure": {}
+    },
+    "modules.load": {
+      "bytes": 127,
+      "sha256": "7ba2fde6c758da1769ccca7f57bfe7f35c1f2b021e8119b0a7e64d07349c807b",
+      "exact_stock_identity": true,
+      "structure": {}
+    },
+    "modules.dep": {
+      "bytes": 510,
+      "sha256": "2149b3b0849a80bf628a8da21cfa2dc81baa766a6c3c80dba9c0bce3ae4f34c1",
+      "exact_stock_identity": true,
+      "structure": {}
+    },
+    "WMT_SOC.cfg": {
+      "bytes": 121,
+      "sha256": "6845e0f30219d5aedaf3791b8318eaaf7ae22d0087702268a815c8724243e2e8",
+      "exact_stock_identity": true,
+      "structure": {}
+    },
+    "WIFI_RAM_CODE_soc1_0_1_1.bin": {
+      "bytes": 639784,
+      "sha256": "45ef756368f291dac996fe1cbe405a54f0d5e0c244221a951bb5eafa7d2e1e32",
+      "exact_stock_identity": true,
+      "structure": {
+        "kind": 1,
+        "payload_bytes": 639424,
+        "region_count": 5,
+        "chip": 7,
+        "eco": 0,
+        "format": 2,
+        "flags": 1,
+        "hw_version": 0,
+        "sw_version": 0,
+        "target": 0,
+        "image_type": 0,
+        "own_version": 0,
+        "peer_version": 0,
+        "regions": [
+          {
+            "offset": 0,
+            "length": 3920,
+            "device_address": 356352,
+            "feature": 7
+          },
+          {
+            "offset": 3920,
+            "length": 336,
+            "device_address": 33619968,
+            "feature": 7
+          },
+          {
+            "offset": 4256,
+            "length": 9616,
+            "device_address": 1074790912,
+            "feature": 7
+          },
+          {
+            "offset": 13872,
+            "length": 480352,
+            "device_address": 4028067840,
+            "feature": 128
+          },
+          {
+            "offset": 494224,
+            "length": 145200,
+            "device_address": 4028620800,
+            "feature": 128
+          }
+        ],
+        "addresses_are_firmware_device_addresses_not_host_write_targets": true,
+        "crc_validation": "not-implemented; exact full-file SHA-256 required separately"
+      }
+    },
+    "soc1_0_patch_mcu_1_1_hdr.bin": {
+      "bytes": 26574,
+      "sha256": "43157699bb1200f27bdf38307a7d037cbf970f2b952c9a91f2a7129426ded557",
+      "exact_stock_identity": true,
+      "structure": {
+        "kind": 2,
+        "payload_bytes": 26546,
+        "region_count": 0,
+        "chip": 0,
+        "eco": 0,
+        "format": 0,
+        "flags": 0,
+        "hw_version": 35328,
+        "sw_version": 35328,
+        "target": 114705,
+        "image_type": 0,
+        "own_version": 0,
+        "peer_version": 0,
+        "regions": [],
+        "addresses_are_firmware_device_addresses_not_host_write_targets": true,
+        "crc_validation": "not-implemented; exact full-file SHA-256 required separately"
+      }
+    },
+    "soc1_0_ram_mcu_1_1_hdr.bin": {
+      "bytes": 105940,
+      "sha256": "755b4858a22a5072e3fd7b506f2de982a745f9b10754980429227a01a7ff3d24",
+      "exact_stock_identity": true,
+      "structure": {
+        "kind": 3,
+        "payload_bytes": 105892,
+        "region_count": 0,
+        "chip": 0,
+        "eco": 0,
+        "format": 0,
+        "flags": 0,
+        "hw_version": 35328,
+        "sw_version": 35328,
+        "target": 4026531857,
+        "image_type": 67108864,
+        "own_version": 0,
+        "peer_version": 0,
+        "regions": [],
+        "addresses_are_firmware_device_addresses_not_host_write_targets": true,
+        "crc_validation": "not-implemented; exact full-file SHA-256 required separately"
+      }
+    },
+    "soc1_0_ram_wifi_1_1_hdr.bin": {
+      "bytes": 196208,
+      "sha256": "04dd6417ccec83fa83a2cf0de44b686178465024dd5d84dc108ebe4239cfacd7",
+      "exact_stock_identity": true,
+      "structure": {
+        "kind": 3,
+        "payload_bytes": 196160,
+        "region_count": 0,
+        "chip": 0,
+        "eco": 0,
+        "format": 0,
+        "flags": 0,
+        "hw_version": 35328,
+        "sw_version": 35328,
+        "target": 4027842577,
+        "image_type": 50331648,
+        "own_version": 0,
+        "peer_version": 0,
+        "regions": [],
+        "addresses_are_firmware_device_addresses_not_host_write_targets": true,
+        "crc_validation": "not-implemented; exact full-file SHA-256 required separately"
+      }
+    }
+  },
+  "calibration": {
+    "bytes": 2050,
+    "sha256": "7871406948e7f035e5ca78f8fa22b718a3439ab5bcd4bb010b85b8e9f743f86a",
+    "exact_stock_identity": true,
+    "structure": {
+      "kind": 4,
+      "payload_bytes": 2048,
+      "region_count": 0,
+      "chip": 0,
+      "eco": 0,
+      "format": 0,
+      "flags": 0,
+      "hw_version": 0,
+      "sw_version": 0,
+      "target": 0,
+      "image_type": 0,
+      "own_version": 1,
+      "peer_version": 8,
+      "regions": [],
+      "addresses_are_firmware_device_addresses_not_host_write_targets": true,
+      "crc_validation": "not-implemented; exact full-file SHA-256 required separately"
+    }
+  },
+  "display": {
+    "source_sha256": "4d45be61c1cfcdf02d6fd880ab0062096140cdc37d8da60f252e62121d53ec24",
+    "external_identity_matched": true,
+    "identity_binding": "caller-supplied expected loader identity; verify against frozen manifest separately",
+    "values": {
+      "0x10006180": 17228,
+      "0x10006184": 17228
+    },
+    "conn_ack_pair": [
+      false,
+      false
+    ],
+    "power_interpretation": "off-at-recorded-sample",
+    "stability": "single final pass; no claim of repeated CONN observation",
+    "display_control_0x1000630c_is_not_conn_control_0x1000632c": true,
+    "conn_mmio_authorized": false,
+    "dma_authorized": false,
+    "radio_operation_authorized": false
+  },
+  "peripherals": {
+    "seen": 256,
+    "stable": 256,
+    "missing": 255,
+    "power": 0,
+    "survey_enabled": 1,
+    "begin": 107615008,
+    "end": 107657768,
+    "hz": 13000000,
+    "power_interpretation": "unknown",
+    "missing_addresses": [
+      "0x10006180",
+      "0x10006184",
+      "0x1000632c",
+      "0x10001220",
+      "0x10001228",
+      "0x10001258",
+      "0x10007018",
+      "0x100053e0"
+    ],
+    "identity_binding": "unbound-observations-only",
+    "conn_mmio_authorized": false,
+    "dma_authorized": false,
+    "radio_operation_authorized": false,
+    "unresolved": [
+      "live clocks and rails",
+      "ADIE/ECO",
+      "cold-start/reset ownership",
+      "EMI/MPU and buffers",
+      "DMA routing/coherency",
+      "firmware/calibration compatibility"
+    ],
+    "source_sha256": "39aaf32cd75d6b901c2431d4e7143ce845135dde2e53c3d0739d0b7e43b5432e",
+    "selected_entries": 1
+  },
+  "result": "PASS-offline-validation-only",
+  "tests": {
+    "command": "python3 -m unittest discover -s tools/mt6762/hardware/connectivity -p test_*.py",
+    "count": 20,
+    "result": "PASS",
+    "coverage": [
+      "synthetic valid region/patch/RAM/calibration",
+      "all short prefixes",
+      "overflow/overlap/invalid count/feature/release TLV",
+      "tampered exact calibration hash and truncation",
+      "malformed/duplicate/unknown snapshot records and default-off",
+      "inaccessible guard-page tails",
+      "external display identity and torn-commit rejection"
+    ]
+  },
+  "implementation_hashes": {
+    "conn_decode.h": "187c70d9b15fec18c141d89afdab0fbc66c12a44cd4601d676ffee55a7f0024c",
+    "conn_decode.c": "64748464b557dc14977f8032cedd9b53a19a8e08930eea4b8436cae49e389dd5",
+    "stock-profile.json": "29647c7d08f9af023db357174e61d1a11125540dc4c530fee3eb756d914c6517",
+    "validate.py": "10c4551b778fb2db179fee7142083c31448d29c34badde30c4929e533edb25e3",
+    "test_connectivity.py": "920937943794ceb4d9e1e2823d3ee1926aa934b290ccca8a7b153b46f2b0e3a9"
+  },
+  "limits": [
+    "offline validation only",
+    "no physical MMIO or phone access",
+    "no active clock/rail changes",
+    "no kernel/init integration",
+    "no MAC/calibration payload in report",
+    "external loader identity not independently verified by this package"
+  ]
+}

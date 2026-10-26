@@ -1,0 +1,126 @@
+{
+  "format": 1,
+  "scope": "Offline provenance for default-off passive survey; no phone operations and no ownership grant.",
+  "private_audit_sha256": {
+    "hardware/hakios-migration-20261026/wifi-native/power/evidence.json": "301584a2bc37e711298b56e744202f0e401548ffad4e2da23645e994194ca52f",
+    "hardware/hakios-migration-20261026/wifi-native/power/FINDINGS.rst": "969ba6ec3d453e9d38233c1a8d037c09d1822f61ccfd38c9d82a2ee84db4596b",
+    "hardware/hakios-migration-20261026/wifi-native/oscillator/evidence.json": "e93498b127a550b4b90390c1edf207176e38c0a598c4e113f0f89db833858258",
+    "hardware/hakios-migration-20261026/wifi-native/oscillator/FINDINGS.rst": "5739e330b15184e30a79fa01313075fdaba73cc5afd5928c2ca5c2895deca89f"
+  },
+  "primary_artifacts": [
+    {
+      "name": "wmt_drv.ko",
+      "sha256": "f428dbafe454e89d0c5f4a49bda616d4cceb58b6bbfd24228bb6480b5be45ca3",
+      "bytes": 1591024
+    },
+    {
+      "name": "Image",
+      "sha256": "82b1919185a49f268a0f8e145a6714d6264c1f66918a90df0d763266147ead4b",
+      "bytes": 25714688
+    },
+    {
+      "name": "boot.dts",
+      "sha256": "00dcbf4602559331e085fb04d6bacd1a6b6a4d7fc1f83a85e8d135c87f5d0d6c",
+      "bytes": 128161
+    },
+    {
+      "name": "clk-mt6765-pg.c",
+      "sha256": "ffb9dd55322e79ce65a742cc9e57e927f000a935dd1945963026d6bb844169e6",
+      "bytes": 92216
+    },
+    {
+      "name": "upmu_hw.h",
+      "sha256": "ce55730f6a0b1201e25084e9a6c17e4778946105e6d4683b5e7490696ab51855",
+      "bytes": 1126703
+    },
+    {
+      "name": "mtk_clkbuf_hw.c",
+      "sha256": "fb58a7e02f0c596697b706d6484d70dc4c27a3c8547abc64c40116dc7f251791",
+      "bytes": 37852
+    }
+  ],
+  "ordinary_pmic_additions": {
+    "0x0008": {
+      "source": "BSP upmu_hw.h:26,1626-1629 and native bsd/dev/mt6762_power.c:423",
+      "admission": "(HWCID >> 8) == 0x57; no revision requirement"
+    },
+    "0x07ac": {
+      "source": "BSP upmu_hw.h:5250-5253; PMIC_XO_EXTBUF2_CLKSEL_MAN",
+      "bit": 12,
+      "provenance_level": "BSP-only interpretation; not a claim that optional I1 initializer executed"
+    }
+  },
+  "capture40": {
+    "identity": "aef5d4e8477cca5203bac5bfc0bb9d983439823614eeee22fddc1578a7d074af",
+    "display_record_sha256": "4d45be61c1cfcdf02d6fd880ab0062096140cdc37d8da60f252e62121d53ec24",
+    "spm_10006180": "0x434c",
+    "spm_10006184": "0x434c",
+    "conn_bit1_set": [
+      false,
+      false
+    ],
+    "related_passive_words": [
+      {
+        "address": "0x10001090",
+        "width": 4,
+        "group": 0,
+        "name": "INFRA+0x90",
+        "valid": 3,
+        "first": 0,
+        "second": 0,
+        "stable": true
+      },
+      {
+        "address": "0x10001094",
+        "width": 4,
+        "group": 0,
+        "name": "INFRA+0x94",
+        "valid": 3,
+        "first": 0,
+        "second": 0,
+        "stable": true
+      },
+      {
+        "address": "0x100053f0",
+        "width": 4,
+        "group": 0,
+        "name": "GPIO+0x3f0",
+        "valid": 3,
+        "first": 286331136,
+        "second": 286331136,
+        "stable": true
+      }
+    ],
+    "limitation": "Capture describes handoff time only, not current phone state. Domain-off bits are not proof all rails are off."
+  },
+  "implementation_dependencies": {
+    "bsd/dev/mt6762_power_protocol.h": "2488c25e65d224d925da65a6156f2fcd2988ebe27413f43b0d8b94445a69df10",
+    "tools/mt6762/hardware/power/mt6762_pwrap_entry.h": "ee536ddf086f8ac49c77f9e316428fbd93c7f1d7aafd39301c4ebc803b329431"
+  },
+  "validation": {
+    "command": "sh tools/mt6762/hardware/connectivity-power/test.sh",
+    "collector": "PASS, 80 fault positions and both-pass HWCID rejection",
+    "wacs": "PASS, 19 read words, three timeout phases, fault latch",
+    "decoder": "PASS, actual complete/failed/wrong-family/wrapped/disabled C records; all160 inactive value-slot mutations and12 timestamp-order mutations rejected; frozen equal timestamps accepted",
+    "aarch64_freestanding": "PASS, -std=c11 -ffreestanding -fno-builtin -O2 -Wall -Wextra -Werror; no undefined dependencies",
+    "compiler_sha256": "cbcb352d2cadea5d5bc39e800a1ee610173c99c8a29368f7990aa0e6ed9e163f"
+  },
+  "limits": [
+    "No physical capture of this new record has been evaluated.",
+    "Digital control/status observations do not measure rail voltage or oscillator output.",
+    "No loader allocation, owner admission, memory mapping or fault recovery is provided by these files.",
+    "Timeouts cannot interrupt a hung MMIO access or callback."
+  ],
+  "implementation_sha256": {
+    "tools/mt6762/hardware/connectivity-power/README.rst": "5b4f61c1c6bb77df5a1566002c10ca2f3c0d40329a458ecccfde4941b77c40f9",
+    "tools/mt6762/hardware/connectivity-power/freestanding.c": "0a1011d0ea7ee4cce9e5e4d15399910d0644858ca6bc80c9144b551f592821b9",
+    "tools/mt6762/hardware/connectivity-power/pwrap_readonly.h": "f362aa1df3332d040c3b9e6c676d8f0072d0d7d453886fafe8ebca43f0f3f8b9",
+    "tools/mt6762/hardware/connectivity-power/record.py": "61661a52915ec07a06f9afefcb971d4121e706884d95c54cad9d4f0272aa83d1",
+    "tools/mt6762/hardware/connectivity-power/registers.json": "97d547dec061615a8ddc025f430ba8fbfe361dd1c9bdccd1df197fcad2cb9522",
+    "tools/mt6762/hardware/connectivity-power/test.sh": "0789df52ee19bc8c985eee204245b660bc6a3a0616f35ba9edf896870a3c1d7a",
+    "tools/mt6762/hardware/connectivity-power/test_probe.c": "75b70f9b5f652538d5356651450ead30606a89b06b325d95bef696a9162f7fb3",
+    "tools/mt6762/hardware/connectivity-power/test_pwrap.c": "a231c97d3b3fcf3ef2b7d50a577eea1c1fadab60e078b268a1d78bd36ae48041",
+    "tools/mt6762/hardware/connectivity-power/test_record.py": "438f620e0015337f20d483c91348f00b05a4d4f62f25551046b4797317249842",
+    "tools/mt6762/physical/connectivity_probe.h": "602c73ffb746ca59fe8c5adea2145d1b4c798eb5ee486fadf174bdf8d3122634"
+  }
+}

@@ -16,6 +16,7 @@ from build_recovery_trial import AVBTOOL, PARTITION_SIZE
 
 STOCK_BOOT = '95f362d6c5e018fb588ce1101a75120157079571e8749e349141a5a906f09296'
 DIAGNOSTICS = (
+    '85e752179b10aa5bd922253a61c52b523d321bd1f50e14ab1e6520e246ccdd15', # Image50: kernel58 inherited battery/current observers, read-only connectivity survey
     'f5287195f43aee30e555325290aac890ff899dbe04c12d97e5a259be1a9c0b58', # Image5
     'd484161ced6f942984794005d2ac1f8710e33dff49a1e15e8e7ecfbc0725112a', # Image6: empty LK placeholder
     '8e2858b929ff0f3fb42c261eb891f60a67d6dd0939727e59016e8f0d8d2184c2', # Image7: establish combined EOI
@@ -51,6 +52,7 @@ DIAGNOSTICS = (
     '6d41a34328a603f960ef7c32dab5fd581f22db73db713e7c0f6f451ed32b4bde', # Image44: kernel57 bulk PIO, helper6 startup/LaunchServices observations, eight cores
     'e6d84ada8b2692c1eae1a8e6b43ee8beae103d6b87d7ed073948a8fad8975064', # Image45: same kernel57/helper6, factory Wi-Fi identity handoff for MobileGestalt
     '5238f5f3d5b6a680025d611d28e84212777527bbe1275b02506d58ab5fc32c02', # Image47: kernel57/helper6; no Home key and matching D22 UIKit artwork traits
+    '0a33da7931d9ddd6cffedec1a5a3123ba415658a08bb622a9a8c493dae7a0a3e', # Image49: same kernel/helper; thin-bezel policy and read-only connectivity power survey
 )
 VBMETA_FLAGS3 = '2f3fb6474d7ff35ac4c48ab2bef71247ba50de4a94de2474b7d1b60cd6654f51'
 

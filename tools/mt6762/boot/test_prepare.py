@@ -267,6 +267,7 @@ class PrepareTests(unittest.TestCase):
             self.assertEqual(product['artwork-device-idiom'], b'phone\0')
             self.assertEqual(product['artwork-scale-factor'], b'\x03\x00\x00\x00')
             self.assertEqual(product['artwork-device-subtype'], b'\x84\x09\x00\x00')
+            self.assertEqual(product['thin-bezel'], b'\x01\x00\x00\x00')
             self.assertNotIn('oled-display', product)
             self.assertNotIn('wifi-chipset', product)
             self.assertEqual(consumed, len(p.make_adt(bytes(64), identity=identity, cpus=8)))

@@ -306,6 +306,8 @@ static void poll_buttons(void)
         button_sample(2,!!(enabled&1),!(matrix&1));
     }
 }
+#include "mt6762_battery_observer.c"
+
 static void poll_battery(void)
 {
     struct mt6762_battery_sample s={.size=sizeof(s)};
@@ -441,10 +443,10 @@ void mt6762_power_init(void)
             if(error)return;
         }
         pmic_entry_probe();
-        gauge_latch_probe();
+        if(!verified("battery-inherited-observer"))gauge_latch_probe();
         /* Separate observation grant; bus5 still needs its own validated
          * handoff and setup. Do not enter normal ADC/charger policy below. */
-        if(verified("charger-readonly-probe")) {
+        if(verified("charger-readonly-probe") && !verified("battery-inherited-observer")) {
             for(unsigned pass=0;pass<2;pass++) {
                 struct mt6762_psc_observation value;
                 int error=mt6762_i2c_ready(5)?mt6762_psc_observe(&psc_io,&value):-ENXIO;
@@ -456,6 +458,7 @@ void mt6762_power_init(void)
                     pass,value.id,value.control,value.status);
             }
         }
+        if(verified("battery-inherited-observer"))battery_inherited_start();
         if(pwrap_ready && pwrap_read_only && verified("keys-inherited-probe") && verified("keypad-verified")) {
             keypad=mt6762_map_mmio(0x10010000,0x1000);
             keys_gpio=mt6762_map_mmio(0x10005000,0x1000);

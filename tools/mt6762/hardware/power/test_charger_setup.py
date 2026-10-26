@@ -42,6 +42,7 @@ HARNESS=r'''
 #include "native_setup.h"
 #include "mt6762_charger_entry.h"
 #include "mt6762_charger_setup.h"
+#include "mt6762_charger_observer.h"
 #include "../../../../bsd/dev/mt6762_charger_protocol.h"
 typedef uintptr_t vm_offset_t;
 typedef uint32_t ppnum_t;
@@ -58,6 +59,10 @@ static uint32_t parent_index=2,parent_hz=124800000,requested_hz=100000;
 static int ready=1,mt6762_i2c_lock,charger_entry_admitted;
 static unsigned grant0,grant5,inherited,setup_only,touch,entry_ok,entry_calls;
 static unsigned readonly_probe,pwrap_probe,charger_verified,charger_owned,pwrap_owned;
+static unsigned battery_observer;
+static uint64_t now_us,transfer_us;
+static void clock_get_uptime(uint64_t *v) {*v=now_us;}
+static void absolutetime_to_nanoseconds(uint64_t v,uint64_t *out) {*out=v*1000;}
 static unsigned physical_readback,shared_clocks=1,late_gate,infra4;
 static unsigned writes,engine_calls,ready_logs,setup_logs,strict_result;
 static unsigned admitted_logs,read_logs,flip_offset,flip_mask,fail_index;
@@ -72,6 +77,7 @@ static int flag(const char *name) {
     if(!strcmp(name,"charger-setup-only"))return setup_only;
     if(!strcmp(name,"touch-inherited-probe"))return touch;
     if(!strcmp(name,"charger-readonly-probe"))return readonly_probe;
+    if(!strcmp(name,"battery-inherited-observer"))return battery_observer;
     if(!strcmp(name,"pwrap-inherited-probe"))return pwrap_probe;
     if(!strcmp(name,"charger-verified"))return charger_verified;
     if(!strcmp(name,"charger-control-owned"))return charger_owned;
@@ -143,7 +149,8 @@ static uint32_t dr32(void *p,unsigned offset) {(void)p;assert(offset==8);return 
 static void dw32(void *p,unsigned offset,uint32_t value) {(void)p;(void)offset;(void)value;assert(0);}
 int mtk_i2c_v2_transfer(struct mtk_i2c_v2 *b,struct mtk_i2c_msg *m,size_t n) {
     struct native_bus *bus=b->context;engine_calls++;
-    if(bus->charger_readonly) {
+    now_us+=transfer_us;
+    if(bus->charger_readonly || bus->charger_observer) {
         assert(n==2 && m[0].address==0x6a && m[1].address==0x6a);
         assert(!m[0].read && m[1].read && m[0].length==1 && m[1].length==1);
         if(engine_calls==fail_index)return fail_result;
@@ -158,6 +165,7 @@ static void reset(void) {
     memset(buses,0,sizeof(buses));memset(registers,0,sizeof(registers));
     grant0=grant5=inherited=setup_only=touch=0;
     readonly_probe=charger_verified=charger_owned=pwrap_owned=0;pwrap_probe=1;
+    battery_observer=0;now_us=1000000;transfer_us=10;
     charger_entry_admitted=entry_ok=shared_clocks=1;
     writes=engine_calls=ready_logs=setup_logs=strict_result=entry_calls=0;
     physical_readback=infra4=late_gate=0;
@@ -269,6 +277,28 @@ int main(void) {
         assert(transfer(5)==-1 && engine_calls==failure);
     }
     /* The bus5 setup flag must not suppress the existing physical touch bus. */
+    reset();grant5=inherited=battery_observer=physical_readback=1;
+    initialize_bus(&buses[1],5);assert(mt6762_i2c_ready(5));
+    for(unsigned cycle=0;cycle<10;cycle++) {
+        assert(!mt6762_psc_observe(&io,&value));
+        assert(value.id==0xf0 && engine_calls==(cycle+1)*3);
+        now_us+=1000000;
+    }
+    assert(!buses[1].charger_reads && mt6762_i2c_ready(5));
+    command[0]=1;command[1]=4;
+    assert(mt6762_i2c_transfer(5,0x6a,command,2,NULL,0)==-1 && engine_calls==30);
+    for(unsigned which=0;which<3;which++) {
+        reset();grant5=inherited=battery_observer=physical_readback=1;
+        if(which==0)readonly_probe=1;
+        if(which==1)setup_only=1;
+        if(which==2)pwrap_owned=1;
+        initialize_bus(&buses[1],5);assert(!writes && !mt6762_i2c_ready(5));
+    }
+    reset();grant5=inherited=battery_observer=physical_readback=1;
+    initialize_bus(&buses[1],5);transfer_us=100001;
+    assert(mt6762_psc_observe(&io,&value) && engine_calls==1);
+    assert(buses[1].observer.faulted && !mt6762_i2c_ready(5));
+    assert(transfer(5)==-1 && engine_calls==1);
     reset();grant0=touch=physical_readback=inherited=setup_only=1;infra4=7u<<18;
     initialize_bus(&buses[0],0);
     assert(mt6762_i2c_ready(0) && ready_logs==1 && !entry_calls && !setup_logs);

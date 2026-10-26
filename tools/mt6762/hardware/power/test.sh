@@ -11,6 +11,8 @@ cc -std=c11 -Wall -Wextra -Werror -g test_native_power.c -o "$testdir/test-nativ
 "$testdir/test-native-power"
 cc -std=c11 -Wall -Wextra -Werror -g test_native_charger.c -o "$testdir/test-native-charger"
 "$testdir/test-native-charger"
+cc -std=c11 -Wall -Wextra -Werror -g test_charger_observer.c -o "$testdir/test-charger-observer"
+"$testdir/test-charger-observer"
 python3 test_charger_entry.py
 python3 test_charger_setup.py
 cc -std=c11 -Wall -Wextra -Werror -g test_charger_postsetup.c -o "$testdir/test-charger-postsetup"
@@ -21,6 +23,7 @@ python3 test_pmic_entry_integration.py
 cc -std=c11 -Wall -Wextra -Werror -g test_gauge_probe.c -o "$testdir/test-gauge-probe"
 "$testdir/test-gauge-probe"
 python3 test_gauge_latch_integration.py
+python3 test_battery_observer_integration.py
 python3 test_wacs_delay.py
 python3 test_gauge_baseline.py
 python3 - "$testdir/gauge_vectors.h" <<'GAUGE'

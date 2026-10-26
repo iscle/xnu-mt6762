@@ -325,7 +325,10 @@ def make_adt(seed, ramdisks=(), framebuffer=False, identity=None, native_lab_i2c
     # and SpringBoard abort. Keep this default limited to UI asset selection.
     product_props = {'artwork-device-idiom': cstr('phone'),
                      'artwork-scale-factor': u32(3),
-                     'artwork-device-subtype': u32(2436)}
+                     'artwork-device-subtype': u32(2436),
+                     # Exact20F66 HasThinBezel checks this property's presence.
+                     # D22 supplies LE32(1); retain its gesture/layout policy.
+                     'thin-bezel': u32(1)}
     if identity:
         root_props.update(identity['root'])
         root_props['compatible'] += cstr('mediatek,mt6762')

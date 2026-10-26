@@ -1,0 +1,62 @@
+{
+  "format": 1,
+  "scope": "Original default-off digital CONN reset-held ID stage. No loader integration or physical execution.",
+  "audits": {
+    "hardware/hakios-migration-20261026/wifi-native/power/evidence.json": "301584a2bc37e711298b56e744202f0e401548ffad4e2da23645e994194ca52f",
+    "hardware/hakios-migration-20261026/wifi-native/power/wmt-functions.json": "59bdfa5a106fcd5691931d4316bbd9379d56c3dd6f996c158f04571873c2026f",
+    "hardware/hakios-migration-20261026/wifi-native/power/stock-functions.json": "fdd6f3a241d7e14f0986676846ae184b8b028032fc2d91289ff2903aea89125f",
+    "hardware/hakios-migration-20261026/wifi-native/power/wmt-power.asm": "d5566aace127fa0910a284029ea6901b82f52f294c31a3991d956f01e6a7e5e2",
+    "hardware/hakios-migration-20261026/wifi-native/power/stock-power.asm": "8709eedaf64cff26f14aa422277e1d02b6a9217fa9016b073a0d287b4da390a6"
+  },
+  "primary_artifacts": [
+    {
+      "name": "wmt_drv.ko",
+      "sha256": "f428dbafe454e89d0c5f4a49bda616d4cceb58b6bbfd24228bb6480b5be45ca3",
+      "bytes": 1591024
+    },
+    {
+      "name": "Image",
+      "sha256": "82b1919185a49f268a0f8e145a6714d6264c1f66918a90df0d763266147ead4b",
+      "bytes": 25714688
+    },
+    {
+      "name": "boot.dts",
+      "sha256": "00dcbf4602559331e085fb04d6bacd1a6b6a4d7fc1f83a85e8d135c87f5d0d6c",
+      "bytes": 128161
+    },
+    {
+      "name": "mt6765.h",
+      "sha256": "02a87ec76cda5b6f0c1431c42792e6b032e6a69ad969c8fedbcf3481def58de7",
+      "bytes": 9409
+    }
+  ],
+  "sequence_evidence": {
+    "reset": "wmt .text+2508..251c",
+    "spm_power": "Image+464ba4..464c68",
+    "spm_cold_derived_from": "Image+464c8c..464d44",
+    "protection_release": "Image+464a38..464a70",
+    "id_read": "wmt .text+275c..2794",
+    "id_interval_count": "wmt .text+27d4..27e4"
+  },
+  "deliberate_new_requirements": [
+    "Two masked live cold-entry snapshots; actual inherited state not yet validated.",
+    "Fresh caller prerequisite callback before every MMIO; callback result is not independent proof.",
+    "Live reset/power and expected-field checks, preserving unrelated bits.",
+    "Bounded ordinary protection-release readbacks; stock release omits waits.",
+    "Per-stage/global deadlines, iteration caps and explicit failures.",
+    "Stop at ID with MCU reset held; no ROM patch, connectivity writes, DMA, reset release or RF."
+  ],
+  "test_command": "sh tools/mt6762/hardware/connectivity-power/test_conn_power.sh",
+  "host_tests": "PASS; 101 MMIO fault sites, 102 prerequisite fault sites, stateful ordering/delayed ACKs, guards, retained-reset errors, timing and ID cases",
+  "freestanding_compile": "PASS; AArch64 -std=c11 -ffreestanding -fno-builtin -O2 -Wall -Wextra -Werror; no undefined symbols",
+  "compiler_sha256": "cbcb352d2cadea5d5bc39e800a1ee610173c99c8a29368f7990aa0e6ed9e163f",
+  "implementation_sha256": {
+    "conn_power.c": "1679943e68611af1116cd23029a250efa7be2ee9c9a606b377563d65005325d6",
+    "conn_power.h": "7dc3eb25a6ff1674374e39519187c71ac0e9d860b5257db5dd564c883dd2ea3e",
+    "test_conn_power.c": "0c30c5448e85f61bebdde93e194fab31279d02e98e5a3690f9e685774742f8bf",
+    "test_conn_power.sh": "e2066270e284a4f01a7aa1159831ff616c170f10957130c23cdbd92fa51da59b",
+    "CONN-DIGITAL-POWER.rst": "08008f385cc9f061d210436755ef207eaad9df13e3dc4d911c753745958d8dcc"
+  },
+  "hardware_access_performed": false,
+  "physical_readiness_proven": false
+}

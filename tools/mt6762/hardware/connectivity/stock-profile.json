@@ -1,0 +1,68 @@
+{
+  "format": 1,
+  "id": "mt6762-stock-connac-20231228-v1",
+  "vendor_sha256": "a37a00f26f0db7256d5254893474fc80e7f3cceaf94beac390754b0ed008ae53",
+  "files": {
+    "wlan_drv_gen4m.ko": {
+      "bytes": 3924568,
+      "sha256": "d2d54547286801da14e54d2e33236648045a3f543d4eb0d532a982e95c1c2394",
+      "kind": 0
+    },
+    "wmt_drv.ko": {
+      "bytes": 1591024,
+      "sha256": "f428dbafe454e89d0c5f4a49bda616d4cceb58b6bbfd24228bb6480b5be45ca3",
+      "kind": 0
+    },
+    "wmt_chrdev_wifi.ko": {
+      "bytes": 76720,
+      "sha256": "eb72d11c610cc2d8efde246056911dc93719d8ad14d744b1206e93c882a63af6",
+      "kind": 0
+    },
+    "connfem.ko": {
+      "bytes": 68496,
+      "sha256": "036826b5151bcb9bd7a9749bde024d9620815c5d33cd78ad4f9a01ecf1e8010d",
+      "kind": 0
+    },
+    "modules.load": {
+      "bytes": 127,
+      "sha256": "7ba2fde6c758da1769ccca7f57bfe7f35c1f2b021e8119b0a7e64d07349c807b",
+      "kind": 0
+    },
+    "modules.dep": {
+      "bytes": 510,
+      "sha256": "2149b3b0849a80bf628a8da21cfa2dc81baa766a6c3c80dba9c0bce3ae4f34c1",
+      "kind": 0
+    },
+    "WMT_SOC.cfg": {
+      "bytes": 121,
+      "sha256": "6845e0f30219d5aedaf3791b8318eaaf7ae22d0087702268a815c8724243e2e8",
+      "kind": 0
+    },
+    "WIFI_RAM_CODE_soc1_0_1_1.bin": {
+      "bytes": 639784,
+      "sha256": "45ef756368f291dac996fe1cbe405a54f0d5e0c244221a951bb5eafa7d2e1e32",
+      "kind": 1
+    },
+    "soc1_0_patch_mcu_1_1_hdr.bin": {
+      "bytes": 26574,
+      "sha256": "43157699bb1200f27bdf38307a7d037cbf970f2b952c9a91f2a7129426ded557",
+      "kind": 2
+    },
+    "soc1_0_ram_mcu_1_1_hdr.bin": {
+      "bytes": 105940,
+      "sha256": "755b4858a22a5072e3fd7b506f2de982a745f9b10754980429227a01a7ff3d24",
+      "kind": 3
+    },
+    "soc1_0_ram_wifi_1_1_hdr.bin": {
+      "bytes": 196208,
+      "sha256": "04dd6417ccec83fa83a2cf0de44b686178465024dd5d84dc108ebe4239cfacd7",
+      "kind": 3
+    }
+  },
+  "calibration": {
+    "bytes": 2050,
+    "sha256": "7871406948e7f035e5ca78f8fa22b718a3439ab5bcd4bb010b85b8e9f743f86a",
+    "kind": 4
+  },
+  "not_a_hardware_compatibility_grant": true
+}

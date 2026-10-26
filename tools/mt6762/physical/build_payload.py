@@ -3,6 +3,7 @@
 import argparse
 import gzip
 import hashlib
+import importlib.util
 import json
 import os
 from pathlib import Path
@@ -18,6 +19,13 @@ import display_record
 import pwm_record
 import peripheral_record
 import desktop_ramdisk
+
+CONNECTIVITY_DIR = HERE.parent / 'hardware/connectivity-power'
+_spec = importlib.util.spec_from_file_location('mt6762_connectivity_record', CONNECTIVITY_DIR / 'record.py')
+connectivity_record = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(connectivity_record)
+CONNECTIVITY_OFFSET = 0x5400
+CONNECTIVITY_ADDRESS = 0x40080000 + CONNECTIVITY_OFFSET
 
 
 def sha(data):
@@ -72,6 +80,9 @@ def physical_identity(chosen, wifi_mac=None):
 CHARGER_SETUP_FLAGS = ('dma-direct','i2c-pads-verified','i2c5-verified',
                        'charger-inherited-probe','charger-setup-only')
 CHARGER_READONLY_FLAGS = CHARGER_SETUP_FLAGS[:-1] + ('charger-readonly-probe',)
+BATTERY_OBSERVER_FLAGS = CHARGER_SETUP_FLAGS[:-1] + ('battery-inherited-observer',)
+GAUGE_OBSERVER_VALUES = ('fgauge-baseline-version','fgauge-rfg','fgauge-car-tune',
+    'fgauge-con0','fgauge-efuse-gain','fgauge-efuse-offset','fgauge-adjust-offset','fgauge-gain')
 # Reviewed frozen kernel: secondary EL2 descent, firmware queries and cache
 # handoff; original-entry tests and an eight-core QEMU run passed.
 SMP_KERNELS = {
@@ -83,6 +94,9 @@ SMP_KERNELS = {
     # Kernel57 preserves that SMP entry; fresh build/205 IIG checks and
     # 600-second eight-core bulk-PIO desktop test passed in the local model.
     'fb484061d76d4cabfa0316575f0cff46f9bd8df8cd252ed3612d1eefee6035e8',
+    # Kernel58 adds inherited battery reporting; unchanged SMP entry and
+    # all seven secondary CPUs observed online in its eight-core QEMU boot.
+    '0b0c4d8f28ccb96bf2779f13345c447acfd9892b3dd4e58d8a1695ca5a299293',
 }
 # Capture34 exhausted the old20ms software wait before the inherited DDR
 # controller's approximately109ms data timeout. Allow its existing hardware
@@ -125,6 +139,24 @@ def require_charger_readonly_kernel(kernel,requested):
         raise ValueError('native charger reads require the bounded six-transaction kernel implementation')
 
 
+def battery_observer_properties(gauge=False):
+    props=charger_setup_properties()
+    del props['charger-setup-only']
+    props['battery-inherited-observer']=prepare.u32(0)
+    if gauge:
+        props.update({name:prepare.u32(0) for name in
+            ('fgauge-inherited-observer',)+GAUGE_OBSERVER_VALUES})
+    return props
+
+
+def require_battery_observer_kernel(kernel,battery,gauge):
+    if battery and (b'MT6762_PSC_OBSERVER_ADMITTED reads=3,1,0 min_period_us=500000\n\0' not in kernel or
+                    b'MT6762_BATTERY_OBSERVER_READY' not in kernel):
+        raise ValueError('battery observer requires repeated read-only transport and native publisher')
+    if gauge and b'MT6762_GAUGE_OBSERVER_READY' not in kernel:
+        raise ValueError('gauge observer requires the private bounded inherited latch implementation')
+
+
 def trial_bootarg(kernel,seconds,refresh_watchdog):
     """Opt in only when this kernel implements the bounded stop-feed path."""
     if type(seconds) is not int or (seconds != 0 and not 60 <= seconds <= 1800):
@@ -157,6 +189,8 @@ def main():
                         help='opt in to the kernel dim/restore diagnostic before PID1')
     parser.add_argument('--probe-peripherals', action='store_true',
                         help='passively snapshot audited touch/storage/key/watchdog registers; grants no ownership')
+    parser.add_argument('--probe-connectivity', action='store_true',
+                        help='record two bounded AP/MT6357 power snapshots; WACS reads only, no radio activation')
     parser.add_argument('--expand-memory', action='store_true',
                         help='extend the diagnostic RAM window to the next reserved region, bounded by CPU PA width')
     parser.add_argument('--native-touch-probe',action='store_true',
@@ -175,6 +209,10 @@ def main():
                         help='admit measured inherited I2C5 for setup/readbacks only; no PSC or bias transactions')
     charger.add_argument('--native-charger-readonly-probe',action='store_true',
                         help='admit measured inherited I2C5 for six PSC register reads; no charging control')
+    charger.add_argument('--native-battery-observer',action='store_true',
+                        help='publish fresh PMIC/PSC battery and charging observations; no charger-control writes')
+    parser.add_argument('--native-gauge-observer',action='store_true',
+                        help='with battery observer, admit bounded gauge latch commands for coherent current/CAR')
     args = parser.parse_args()
     if args.brightness_pulse and not args.native_display:
         parser.error('--brightness-pulse requires --native-display')
@@ -188,6 +226,12 @@ def main():
         parser.error('native charger setup requires the read-only PWRAP probe')
     if args.native_charger_readonly_probe and not args.native_pwrap_probe:
         parser.error('native charger reads require the read-only PWRAP probe')
+    if args.native_battery_observer and not (args.native_pwrap_probe and args.native_buttons_probe):
+        parser.error('battery observer requires inherited PWRAP and buttons admission')
+    if args.native_gauge_observer and not (args.native_battery_observer and args.probe_connectivity):
+        parser.error('gauge observer requires battery observer and bounded connectivity read transport')
+    if args.probe_connectivity and not (args.native_pwrap_probe and args.probe_peripherals):
+        parser.error('connectivity survey requires the inherited read-only PWRAP and peripheral probes')
     if bool(args.bootstrap_apfs) != bool(args.ios_system_slice):
         parser.error('--bootstrap-apfs and --ios-system-slice require each other')
     if args.bootstrap_apfs and not (args.native_msdc_probe and args.expand_memory and args.refresh_watchdog):
@@ -209,12 +253,19 @@ def main():
     source_paths += [HERE.parent/'hardware/power/mt6762_pwrap_entry.h']
     source_paths += [HERE.parent/'hardware/power/mt6762_keys_entry.h']
     source_paths += [HERE.parent/'hardware/power/mt6762_charger_entry.h']
+    source_paths += [HERE.parent/'hardware/power/mt6762_gauge_baseline.h',
+                     HERE.parent/'hardware/power/mt6762_gauge_baseline.c']
     source_paths += [HERE.parents[2]/'bsd/dev/mt6762_msdc_clock.h']
+    source_paths += [HERE/'connectivity_probe.h', CONNECTIVITY_DIR/'record.py',
+        CONNECTIVITY_DIR/'registers.json', CONNECTIVITY_DIR/'pwrap_readonly.h',
+        HERE.parents[2]/'bsd/dev/mt6762_power_protocol.h',
+        HERE.parents[2]/'bsd/dev/mt6762_bif_protocol.h']
     sources_before = {os.path.relpath(p,HERE.parent):sha(p.read_bytes()) for p in source_paths}
     original_kernel = args.kernel.read_bytes()
     require_smp_kernel(original_kernel,args.cpus)
     require_charger_setup_kernel(original_kernel,args.native_charger_setup_probe)
     require_charger_readonly_kernel(original_kernel,args.native_charger_readonly_probe)
+    require_battery_observer_kernel(original_kernel,args.native_battery_observer,args.native_gauge_observer)
     trial_arg = trial_bootarg(original_kernel,args.trial_seconds,args.refresh_watchdog)
     root_path = args.bootstrap_apfs or args.diagnostic
     if args.bootstrap_apfs and root_path.stat().st_size > desktop_ramdisk.MAX_BOOTSTRAP_BYTES:
@@ -284,6 +335,8 @@ def main():
             props.update(charger_setup_properties())
         if args.native_charger_readonly_probe:
             props.update(charger_readonly_properties())
+        if args.native_battery_observer:
+            props.update(battery_observer_properties(args.native_gauge_observer))
         if args.refresh_watchdog:props['watchdog-refresh-owned']=prepare.u32(0)
         pwrap_flags=('pwrap-verified','pwrap-inherited-probe')
         if args.native_pwrap_probe:
@@ -346,6 +399,7 @@ def main():
     constants['NATIVE_DISPLAY'] = int(args.native_display)
     constants['CPUS'] = args.cpus
     constants['PROBE_PERIPHERALS'] = int(args.probe_peripherals)
+    constants['PROBE_CONNECTIVITY'] = int(args.probe_connectivity)
     constants['EXPAND_MEMORY'] = int(args.expand_memory)
     constants['NATIVE_TOUCH_PROBE']=int(args.native_touch_probe)
     constants['REFRESH_WATCHDOG']=int(args.refresh_watchdog)
@@ -354,6 +408,8 @@ def main():
     constants['NATIVE_BUTTONS_PROBE']=int(args.native_buttons_probe)
     constants['NATIVE_CHARGER_SETUP_PROBE']=int(args.native_charger_setup_probe)
     constants['NATIVE_CHARGER_READONLY_PROBE']=int(args.native_charger_readonly_probe)
+    constants['NATIVE_BATTERY_OBSERVER']=int(args.native_battery_observer)
+    constants['NATIVE_GAUGE_OBSERVER']=int(args.native_gauge_observer)
     constants['IOS_SYSTEM_SLICE']=int(ios_slice is not None)
     if ios_slice:
         constants['IOS_SYSTEM_START']=ios_slice['start_sector']
@@ -384,6 +440,11 @@ def main():
             header+='static const unsigned payload_charger_setup_flags[] = {'+','.join(str(positions[native_path+name]) for name in CHARGER_SETUP_FLAGS)+'};\n'
         if args.native_charger_readonly_probe:
             header+='static const unsigned payload_charger_readonly_flags[] = {'+','.join(str(positions[native_path+name]) for name in CHARGER_READONLY_FLAGS)+'};\n'
+        if args.native_battery_observer:
+            header+='static const unsigned payload_battery_observer_flags[] = {'+','.join(str(positions[native_path+name]) for name in BATTERY_OBSERVER_FLAGS)+'};\n'
+        if args.native_gauge_observer:
+            header+='static const unsigned payload_gauge_observer_values[] = {'+','.join(str(positions[native_path+name]) for name in GAUGE_OBSERVER_VALUES)+'};\n'
+            header+=f'#define PAYLOAD_ADT_GAUGE_OBSERVER_PATCH {positions[native_path+"fgauge-inherited-observer"]}u\n'
         if args.native_msdc_probe:
             for kind,names in (('flags',msdc_flags),('values',msdc_values)):
                 header+=f'static const unsigned payload_msdc_{kind}[] = '+'{'+','.join(str(positions[native_path+name]) for name in names)+'};\n'
@@ -407,6 +468,9 @@ def main():
     (out/'peripherals.bin').write_bytes(peripheral_record.initialized(trace_identity))
     trace_assembly += '.section .peripheral_trace,"aw"\n.balign 64\n.global physical_peripherals\nphysical_peripherals:\n'
     trace_assembly += '.incbin "' + str(out/'peripherals.bin') + '"\n'
+    (out/'connectivity.bin').write_bytes(connectivity_record.initialize(trace_identity))
+    trace_assembly += '.section .connectivity_trace,"aw"\n.balign 64\n.global physical_connectivity\nphysical_connectivity:\n'
+    trace_assembly += '.incbin "' + str(out/'connectivity.bin') + '"\n'
     (out/'trace.S').write_text(trace_assembly)
     clang = str(args.llvm/'clang')
     common = [clang,'--target=aarch64-none-elf','-mcpu=cortex-a53','-mgeneral-regs-only',
@@ -414,11 +478,12 @@ def main():
               '-ffreestanding','-fno-builtin','-fno-stack-protector','-fno-pic','-O2',
               '-Wall','-Wextra','-Werror','-I'+str(HERE),'-I'+str(out)]
     commands = []
-    for source in (HERE/'start.S',HERE/'loader.c',HERE/'fdt_handoff.c',HERE/'psci/psci_fdt.c',out/'payload.S',out/'trace.S'):
+    for source in (HERE/'start.S',HERE/'loader.c',HERE/'fdt_handoff.c',HERE/'psci/psci_fdt.c',
+                   HERE.parent/'hardware/power/mt6762_gauge_baseline.c',out/'payload.S',out/'trace.S'):
         command_line = common+['-c',str(source),'-o',str(out/(source.stem+'.o'))]
         commands.append(command_line);subprocess.run(command_line,check=True)
     command_line = [str(args.llvm/'ld.lld'),'-T',str(HERE/'loader.ld'),'-o',str(out/'loader.elf')]
-    command_line += [str(out/(name+'.o')) for name in ('start','loader','fdt_handoff','psci_fdt','payload','trace')]
+    command_line += [str(out/(name+'.o')) for name in ('start','loader','fdt_handoff','psci_fdt','mt6762_gauge_baseline','payload','trace')]
     commands.append(command_line);subprocess.run(command_line,check=True)
     command_line = [str(args.llvm/'llvm-objcopy'),'-O','binary',str(out/'loader.elf'),str(out/'Image')]
     commands.append(command_line);subprocess.run(command_line,check=True)
@@ -431,6 +496,8 @@ def main():
         raise ValueError('PWM record does not match fixed source Image offset')
     if raw_image[peripheral_record.OFFSET:peripheral_record.OFFSET + peripheral_record.SIZE] != peripheral_record.initialized(trace_identity):
         raise ValueError('Peripheral record does not match fixed source Image offset')
+    if raw_image[CONNECTIVITY_OFFSET:CONNECTIVITY_OFFSET+connectivity_record.SIZE] != connectivity_record.initialize(trace_identity):
+        raise ValueError('Connectivity record does not match fixed source Image offset')
     # Empty Android newc archive; XNU's actual root is embedded in Image.
     name=b'TRAILER!!!\0'; fields=[0,0,0,0,1,0,0,0,0,0,0,len(name),0]
     cpio=b'070701'+b''.join(f'{field:08x}'.encode() for field in fields)+name
@@ -469,9 +536,17 @@ def main():
             (['power-volume-read-only-probe'] if args.native_buttons_probe else [])+
             (['i2c5-inherited-setup-only-probe'] if args.native_charger_setup_probe else [])+
             (['i2c5-inherited-six-PSC-reads'] if args.native_charger_readonly_probe else [])+
+            (['battery-inherited-readonly-observer'] if args.native_battery_observer else [])+
+            (['gauge-inherited-bounded-latch-observer'] if args.native_gauge_observer else [])+
             (['watchdog-refresh'] if args.refresh_watchdog else []),
         native_display_requested=args.native_display,brightness_pulse_requested=args.brightness_pulse,
         passive_peripheral_probe=args.probe_peripherals,
+        connectivity_survey_requested=args.probe_connectivity,
+        connectivity_trace=dict(offset=CONNECTIVITY_OFFSET,physical_address=CONNECTIVITY_ADDRESS,
+            size=connectivity_record.SIZE,initialized_sha256=sha(connectivity_record.initialize(trace_identity)),
+            requests_per_pass=len(connectivity_record.REGISTERS),passes=2,
+            wacs_read_command_and_ack_writes=args.probe_connectivity,
+            pmic_writes=False,radio_activation=False,native_ownership=False),
         expand_memory_requested=args.expand_memory,
         native_touch_probe_requested=args.native_touch_probe,watchdog_refresh_requested=args.refresh_watchdog,
         watchdog_trial_seconds=args.trial_seconds,watchdog_trial_reset_guaranteed=False,
@@ -481,6 +556,8 @@ def main():
         native_buttons_probe_requested=args.native_buttons_probe,
         native_charger_setup_probe_requested=args.native_charger_setup_probe,
         native_charger_readonly_probe_requested=args.native_charger_readonly_probe,
+        native_battery_observer_requested=args.native_battery_observer,
+        native_gauge_observer_requested=args.native_gauge_observer,
         charger_transactions_granted=False,charger_control_granted=False,
         conditional_charger_read_transaction_limit=6 if args.native_charger_readonly_probe else 0,
         peripheral_trace=dict(offset=peripheral_record.OFFSET,physical_address=peripheral_record.ADDRESS,

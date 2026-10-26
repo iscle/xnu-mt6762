@@ -1,0 +1,256 @@
+{
+  "format": 1,
+  "scope": "Read-only record labels; never hardware ownership or addresses to execute from a decoded record.",
+  "source_digests": {
+    "stock_wmt_drv.ko": "f428dbafe454e89d0c5f4a49bda616d4cceb58b6bbfd24228bb6480b5be45ca3",
+    "stock_Image": "82b1919185a49f268a0f8e145a6714d6264c1f66918a90df0d763266147ead4b"
+  },
+  "ap": [
+    {
+      "address": "0x10006180",
+      "width": 4,
+      "mask": "0x2",
+      "meaning": "SPM primary CONN power acknowledgment",
+      "provenance": "stock Image+464bd8"
+    },
+    {
+      "address": "0x10006184",
+      "width": 4,
+      "mask": "0x2",
+      "meaning": "SPM secondary CONN power acknowledgment",
+      "provenance": "stock Image+464be8"
+    },
+    {
+      "address": "0x1000632c",
+      "width": 4,
+      "mask": "0x1f",
+      "meaning": "CONN reset/isolation/on/on2/clock-disable",
+      "provenance": "stock Image+464ba4..464c64"
+    },
+    {
+      "address": "0x10001220",
+      "width": 4,
+      "mask": "0x16000",
+      "meaning": "INFRA protect enable13/14/16",
+      "provenance": "BSP clk-mt6765-pg.c182; stock usesSET/CLR aliases"
+    },
+    {
+      "address": "0x10001228",
+      "width": 4,
+      "mask": "0x16000",
+      "meaning": "INFRA protect acknowledge13/14/16",
+      "provenance": "stock Image+464aa4..464b58"
+    },
+    {
+      "address": "0x10001250",
+      "width": 4,
+      "mask": "0x40000",
+      "meaning": "INFRA protect1 enable18",
+      "provenance": "BSP clk-mt6765-pg.c185"
+    },
+    {
+      "address": "0x10001258",
+      "width": 4,
+      "mask": "0x40000",
+      "meaning": "INFRA protect1 acknowledge18",
+      "provenance": "stock Image+464ae8"
+    },
+    {
+      "address": "0x10007018",
+      "width": 4,
+      "mask": "0x1000",
+      "meaning": "CONN CPU reset bit12; key is only for writes",
+      "provenance": "wmt .text+2508..2538"
+    },
+    {
+      "address": "0x10001380",
+      "width": 4,
+      "mask": "0xfff",
+      "meaning": "CONN EMI mapping field",
+      "provenance": "wmt .text+31bc..31e4"
+    },
+    {
+      "address": "0x10001388",
+      "width": 4,
+      "mask": "0xfff0000",
+      "meaning": "CONN peripheral mapping field",
+      "provenance": "wmt .text+31fc..3214"
+    },
+    {
+      "address": "0x100053e0",
+      "width": 4,
+      "mask": "0x77777770",
+      "meaning": "A-die interface pinmux",
+      "provenance": "wmt .text+2ad8..2af0"
+    },
+    {
+      "address": "0x100053f0",
+      "width": 4,
+      "mask": "0x77",
+      "meaning": "A-die interface pinmux",
+      "provenance": "wmt .text+2aa4..2acc"
+    },
+    {
+      "address": "0x10002c00",
+      "width": 4,
+      "mask": "0x38fc0000",
+      "meaning": "Shipped additional pin control; electrical label unresolved",
+      "provenance": "wmt .text+2b18..2b4c"
+    },
+    {
+      "address": "0x10002c10",
+      "width": 4,
+      "mask": "0x7",
+      "meaning": "Shipped additional pin control; electrical label unresolved",
+      "provenance": "wmt .text+2b58..2b64"
+    },
+    {
+      "address": "0x10001090",
+      "width": 4,
+      "mask": "0x80000000",
+      "meaning": "BTIF active-high disable status, parentaxi_ck",
+      "provenance": "exact stock ifr_clks descriptor"
+    },
+    {
+      "address": "0x10001094",
+      "width": 4,
+      "mask": "0x40000",
+      "meaning": "APDMA active-high disable status, parentaxi_ck",
+      "provenance": "exact stock ifr_clks descriptor"
+    },
+    {
+      "address": "0x1000d188",
+      "width": 4,
+      "mask": "0xffffffff",
+      "meaning": "PWRAP DCXO automation enable; CONN bit1, NFC bit0",
+      "provenance": "stock clkbuf_dts descriptor6/7 atffffff80098483a8; _clk_buf_ctrl_internal Image+7a0900..7a099c"
+    },
+    {
+      "address": "0x1000d18c",
+      "width": 4,
+      "mask": "0xffff",
+      "meaning": "PWRAP CONN DCXO address0",
+      "provenance": "stock clkbuf_dts descriptor8 count4/index0/stride4; _clk_buf_dts_init_internal Image+7a0e24"
+    },
+    {
+      "address": "0x1000d190",
+      "width": 4,
+      "mask": "0xffff",
+      "meaning": "PWRAP CONN DCXO data0",
+      "provenance": "stock clkbuf_dts descriptor8 count4/index0/stride4; _clk_buf_dts_init_internal Image+7a0e24"
+    },
+    {
+      "address": "0x1000d194",
+      "width": 4,
+      "mask": "0xffff",
+      "meaning": "PWRAP CONN DCXO address1",
+      "provenance": "stock clkbuf_dts descriptor8 count4/index0/stride4; _clk_buf_dts_init_internal Image+7a0e24"
+    },
+    {
+      "address": "0x1000d198",
+      "width": 4,
+      "mask": "0xffff",
+      "meaning": "PWRAP CONN DCXO data1",
+      "provenance": "stock clkbuf_dts descriptor8 count4/index0/stride4; _clk_buf_dts_init_internal Image+7a0e24"
+    }
+  ],
+  "pmic": [
+    {
+      "word": "0x0008",
+      "width": 2,
+      "meaning": "MT6357 HWCID; bits15:8 must equal0x57 before other PMIC reads",
+      "provenance": "native mt6762_power.c identity admission; BSP MT6357 HWCID register"
+    },
+    {
+      "word": "0x1a58",
+      "width": 2,
+      "meaning": "VCN18 enable bit0"
+    },
+    {
+      "word": "0x1a5a",
+      "width": 2,
+      "meaning": "VCN18 OP_EN raw"
+    },
+    {
+      "word": "0x1a60",
+      "width": 2,
+      "meaning": "VCN18 OP_CFG raw"
+    },
+    {
+      "word": "0x1a66",
+      "width": 2,
+      "meaning": "VCN18 DA enable15/stable14"
+    },
+    {
+      "word": "0x1b1c",
+      "width": 2,
+      "meaning": "VCN33_BT enable0"
+    },
+    {
+      "word": "0x1b1e",
+      "width": 2,
+      "meaning": "VCN33 OP_EN raw"
+    },
+    {
+      "word": "0x1b24",
+      "width": 2,
+      "meaning": "VCN33 OP_CFG raw"
+    },
+    {
+      "word": "0x1b2a",
+      "width": 2,
+      "meaning": "VCN33_WIFI enable0"
+    },
+    {
+      "word": "0x1b2c",
+      "width": 2,
+      "meaning": "VCN33 shared DA enable15/stable14"
+    },
+    {
+      "word": "0x1c1c",
+      "width": 2,
+      "meaning": "VCN33 selector9:8;1=3.3V nominal"
+    },
+    {
+      "word": "0x1b88",
+      "width": 2,
+      "meaning": "VCN28 enable0"
+    },
+    {
+      "word": "0x1b8a",
+      "width": 2,
+      "meaning": "VCN28 OP_EN HW0bit1"
+    },
+    {
+      "word": "0x1b90",
+      "width": 2,
+      "meaning": "VCN28 OP_CFG HW0bit1"
+    },
+    {
+      "word": "0x1b96",
+      "width": 2,
+      "meaning": "VCN28 DA enable15/stable14"
+    },
+    {
+      "word": "0x788",
+      "width": 2,
+      "meaning": "DCXO CW00; stock DT WCN mode4:3 andenable5"
+    },
+    {
+      "word": "0x7b0",
+      "width": 2,
+      "meaning": "DCXO drive selectors; stock DT WCN3:2"
+    },
+    {
+      "word": "0x44a",
+      "width": 2,
+      "meaning": "PMIC SRCLKENI3 configuration fromstock DT"
+    },
+    {
+      "word": "0x07ac",
+      "width": 2,
+      "meaning": "XO_EXTBUF2_CLKSEL_MAN bit12, raw; BSP-only interpretation",
+      "provenance": "BSP mt6357/upmu_hw.h and optional CLKBUF_CONN_SUPPORT_CTRL_FROM_I1 branch; no physical template claim"
+    }
+  ]
+}
