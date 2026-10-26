@@ -1,0 +1,221 @@
+{
+  "result": "PASS",
+  "artifact": "boot/desktop-bootstrap-build2/desktop_bootstrap.macho",
+  "artifact_sha256": "f749024a376321a6d5ba31ff674103b4520420c67b6e61908ced37f505a1ba32",
+  "entry": "0x100003e94",
+  "c_entry": "0x100003a3c",
+  "entry_disassembly": [
+    "0x100003e94: mov x0, sp",
+    "0x100003e98: and x9, x0, #0xfffffffffffffff0",
+    "0x100003e9c: mov sp, x9",
+    "0x100003ea0: b #0x100003a3c"
+  ],
+  "cases": [
+    {
+      "original_sp": "0x16fdffe80",
+      "c_entry_sp": "0x16fdffe80",
+      "original_stack_argument_preserved": true,
+      "original_stack_bytes_unchanged": true,
+      "checked_stack_accesses": [
+        "0x100003a40"
+      ],
+      "first_syscall_pc": "0x100003a64"
+    },
+    {
+      "original_sp": "0x16fdffe81",
+      "c_entry_sp": "0x16fdffe80",
+      "original_stack_argument_preserved": true,
+      "original_stack_bytes_unchanged": true,
+      "checked_stack_accesses": [
+        "0x100003a40"
+      ],
+      "first_syscall_pc": "0x100003a64"
+    },
+    {
+      "original_sp": "0x16fdffe82",
+      "c_entry_sp": "0x16fdffe80",
+      "original_stack_argument_preserved": true,
+      "original_stack_bytes_unchanged": true,
+      "checked_stack_accesses": [
+        "0x100003a40"
+      ],
+      "first_syscall_pc": "0x100003a64"
+    },
+    {
+      "original_sp": "0x16fdffe83",
+      "c_entry_sp": "0x16fdffe80",
+      "original_stack_argument_preserved": true,
+      "original_stack_bytes_unchanged": true,
+      "checked_stack_accesses": [
+        "0x100003a40"
+      ],
+      "first_syscall_pc": "0x100003a64"
+    },
+    {
+      "original_sp": "0x16fdffe84",
+      "c_entry_sp": "0x16fdffe80",
+      "original_stack_argument_preserved": true,
+      "original_stack_bytes_unchanged": true,
+      "checked_stack_accesses": [
+        "0x100003a40"
+      ],
+      "first_syscall_pc": "0x100003a64"
+    },
+    {
+      "original_sp": "0x16fdffe85",
+      "c_entry_sp": "0x16fdffe80",
+      "original_stack_argument_preserved": true,
+      "original_stack_bytes_unchanged": true,
+      "checked_stack_accesses": [
+        "0x100003a40"
+      ],
+      "first_syscall_pc": "0x100003a64"
+    },
+    {
+      "original_sp": "0x16fdffe86",
+      "c_entry_sp": "0x16fdffe80",
+      "original_stack_argument_preserved": true,
+      "original_stack_bytes_unchanged": true,
+      "checked_stack_accesses": [
+        "0x100003a40"
+      ],
+      "first_syscall_pc": "0x100003a64"
+    },
+    {
+      "original_sp": "0x16fdffe87",
+      "c_entry_sp": "0x16fdffe80",
+      "original_stack_argument_preserved": true,
+      "original_stack_bytes_unchanged": true,
+      "checked_stack_accesses": [
+        "0x100003a40"
+      ],
+      "first_syscall_pc": "0x100003a64"
+    },
+    {
+      "original_sp": "0x16fdffe88",
+      "c_entry_sp": "0x16fdffe80",
+      "original_stack_argument_preserved": true,
+      "original_stack_bytes_unchanged": true,
+      "checked_stack_accesses": [
+        "0x100003a40"
+      ],
+      "first_syscall_pc": "0x100003a64"
+    },
+    {
+      "original_sp": "0x16fdffe89",
+      "c_entry_sp": "0x16fdffe80",
+      "original_stack_argument_preserved": true,
+      "original_stack_bytes_unchanged": true,
+      "checked_stack_accesses": [
+        "0x100003a40"
+      ],
+      "first_syscall_pc": "0x100003a64"
+    },
+    {
+      "original_sp": "0x16fdffe8a",
+      "c_entry_sp": "0x16fdffe80",
+      "original_stack_argument_preserved": true,
+      "original_stack_bytes_unchanged": true,
+      "checked_stack_accesses": [
+        "0x100003a40"
+      ],
+      "first_syscall_pc": "0x100003a64"
+    },
+    {
+      "original_sp": "0x16fdffe8b",
+      "c_entry_sp": "0x16fdffe80",
+      "original_stack_argument_preserved": true,
+      "original_stack_bytes_unchanged": true,
+      "checked_stack_accesses": [
+        "0x100003a40"
+      ],
+      "first_syscall_pc": "0x100003a64"
+    },
+    {
+      "original_sp": "0x16fdffe8c",
+      "c_entry_sp": "0x16fdffe80",
+      "original_stack_argument_preserved": true,
+      "original_stack_bytes_unchanged": true,
+      "checked_stack_accesses": [
+        "0x100003a40"
+      ],
+      "first_syscall_pc": "0x100003a64"
+    },
+    {
+      "original_sp": "0x16fdffe8d",
+      "c_entry_sp": "0x16fdffe80",
+      "original_stack_argument_preserved": true,
+      "original_stack_bytes_unchanged": true,
+      "checked_stack_accesses": [
+        "0x100003a40"
+      ],
+      "first_syscall_pc": "0x100003a64"
+    },
+    {
+      "original_sp": "0x16fdffe8e",
+      "c_entry_sp": "0x16fdffe80",
+      "original_stack_argument_preserved": true,
+      "original_stack_bytes_unchanged": true,
+      "checked_stack_accesses": [
+        "0x100003a40"
+      ],
+      "first_syscall_pc": "0x100003a64"
+    },
+    {
+      "original_sp": "0x16fdffe8f",
+      "c_entry_sp": "0x16fdffe80",
+      "original_stack_argument_preserved": true,
+      "original_stack_bytes_unchanged": true,
+      "checked_stack_accesses": [
+        "0x100003a40"
+      ],
+      "first_syscall_pc": "0x100003a64"
+    },
+    {
+      "original_sp": "0x16fdffd00",
+      "c_entry_sp": "0x16fdffd00",
+      "original_stack_argument_preserved": true,
+      "original_stack_bytes_unchanged": true,
+      "checked_stack_accesses": [
+        "0x100003a40"
+      ],
+      "first_syscall_pc": "0x100003a64"
+    },
+    {
+      "original_sp": "0x16fdffd08",
+      "c_entry_sp": "0x16fdffd00",
+      "original_stack_argument_preserved": true,
+      "original_stack_bytes_unchanged": true,
+      "checked_stack_accesses": [
+        "0x100003a40"
+      ],
+      "first_syscall_pc": "0x100003a64"
+    }
+  ],
+  "scope": "Original new Mach-O startup instructions executed offline through first console-open syscall; explicit SP checks; no kernel/phone execution or syscall implementation",
+  "script_sha256": "8e9bc995228c68139856cf0d8d27b9673c74cdde10e60956583ffab943f95bd6",
+  "physical_capture27": {
+    "log_sha256": "1968ab23cb2896a4a49cae6868dfca7c15a6aa5137d01b717cc49c5f16eaac2f",
+    "exception": 1,
+    "code": "0x103",
+    "subcode": "0x16fdffe18",
+    "pc": "0x100003a50",
+    "lr": "0x0",
+    "sp": "0x16fdffe18",
+    "original_sp": "0x16fdffe88",
+    "instruction": "stp x29, x30, [sp, #0x60]",
+    "cause": "EXC_ARM_SP_ALIGN on first C stack access"
+  },
+  "old_artifact_sha256": "728d36e97c39696d6cf2bb924922e69aa9b9ebd5f3f045379bf6406891e78b95",
+  "build_manifest_sha256": "0ea5819b1fe1c56aad15dd7d32cb536f3e96f4f62b85da57ef5f1087e76d0a42",
+  "source_files": [
+    {
+      "path": "tools/mt6762/boot/desktop_bootstrap.c",
+      "sha256": "baac3f75aa2022d1114e9b849022d9e2379189b102b4e8cf5301742d3c75c4e9"
+    },
+    {
+      "path": "tools/mt6762/boot/build_desktop_bootstrap.sh",
+      "sha256": "55a399a8d6cba4a201cf70e66ba5c3c717c337a895ca579c53d7268a6cb2fb08"
+    }
+  ]
+}

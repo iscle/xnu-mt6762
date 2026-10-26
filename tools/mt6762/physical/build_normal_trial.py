@@ -38,6 +38,8 @@ DIAGNOSTICS = (
     '01852a28ad01b009ad2d88ff4ef84e05a7e428d0202dc22d9f7b25c77dcd336e', # Image31: kernel48 APFS desktop bootstrap; card acceptance/system install pending
     'c77e7733ee10a28c6d48af2538b507a92761f057bd605790bf7828f49f3681ff', # Image32: kernel50 CPU rail reads and expanded passive CPU/I2C5 register capture
     '454afd35cb03ba1d6d3de9503a91ed89920690331cfbe80353b824733491c76b', # Image33: kernel50 desktop bootstrap with expanded passive CPU/I2C5 capture
+    '423cf35d2332abcc75282ba2314e3d71043e08a996cf85395ee5d1559c2bb22d', # Image34: kernel51 desktop with existing userspace exception/application tracing
+    '5cc8787f0dbc7627ce1ba282c237e994a0f7168e7db7837756bc76ed219a080b', # Image35: kernel51, aligned project bootstrap entry after physical SP-alignment fault
 )
 VBMETA_FLAGS3 = '2f3fb6474d7ff35ac4c48ab2bef71247ba50de4a94de2474b7d1b60cd6654f51'
 

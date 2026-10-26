@@ -36,8 +36,11 @@ __attribute__((noreturn)) static void stop(const char *step,long error)
     outcome(step,error);print("MT6762_DESKTOP stopped\n");
     for(;;){char c;call6(3,console,(long)&c,1,0,0,0);}
 }
-void start(void)
+__attribute__((used,noreturn)) static void desktop_main(const usize *initial_stack)
 {
+    /* Keep the original Darwin argc/argv stack available to this C entry.
+     * This bootstrap currently supplies its own argv to the existing init. */
+    (void)initial_stack;
     console=(int)call6(5,(long)"/dev/console",2,0,0,0,0);
     if(console<0)for(;;)__asm__ volatile("yield");
     for(long fd=0;fd<3;fd++)call6(90,console,fd,0,0,0,0); /* dup2 */
@@ -58,4 +61,16 @@ void start(void)
     const char *env[]={"PATH=/redwood/bin:/usr/bin:/bin:/usr/sbin:/sbin",0};
     result=call6(59,(long)argv[0],(long)argv,(long)env,0,0,0);
     stop("exec_init",result);
+}
+
+/* LC_UNIXTHREAD enters with Darwin's pointer-aligned argc stack, not a C call.
+ * Capture27 reached the old C prologue with SP ending in 8 and took
+ * EXC_ARM_SP_ALIGN at its first STP. Preserve the untouched argument area in
+ * x0, align the working stack before any stack access, and never return. */
+__attribute__((naked,noreturn)) void start(void)
+{
+    __asm__ volatile("mov x0, sp\n\t"
+                     "and x9, x0, #0xfffffffffffffff0\n\t"
+                     "mov sp, x9\n\t"
+                     "b _desktop_main\n\t");
 }

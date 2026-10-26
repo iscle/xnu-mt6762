@@ -1,0 +1,29 @@
+{
+  "capture": "capture27",
+  "image": "Image34/kernel51",
+  "kernel_sha256": "4521bbd6627984bbfeee6f945c1b67a7f17a36e3f1018078559947247800d8f3",
+  "boot_sha256": "5e0a9f7d51cb0413a9865188b8d1edd1288943aa9fecb6a789075757828bd2e5",
+  "boot_full_readback_verified": true,
+  "xnu_log_sha256": "1968ab23cb2896a4a49cae6868dfca7c15a6aa5137d01b717cc49c5f16eaac2f",
+  "trace_sha256": "6cfa69c52a5e1059f9a6a23d8e65c20ce394364d0733cb98713cd23384c9dce5",
+  "physical_kernel_executed": true,
+  "bootstrap_ram_apfs_mounted": true,
+  "ios_system_slice_exposed": true,
+  "ios_system_apfs_mount_proven": false,
+  "physical_desktop_proven": false,
+  "pid1_project_bootstrap": true,
+  "pid1_exception": {
+    "exception": 1,
+    "code": "0x103",
+    "name": "EXC_ARM_SP_ALIGN",
+    "subcode": "0x16fdffe18",
+    "pc": "0x100003a50",
+    "lr": "0x0",
+    "sp": "0x16fdffe18"
+  },
+  "entry": "0x100003a4c",
+  "entry_instruction": "sub sp, sp, #0x70",
+  "fault_instruction": "stp x29, x30, [sp, #0x60]",
+  "cause": "Project bootstrap enters a C function directly with a Darwin argc stack aligned to8 but not16 bytes",
+  "next_fix": "Assembly entry aligns SP before entering C; preserve incoming stack pointer; Apple userspace unchanged"
+}

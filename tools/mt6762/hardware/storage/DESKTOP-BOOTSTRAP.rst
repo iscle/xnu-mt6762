@@ -1,6 +1,18 @@
 iOS system volume through native MSDC
 ====================================
 
+Current physical result, 2026-10-26: capture24 accepted native eMMC and
+install4 wrote the bounded iOS system extent with a complete matching
+readback. Capture27 mounted the small RAM bootstrap and exposed /dev/mtkios0,
+but the project PID1 faulted before mounting that system volume. Its direct
+C entry received an eight-byte-aligned Darwin argument stack and triggered
+EXC_ARM_SP_ALIGN at the first stack-saving instruction. Image35 adds an
+assembly entry that aligns SP before entering C; its physical retry is
+pending. Apple's installed executables are unchanged. See
+../../physical/desktop-capture27-evidence.json and
+physical-system-install-evidence.json. The entries below retain earlier
+bring-up results; their pending states are superseded by this paragraph.
+
 The read-only BSD adapter now optionally exposes a bounded system slice as
 ``/dev/mtkios0`` and ``/dev/rmtkios0``. Its start/count are64-bit sectors and
 must fit entirely within the independently corroborated eMMC capacity.

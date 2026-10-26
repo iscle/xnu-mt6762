@@ -1,0 +1,26 @@
+{
+  "capture": "capture26",
+  "image": "Image33/kernel50",
+  "kernel_sha256": "4a7bfcb188f2c2250c2e359fec420c4f4abeab77f0da7d897669818125a8baac",
+  "xnu_log_sha256": "874119f688a57332d2e37a0ec0aaead89dc95c7e5c82888bc1cb0dd82524c87f",
+  "trace_sha256": "2ca0189b481d784d2eec74494a3a66fdbd823fa915629ad84e51a48ed1cff494",
+  "peripheral_raw_sha256": "0fc989e81b363456f1623b040c0bb15bab8c20e52af008fc2f3cbfc5e788611f",
+  "physical_kernel_executed": true,
+  "bootstrap_ram_apfs_mounted": true,
+  "ios_system_slice_exposed": true,
+  "ios_system_apfs_mount_proven": false,
+  "pid1_exit_namespace": 2,
+  "pid1_exit_subcode": 10,
+  "pid1_exit_signal": "SIGBUS",
+  "kernel_panicked": true,
+  "physical_desktop_proven": false,
+  "reason": "initproc failed to start; no MT6762_DESKTOP bootstrap-ready message",
+  "cpu_clock_decode": "Capture26 CKDIV0 corroborated by exact preloader and stock getter; nominal CPU0-3~1500MHz CPU4-7~920MHz CCI~600MHz; no DVFS ownership",
+  "pmic_cpu_rail_double_reads": {
+    "14a2": "3b2d",
+    "14a4": "0043",
+    "19cc": "3d23",
+    "19ce": "0003"
+  },
+  "next_probe": "Existing systrace=1 applog=1 in Image34/kernel51, same bootstrap/system bytes"
+}
