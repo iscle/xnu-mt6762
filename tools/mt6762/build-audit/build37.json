@@ -1,0 +1,36 @@
+{
+  "artifact_ready": true,
+  "artifact": "/home/iscle/mt6762-ios-port/xnu/BUILD/obj/DEVELOPMENT_ARM64_MT6762/mach.development.mt6762",
+  "make_exit_code": 2,
+  "all_checks_passed": false,
+  "known_postlink_export_failures_only": true,
+  "new_link_observed": true,
+  "macho_arm64_executable": true,
+  "kernel_source_sha256": "46c49aa7041e6e9a8abf4ec2ad4690a6ebe49b10eb240841a388d49a6f681dff",
+  "source_unchanged_during_build": true,
+  "source_files_changed_during_build": [],
+  "iig_inputs_unchanged_during_build": true,
+  "iig_inputs_sha256": "9fdc35a461c4ff89c4a42af1e43d0dfe3eee8fd7098a31faad0f124993cc43f8",
+  "iig_executable": "/home/iscle/mt6762-ios-port/xnu/tools/mt6762/iig/experimental_legacy_replay.py",
+  "iig_selected_environment": {
+    "MTK_IIG_CANDIDATE": "/home/iscle/mt6762-ios-port/toolchain/iig-legacy-candidate-build37b",
+    "MTK_IIG_CANDIDATE_SHA256": "87874305d7987dfa95a6d2328bea97775b0c2ec9460742256bed27e337ba8300",
+    "MTK_IIG_GENERATED": "/home/iscle/mt6762-ios-port/toolchain/iig-generated-build37b",
+    "MTK_IIG_GENERATION_SHA256": "7d916c91f5c78479bebbcd94af4b975651b91994f52b620b1b75de1787a39fc2",
+    "MTK_IIG_INPUTS": "/home/iscle/mt6762-ios-port/toolchain/iig-inputs-build37b",
+    "MTK_IIG_INPUT_SHA256": "442ca476f20dc028ce363474a5c1abe3e53c610478b401aa13a17dd6e5ef54b0",
+    "MTK_IIG_OUTPUT_ROOT": "/home/iscle/mt6762-ios-port/xnu/BUILD",
+    "MTK_IIG_XNU": "/home/iscle/mt6762-ios-port/xnu"
+  },
+  "sha256": "dc386ea3c788a35e22a08a3f7e5d3fcf71f204964ff2e323ebfb7d2432bde8ff",
+  "source_head": "832dd972c3971b686dc8516e2b340885e08159c0",
+  "errors": [
+    "make[4]: *** [/home/iscle/mt6762-ios-port/xnu/config/Makefile:121: check_all_exports] Error 1",
+    "make[4]: *** [/home/iscle/mt6762-ios-port/xnu/config/Makefile:108: /home/iscle/mt6762-ios-port/xnu/BUILD/obj/DEVELOPMENT_ARM64_MT6762/config/Private.symbolset] Error 1",
+    "make[3]: *** [/home/iscle/mt6762-ios-port/xnu/makedefs/MakeInc.dir:89: config_all] Error 2",
+    "make[2]: *** [/home/iscle/mt6762-ios-port/xnu/makedefs/MakeInc.dir:90: config_all_recurse_into_config] Error 2",
+    "make[1]: *** [/home/iscle/mt6762-ios-port/xnu/makedefs/MakeInc.top:538: config_all_bootstrap_DEVELOPMENT^ARM64^MT6762] Error 2",
+    "make: *** [Makefile:239: all] Error 2"
+  ],
+  "build_log": "/home/iscle/mt6762-ios-port/evidence/builds/20261026T000058Z-2531479/make.log"
+}

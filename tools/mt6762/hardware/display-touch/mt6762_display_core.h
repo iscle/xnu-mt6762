@@ -83,6 +83,25 @@ struct mt6762_pwm_io {
     void (*write)(void *, unsigned offset, uint32_t value);
     void (*barrier)(void *);
 };
+static inline int mt6762_display_datapath(uint32_t datapath, uint32_t sbch)
+{
+    return !sbch && (!(datapath & ~UINT32_C(0x05000009)) ||
+        datapath == UINT32_C(0x81000001));
+}
+/* Exact LK profile measured twice in physical capture13. Preserve its 26MHz
+ * source, divider0 and pin43 mux1. Duty/enable may vary through the API; all
+ * configuration, shadow/commit and debug fields must retain this profile. */
+struct mt6762_pwm_snapshot {
+    uint32_t top, infra, gpio, enable, commit, con0, con1, debug;
+};
+static inline int mt6762_pwm_lk_configured(const struct mt6762_pwm_snapshot *s)
+{
+    return s && !(s->top & UINT32_C(0x83000000)) && !(s->infra & 4) &&
+        ((s->gpio >> 12) & 15) == 1 && !(s->enable & ~1u) &&
+        !s->commit && !s->con0 && !s->debug &&
+        !(s->con1 & ~UINT32_C(0x1fff03ff)) &&
+        (s->con1 & 1023) == 1023 && ((s->con1 >> 16) & 0x1fff) <= 1023;
+}
 static inline int mt6762_pwm_configured(uint32_t con0, uint32_t con1,
     uint32_t top, uint32_t infra)
 {

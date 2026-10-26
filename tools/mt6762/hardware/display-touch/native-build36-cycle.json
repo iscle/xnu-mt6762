@@ -1,0 +1,249 @@
+{
+  "synthetic_model_only": true,
+  "synthetic_adc_delay_override_us": 0,
+  "physical_hardware_tested": false,
+  "kernel_sha256": "11f719183e2c2ce2fe94e2426714ae29cd32d0d5c6733889cad6611a07fb6054",
+  "qemu_binary_sha256": "9417efd892c3311871781e653b9b8a4f051bfe3bfc8984e3da2ed636241da95b",
+  "synthetic_framebuffer_untouched": true,
+  "native_display_accepted": false,
+  "display_startup_fault": "none",
+  "native_brightness_accepted": false,
+  "synthetic_display_state": null,
+  "sspm_startup_fault": "none",
+  "expected_bif_handoff_rejection": false,
+  "bif_fault_cleared_after_rejection": false,
+  "bif_fault_cleared_at_seconds": null,
+  "bif_rejection_before_clear": null,
+  "bif_startup_fault": "none",
+  "bif_post_fresh_fault": "none",
+  "bif_fault_injected_after_fresh": false,
+  "bif_fault_injected_at_seconds": null,
+  "gauge_startup_fault": "none",
+  "gauge_post_valid_fault": "none",
+  "gauge_fault_injected_after_valid": false,
+  "gauge_fault_injected_at_seconds": null,
+  "thermal_startup_fault": "none",
+  "thermal_post_fresh_fault": "none",
+  "thermal_fault_injected_after_fresh": false,
+  "thermal_fault_injected_at_seconds": null,
+  "key_mode": "none",
+  "buttons_down": [],
+  "buttons_matching_up": [],
+  "buttons_held_at_end": [],
+  "native_battery_publication_gap": {
+    "start_ms": 0,
+    "duration_ms": 0,
+    "observations": []
+  },
+  "native_power_accepted": false,
+  "synthetic_power_state": null,
+  "native_sysctls": {
+    "mt6762_pmic_id": {
+      "value": -1,
+      "error": 0
+    },
+    "mt6762_power_valid": {
+      "value": 64,
+      "error": 0
+    },
+    "mt6762_power_errors": {
+      "value": 0,
+      "error": 0
+    },
+    "mt6762_battery_adc_mv": {
+      "value": -1,
+      "error": 0
+    },
+    "mt6762_ntc_adc_mv": {
+      "value": -1,
+      "error": 0
+    },
+    "mt6762_adc_voltage_samples": {
+      "value": 0,
+      "error": 0
+    },
+    "mt6762_adc_ntc_samples": {
+      "value": 0,
+      "error": 0
+    },
+    "mt6762_charger_control_safe": {
+      "value": 1,
+      "error": 0
+    },
+    "mt6762_charger_state": {
+      "value": 0,
+      "error": 0
+    },
+    "mt6762_sspm_alive": {
+      "value": -1,
+      "error": 0
+    },
+    "mt6762_sspm_fault": {
+      "value": 0,
+      "error": 0
+    },
+    "mt6762_pmic_die_mc": {
+      "value": -273000,
+      "error": 0
+    },
+    "mt6762_pmic_buck1_mc": {
+      "value": -273000,
+      "error": 0
+    },
+    "mt6762_pmic_buck2_mc": {
+      "value": -273000,
+      "error": 0
+    },
+    "mt6762_thermal_observed": {
+      "value": 0,
+      "error": 0
+    },
+    "mt6762_thermal_fresh": {
+      "value": 0,
+      "error": 0
+    },
+    "mt6762_thermal_samples": {
+      "value": 0,
+      "error": 0
+    },
+    "mt6762_thermal_errors": {
+      "value": 0,
+      "error": 0
+    },
+    "mt6762_cpu_ts1_mc": {
+      "value": -273000,
+      "error": 0
+    },
+    "mt6762_gauge_current_ua": {
+      "value": -2147483648,
+      "error": 0
+    },
+    "mt6762_gauge_current_valid": {
+      "value": 0,
+      "error": 0
+    },
+    "mt6762_gauge_samples": {
+      "value": 0,
+      "error": 0
+    },
+    "mt6762_gauge_errors": {
+      "value": 0,
+      "error": 0
+    },
+    "mt6762_gauge_fault": {
+      "value": 0,
+      "error": 0
+    },
+    "mt6762_gauge_raw_current": {
+      "value": -1,
+      "error": 0
+    },
+    "mt6762_gauge_charge_valid": {
+      "value": 0,
+      "error": 0
+    },
+    "mt6762_gauge_freshness_rejections": {
+      "value": 0,
+      "error": 0
+    },
+    "mt6762_bif_raw": {
+      "value": -1,
+      "error": 0
+    },
+    "mt6762_bif_ntc_raw": {
+      "value": -1,
+      "error": 0
+    },
+    "mt6762_bif_pair_fresh": {
+      "value": 0,
+      "error": 0
+    },
+    "mt6762_bif_samples": {
+      "value": 0,
+      "error": 0
+    },
+    "mt6762_bif_errors": {
+      "value": 0,
+      "error": 0
+    },
+    "mt6762_bif_fault": {
+      "value": 0,
+      "error": 0
+    },
+    "mt6762_bif_generation_rejections": {
+      "value": 0,
+      "error": 0
+    },
+    "mt6762_bif_last_error": {
+      "value": 0,
+      "error": 0
+    },
+    "mt6762_battery_report_gap_state": {
+      "value": 0,
+      "error": 0
+    },
+    "mt6762_battery_reports_suppressed": {
+      "value": 0,
+      "error": 0
+    },
+    "mt6762_adc_voltage_requests": {
+      "value": 0,
+      "error": 0
+    },
+    "battery_voltage_mv": {
+      "value": -1,
+      "error": 0
+    },
+    "battery_current_ma": {
+      "value": -2147483648,
+      "error": 0
+    },
+    "battery_present": {
+      "value": -1,
+      "error": 0
+    },
+    "battery_charger_present": {
+      "value": -1,
+      "error": 0
+    },
+    "battery_charging": {
+      "value": -1,
+      "error": 0
+    },
+    "battery_soc": {
+      "value": -1,
+      "error": 0
+    },
+    "battery_temperature_c": {
+      "value": -273,
+      "error": 0
+    },
+    "mt6762_gauge_charge_uah": {
+      "value": -9223372036854775808,
+      "error": 0
+    }
+  },
+  "native_sspm_alive": false,
+  "synthetic_sspm_state": null,
+  "native_i2c0_ready": true,
+  "native_i2c5_ready": true,
+  "touch_version_accepted": true,
+  "touch_dma_reads": 814,
+  "charger_bus_transactions": 44,
+  "synthetic_psc_control": 4,
+  "synthetic_psc_status": 0,
+  "dma_fault_injected": false,
+  "touch_worker_stopped_on_error": false,
+  "kernel_panic_observed": false,
+  "queue_mode": "cycle",
+  "expected_cpu_count": 1,
+  "secondary_cpus_online": [],
+  "queue_observer_ready": true,
+  "queue_downs": 13,
+  "queue_moves": 188,
+  "queue_ups": 13,
+  "queue_matching_releases": 13,
+  "queue_matching_release_after_error": false,
+  "queue_held_at_end": 0,
+  "raw_report_sha256": "e60d283ff92550cb58caacc2645ab40a24978c68d328b8b9e227cd013e3eafd5"
+}

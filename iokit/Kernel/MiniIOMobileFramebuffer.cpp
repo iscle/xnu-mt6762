@@ -245,6 +245,7 @@ public:
 	IOLock *        fLock;
 	uint8_t *       fBase;                  /* the boot framebuffer: the panel */
 	uint32_t        fPanelWidth, fPanelHeight, fRowBytes;
+	uint32_t        fOpaqueMask;             /* inherited LK overlay needs opaque final pixels */
 	uint32_t        fWidth, fHeight;        /* the display as user space sees it */
 	MiniIOSurface * fDefaultSurface;
 	uint32_t        fSwapID;
@@ -484,6 +485,12 @@ IOMobileFramebuffer::start(IOService * provider)
 	fPanelWidth = vinfo.v_width;
 	fPanelHeight = vinfo.v_height;
 	fRowBytes = vinfo.v_rowbytes;
+	fOpaqueMask = 0;
+#if defined(ARM64_BOARD_CONFIG_MT6762)
+	uint32_t displayProfile;
+	if (!mt6762_handoff_u32("display-profile", &displayProfile) && displayProfile == 2)
+		fOpaqueMask = 0xff000000u;
+#endif
 	fWidth = gFBWidth ? gFBWidth : fPanelWidth;
 	fHeight = gFBHeight ? gFBHeight : fPanelHeight;
 	if (gFBScale != 0 && gFBScale != kFBDefaultScale) {
@@ -678,7 +685,10 @@ IOMobileFramebuffer::drawRows(const RowJob * job, int32_t y0, int32_t y1, uint32
 		to = (uint32_t *) (fBase + (size_t) y * fRowBytes);
 		if (job->unscaled) {
 			/* not scaled at all */
-			memcpy(to + px0, pixels + (size_t) (sy + y - py0) * stride + (size_t) sx * 4, (size_t) sw * 4);
+			const uint32_t *source = (const uint32_t *)(pixels + (size_t) (sy + y - py0) * stride) + sx;
+			if (fOpaqueMask) {
+				for (int32_t x = 0; x < sw; ++x) to[px0 + x] = source[x] | fOpaqueMask;
+			} else memcpy(to + px0, source, (size_t) sw * 4);
 			continue;
 		}
 		if (filter) {
@@ -708,6 +718,7 @@ IOMobileFramebuffer::drawRows(const RowJob * job, int32_t y0, int32_t y1, uint32
 			for (int32_t x = cx0; x < cx1; x++) {
 				uint32_t value = filter ? blend(from[fColumn[x]], from[fColumn[x] + (fColumnWeight[x] != 0)], fColumnWeight[x]) :
 				    from[fColumn[x]];
+				value |= fOpaqueMask;
 
 				if (to[x] != value) {
 					fDiffPixels++;
@@ -726,11 +737,11 @@ IOMobileFramebuffer::drawRows(const RowJob * job, int32_t y0, int32_t y1, uint32
 			for (uint32_t i = 0, n = (uint32_t) (cx1 - cx0); i < n; i++) {
 				uint32_t c = column[i], w = weights[i], a = from[c];
 
-				out[i] = w == 0 || a == from[c + 1] ? a : blend(a, from[c + 1], w);
+				out[i] = (w == 0 || a == from[c + 1] ? a : blend(a, from[c + 1], w)) | fOpaqueMask;
 			}
 		} else {
 			for (int32_t x = cx0; x < cx1; x++) {
-				to[x] = from[fColumn[x]];
+				to[x] = from[fColumn[x]] | fOpaqueMask;
 			}
 		}
 	}
@@ -1079,7 +1090,9 @@ IOMobileFramebuffer::show(const uint8_t * swap, MiniIOSurface ** surfaces)
 			/* the bottom layer taken away: nothing is shown, the screen is black */
 			if (layer == 0 && (set & 1) && fGraphics) {
 				for (uint32_t y = 0; y < fPanelHeight; y++) {
-					bzero(fBase + (size_t) y * fRowBytes, (size_t) fPanelWidth * 4);
+					uint32_t *row = (uint32_t *)(fBase + (size_t) y * fRowBytes);
+					if (fOpaqueMask) for (uint32_t x = 0; x < fPanelWidth; ++x) row[x] = fOpaqueMask;
+					else bzero(row, (size_t) fPanelWidth * 4);
 				}
 			}
 			continue;
@@ -1703,8 +1716,11 @@ publishAccelerator(IOService * provider)
 extern "C" void
 MiniIOMobileFramebufferShow(const uint8_t * pixels, uint32_t width, uint32_t height, uint32_t rowBytes)
 {
+	uint32_t opaque = 0;
 #if defined(ARM64_BOARD_CONFIG_MT6762)
 	if (!mt6762_display_usable(vinfo.v_baseaddr, vinfo.v_width, vinfo.v_height, vinfo.v_rowbytes, vinfo.v_depth)) return;
+	uint32_t displayProfile;
+	if (!mt6762_handoff_u32("display-profile", &displayProfile) && displayProfile == 2) opaque = 0xff000000u;
 #endif
 	uint32_t columns = width < vinfo.v_width ? width : (uint32_t) vinfo.v_width;
 	uint32_t rows = height < vinfo.v_height ? height : (uint32_t) vinfo.v_height;
@@ -1713,8 +1729,10 @@ MiniIOMobileFramebufferShow(const uint8_t * pixels, uint32_t width, uint32_t hei
 		return;
 	}
 	for (uint32_t y = 0; y < rows; y++) {
-		memcpy((void *) (vinfo.v_baseaddr + (size_t) y * vinfo.v_rowbytes), pixels + (size_t) y * rowBytes,
-		    (size_t) columns * 4);
+		uint32_t *to = (uint32_t *)(vinfo.v_baseaddr + (size_t) y * vinfo.v_rowbytes);
+		const uint32_t *from = (const uint32_t *)(pixels + (size_t) y * rowBytes);
+		if (opaque) for (uint32_t x = 0; x < columns; ++x) to[x] = from[x] | opaque;
+		else memcpy(to, from, (size_t) columns * 4);
 	}
 }
 

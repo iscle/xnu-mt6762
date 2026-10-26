@@ -249,7 +249,8 @@ def main():
             'native_sspm_alive':'PLATFORM probe result=0 alive=1 fault=0' in serial,
             'synthetic_sspm_state':snapshots[-1].get('sspm') if snapshots else None,
             'native_i2c0_ready':'native I2C0 ready' in serial,'native_i2c5_ready':'native I2C5 ready' in serial,
-            'touch_version_accepted':'native consumer running' in serial,
+            'touch_version_accepted':('MT6762_TOUCH_VERSION error=0 bytes=0007' in serial or
+                                      'native consumer running' in serial),
             'touch_dma_reads':final.get('i2c0',{}).get('dma_reads',0),
             'charger_bus_transactions':final.get('i2c5',{}).get('transactions',0),
             'synthetic_psc_control':final.get('i2c5',{}).get('psc_control'),

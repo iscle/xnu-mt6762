@@ -31,6 +31,7 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('manifest',type=Path)
     parser.add_argument('--seconds',type=float,default=15)
+    parser.add_argument('--ios-slice',action='store_true',help='test /dev/mtkios0 with an ios-configured PID1 probe')
     parser.add_argument('--fault',choices=FAULTS,default='none')
     parser.add_argument('--expect-admission-rejected',action='store_true',
                         help='Explicit malformed native handoff must expose no readable device')
@@ -54,10 +55,16 @@ def main():
     before=digest(source)
     if before!=metadata['sha256']:parser.error('Backing file changed since preparation')
     sectors=metadata['sector_count']
+    start=0
+    if args.ios_slice:
+        extent=manifest.get('native_lab_ios_slice')
+        if not extent or len(extent)!=2:parser.error('Manifest has no explicit iOS slice')
+        start,sectors=extent
+        if start<0 or sectors<=0 or start+sectors>metadata['sector_count']:parser.error('Invalid slice extent')
     expected={}
     with source.open('rb') as backing:
         for lba in {0,min(1,sectors-1),sectors-1}:
-            backing.seek(lba*512);expected[lba]=fnv1a(backing.read(512))
+            backing.seek((start+lba)*512);expected[lba]=fnv1a(backing.read(512))
     command=list(manifest['command'])
     if args.fault!='none' and not args.fault_after_first_read:
         command[command.index('-M')+1]+=',lab-msdc-fault='+args.fault
@@ -123,6 +130,7 @@ def main():
     cpus=sorted(set(int(n) for n in re.findall(r'arm_cpu_init\(\): cpu (\d+) online',text)))
     errors=[]
     if run_error:errors.append(run_error)
+    if scalars.get('ios_slice',0)!=int(args.ios_slice):errors.append('Probe device selection does not match requested slice')
     if 'panic(' in text:errors.append('Kernel panic observed')
     if before!=after:errors.append('Backing image changed')
     if 'MT6762_MSDC_PROBE_DONE' not in text:errors.append('Guest probe did not finish')
@@ -140,6 +148,7 @@ def main():
         if any(r['result']!=512 or r['fnv1a']!=expected[r['lba']] for r in reads):errors.append('Guest bytes differ from real backing-file sectors')
         if states and states[-1]['state']['backend_reads']<len(reads):errors.append('Reads lack real backend activity')
         expected_ranges=[(480,64)] if sectors>1 else []
+        if args.ios_slice and sectors>=256:expected_ranges.append((0,128*1024))
         expected_ranges += [(sectors*512-16,32),(sectors*512,512),((sectors+1)*512,512)]
         # XNU permits negative lseek onVCHR; the driver must reject the read.
         if scalars.get('negative_seek')!=-1 or scalars.get('negative_read')!=-22 or scalars.get('negative_buffer')!=0xa5:
@@ -147,7 +156,7 @@ def main():
         if [(r['offset'],r['count']) for r in ranges]!=expected_ranges:errors.append('Unaligned/EOF range observations missing')
         with source.open('rb') as backing:
             for r in ranges:
-                backing.seek(r['offset']);data=backing.read(r['count'])
+                backing.seek(start*512+r['offset']);data=backing.read(max(0,min(r['count'],sectors*512-r['offset'])))
                 payload=data+bytes([0xa5])*(r['count']-len(data))
                 if r['result']!=len(data) or r['fnv1a']!=fnv1a(payload):errors.append('Range/EOF result differs from real file bytes')
 
@@ -177,6 +186,7 @@ def main():
     result=dict(synthetic_only=True,physical_hardware_tested=False,passed=not errors,errors=errors,
                 kernel_sha256=manifest['kernel_sha256'],qemu_binary_sha256=qemu_hash,
                 image_sha256_before=before,image_sha256_after=after,sector_count=sectors,
+                slice_start_sector=start,ios_slice=args.ios_slice,
                 expected_admission_rejected=args.expect_admission_rejected,
                 expected_no_commands=args.expect_no_commands,
                 startup_fault=args.fault if not args.fault_after_first_read else 'none',

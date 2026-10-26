@@ -1,7 +1,7 @@
 Reproducing the local MT6762 QEMU experiment
 ==========================================
 
-These fourteen patches reproduce the local research machine used for MT6762
+These fifteen patches reproduce the local research machine used for MT6762
 bring-up. They contain source code and documentation only: no phone firmware,
 iOS files, credentials, personal partitions, or built binaries.
 
@@ -22,7 +22,7 @@ Source provenance
   ``49d41542f0ccfed448d90c9ad4397a592292d027``,
   ``20e020a98f55679572ad7d18e1c4897b9951a1b5`` and
   ``0f9a62cb5b983e7d9d2a93d90a2c18eb46e0cf1a``.
-* Resulting Git tree: ``0125e95a64260f85882328607ded8cf8f7ad12b5``.
+* Resulting Git tree: ``8cefb75e9e6e4f345746e6e2433129544a17465c``.
 
 ``apply.sh`` verifies the patch SHA-256 hashes, fetches that exact upstream
 commit, applies the patch series in order, and verifies the final tree.
@@ -191,3 +191,11 @@ to the subsequently measured0x81000001; single-layer remains zero and SBCH
 remains zero. This preserves the actual handoff's wide-gamut bit for the
 inherited console test, without modeling its color transfer function.
 See display-patch14-evidence.json.
+
+The fifteenth patch (local commit ``5e3d0161b19e2b5ec955443fb4da2229fbcb0fbe``)
+adds the measured LK PWM profile to the explicit two-layer fixture: parent0
+(26MHz), divider0, period1023, duty1023 and GPIO43 mode1. The default disabled
+fixture and legacy single-layer profile are retained. Both PWM profiles and
+read-only pipeline rejection pass the register tests. This tests the guest
+protocol; physical brightness changes still require a phone trial.
+See display-patch15-evidence.json.

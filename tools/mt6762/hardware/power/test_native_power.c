@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "../../../../bsd/dev/mt6762_power_protocol.h"
+#include "mt6762_pwrap_entry.h"
 #define INIT (1u << 21)
 struct mock { uint32_t states[8],offset[8],value[8]; unsigned n,index,reads,writes,delay; };
 static uint32_t rd(void *p,uint32_t off)
@@ -36,6 +37,51 @@ static void wacs_tests(void)
     m=(struct mock){.states={INIT},.n=1};
     assert(mt6762_wacs_transfer(&io,0,7,&v)==-1 && !m.reads && !m.writes);
     assert(mt6762_wacs_transfer(NULL,0,8,&v)==-1);
+    for(unsigned profile=1;profile<=2;profile++)for(unsigned bits=0;bits<4;bits++) {
+        uint32_t init=bits<<21;v=0x1234;
+        m=(struct mock){.states={init,init|(6u<<16)|0x5730,init},.n=3};
+        int error=mt6762_wacs_transfer_profile(&io,profile,0,8,&v);
+        if(bits&(1u<<(profile-1))) {
+            assert(!error && v==0x5730 && m.writes==2);
+            assert(m.offset[0]==0xc20 && m.value[0]==0x40000);
+            assert(m.offset[1]==0xc28 && m.value[1]==1);
+        } else assert(error==-2 && v==0x1234 && !m.writes && m.reads==1);
+    }
+    m=(struct mock){.states={3u<<21},.n=1};v=0x1234;
+    assert(mt6762_wacs_transfer_profile(&io,0,0,8,&v)==-1 && !m.reads && !m.writes);
+    assert(mt6762_wacs_transfer_profile(&io,3,0,8,&v)==-1 && !m.reads && !m.writes);
+    for(unsigned phase=0;phase<3;phase++) {
+        uint32_t init=1u<<22;
+        m=(struct mock){.states={init,init|(6u<<16)|0x5730,init|(2u<<16)},.n=3};
+        if(!phase)m=(struct mock){.states={init|(6u<<16)},.n=1};
+        if(phase==1)m=(struct mock){.states={init,init|(2u<<16)},.n=2};
+        assert(mt6762_wacs_transfer_profile(&io,2,0,8,&v)==-3);
+        assert(v==0x1234 && m.writes==phase);
+    }
+}
+struct entry_mock {uint32_t bad_address,bad_value;unsigned reads;};
+static uint32_t entry_rd(void *ctx,uint32_t a)
+{
+    struct entry_mock *m=ctx;m->reads++;
+    if(a==m->bad_address)return m->bad_value;
+    switch(a) {
+    case 0x10001090:case 0x1000d000:case 0x1000d07c:return 0;
+    case 0x1000d004:case 0x1000d09c:case 0x1000d0a0:return 1;
+    case 0x1000dc24:return 0x80f00800; /* actual capture17 */
+    default:assert(0);return 0;
+    }
+}
+static void entry_tests(void)
+{
+    struct entry_mock m={0};assert(mt6762_pwrap_entry_ok(entry_rd,&m));assert(m.reads==14);
+    const uint32_t bad[][2]={{0x10001090,2},{0x1000d000,1},{0x1000d004,0},
+        {0x1000d07c,1},{0x1000d09c,0},{0x1000d0a0,0},
+        {0x1000dc24,1u<<21},{0x1000dc24,0x460000},{0x1000dc24,0x420000}};
+    for(unsigned n=0;n<sizeof(bad)/sizeof(bad[0]);n++) {
+        m=(struct entry_mock){bad[n][0],bad[n][1],0};
+        assert(!mt6762_pwrap_entry_ok(entry_rd,&m));
+        if(!n)assert(m.reads==1);
+    }
 }
 struct adc { uint16_t out,request,address; unsigned reads,writes,delay,pending; int re,we; };
 static int adc_rd(void *p,uint16_t address,uint16_t *v)
@@ -80,4 +126,4 @@ static void keys_tests(void)
     assert(!mt6762_key_update(&k,1,0));assert(!mt6762_key_update(&k,1,1));
     assert(mt6762_key_update(&k,1,1)==1);
 }
-int main(void) {wacs_tests();adc_tests();keys_tests();puts("native PWRAP, ADC and button tests: PASS");return 0;}
+int main(void) {wacs_tests();entry_tests();adc_tests();keys_tests();puts("native PWRAP profiles/admission, ADC and button tests: PASS");return 0;}

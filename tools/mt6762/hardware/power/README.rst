@@ -6,6 +6,26 @@ XNU battery/charging driver. Authorized passive stock Android ADB observations
 are saved separately in hardware/live-power. No XNU hardware charging, battery
 state of charge, or physical button operation is claimed.
 
+Inherited LK read profile
+-------------------------
+
+The native wrapper now selects its readiness layout explicitly. Profile1 is
+the existing synthetic bit21 fixture; profile2 follows the exact stock LK's
+bit22 INIT_DONE test. Physical native handoffs must select profile2. Host
+tests cover both profiles, reject the other initialization bit by itself,
+preserve output on command/completion timeouts, and never clear another
+transaction's pending valid data.
+
+``physical/build_payload.py --native-pwrap-probe`` checks the live INFRA gate,
+automatic wrapper mode, WACS2 enable, dedicated INIT_DONE2 and idle FSM twice
+before granting a read probe. The kernel repeats those checks and reads PMIC
+identity, then two passes of ordinary registers0x24,0x14c,0x1988,0x1958,
+0x1c20,0x1996,0x1966. These cover key/reset status and the eMMC regulator
+enable/selector/status fields. It logs raw values; it does not equate selector
+or enable status with an analog measurement. PMIC writes, ADC/gauge commands,
+charger control and input events are excluded from this initial probe.
+The implementation is host-tested; physical PWRAP transactions remain pending.
+
 Evidence and provenance
 -----------------------
 

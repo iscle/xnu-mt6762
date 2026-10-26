@@ -13,7 +13,8 @@ enum loader_phase {
 enum loader_failure {
     TRACE_BAD_CPU = 1, TRACE_BAD_FDT_POINTER = 2, TRACE_BAD_COMPATIBLE = 3,
     TRACE_BAD_MPIDR = 4, TRACE_BAD_FDT_ALIGNMENT = 5, TRACE_BAD_GIC = 6,
-    TRACE_BAD_RESULT = 7, TRACE_FDT_ERROR = 0x100, TRACE_WINDOW_ERROR = 0x200
+    TRACE_BAD_RESULT = 7, TRACE_BAD_NATIVE_DISPLAY = 8,
+    TRACE_FDT_ERROR = 0x100, TRACE_WINDOW_ERROR = 0x200
 };
 struct loader_trace {
     uint8_t magic[8]; uint32_t version, size; uint8_t identity[32];

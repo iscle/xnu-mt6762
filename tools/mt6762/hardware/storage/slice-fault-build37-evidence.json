@@ -1,0 +1,149 @@
+{
+  "synthetic_only": true,
+  "physical_hardware_tested": false,
+  "passed": true,
+  "errors": [],
+  "kernel_sha256": "dc386ea3c788a35e22a08a3f7e5d3fcf71f204964ff2e323ebfb7d2432bde8ff",
+  "qemu_binary_sha256": "9417efd892c3311871781e653b9b8a4f051bfe3bfc8984e3da2ed636241da95b",
+  "image_sha256_before": "a4f5c133a820530a1aff82ee645ade10605c91b718f4ff341dc5ba279b4131c1",
+  "image_sha256_after": "a4f5c133a820530a1aff82ee645ade10605c91b718f4ff341dc5ba279b4131c1",
+  "sector_count": 256,
+  "slice_start_sector": 16,
+  "ios_slice": true,
+  "expected_admission_rejected": false,
+  "expected_no_commands": false,
+  "startup_fault": "none",
+  "delayed_fault": "data-crc",
+  "fault_injected": true,
+  "fault_cleared_after_error": true,
+  "secondary_cpus_online": [],
+  "guest_scalars": {
+    "ios_slice": 1,
+    "char_open": 1,
+    "blocksize_error": 0,
+    "blockcount_error": 0,
+    "writable_error": 0,
+    "blocksize": 512,
+    "blockcount": 256,
+    "writable": 0,
+    "write_open": -30,
+    "block_open": 2,
+    "negative_seek": -1,
+    "negative_read": -22,
+    "negative_buffer": 165
+  },
+  "native_sysctls": {
+    "mt6762_msdc_ready": {
+      "value": 0,
+      "error": 0
+    },
+    "mt6762_msdc_fault": {
+      "value": 1,
+      "error": 0
+    },
+    "mt6762_msdc_last_error": {
+      "value": -6,
+      "error": 0
+    },
+    "mt6762_msdc_reads": {
+      "value": 1,
+      "error": 0
+    },
+    "mt6762_msdc_sectors": {
+      "value": 288,
+      "error": 0
+    }
+  },
+  "guest_reads": [
+    {
+      "kind": "char",
+      "lba": 0,
+      "result": 512,
+      "fnv1a": 4211846085
+    },
+    {
+      "kind": "char",
+      "lba": 1,
+      "result": -5,
+      "fnv1a": 1388775365
+    },
+    {
+      "kind": "char",
+      "lba": 255,
+      "result": -6,
+      "fnv1a": 1388775365
+    },
+    {
+      "kind": "block",
+      "lba": 0,
+      "result": -6,
+      "fnv1a": 1388775365
+    }
+  ],
+  "guest_ranges": [
+    {
+      "offset": 480,
+      "count": 64,
+      "result": -6,
+      "fnv1a": 3276678661
+    },
+    {
+      "offset": 0,
+      "count": 131072,
+      "result": -6,
+      "fnv1a": 1132895685
+    },
+    {
+      "offset": 131056,
+      "count": 32,
+      "result": -6,
+      "fnv1a": 766294181
+    },
+    {
+      "offset": 131072,
+      "count": 512,
+      "result": 0,
+      "fnv1a": 1388775365
+    },
+    {
+      "offset": 131584,
+      "count": 512,
+      "result": 0,
+      "fnv1a": 1388775365
+    }
+  ],
+  "serial_sha256": "457b6c14fb522e26473fa70ed49e521bd34ddc5337b3867b99f6a25f6b735f35",
+  "raw_report_sha256": "c5e298d2ef8f1283e7f9a889f979d39a672fa50ed322b9b45cdfd5b690cdc531",
+  "model_sample_count": 98,
+  "last_model_sample": {
+    "elapsed_seconds": 1.018,
+    "state": {
+      "enabled": true,
+      "synthetic": true,
+      "readonly": true,
+      "dma_emulated": false,
+      "irq_delivery": false,
+      "fault": 0,
+      "sectors": 288,
+      "commands": 8,
+      "cmd8": 1,
+      "cmd13": 5,
+      "cmd17": 2,
+      "completed": 2,
+      "bytes_read": 1152,
+      "backend_reads": 2,
+      "backend_errors": 0,
+      "rejected": 0,
+      "ack_writes": 10,
+      "reads": 548,
+      "writes": 29,
+      "arg": 17,
+      "command": 33556625,
+      "irq": 32768,
+      "response": 2304,
+      "fifo_bytes": 0,
+      "pending": false,
+      "reading": false
+    }
+  }
+}

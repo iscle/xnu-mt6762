@@ -34,6 +34,10 @@ struct mt6762_msdc {
     struct mt6762_msdc_io io;
     struct mt6762_msdc_config config;
     unsigned initialized, faulted;
+    /* RAM diagnostics; never read additional MMIO after a terminal failure. */
+    uint32_t last_command, last_argument, data_bytes, last_irq;
+    unsigned wait_phase; /* 1 command response, 2 FIFO/completion */
+    uint64_t stalled_us;
 };
 static inline int mt6762_msdc_fail(struct mt6762_msdc *s,int error)
 {
@@ -63,6 +67,7 @@ static inline int mt6762_msdc_quiet(struct mt6762_msdc *s)
 static inline int mt6762_msdc_wait_step(struct mt6762_msdc *s,uint64_t start,unsigned *polls)
 {
     uint64_t now=s->io.time_us(s->io.ctx);
+    s->stalled_us=now>=start?now-start:UINT64_MAX;
     if(now<start || now-start>=s->config.timeout_us ||
        (*polls)++>=s->config.timeout_us)return MT6762_MSDC_TIMEOUT;
     s->io.delay_us(s->io.ctx,1);
@@ -79,14 +84,17 @@ static inline int mt6762_msdc_command(struct mt6762_msdc *s,uint32_t command,
     if((command!=0x8d && command!=0x02000888 && command!=0x02000891) ||
        (command==0x02000888 && arg) ||
        (command==0x8d && arg!=(s->config.rca<<16)))return MT6762_MSDC_ARGUMENT;
-    uint64_t start=s->io.time_us(s->io.ctx);
-    unsigned polls=0;
+    unsigned polls=0;int expired=0;
     int error=mt6762_msdc_quiet(s);
     if(error)return error;
     mt6762_msdc_w(s,0x38,arg);
     mt6762_msdc_w(s,0x34,command);
+    s->last_command=command;s->last_argument=arg;s->wait_phase=1;
+    s->data_bytes=0;s->stalled_us=0;
+    uint64_t start=s->io.time_us(s->io.ctx);
     for(;;) {
         uint32_t irq=mt6762_msdc_r(s,0x0c), owned=irq&0x700;
+        s->last_irq=irq;
         if(owned) {
             /* Error wins over simultaneous completion. No partial success. */
             if(owned&0x600)return MT6762_MSDC_COMMAND;
@@ -96,7 +104,12 @@ static inline int mt6762_msdc_command(struct mt6762_msdc *s,uint32_t command,
             if(*r1&0xffffe0c0u)return MT6762_MSDC_CARD;
             return 0;
         }
-        if((error=mt6762_msdc_wait_step(s,start,&polls)))return error;
+        /* A scheduler gap can occur between the status read and clock read.
+         * Re-sample once at expiry; never reject a completed command using
+         * a pre-descheduling not-ready value. Hardware error still wins. */
+        if(expired)return expired;
+        expired=mt6762_msdc_wait_step(s,start,&polls);
+        if(expired && s->stalled_us==UINT64_MAX)return expired;
     }
 }
 static inline int mt6762_msdc_status(struct mt6762_msdc *s)
@@ -113,7 +126,7 @@ static inline int mt6762_msdc_data512(struct mt6762_msdc *s,uint32_t opcode,
     if((opcode!=8 && opcode!=17) ||
        (opcode==17 && arg>=s->config.sector_count))return MT6762_MSDC_ARGUMENT;
     uint32_t r1=0;
-    unsigned have=0,polls=0;
+    unsigned have=0,polls=0;int expired=0;
     int error=mt6762_msdc_quiet(s);
     if(error)return error;
     mt6762_msdc_w(s,0x50,1);
@@ -121,8 +134,10 @@ static inline int mt6762_msdc_data512(struct mt6762_msdc *s,uint32_t opcode,
     error=mt6762_msdc_command(s,0x02000880u|opcode,arg,&r1);
     if(error)return error;
     uint64_t start=s->io.time_us(s->io.ctx);
+    s->wait_phase=2;
     for(;;) {
         uint32_t irq=mt6762_msdc_r(s,0x0c),fifo=mt6762_msdc_r(s,0x14)&0xff;
+        s->last_irq=irq;
         if(irq&0xc000)return MT6762_MSDC_DATA;
         if(fifo>512-have)return MT6762_MSDC_DATA;
         if(fifo>=64 && have<512) {
@@ -131,13 +146,23 @@ static inline int mt6762_msdc_data512(struct mt6762_msdc *s,uint32_t opcode,
                 uint32_t word=mt6762_msdc_r(s,0x1c);
                 for(unsigned j=0;j<4;j++)data[have++]=(uint8_t)(word>>(j*8));
             }
+            s->data_bytes=have;
+            /* Bound stalls, not CPU scheduling delays while data is ready.
+             * There are only eight chunks. Re-read IRQ before accepting the
+             * final completion so a concurrent data error still wins. */
+            uint64_t now=s->io.time_us(s->io.ctx);
+            if(now<start)return MT6762_MSDC_TIMEOUT;
+            start=now;polls=0;s->stalled_us=0;expired=0;
+            continue;
         }
         if(have==512 && (irq&0x1000)) {
             error=mt6762_msdc_ack(s,0x1000);
             if(error)return error;
             return mt6762_msdc_quiet(s);
         }
-        if((error=mt6762_msdc_wait_step(s,start,&polls)))return error;
+        if(expired)return expired;
+        expired=mt6762_msdc_wait_step(s,start,&polls);
+        if(expired && s->stalled_us==UINT64_MAX)return expired;
     }
 }
 static inline int mt6762_msdc_init(struct mt6762_msdc *s,

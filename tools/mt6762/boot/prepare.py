@@ -193,7 +193,7 @@ def msdc_image_metadata(path):
                 sha256=digest.hexdigest(), readonly=True, real_file_backend=True)
 
 
-def make_adt(seed, ramdisks=(), framebuffer=False, identity=None, native_lab_i2c=False, cpus=1, native_lab_display=None, native_lab_sspm=False, native_lab_power=False, native_lab_thermal=False, native_lab_gauge=False, native_lab_bif=False, native_lab_battery_gap_start_ms=0, native_lab_battery_gap_ms=0, native_lab_msdc_sectors=0):
+def make_adt(seed, ramdisks=(), framebuffer=False, identity=None, native_lab_i2c=False, cpus=1, native_lab_display=None, native_lab_sspm=False, native_lab_power=False, native_lab_thermal=False, native_lab_gauge=False, native_lab_bif=False, native_lab_battery_gap_start_ms=0, native_lab_battery_gap_ms=0, native_lab_msdc_sectors=0, native_lab_ios_slice=None):
     if not 1 <= cpus <= 8:
         raise ValueError('MT6762 laboratory topology supports1..8 CPUs')
     if len(seed) != 64:
@@ -254,6 +254,12 @@ def make_adt(seed, ramdisks=(), framebuffer=False, identity=None, native_lab_i2c
         if native_lab_power:
             fixture.update({'pwrap-verified': 1, 'adc-verified': 1, 'keypad-verified': 1})
         fixture_props = [(k, u32(v)) for k, v in fixture.items()]
+        if native_lab_ios_slice is not None:
+            start,count=native_lab_ios_slice
+            if not native_lab_msdc_sectors or start<0 or count<=0 or start>=native_lab_msdc_sectors or count>native_lab_msdc_sectors-start:
+                raise ValueError('iOS slice must fit entirely in explicit MSDC backing image')
+            fixture_props += [('ios-system-slice',u32(1)),
+                ('ios-system-start-sector',u64(start)),('ios-system-sector-count',u64(count))]
         if native_lab_display:
             fb = native_lab_display
             if fb['addr'] & (PAGE - 1) or fb['size'] != 0x144000 or fb['addr'] + fb['size'] > 0x100000000:
@@ -426,6 +432,8 @@ def main():
                    help='With --native-lab-i2c, synthetic SSPM PLATFORM liveness; no DVFS')
     p.add_argument('--native-lab-msdc-image',type=Path,
                    help='Explicit real read-only raw file backing synthetic inherited MSDC PIO; no card initialization')
+    p.add_argument('--native-lab-ios-slice',nargs=2,type=lambda v:int(v,0),metavar=('START','COUNT'),
+                   help='Explicit read-only iOS system slice within --native-lab-msdc-image')
     p.add_argument('--native-lab-battery-gap-start-ms',type=int,default=0,
                    help='Explicit lab publication gap start after first delivery attempt,1000..300000ms; paired with gap duration')
     p.add_argument('--native-lab-battery-gap-ms',type=int,default=0,
@@ -475,6 +483,10 @@ def main():
     if not 256 <= a.memory_mib <= 4096 or a.memory_mib % 32:
         raise ValueError('Emulated RAM must be256..4096MiB in32MiB multiples')
     msdc_image = msdc_image_metadata(a.native_lab_msdc_image) if a.native_lab_msdc_image else None
+    if a.native_lab_ios_slice is not None:
+        start,count=a.native_lab_ios_slice
+        if not msdc_image or start<0 or count<=0 or start>=msdc_image['sector_count'] or count>msdc_image['sector_count']-start:
+            raise ValueError('iOS slice must fit entirely in explicit MSDC backing image')
     MEMORY = a.memory_mib * 1024 * 1024
     out = a.out.resolve()
     out.mkdir(parents=True, exist_ok=True)
@@ -529,7 +541,7 @@ def main():
     identity = load_identity(a.identity_header) if a.identity_header else None
     adt = make_adt(os.urandom(64), ramdisk_pairs, a.framebuffer, identity, a.native_lab_i2c, a.cpus,
                    framebuffer if a.native_lab_display else None, a.native_lab_sspm, a.native_lab_power, a.native_lab_thermal, a.native_lab_gauge, a.native_lab_bif, a.native_lab_battery_gap_start_ms, a.native_lab_battery_gap_ms,
-                   msdc_image['sector_count'] if msdc_image else 0)
+                   msdc_image['sector_count'] if msdc_image else 0, a.native_lab_ios_slice)
     adt_pa = skip_linux_dtb(cursor, align(len(adt)) + PAGE)
     ba_pa = align(adt_pa + len(adt))
     top = ba_pa + PAGE
@@ -608,6 +620,7 @@ def main():
                     boot_args_pa=hex(ba_pa), adt_pa=hex(adt_pa), top_of_kernel_data=hex(top),
                     chained_rebases=nfix, ramdisk=ramdisk_info, framebuffer=framebuffer,
                     native_lab_msdc=bool(msdc_image), native_lab_msdc_image=msdc_image,
+                    native_lab_ios_slice=a.native_lab_ios_slice,
                     native_lab_battery_gap_start_ms=a.native_lab_battery_gap_start_ms, native_lab_battery_gap_ms=a.native_lab_battery_gap_ms,
                     native_lab_adc_delay_us=a.native_lab_adc_delay_us, native_lab_bif=a.native_lab_bif, native_lab_gauge=a.native_lab_gauge, native_lab_thermal=a.native_lab_thermal, native_lab_power=a.native_lab_power, native_lab_sspm=a.native_lab_sspm, native_lab_i2c=a.native_lab_i2c, native_lab_display=a.native_lab_display, native_lab_touch_events=a.native_lab_touch_events,
                     identity_header_sha256=hashlib.sha256(a.identity_header.read_bytes()).hexdigest() if a.identity_header else None,

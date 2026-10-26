@@ -1,0 +1,27 @@
+{
+  "stock_lk_sha256": "5badc0dc942b0babdca3da13c7e07f3b5f1e57b66d503414b7f80effe8ce891a",
+  "lk_image_address": "0x47fffe00",
+  "getter_address": "0x4804bb18",
+  "getter_words": [
+    "0x4a0301c3",
+    "0xc0eb03",
+    "0x4410447a",
+    "0xbf004770",
+    "0xfb12c",
+    "0x4a030203",
+    "0x2080ebc3",
+    "0x4410447a",
+    "0xbf004770",
+    "0xfb228"
+  ],
+  "host_address": "0x48146c50",
+  "card_address": "0x48146d60",
+  "card_ocr_address": "0x48146d6c",
+  "card_rca_address": "0x48146d78",
+  "excluded_cid_start": "0x48146d84",
+  "claims": [
+    "Static address/code audit only",
+    "No phone I/O or card ownership proof"
+  ],
+  "capture_contract": "Read fixed words twice before kernel entry; validate code, linkage, geometry and addressing; never follow pointers"
+}

@@ -1,0 +1,237 @@
+From 5e3d0161b19e2b5ec955443fb4da2229fbcb0fbe Mon Sep 17 00:00:00 2001
+From: Iscle <albertiscle9@gmail.com>
+Date: Sun, 25 Oct 2026 23:54:25 +0100
+Subject: [PATCH] arm/mt6762: model captured LK PWM profile in opt-in display
+ lab
+
+Local AI-assisted experiment only; not intended for upstream submission. Extend the two-layer fixture with parent0/divider0 and captured GPIO43 mux state. Exercise both PWM profiles and preserve pipeline read-only tests.
+---
+ docs/system/arm/mt6762.rst       |  5 ++-
+ hw/arm/mt6762.c                  |  1 +
+ hw/arm/mt6762_lab_display.c      |  9 +++---
+ hw/arm/mt6762_lab_i2c.c          | 13 ++++++--
+ include/hw/arm/mt6762_lab_i2c.h  |  1 +
+ tests/mt6762/test_lab_display.py | 55 +++++++++++++++++++-------------
+ 6 files changed, 55 insertions(+), 29 deletions(-)
+
+diff --git a/docs/system/arm/mt6762.rst b/docs/system/arm/mt6762.rst
+index 6cec12f..6985a6a 100644
+--- a/docs/system/arm/mt6762.rst
++++ b/docs/system/arm/mt6762.rst
+@@ -159,7 +159,10 @@ and its framebuffer address are immutable after machine initialization.
+ Fixed readbacks describe one BGRA8888 OVL0 layer at 384x854, stride1536,
+ RDMA direct-link, three DSI lanes and the recovered panel timing constants.
+ Only PWM writes are accepted: the bounded duty latches on an ordered commit
+-1-to-0 transition. PWM starts enabled at duty512, period1023, divider3. The
++1-to-0 transition. PWM starts enabled at duty512, period1023, divider3. The explicit
++``lab-display-two-layer`` fixture instead exposes the captured LK configuration:
++parent0 (26MHz), divider0, duty1023, period1023 and GPIO43 DISP_PWM mux1.
++This is a register-level test fixture, not a panel or PWM waveform model. The
+ shared TOPCKGEN fixture exposes PWM parent3 and an open gate only when this
+ fixture is enabled. Other pipeline writes are rejected and counted.
+ 
+diff --git a/hw/arm/mt6762.c b/hw/arm/mt6762.c
+index 1fc8b86..34a4181 100644
+--- a/hw/arm/mt6762.c
++++ b/hw/arm/mt6762.c
+@@ -303,6 +303,7 @@ static void mt6762_init(MachineState *ms)
+     }
+     if (s->lab_display) {
+         mt6762_lab_i2c_display(s->lab, true);
++        mt6762_lab_i2c_lk_pwm(s->lab, s->lab_display_two_layer);
+         s->display = mt6762_lab_display_create(OBJECT(s), sysmem,
+                                                s->lab_display_fb);
+         mt6762_lab_display_set_two_layer(s->display, s->lab_display_two_layer);
+diff --git a/hw/arm/mt6762_lab_display.c b/hw/arm/mt6762_lab_display.c
+index c45c03f..072c9e0 100644
+--- a/hw/arm/mt6762_lab_display.c
++++ b/hw/arm/mt6762_lab_display.c
+@@ -137,7 +137,7 @@ static void display_write(void *opaque, hwaddr offset, uint64_t value,
+         if (s->pwm_commit == 1 && value == 0) {
+             unsigned duty = (s->pwm_con1 >> 16) & 0x1fff;
+             /* Test fixture only latches the bounded stock configuration. */
+-            if (((s->pwm_con0 >> 16) & 1023) == 3 &&
++            if (((s->pwm_con0 >> 16) & 1023) == (s->two_layer ? 0 : 3) &&
+                 (s->pwm_con1 & 1023) == 1023 && duty <= 1023) {
+                 s->applied_level = (s->pwm_enable & 1) ? duty : 0;
+                 s->commits++;
+@@ -166,10 +166,10 @@ static void display_reset(void *opaque)
+     memset(s->reads, 0, sizeof(s->reads));
+     s->pwm_writes = s->commits = s->rejected_writes = 0;
+     s->pwm_enable = 1;
+-    s->pwm_con0 = 3u << 16;
+-    s->pwm_con1 = (512u << 16) | 1023;
++    s->pwm_con0 = s->two_layer ? 0 : 3u << 16;
++    s->pwm_con1 = ((s->two_layer ? 1023u : 512u) << 16) | 1023;
+     s->pwm_commit = 0;
+-    s->applied_level = 512;
++    s->applied_level = s->two_layer ? 1023 : 512;
+ }
+ 
+ void mt6762_lab_display_configure(MT6762DisplayLab *s, unsigned fault)
+@@ -181,6 +181,7 @@ void mt6762_lab_display_configure(MT6762DisplayLab *s, unsigned fault)
+ void mt6762_lab_display_set_two_layer(MT6762DisplayLab *s, bool enabled)
+ {
+     s->two_layer = enabled;
++    display_reset(s);
+ }
+ 
+ char *mt6762_lab_display_state(MT6762DisplayLab *s)
+diff --git a/hw/arm/mt6762_lab_i2c.c b/hw/arm/mt6762_lab_i2c.c
+index f238c52..8691982 100644
+--- a/hw/arm/mt6762_lab_i2c.c
++++ b/hw/arm/mt6762_lab_i2c.c
+@@ -48,7 +48,7 @@ struct MT6762I2CLab {
+     uint64_t ram_size;
+     uint32_t gates[2], mux;
+     unsigned fault;
+-    bool touch, display;
++    bool touch, display, display_lk;
+     bool touch_override;
+     uint8_t touch_frame[32];
+ };
+@@ -352,7 +352,7 @@ static uint64_t lab_top_read(void *opaque, hwaddr off, unsigned size)
+ {
+     MT6762I2CLab *s = opaque;
+     if (off == 0x80 && s->display) {
+-        return 0x03000000; /* Synthetic PWM parent3, gate open. */
++        return s->display_lk ? 0x00030101 : 0x03000000;
+     }
+     return off == 0xa0 ? s->mux : 0;
+ }
+@@ -371,9 +371,18 @@ static void lab_top_write(void *opaque, hwaddr off, uint64_t val, unsigned size)
+ 
+ static uint64_t lab_gpio_read(void *opaque, hwaddr off, unsigned size)
+ {
++    MT6762I2CLab *s = opaque;
++    if (off == 0x350 && s->display_lk) {
++        return 0x11111441; /* Captured LK pin43 DISP_PWM mux1. */
++    }
+     return off == 0x3a0 ? 0x1100 : off == 0x360 ? 0x11 : 0;
+ }
+ 
++void mt6762_lab_i2c_lk_pwm(MT6762I2CLab *s, bool enabled)
++{
++    s->display_lk = enabled;
++}
++
+ static void lab_gpio_write(void *opaque, hwaddr off, uint64_t val, unsigned size)
+ {
+     qemu_log_mask(LOG_GUEST_ERROR, "mt6762 lab GPIO fixture is read-only: %#" HWADDR_PRIx "\n", off);
+diff --git a/include/hw/arm/mt6762_lab_i2c.h b/include/hw/arm/mt6762_lab_i2c.h
+index 077cd7b..8f1f2d7 100644
+--- a/include/hw/arm/mt6762_lab_i2c.h
++++ b/include/hw/arm/mt6762_lab_i2c.h
+@@ -8,6 +8,7 @@ MT6762I2CLab *mt6762_lab_i2c_create(Object *owner, MemoryRegion *memory,
+                                   uint64_t ram_size, qemu_irq irq0,
+                                   qemu_irq irq5);
+ void mt6762_lab_i2c_display(MT6762I2CLab *s, bool enabled);
++void mt6762_lab_i2c_lk_pwm(MT6762I2CLab *s, bool enabled);
+ void mt6762_lab_i2c_configure(MT6762I2CLab *s, unsigned fault, bool touch);
+ char *mt6762_lab_i2c_state(MT6762I2CLab *s);
+ #endif
+diff --git a/tests/mt6762/test_lab_display.py b/tests/mt6762/test_lab_display.py
+index 53ae08b..476f416 100644
+--- a/tests/mt6762/test_lab_display.py
++++ b/tests/mt6762/test_lab_display.py
+@@ -21,6 +21,7 @@ def __init__(self, qemu, dtb, directory, enabled=True, accel='tcg', two_layer=Fa
+         self.qmp_path = directory / "qmp.sock"
+         self.test_path = directory / "qtest.sock"
+         machine = "mt6762,lab-i2c=on"
++        self.two_layer = two_layer
+         if enabled:
+             machine += ",lab-display=on,lab-display-fb=" + (
+                 "0x7ef90000,lab-display-two-layer=on" if two_layer else "0x41000000")
+@@ -107,31 +108,39 @@ def close(self):
+ 
+ 
+ def exercise(lab):
+-    assert lab.state()["applied_level"] == 512
+-    assert lab.read(0x1400bf40) == 0x41000000
++    base=0x7ef90000 if lab.two_layer else 0x41000000
++    initial=1023 if lab.two_layer else 512
++    assert lab.state()["applied_level"] == initial
++    assert lab.read(0x1400bf40) == base
+     assert lab.read(0x10006180) == lab.read(0x10006184) == 8
+-    assert lab.read(0x10000080) == 0x03000000
++    assert lab.read(0x10000080) == (0x30101 if lab.two_layer else 0x03000000)
++    if lab.two_layer:
++        assert lab.read(0x10005350) == 0x11111441
++        assert lab.read(0x1400bf60) == base+0x144000
++        assert lab.read(0x1400b02c) == 3
++        assert lab.read(0x1400b024) == 0x81000001
+     assert not lab.read(0x100010ac) & 4
+-    assert lab.read(0x1401401c) == (3 << 16) | 1152
+-    assert not lab.state()["two_layer"]
+-    assert lab.read(0x1400b02c) == 1 and lab.read(0x1400b030) == 0x20ff
+-    assert lab.read(0x1400bf60) == lab.read(0x1400b050) == 0
+-    before = lab.state()['reads']['ovl']
+-    assert lab.read(0x1400b024) == lab.read(0x1400b3a0) == 0
+-    assert lab.state()['reads']['ovl'] == before + 2
+-    before = lab.state()['rejected_writes']
+-    lab.write(0x1400b024, 0xffffffff)
+-    lab.write(0x1400b3a0, 0xffffffff)
+-    assert lab.read(0x1400b024) == lab.read(0x1400b3a0) == 0
+-    assert lab.state()['rejected_writes'] == before + 2
++    assert lab.read(0x1401401c) == (0x2c030480 if lab.two_layer else (3 << 16) | 1152)
++    if not lab.two_layer:
++        assert not lab.state()["two_layer"]
++        assert lab.read(0x1400b02c) == 1 and lab.read(0x1400b030) == 0x20ff
++        assert lab.read(0x1400bf60) == lab.read(0x1400b050) == 0
++        before = lab.state()['reads']['ovl']
++        assert lab.read(0x1400b024) == lab.read(0x1400b3a0) == 0
++        assert lab.state()['reads']['ovl'] == before + 2
++        before = lab.state()['rejected_writes']
++        lab.write(0x1400b024, 0xffffffff)
++        lab.write(0x1400b3a0, 0xffffffff)
++        assert lab.read(0x1400b024) == lab.read(0x1400b3a0) == 0
++        assert lab.state()['rejected_writes'] == before + 2
+     pwm = 0x1100e000
+-    assert lab.read(pwm + 0x18) == 3 << 16
+-    assert lab.read(pwm + 0x1c) == (512 << 16) | 1023
++    assert lab.read(pwm + 0x18) == (0 if lab.two_layer else 3 << 16)
++    assert lab.read(pwm + 0x1c) == (initial << 16) | 1023
+     lab.write(pwm + 0x1c, (700 << 16) | 1023)
+     lab.write(pwm, 1)
+-    assert lab.state()["applied_level"] == 512
++    assert lab.state()["applied_level"] == initial
+     lab.write(pwm + 0xc, 1)
+-    assert lab.state()["applied_level"] == 512
++    assert lab.state()["applied_level"] == initial
+     lab.write(pwm + 0xc, 0)
+     assert lab.state()["applied_level"] == 700 and lab.state()["commits"] == 1
+     lab.write(pwm + 0xc, 0)  # No rising edge: no new latch.
+@@ -151,10 +160,10 @@ def exercise(lab):
+     lab.fault("power-off")
+     assert lab.read(0x10006180) == 0 and lab.read(0x10006184) == 0
+     lab.fault("scanout-mismatch")
+-    assert lab.read(0x1400bf40) != 0x41000000
++    assert lab.read(0x1400bf40) != base
+     lab.fault("none")
+     lab.write(0x1400bf40, 0x43000000)  # Pipeline is inherited, not programmable.
+-    assert lab.read(0x1400bf40) == 0x41000000
++    assert lab.read(0x1400bf40) == base
+     before = lab.state()["rejected_writes"]
+     lab.write(pwm + 0x1c, (1024 << 16) | 1023)
+     lab.write(pwm + 0xc, 1)
+@@ -210,6 +219,7 @@ def main():
+             assert lab.read(0x1400bf60) == 0x7f0d8000
+             lab.fault('none')
+             assert {a: lab.read(a) for a in registers} == registers
++            lk_result = exercise(lab)
+         finally:
+             lab.close()
+         lab = Lab(args.qemu.resolve(), args.dtb.resolve(), temporary, enabled=False)
+@@ -246,7 +256,8 @@ def main():
+             '-S', '-display', 'none', '-serial', 'null', '-monitor', 'none',
+         ], capture_output=True, timeout=10)
+         assert failed.returncode != 0 and b'lab-display-two-layer requires' in failed.stderr
+-    print(json.dumps({"synthetic_only": True, "passed": True, "final_fixture_state": result}, indent=2))
++    print(json.dumps({"synthetic_only": True, "passed": True, "final_fixture_state": result,
++                      "lk_fixture_state": lk_result}, indent=2))
+ 
+ 
+ if __name__ == "__main__":
+-- 
+2.55.0
+

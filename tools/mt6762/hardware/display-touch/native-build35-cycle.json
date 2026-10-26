@@ -1,0 +1,19 @@
+{
+  "synthetic_model_only": true,
+  "physical_hardware_tested": false,
+  "kernel_sha256": "64a728bf868c9c723f8c13ea26618e95ce6e4f8229636f439581fc5bc1f292cc",
+  "qemu_binary_sha256": "9417efd892c3311871781e653b9b8a4f051bfe3bfc8984e3da2ed636241da95b",
+  "native_i2c0_ready": true,
+  "touch_version_accepted": true,
+  "touch_dma_reads": 810,
+  "dma_fault_injected": false,
+  "touch_worker_stopped_on_error": false,
+  "kernel_panic_observed": false,
+  "queue_mode": "cycle",
+  "queue_downs": 13,
+  "queue_moves": 185,
+  "queue_ups": 13,
+  "queue_matching_releases": 13,
+  "queue_matching_release_after_error": false,
+  "queue_held_at_end": 0
+}

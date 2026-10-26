@@ -1,0 +1,37 @@
+{
+  "artifact_ready": true,
+  "artifact": "/home/iscle/mt6762-ios-port/xnu/BUILD/obj/DEVELOPMENT_ARM64_MT6762/mach.development.mt6762",
+  "make_exit_code": 2,
+  "all_checks_passed": false,
+  "known_postlink_export_failures_only": true,
+  "new_link_observed": true,
+  "macho_arm64_executable": true,
+  "kernel_source_sha256": "e36bfc9499ef2d5255f72ac7da5576dd248f625d42409c059fadd3de123c40f0",
+  "source_unchanged_during_build": true,
+  "source_files_changed_during_build": [],
+  "iig_inputs_unchanged_during_build": true,
+  "iig_inputs_sha256": "943f6fdd328af1c7bdde195ee8e42ba95a36c1029b6edaa21777145e3fc6e4f1",
+  "iig_executable": "/home/iscle/mt6762-ios-port/xnu/tools/mt6762/iig/experimental_legacy_replay.py",
+  "iig_selected_environment": {
+    "MTK_IIG_CANDIDATE": "/home/iscle/mt6762-ios-port/toolchain/iig-legacy-candidate26c-2",
+    "MTK_IIG_CANDIDATE_SHA256": "7fb212a3a7494bc8e3186d23b83e2e8487e01bf4edc4b35ff22faa23386398de",
+    "MTK_IIG_GENERATED": "/home/iscle/mt6762-ios-port/toolchain/iig-generated-diagnostic26c",
+    "MTK_IIG_GENERATION_SHA256": "e7a5ada653deb73c997d22994fc0db0db39aef2268297c3cb6b1a407f9d402cf",
+    "MTK_IIG_INPUTS": "/home/iscle/mt6762-ios-port/toolchain/iig-inputs-8796-build21-diagnostic26c",
+    "MTK_IIG_INPUT_SHA256": "52f15cab4e8194b2cd5e5195be4f3c4e9dc0b24bc5c077beaa05be7ff4137799",
+    "MTK_IIG_OUTPUT_ROOT": "/home/iscle/mt6762-ios-port/xnu/BUILD",
+    "MTK_IIG_XNU": "/home/iscle/mt6762-ios-port/xnu"
+  },
+  "sha256": "b103cc9b274d6f52650e8b261c4b3566b00fdf60270fb4810ec56e10adc244af",
+  "source_head": "832dd972c3971b686dc8516e2b340885e08159c0",
+  "source_status": " M bsd/dev/mt6762_display.c\n M bsd/dev/mt6762_input.c\n M bsd/dev/mt6762_msdc_bsd.c\n M bsd/dev/mt6762_platform.c\n M bsd/dev/redwood_input.c\n M iokit/Kernel/MiniIOMobileFramebuffer.cpp\n M osfmk/console/serial_console.c\n M tools/mt6762/hardware/display-touch/mt6762_display_core.h\n M tools/mt6762/hardware/display-touch/test_display_core.c\n M tools/mt6762/physical/build_normal_trial.py\n M tools/mt6762/physical/build_payload.py\n M tools/mt6762/physical/display_probe.h\n M tools/mt6762/physical/loader.c\n M tools/mt6762/physical/loader_trace.h\n M tools/mt6762/physical/probe_payload.py\n M tools/mt6762/physical/trace-build12-evidence.json\n M tools/mt6762/qemu/README.rst\n M tools/mt6762/qemu/SHA256SUMS\n M tools/mt6762/qemu/apply.sh\n M tools/mt6762/qemu/test_lab_display.py\n?? tools/mt6762/boot/build_desktop_bootstrap.sh\n?? tools/mt6762/boot/desktop_bootstrap.c\n?? tools/mt6762/build-audit/build30.json\n?? tools/mt6762/build-audit/build31.json\n?? tools/mt6762/build-audit/build32.json\n?? tools/mt6762/physical/native_display.h\n?? tools/mt6762/physical/test_native_display.py\n?? tools/mt6762/qemu/0015-arm-mt6762-model-captured-LK-PWM-profile-in-opt-in-d.patch\n?? tools/mt6762/qemu/display-patch15-evidence.json\n",
+  "errors": [
+    "make[4]: *** [/home/iscle/mt6762-ios-port/xnu/config/Makefile:121: check_all_exports] Error 1",
+    "make[4]: *** [/home/iscle/mt6762-ios-port/xnu/config/Makefile:108: /home/iscle/mt6762-ios-port/xnu/BUILD/obj/DEVELOPMENT_ARM64_MT6762/config/Private.symbolset] Error 1",
+    "make[3]: *** [/home/iscle/mt6762-ios-port/xnu/makedefs/MakeInc.dir:89: config_all] Error 2",
+    "make[2]: *** [/home/iscle/mt6762-ios-port/xnu/makedefs/MakeInc.dir:89: config_all_recurse_into_config] Error 2",
+    "make[1]: *** [/home/iscle/mt6762-ios-port/xnu/makedefs/MakeInc.top:538: config_all_bootstrap_DEVELOPMENT^ARM64^MT6762] Error 2",
+    "make: *** [Makefile:239: all] Error 2"
+  ],
+  "build_log": "/home/iscle/mt6762-ios-port/evidence/builds/20261025T230535Z-2395444/make.log"
+}

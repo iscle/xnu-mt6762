@@ -149,7 +149,9 @@ static int read_sector(uint64_t lba,void *out)
         if(engine.faulted) {
             __atomic_store_n(&fault,1,__ATOMIC_RELEASE);
             __atomic_store_n(&ready,0,__ATOMIC_RELEASE);
-            printf("MT6762 MSDC: terminal read failure %d; no reset/retry\n",error);
+            printf("MT6762 MSDC: terminal read failure %d; lba=%llu command=%x phase=%u bytes=%u irq=%x stalled_us=%llu; no reset/retry\n",
+                error,lba,engine.last_command,engine.wait_phase,engine.data_bytes,
+                engine.last_irq,engine.stalled_us);
         }
         return error==MT6762_MSDC_ARGUMENT?EINVAL:
             (error==MT6762_MSDC_TIMEOUT?ETIMEDOUT:EIO);
@@ -171,7 +173,10 @@ static int physical_contract(void)
        mt6762_handoff_u32("msdc-hclk-hz",&expected_hclk) || !expected_hclk)return -1;
     uint32_t normal=(3u<<6)|(3u<<9)|(3u<<12)|(3u<<15)|(3u<<18);
     uint32_t fast=(4u<<6)|(3u<<9)|(4u<<12)|(4u<<15)|(3u<<18);
-    if(expected_pad_drive!=normal && expected_pad_drive!=fast)return -1;
+    /* Actual LK capture15 preserves GEAR1 on all five groups at48MHz DDR.
+     * Do not rewrite those pads to the later Android GEAR3/4 defaults. */
+    uint32_t inherited_lk=(1u<<6)|(1u<<9)|(1u<<12)|(1u<<15)|(1u<<18);
+    if(expected_pad_drive!=normal && expected_pad_drive!=fast && expected_pad_drive!=inherited_lk)return -1;
     static const char * const pll_names[]={"msdc-pll-con0","msdc-pll-con1","msdc-pll-power",
         "msdc-mainpll-con0","msdc-mainpll-con1","msdc-mainpll-power"};
     for(unsigned i=0;i<6;i++)if(mt6762_handoff_u32(pll_names[i],&pll_snapshot[i]))return -1;

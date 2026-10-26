@@ -16,6 +16,7 @@ import prepare
 import trace_record
 import display_record
 import pwm_record
+import peripheral_record
 
 
 def sha(data):
@@ -55,15 +56,35 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ('kernel', 'diagnostic', 'template', 'llvm', 'out'):
         parser.add_argument('--'+name, type=Path, required=True)
+    parser.add_argument('--native-display', action='store_true',
+                        help='require measured LK display/PWM admission and emit its native handoff')
+    parser.add_argument('--brightness-pulse', action='store_true',
+                        help='opt in to the kernel dim/restore diagnostic before PID1')
+    parser.add_argument('--probe-peripherals', action='store_true',
+                        help='passively snapshot audited touch/storage/key/watchdog registers; grants no ownership')
+    parser.add_argument('--expand-memory', action='store_true',
+                        help='extend the diagnostic RAM window to the next reserved region, bounded by CPU PA width')
+    parser.add_argument('--native-touch-probe',action='store_true',
+                        help='admit measured inherited I2C0 for version/DMA then polling; never changes touch rail/reset')
+    parser.add_argument('--refresh-watchdog',action='store_true',help='refresh the measured inherited watchdog without reconfiguring it')
+    parser.add_argument('--native-pwrap-probe',action='store_true',
+                        help='admit inherited LK WACS2 for bounded read-only PMIC/rail observations')
     args = parser.parse_args()
+    if args.brightness_pulse and not args.native_display:
+        parser.error('--brightness-pulse requires --native-display')
+    if (args.native_touch_probe or args.refresh_watchdog or args.native_pwrap_probe) and not (args.native_display and args.probe_peripherals):
+        parser.error('touch/watchdog/PWRAP requires native display and passive peripheral capture')
     out = args.out.resolve()
     if out.exists():
         parser.error('output must be new')
     source_paths = [HERE/name for name in ('start.S','loader.c','loader.ld',
         'fdt_handoff.c','fdt_handoff.h','diagnostic_console.h','loader_trace.h',
         'trace_record.py','display_probe.h','display_record.py','pwm_probe.h','pwm_record.py',
+        'native_display.h','peripheral_probe.h','peripheral_record.py','peripheral-registers.json',
         'build_payload.py','bootimg.py')]
     source_paths += [Path(prepare.__file__), HERE.parent/'hardware/display-touch/mt6762_display_core.h']
+    source_paths += [HERE.parent/'hardware/display-touch/mt6762_touch_entry.h']
+    source_paths += [HERE.parent/'hardware/power/mt6762_pwrap_entry.h']
     sources_before = {str(p.relative_to(HERE.parent)):sha(p.read_bytes()) for p in source_paths}
     original_kernel = args.kernel.read_bytes()
     original_diagnostic = args.diagnostic.read_bytes()
@@ -102,14 +123,38 @@ def main():
     chosen['props']['boot-manifest-hash'] = hashlib.sha384(kernel).digest()
     for key in ('unique-chip-id', 'mac-address-wifi0', 'mac-address-bluetooth0'):
         chosen['props'].pop(key, None)
+    native_flags = ('native-io','display-verified','display-reserved','display-dma-physical',
+        'display-pipeline-verified','brightness-verified','brightness-pins-verified','brightness-parent-verified')
+    if args.native_display:
+        # All grants start clear. Only the live loader admission patches them.
+        props = {name:prepare.u32(0) for name in native_flags}
+        props.update({k:prepare.u32(v) for k,v in {'version':1,'display-profile':2,
+            'brightness-profile':2,'fb-width':384,'fb-height':854,'fb-stride':1536,
+            'fb-format':1,'fb-ovl-layer':1}.items()})
+        props.update({k:prepare.u64(v) for k,v in {'fb-phys':0,'fb-size':0x144000,
+            'fb-reserved-base':0,'fb-reserved-size':0}.items()})
+        touch_flags=('dma-direct','i2c-pads-verified','i2c0-verified','touch-inherited-probe')
+        if args.native_touch_probe:
+            props.update({name:prepare.u32(0) for name in touch_flags})
+            props.update({k:prepare.u32(v) for k,v in {'i2c-parent-index':2,'i2c-parent-hz':124800000,
+                'i2c0-hz':100000,'touch-bus':0,'touch-address':0x3b,'touch-max-x':384,'touch-max-y':854}.items()})
+        if args.refresh_watchdog:props['watchdog-refresh-owned']=prepare.u32(0)
+        pwrap_flags=('pwrap-verified','pwrap-inherited-probe')
+        if args.native_pwrap_probe:
+            props.update({name:prepare.u32(0) for name in pwrap_flags})
+            props['pwrap-profile']=prepare.u32(2)
+        chosen['children'].append(dict(name='mt6762-handoff',props=props,children=[]))
     adt = encode_adt(tree)
     _, end, positions = decode_adt(adt)
     assert end == len(adt)
-    if b'mt6762-handoff' in adt or b'lab-fixture' in adt or b'qemu' in adt.lower():
+    if ((b'mt6762-handoff' in adt and not args.native_display) or
+        b'lab-fixture' in adt or b'qemu' in adt.lower()):
         raise ValueError('laboratory-only metadata in physical ADT')
     args_offset = prepare.align(adt_offset+len(adt))
     top_offset = prepare.align(args_offset+736)
     command = 'debug=0x14e serial=3 keepsyms=1 -v -enable_kprintf_spam rd=md0 cpus=1 mt6762_iig_selftest=1'
+    if args.brightness_pulse:
+        command += ' mt6762_brightness_diagnostic=1'
     boot_args = prepare.boot_args(prepare.PHYS+adt_offset,len(adt),prepare.PHYS+top_offset,command)
     if top_offset > prepare.MEMORY:
         raise ValueError('diagnostic objects exceed target window')
@@ -121,13 +166,34 @@ def main():
         RAMDISK_OFFSET=ramdisk_offset,RAMDISK_SIZE=ramdisk_size,ADT_OFFSET=adt_offset,
         ADT_SIZE=len(adt),ARGS_OFFSET=args_offset,TOP_OFFSET=top_offset,
         ADT_DRAM_PATCH=positions['/device-tree/chosen/dram-base'],
+        ADT_DRAM_SIZE_PATCH=positions['/device-tree/chosen/dram-size'],
         ADT_RAMDISK_PATCH=positions['/device-tree/chosen/memory-map/RAMDisk'],
         SERIAL_PATCH=108+command.index('serial=3')+len('serial='))
+    constants['NATIVE_DISPLAY'] = int(args.native_display)
+    constants['PROBE_PERIPHERALS'] = int(args.probe_peripherals)
+    constants['EXPAND_MEMORY'] = int(args.expand_memory)
+    constants['NATIVE_TOUCH_PROBE']=int(args.native_touch_probe)
+    constants['REFRESH_WATCHDOG']=int(args.refresh_watchdog)
+    constants['NATIVE_PWRAP_PROBE']=int(args.native_pwrap_probe)
+    if args.native_display:
+        native_path='/device-tree/chosen/mt6762-handoff/'
+        constants.update({k:positions[native_path+name] for k,name in (
+            ('ADT_FB_PHYS_PATCH','fb-phys'),('ADT_FB_BASE_PATCH','fb-reserved-base'),
+            ('ADT_FB_SIZE_PATCH','fb-reserved-size'))})
     header = '#include <stdint.h>\nstruct payload_segment {uint64_t offset,fileoff,filesize,vmsize;};\n'
     header += ''.join(f'#define PAYLOAD_{k} UINT64_C({v:#x})\n' for k,v in constants.items())
     header += 'static const struct payload_segment payload_segments[] = {\n'
     header += ''.join(' {'+','.join(f'UINT64_C({s[k]:#x})' for k in ('offset','fileoff','filesize','vmsize'))+'},\n' for s in segments)
     header += '};\n'
+    if args.native_display:
+        header += 'static const unsigned payload_native_flags[] = {'
+        header += ','.join(str(positions[native_path+name]) for name in native_flags)+'};\n'
+        if args.native_touch_probe:
+            header+='static const unsigned payload_touch_flags[] = {'+','.join(str(positions[native_path+name]) for name in touch_flags)+'};\n'
+        if args.refresh_watchdog:
+            header+=f'#define PAYLOAD_ADT_WATCHDOG_PATCH {positions[native_path+"watchdog-refresh-owned"]}\n'
+        if args.native_pwrap_probe:
+            header+='static const unsigned payload_pwrap_flags[] = {'+','.join(str(positions[native_path+name]) for name in pwrap_flags)+'};\n'
     (out/'payload_layout.h').write_text(header)
     assembly = '.section .payload,"a"\n'
     for name in blobs:
@@ -145,6 +211,9 @@ def main():
     (out/'pwm.bin').write_bytes(pwm_record.initialized(trace_identity))
     trace_assembly += '.section .pwm_trace,"aw"\n.balign 64\n.global physical_pwm\nphysical_pwm:\n'
     trace_assembly += '.incbin "' + str(out/'pwm.bin') + '"\n'
+    (out/'peripherals.bin').write_bytes(peripheral_record.initialized(trace_identity))
+    trace_assembly += '.section .peripheral_trace,"aw"\n.balign 64\n.global physical_peripherals\nphysical_peripherals:\n'
+    trace_assembly += '.incbin "' + str(out/'peripherals.bin') + '"\n'
     (out/'trace.S').write_text(trace_assembly)
     clang = str(args.llvm/'clang')
     common = [clang,'--target=aarch64-none-elf','-mcpu=cortex-a53','-mgeneral-regs-only',
@@ -167,6 +236,8 @@ def main():
         raise ValueError('display record does not match fixed source Image offset')
     if raw_image[pwm_record.OFFSET:pwm_record.OFFSET + pwm_record.SIZE] != pwm_record.initialized(trace_identity):
         raise ValueError('PWM record does not match fixed source Image offset')
+    if raw_image[peripheral_record.OFFSET:peripheral_record.OFFSET + peripheral_record.SIZE] != peripheral_record.initialized(trace_identity):
+        raise ValueError('Peripheral record does not match fixed source Image offset')
     # Empty newc archive; XNU's diagnostic executable is embedded in Image.
     name=b'TRAILER!!!\0'; fields=[0,0,0,0,1,0,0,0,0,0,0,len(name),0]
     cpio=b'070701'+b''.join(f'{field:08x}'.encode() for field in fields)+name
@@ -187,8 +258,21 @@ def main():
         image_bytes=image_path.stat().st_size,commands=commands,layout=constants,segments=segments,
         chained_rebases=rebases,boot_command_line=command,physical_hardware_tested=False,
         verified_framebuffer_boot_override='serial=0 retains video console through PID1',
-        vm_page_size=16384,hardware_page_size=4096,native_peripheral_ownership=False,
-        watchdog_modified=False,storage_writes=False,usb_adb_available=False,
+        vm_page_size=16384,hardware_page_size=4096,unconditional_native_peripheral_ownership=False,
+        conditional_native_grants=(['display','brightness'] if args.native_display else [])+
+            (['i2c0-touch-operability-probe'] if args.native_touch_probe else [])+
+            (['pwrap-read-only-probe'] if args.native_pwrap_probe else [])+
+            (['watchdog-refresh'] if args.refresh_watchdog else []),
+        native_display_requested=args.native_display,brightness_pulse_requested=args.brightness_pulse,
+        passive_peripheral_probe=args.probe_peripherals,
+        expand_memory_requested=args.expand_memory,
+        native_touch_probe_requested=args.native_touch_probe,watchdog_refresh_requested=args.refresh_watchdog,
+        native_pwrap_probe_requested=args.native_pwrap_probe,
+        peripheral_trace=dict(offset=peripheral_record.OFFSET,physical_address=peripheral_record.ADDRESS,
+            size=peripheral_record.SIZE,initialized_sha256=sha(peripheral_record.initialized(trace_identity)),
+            register_writes=False,native_ownership=False),
+        native_handoff='runtime display/PWM admission required' if args.native_display else 'absent',
+        watchdog_modified=args.refresh_watchdog,watchdog_reconfigured=False,storage_writes=False,usb_adb_available=False,
         trace=dict(identity=trace_identity.hex(), offset=trace_record.OFFSET,
                    physical_address=trace_record.ADDRESS, size=trace_record.SIZE,
                    initialized_sha256=sha(trace_record.initialized(trace_identity)),

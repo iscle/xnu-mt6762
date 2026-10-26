@@ -38,6 +38,13 @@ int mtk_fdt_parse(const void *blob, size_t accessible_bytes, struct mtk_fdt_info
  * Does not assume that the source blob is at an address inferred from the FDT. */
 int mtk_fdt_select_window(const struct mtk_fdt_info *info, uint64_t fdt_pa,
     const struct mtk_fdt_range *excluded, size_t excluded_count, uint64_t *base);
+/* Extend the validated low-address window through its containing RAM bank.
+ * Stops before every reservation, live object, or the supplied CPU PA limit.
+ * Keeps the existing low base so DMA buffers remain allocatable below4GiB.
+ * The limit must be the exclusive upper physical address, not a RAM size. */
+int mtk_fdt_expand_window(const struct mtk_fdt_info *info, uint64_t fdt_pa,
+    const struct mtk_fdt_range *excluded, size_t excluded_count,
+    uint64_t physical_limit, uint64_t *base, uint64_t *size);
 /* Exact framebuffer reservation must be from memreserve/reg, not dynamic
  * allocation constraints, and the complete range must lie in one RAM bank. */
 int mtk_fdt_framebuffer_reserved(const struct mtk_fdt_info *info);

@@ -48,6 +48,7 @@ class FDTTests(unittest.TestCase):
         cls.lib.mtk_fdt_parse.argtypes=[C.c_void_p,C.c_size_t,C.POINTER(Info)]
         cls.lib.mtk_fdt_framebuffer_reserved.argtypes=[C.POINTER(Info)]
         cls.lib.mtk_fdt_select_window.argtypes=[C.POINTER(Info),C.c_uint64,C.POINTER(Range),C.c_size_t,C.POINTER(C.c_uint64)]
+        cls.lib.mtk_fdt_expand_window.argtypes=[C.POINTER(Info),C.c_uint64,C.POINTER(Range),C.c_size_t,C.c_uint64,C.POINTER(C.c_uint64),C.POINTER(C.c_uint64)]
     def parse(self,b,accessible=None):
         info=Info(); C.memset(C.byref(info),0xa5,C.sizeof(info)); buf=C.create_string_buffer(b)
         rc=self.lib.mtk_fdt_parse(buf,len(b) if accessible is None else accessible,C.byref(info))
@@ -60,6 +61,28 @@ class FDTTests(unittest.TestCase):
     def root(self,banks,extra=(),cells=(2,2)):
         return node('',[('#address-cells',U32(cells[0])),('#size-cells',U32(cells[1]))],
             [node('memory',[('device_type',b'memory\0'),('reg',b''.join(U64(a)+U64(n) for a,n in banks))])]+list(extra))
+    def expand(self,info,fdt_pa=0x47880000,excluded=(),limit=1<<36):
+        array=(Range*len(excluded))(*(Range(a,n) for a,n in excluded))
+        base=C.c_uint64(0xdead);size=C.c_uint64(0xdead)
+        rc=self.lib.mtk_fdt_expand_window(C.byref(info),fdt_pa,array,len(excluded),limit,C.byref(base),C.byref(size))
+        return rc,base.value,size.value
+    def test_expansion_six_gib_keeps_dynamic_constraints_and_top_reservation(self):
+        tree=self.root([(0x40000000,0x180000000)],[
+            node('reserved-memory',[('#address-cells',U32(2)),('#size-cells',U32(2)),('ranges',b'')],[
+                node('possible-allocation',[('alloc-ranges',U64(0x40000000)+U64(0x90000000))]),
+                node('last-page',[('reg',U64(0x1bffff000)+U64(0x1000))])])])
+        rc,i=self.parse(fdt(tree));self.assertEqual(rc,0)
+        self.assertEqual(self.expand(i),(0,0xd0000000,0xefe00000))
+        self.assertEqual(self.expand(i,limit=1<<32),(0,0xd0000000,0x30000000))
+        self.assertEqual(self.expand(i,limit=0xdfffffff),(-8,0,0))
+        self.assertEqual(self.expand(i,excluded=[(0x140100000,0x1000)]),(0,0xd0000000,0x70000000))
+        self.assertEqual(self.expand(i,fdt_pa=0x160100000),(0,0xd0000000,0x90000000))
+    def test_expansion_stops_before_each_bank_gap_and_framebuffer(self):
+        rc,i=self.parse(fdt(self.root([(0x80000000,0xc0000000),(0x140200000,0x20000000)])))
+        self.assertEqual(rc,0);self.assertEqual(self.expand(i),(0,0x80000000,0xc0000000))
+        i.framebuffer.present=1;i.framebuffer.base=0x120100000;i.framebuffer.size=0x1000
+        self.assertEqual(self.expand(i),(0,0x80000000,0xa0000000))
+        self.assertEqual(self.expand(i,excluded=[(0xfffffffffffffff0,0x100)]),(-5,0,0))
     def test_live_three_gib_map_selects_allowed_window(self):
         rc,i=self.parse(fdt()); self.assertEqual(rc,0); self.assertEqual(i.memory_count,1)
         self.assertEqual(self.select(i),(0,0x80000000))

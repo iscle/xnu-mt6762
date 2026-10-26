@@ -116,9 +116,73 @@
     "mtkclient_commit": "fa97df7df41140e60f215f24eea82cb46faf9ff0",
     "seccfg_source_sha256": "274743b51dd3b8a648fb0cc96bd872205d8f892ac88082a7b3737671b05a0be7"
   },
-  "physical_execution_of_image12_proven": false,
+  "physical_execution_of_image12_proven": true,
   "brightness_control_proven": false,
   "native_peripheral_ownership": false,
   "full_ios_userspace_proven": false,
-  "next_action": "Power-button restart; capture13 reader after startup window; inspect retained PWM record before native brightness activation"
+  "next_action": "Implement native two-layer display and measured PWM profile; opt-in dim/restore trial",
+  "physical_diagnostic_pid1_proven": true,
+  "pwm_snapshot": {
+    "sha256": "2a843a3e63161a42eb453c887c62f30ae3730876530d42dcc092f40f6b674b4e",
+    "state": 3,
+    "state_name": "complete",
+    "pass_number": 2,
+    "identity": "a4d62c0516297855404e4bd831340e4e5bf70f7527fb6f307407b3a7ee23b809",
+    "snapshots": [
+      {
+        "read_mask": 23,
+        "power0": 17228,
+        "power1": 17228,
+        "power_control": 3597,
+        "top": 196865,
+        "infra": 0,
+        "gpio": 286331969,
+        "enable": 1,
+        "commit": 0,
+        "con0": 0,
+        "con1": 67044351,
+        "debug": 0,
+        "parent_selector": 0,
+        "gpio43_mode": 1,
+        "divider": 0,
+        "period": 1023,
+        "duty": 1023
+      },
+      {
+        "read_mask": 23,
+        "power0": 17228,
+        "power1": 17228,
+        "power_control": 3597,
+        "top": 196865,
+        "infra": 0,
+        "gpio": 286331969,
+        "enable": 1,
+        "commit": 0,
+        "con0": 0,
+        "con1": 67044351,
+        "debug": 0,
+        "parent_selector": 0,
+        "gpio43_mode": 1,
+        "divider": 0,
+        "period": 1023,
+        "duty": 1023
+      }
+    ],
+    "stable_complete": true,
+    "native_ownership": false,
+    "register_writes": false
+  },
+  "physical_xnu": {
+    "kernel_sha256": "a1f0de1cfb7b04b335d9163b093bba69fa0bb99db1734c11dd430264910f8c4b",
+    "log_address": "0xd3bb49a0",
+    "log_length": 3523,
+    "retained_cache_may_be_incomplete": true,
+    "log_sha256": "ffb68b75ec59c70c0a720d6bb5fefb3c046cb0264e6a81c884db2d96011898be",
+    "memory_globals": [
+      "0xd0000000",
+      "0x20000000",
+      "0xfffffff004000000",
+      "0xe"
+    ]
+  }
 }

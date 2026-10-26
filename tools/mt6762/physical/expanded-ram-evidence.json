@@ -1,0 +1,56 @@
+{
+  "scope": "QEMU replay of captured LK six-GiB FDT, not physical validation",
+  "physical_hardware_tested": false,
+  "installed_dram_bytes": 6442450944,
+  "usable_memory": {
+    "physical_base": 3489660928,
+    "usable_bytes": 4024434688,
+    "actual_bytes": 4024434688
+  },
+  "kernel_sha256": "b103cc9b274d6f52650e8b261c4b3566b00fdf60270fb4810ec56e10adc244af",
+  "raw_image_sha256": "b0246db542289c2a8f7ff183d55fd5376c34bad25118ce6aad03f435fbeec46f",
+  "runtime_fdt_sha256": "1ea1887c92aa315423d6b4041d1094b5db8b645f5118aa7ce7b1e4ecf4356293",
+  "checks": {
+    "ram": true,
+    "xnu": true,
+    "pages": true,
+    "display_admitted": true,
+    "display_pixels": true,
+    "bounded_display_register_writes": true,
+    "native_display": true,
+    "native_pwm": true,
+    "native_pid1": true,
+    "pwm_dim": true,
+    "pwm_restored": true,
+    "pwm_commits": true,
+    "opaque_console_pixels": true,
+    "trace_initialized_before_execution": true,
+    "trace_executed": true,
+    "trace_jump_ready": true,
+    "display_record_expected_state": true,
+    "pwm_record_finished": true
+  },
+  "checks_passed": true,
+  "runtime_args_sha256": "572d21bd041fa6912b48ba092262b4c19eec36058b4ad1c9940beb894cec3375",
+  "framebuffer_png_sha256": "fcea92c71506d2f782231e9c97898784ad0913d9d9fe11e3237c06eaea805822",
+  "visual_review": "completed diagnostic PID1 with two205-case checks visible",
+  "exclusions_preserved": true,
+  "all_six_gib_available_to_xnu": false,
+  "physical_followup": {
+    "image": "Image16/kernel33",
+    "normal_boot_sha256": "4f2c59da2da5dba15c9eafa3d290d281322ad082d41c54534eb45be374db2d6d",
+    "trace_sha256": "f244bd0017298b6036f2b3c2be21b263d3236f9df35ed1c01572263e49ed0748",
+    "kernel_log_sha256": "f1d6b248818c9e164a683d475fb2523c0a4142eec1949913256c3e920f12fb9f",
+    "memory": {
+      "physical_base": 3489660928,
+      "usable_bytes": 4024434688,
+      "actual_bytes": 4024434688
+    },
+    "pid1_checks": 205,
+    "pid1_passes": 2,
+    "pwm_dim_readback": 256,
+    "pwm_restored_readback": 1023,
+    "all_158_passive_entries_captured": true,
+    "exhaustive_ram_test": false
+  }
+}

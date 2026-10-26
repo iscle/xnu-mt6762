@@ -1,0 +1,141 @@
+{
+  "synthetic_only": true,
+  "physical_hardware_tested": false,
+  "passed": true,
+  "errors": [],
+  "kernel_sha256": "eb5842e0491a8010ff6fe5622d7106af6595425467d2817ea1a3262c37a4d867",
+  "qemu_binary_sha256": "9417efd892c3311871781e653b9b8a4f051bfe3bfc8984e3da2ed636241da95b",
+  "image_sha256_before": "a4f5c133a820530a1aff82ee645ade10605c91b718f4ff341dc5ba279b4131c1",
+  "image_sha256_after": "a4f5c133a820530a1aff82ee645ade10605c91b718f4ff341dc5ba279b4131c1",
+  "sector_count": 256,
+  "slice_start_sector": 16,
+  "ios_slice": true,
+  "startup_fault": "none",
+  "delayed_fault": "data-crc",
+  "fault_injected": true,
+  "fault_cleared_after_error": true,
+  "guest_scalars": {
+    "ios_slice": 1,
+    "char_open": 1,
+    "blocksize_error": 0,
+    "blockcount_error": 0,
+    "writable_error": 0,
+    "blocksize": 512,
+    "blockcount": 256,
+    "writable": 0,
+    "write_open": -30,
+    "block_open": 2,
+    "negative_seek": -1,
+    "negative_read": -22,
+    "negative_buffer": 165
+  },
+  "native_sysctls": {
+    "mt6762_msdc_ready": {
+      "value": 0,
+      "error": 0
+    },
+    "mt6762_msdc_fault": {
+      "value": 1,
+      "error": 0
+    },
+    "mt6762_msdc_last_error": {
+      "value": -6,
+      "error": 0
+    },
+    "mt6762_msdc_reads": {
+      "value": 1,
+      "error": 0
+    },
+    "mt6762_msdc_sectors": {
+      "value": 288,
+      "error": 0
+    }
+  },
+  "guest_reads": [
+    {
+      "kind": "char",
+      "lba": 0,
+      "result": 512,
+      "fnv1a": 4211846085
+    },
+    {
+      "kind": "char",
+      "lba": 1,
+      "result": -5,
+      "fnv1a": 1388775365
+    },
+    {
+      "kind": "char",
+      "lba": 255,
+      "result": -6,
+      "fnv1a": 1388775365
+    },
+    {
+      "kind": "block",
+      "lba": 0,
+      "result": -6,
+      "fnv1a": 1388775365
+    }
+  ],
+  "guest_ranges": [
+    {
+      "offset": 480,
+      "count": 64,
+      "result": -6,
+      "fnv1a": 3276678661
+    },
+    {
+      "offset": 0,
+      "count": 131072,
+      "result": -6,
+      "fnv1a": 1132895685
+    },
+    {
+      "offset": 131056,
+      "count": 32,
+      "result": -6,
+      "fnv1a": 766294181
+    },
+    {
+      "offset": 131072,
+      "count": 512,
+      "result": 0,
+      "fnv1a": 1388775365
+    },
+    {
+      "offset": 131584,
+      "count": 512,
+      "result": 0,
+      "fnv1a": 1388775365
+    }
+  ],
+  "serial_sha256": "a36434409dc0e7dcab1593176b6dcedea6d0806bc67d71288a55d03059bc9e2d",
+  "last_model_state": {
+    "enabled": true,
+    "synthetic": true,
+    "readonly": true,
+    "dma_emulated": false,
+    "irq_delivery": false,
+    "fault": 0,
+    "sectors": 288,
+    "commands": 8,
+    "cmd8": 1,
+    "cmd13": 5,
+    "cmd17": 2,
+    "completed": 2,
+    "bytes_read": 1152,
+    "backend_reads": 2,
+    "backend_errors": 0,
+    "rejected": 0,
+    "ack_writes": 10,
+    "reads": 548,
+    "writes": 29,
+    "arg": 17,
+    "command": 33556625,
+    "irq": 32768,
+    "response": 2304,
+    "fifo_bytes": 0,
+    "pending": false,
+    "reading": false
+  }
+}

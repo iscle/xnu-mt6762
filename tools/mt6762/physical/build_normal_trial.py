@@ -23,6 +23,10 @@ DIAGNOSTICS = (
     'df3d9afc328cc1809e1d2e15551bf24ac5a897db6780096a1ed959c0ed5a08f8', # Image9: measured LK menu console
     'f3249887751e115413399f0c94dbe605f67f5bad20714f087c1f36c99c37b74a', # Image10: preserve measured datapath profile
     'b970c02b9d289bc67ee2b006112689ddbca04f22f44a98cac4e8a6e4efd4ff39', # Image12: passive PWM only after display admission
+    'ec89cc686596e2ba649684a6c197523b22fd23c7d979d98de7947d83186f7b8d', # Image15: native display/PWM with retained diagnostic log
+    '0aab6a6f6333c0f2eed13728b8d77c0696ca6fa1cc1553d232b186dc98075b6e', # Image16: bounded expanded RAM and passive peripheral record
+    '79cd2eaa36baea81a3aa3c916417d3dbf7de903f6287a6ed4a6e2a1b7d78b424', # Image18: inherited touch version/DMA probe, watchdog unchanged
+    '17d812e16407974f934d56bf3dca63efb66303e82b26790e1ca1d738dc739347', # Image19: touch INFRA mapping fix and bounded LK card metadata
 )
 VBMETA_FLAGS3 = '2f3fb6474d7ff35ac4c48ab2bef71247ba50de4a94de2474b7d1b60cd6654f51'
 

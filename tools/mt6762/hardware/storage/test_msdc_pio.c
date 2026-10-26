@@ -7,7 +7,7 @@ struct fixture {
     uint32_t cfg,sdc,irq,block,arg,command,fifo_pos;
     uint32_t dma,cq,queue,crypto,inten,busy;
     uint64_t time;
-    unsigned reads,writes,commands,admitted,fault,data_active,ext_bad,time_mode;
+    unsigned reads,writes,commands,admitted,fault,data_active,ext_bad,time_mode,preempt,late_command,late_data;
     unsigned opcodes[32],count;
     uint8_t ext[512],sector[512];
 };
@@ -22,7 +22,14 @@ static uint32_t read32(void *ctx,uint32_t reg)
     switch(reg) {
     case 0:return f->cfg;
     case 0x30:return f->sdc;
-    case 0x0c:if(f->fault==DATA_CRC && f->data_active && f->fifo_pos>=128)f->irq|=0x8000;return f->irq;
+    case 0x0c:
+        if(f->fault==DATA_CRC && f->data_active && f->fifo_pos>=128)f->irq|=0x8000;
+        /* Completion arrives while the owner is descheduled after a stale
+         * not-ready read, before it can inspect the elapsed deadline. */
+        if(f->late_command && f->irq==0x100) {
+            f->late_command=0;f->time+=1000;return 0;
+        }
+        return f->irq;
     case 0x10:return f->inten;
     case 0x3c:return f->busy;
     case 0x9c:return f->dma;
@@ -33,10 +40,16 @@ static uint32_t read32(void *ctx,uint32_t reg)
     case 0x40:return f->fault==BAD_STATUS?0xb00:0x900;
     case 0x14:
         if(!f->data_active)return 0;
+        if(f->late_data && f->fifo_pos==128) {
+            f->late_data=0;f->time+=1000;return 0;
+        }
         if(f->fault==SHORT_DATA && f->fifo_pos>=256)return 0;
         return 512-f->fifo_pos>128?128:512-f->fifo_pos;
     case 0x1c: {
         assert(f->data_active && f->fifo_pos<=508);
+        /* Another runnable thread can delay the PIO owner between FIFO reads.
+         * The card still has data and has reported no hardware error. */
+        if(f->preempt && f->fifo_pos==128)f->time+=1000;
         const uint8_t *bytes=f->command==0x02000888?f->ext:f->sector;
         uint32_t result=0;
         for(unsigned i=0;i<4;i++)result|=(uint32_t)bytes[f->fifo_pos++]<<(i*8);
@@ -94,6 +107,15 @@ int main(void)
     assert(mt6762_msdc_read512(&s,UINT64_MAX,output)==MT6762_MSDC_ARGUMENT);
     assert(f.reads==reads && f.writes==writes && !s.faulted);
     assert(initialize(&s,&f)==MT6762_MSDC_FAULTED);
+    setup(&f);memset(&s,0,sizeof(s));assert(!initialize(&s,&f));f.preempt=1;
+    memset(output,0xa5,sizeof(output));assert(!mt6762_msdc_read512(&s,2,output));
+    assert(!memcmp(output,f.sector,512) && !s.faulted);
+    setup(&f);memset(&s,0,sizeof(s));assert(!initialize(&s,&f));f.late_data=1;
+    memset(output,0xa5,sizeof(output));assert(!mt6762_msdc_read512(&s,2,output));
+    assert(!memcmp(output,f.sector,512) && !s.faulted);
+    setup(&f);memset(&s,0,sizeof(s));assert(!initialize(&s,&f));f.late_command=1;
+    memset(output,0xa5,sizeof(output));assert(!mt6762_msdc_read512(&s,2,output));
+    assert(!memcmp(output,f.sector,512) && !s.faulted);
     for(unsigned fault=CMD_CRC;fault<=DATA_DONE_ERROR;fault++) {
         setup(&f);memset(&s,0,sizeof(s));assert(!initialize(&s,&f));f.fault=fault;
         memset(output,0xa5,sizeof(output));assert(mt6762_msdc_read512(&s,2,output)<0);

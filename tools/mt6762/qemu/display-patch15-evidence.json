@@ -1,0 +1,61 @@
+{
+  "scope": "AI-assisted local experiment only; no upstream submission",
+  "commit": "5e3d0161b19e2b5ec955443fb4da2229fbcb0fbe",
+  "tree": "8cefb75e9e6e4f345746e6e2433129544a17465c",
+  "patch": "0015-arm-mt6762-model-captured-LK-PWM-profile-in-opt-in-d.patch",
+  "patch_sha256": "58feb5efa80d62288e89708250cf94a40d405bc0302640b4b88ad0e914a9abef",
+  "binary_sha256": "9417efd892c3311871781e653b9b8a4f051bfe3bfc8984e3da2ed636241da95b",
+  "full_patch_series_index_replay_verified": true,
+  "tests": {
+    "synthetic_only": true,
+    "passed": true,
+    "final_fixture_state": {
+      "enabled": true,
+      "synthetic": true,
+      "two_layer": false,
+      "framebuffer_pa": 1090519040,
+      "fault": 0,
+      "applied_level": 0,
+      "enable": 0,
+      "duty": 1024,
+      "pwm_writes": 16,
+      "commits": 2,
+      "rejected_writes": 4,
+      "reads": {
+        "spm": 4,
+        "mmsys": 0,
+        "ovl": 11,
+        "rdma": 0,
+        "dsi": 1,
+        "pwm": 3
+      }
+    },
+    "lk_fixture_state": {
+      "enabled": true,
+      "synthetic": true,
+      "two_layer": true,
+      "framebuffer_pa": 2130247680,
+      "fault": 0,
+      "applied_level": 0,
+      "enable": 0,
+      "duty": 1024,
+      "pwm_writes": 16,
+      "commits": 2,
+      "rejected_writes": 31,
+      "reads": {
+        "spm": 4,
+        "mmsys": 0,
+        "ovl": 68,
+        "rdma": 3,
+        "dsi": 25,
+        "pwm": 3
+      }
+    }
+  },
+  "physical_source": "capture13/pwm.bin",
+  "physical_source_sha256": "2a843a3e63161a42eb453c887c62f30ae3730876530d42dcc092f40f6b674b4e",
+  "limitations": [
+    "Synthetic register fixture; no DSI scanout or PWM waveform model",
+    "No new physical hardware claim"
+  ]
+}

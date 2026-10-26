@@ -5,15 +5,18 @@
  */
 #include <kern/clock.h>
 #include <kern/thread.h>
+#include <kern/sched_prim.h>
 #include <mach/mach_types.h>
 #include <sys/systm.h>
 #include <sys/mt6762_platform.h>
 #include <sys/mt6762_display.h>
 #include <sys/redwood_input.h>
+#include <pexpert/pexpert.h>
 #include "../../tools/mt6762/hardware/display-touch/axs_touch_state.h"
 extern kern_return_t thread_terminate(thread_t);
 
 static int touch_started;
+static unsigned touch_events;
 static uint64_t touch_now_us(void)
 {
     uint64_t ns;
@@ -23,6 +26,7 @@ static uint64_t touch_now_us(void)
 static void touch_emit(void *unused, unsigned type, unsigned id, unsigned x, unsigned y)
 {
     (void)unused;
+    if(touch_events++<32)kprintf("MT6762_TOUCH_EVENT type=%u id=%u x=%u y=%u\n",type,id,x,y);
     redwood_touch_post(type, id, x, y);
 }
 static int touch_property(const char *name, uint32_t expected)
@@ -33,12 +37,13 @@ static int touch_property(const char *name, uint32_t expected)
 static void touch_worker(void *parameter, wait_result_t result)
 {
     struct axs_state state;
-    uint8_t version_cmd = 0x0c, version[2], packet[AXS_TOUCH_PACKET_BYTES];
+    uint8_t version_cmd = 0x0c, version[2]={0}, packet[AXS_TOUCH_PACKET_BYTES];
     int error;
-    unsigned malformed = 0;
+    unsigned malformed = 0,packets=0;
     (void)parameter; (void)result;
     axs_state_init(&state, 384, 854, 100000, touch_emit, NULL);
     error = mt6762_i2c_transfer(0, AXS_TOUCH_ADDRESS, &version_cmd, 1, version, 2);
+    kprintf("MT6762_TOUCH_VERSION error=%d bytes=%02x%02x\n",error,version[0],version[1]);
     if (error || version[0] != 0 || version[1] != 7) {
         printf("mt6762-touch: unavailable: firmware read/identity (error %d); no firmware writes\n", error);
         goto stop;
@@ -47,8 +52,14 @@ static void touch_worker(void *parameter, wait_result_t result)
     for (;;) {
         error = mt6762_i2c_transfer(0, AXS_TOUCH_ADDRESS, NULL, 0, packet, sizeof(packet));
         if (error) {
+            kprintf("MT6762_TOUCH_DMA error=%d packets=%u\n",error,packets);
             printf("mt6762-touch: stopped: transport error %d, releasing contacts\n", error);
             break;
+        }
+        if(!packets++) {
+            kprintf("MT6762_TOUCH_DMA32 data=");
+            for(unsigned i=0;i<sizeof(packet);i++)kprintf("%02x",packet[i]);
+            kprintf("\n");
         }
         if (axs_state_feed(&state, packet, sizeof(packet), touch_now_us()) < 0) {
             if (++malformed == 8) {
@@ -59,7 +70,10 @@ static void touch_worker(void *parameter, wait_result_t result)
             malformed = 0;
         }
         /* Expiry also runs on status frames and after the bounded I2C call. */
-        delay_for_interval(8000, NSEC_PER_USEC);
+        uint64_t deadline;
+        clock_interval_to_deadline(8000,NSEC_PER_USEC,&deadline);
+        assert_wait_deadline((event_t)&touch_started,THREAD_UNINT,deadline);
+        thread_block(THREAD_CONTINUE_NULL);
         axs_state_expire(&state, touch_now_us());
     }
 stop:
@@ -70,7 +84,8 @@ void mt6762_touch_init(void)
 {
     thread_t thread;
     if (touch_started) return;
-    if (!mt6762_platform_ready() || !touch_property("touch-verified", 1) ||
+    if (!mt6762_platform_ready() ||
+        !(touch_property("touch-verified",1) || touch_property("touch-inherited-probe",1)) ||
         !touch_property("touch-bus", 0) || !touch_property("touch-address", 0x3b) ||
         !touch_property("touch-max-x", 384) || !touch_property("touch-max-y", 854)) {
         printf("mt6762-touch: unavailable: missing verified handoff\n");
@@ -82,6 +97,7 @@ void mt6762_touch_init(void)
     }
     touch_started = 1;
     if (kernel_thread_start(touch_worker, NULL, &thread) != KERN_SUCCESS) {
+        touch_started = 0;
         printf("mt6762-touch: unavailable: worker allocation failed\n");
         return;
     }

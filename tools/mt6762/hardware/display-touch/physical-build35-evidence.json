@@ -1,0 +1,21 @@
+{
+  "kernel_sha256": "64a728bf868c9c723f8c13ea26618e95ce6e4f8229636f439581fc5bc1f292cc",
+  "physical_image": "Image18/kernel35",
+  "normal_boot_sha256": "e5c5943baf61cb2cdb34ac7a7d5324531da535afbfef659bd7a3feec58afbde7",
+  "trace_identity": "0259bef8c14bfba23d6563bfec19ed0a57ac4fc9c21be130c38375abe7c0a1a0",
+  "xnu_log_sha256": "d9936876aaa562b26ef032131edce8ccc1498679810dad5586b426bb09263cc1",
+  "framebuffer_sha256": "4547d163dacb24cb430cc2713768fdde543d2ca7e4b22c199d60a3b5b470568a",
+  "runtime_memory": {
+    "physical_base": 3489660928,
+    "usable_bytes": 4024434688,
+    "actual_bytes": 4024434688
+  },
+  "diagnostic_pid1": true,
+  "driverkit_selftest_cases_per_pass": 205,
+  "driverkit_selftest_passes": 2,
+  "touch_transfers_attempted": false,
+  "touch_entry_rejected": true,
+  "cause": "Kernel entry map omitted INFRA 0x10001000. Loader physical callback admitted the same register checks; kernel callback returned UINT32_MAX.",
+  "fix": "Image19/kernel36 uses one shared nine-region list and reports first mismatch; host coverage test requires every complete check in exactly one mapping.",
+  "physical_touch_acceptance": false
+}

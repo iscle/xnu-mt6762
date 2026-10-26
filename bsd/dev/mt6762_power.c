@@ -3,6 +3,7 @@
  * Evidence: tools/mt6762/hardware/power. All native access needs a versioned
  * loader handoff; device readiness and identity are checked independently. */
 #include <kern/clock.h>
+#include <pexpert/pexpert.h>
 #include <kern/locks.h>
 #include <kern/thread.h>
 #include <libkern/libkern.h>
@@ -17,12 +18,16 @@
 #include "mt6762_power_protocol.h"
 #include "mt6762_charger_protocol.h"
 #include "mt6762_thermal_protocol.h"
+#include "../../tools/mt6762/hardware/power/mt6762_pwrap_entry.h"
 
 static LCK_GRP_DECLARE(power_lck_group,"mt6762-power");
 static LCK_MTX_DECLARE(pwrap_mutex,&power_lck_group);
 static LCK_MTX_DECLARE(adc_mutex,&power_lck_group);
 static volatile uint8_t *pwrap, *keypad;
 static int pwrap_ready, pwrap_fault, adc_ready, charger_ready, started;
+static uint32_t pwrap_profile;
+static int pwrap_read_only;
+static volatile uint8_t *pwrap_infra;
 static int pmic_id=-1, power_valid, power_errors, charger_state=-1;
 static int charger_owned, charger_lab, charger_control_safe=-1, charger_control=-1;
 static int adc_voltage_requests, adc_ntc_requests, adc_voltage_samples, adc_ntc_samples;
@@ -85,14 +90,24 @@ static void pwrap_wr(void *unused,uint32_t offset,uint32_t value)
 }
 static void pwrap_delay(void *unused,unsigned us) {(void)unused;delay(us);}
 static const struct mt6762_wacs_io pwrap_io={NULL,pwrap_rd,pwrap_wr,pwrap_delay};
+static uint32_t pwrap_entry_read(void *unused,uint32_t address)
+{
+    (void)unused;
+    if(address==0x10001090) {
+        uint32_t value=*(volatile uint32_t *)(pwrap_infra+0x90);
+        __asm__ volatile("dsb oshld":::"memory");return value;
+    }
+    return pwrap_rd(NULL,address-0x1000d000);
+}
 
 static int pwrap_transfer(int write,uint16_t address,uint16_t *value)
 {
     int e;
     if(!value || (address&1))return -EINVAL;
+    if(write && pwrap_read_only)return -EPERM;
     lck_mtx_lock(&pwrap_mutex);
     if(!pwrap_ready || pwrap_fault) {lck_mtx_unlock(&pwrap_mutex);return -ENXIO;}
-    e=mt6762_wacs_transfer(&pwrap_io,write,address,value);
+    e=mt6762_wacs_transfer_profile(&pwrap_io,pwrap_profile,write,address,value);
     /* A timed out or uninitialized wrapper needs ownership-aware recovery.
      * Do not blindly clear a transaction belonging to another processor. */
     if(e)pwrap_fault=1;
@@ -299,14 +314,41 @@ void mt6762_power_init(void)
     thread_t thread;
     if(started || !mt6762_platform_ready())return;
     if(verified("pwrap-verified")) {
+        if(mt6762_handoff_u32("pwrap-profile",&pwrap_profile))
+            pwrap_profile=verified("lab-fixture")?MT6762_WACS_LEGACY21:0;
+        if(pwrap_profile!=MT6762_WACS_LK22 &&
+           !(pwrap_profile==MT6762_WACS_LEGACY21 && verified("lab-fixture"))) {
+            kprintf("MT6762_PWRAP refused missing/unsupported profile\n");return;
+        }
+        pwrap_read_only=pwrap_profile==MT6762_WACS_LK22 && !verified("pwrap-write-owned");
         pwrap=mt6762_map_mmio(0x1000d000,0x1000);
+        if(pwrap && pwrap_profile==MT6762_WACS_LK22) {
+            pwrap_infra=mt6762_map_mmio(0x10001000,0x1000);
+            if(!pwrap_infra || !mt6762_pwrap_entry_ok(pwrap_entry_read,NULL)) {
+                kprintf("MT6762_PWRAP refused live inherited wrapper state\n");return;
+            }
+        }
         if(pwrap) {
             pwrap_ready=1;
             if(mt6762_pwrap_read16(8,&id) || (id>>8)!=0x57) {
                 pwrap_ready=0;
                 printf("MT6762 power: PMIC identification failed; PWRAP observations disabled\n");
-            }else pmic_id=id;
+            }else {
+                pmic_id=id;
+                kprintf("MT6762_PWRAP_READY profile=%u id=%04x read_only=%d\n",pwrap_profile,id,pwrap_read_only);
+            }
         }
+    }
+    if(verified("pwrap-inherited-probe")) {
+        /* PMIC ordinary readable words only: keys/reset policy and eMMC rails.
+         * No ADC/gauge commands, rail writes, charger control or key events. */
+        static const uint16_t regs[]={0x24,0x14c,0x1988,0x1958,0x1c20,0x1996,0x1966};
+        for(unsigned pass=0;pwrap_ready && pass<2;pass++)for(unsigned i=0;i<sizeof(regs)/sizeof(regs[0]);i++) {
+            uint16_t value=0;int error=mt6762_pwrap_read16(regs[i],&value);
+            kprintf("MT6762_PWRAP_SAMPLE pass=%u address=%04x error=%d value=%04x\n",pass,regs[i],error,value);
+            if(error)return;
+        }
+        return;
     }
     adc_ready=pwrap_ready && verified("adc-verified");
     bif_init();

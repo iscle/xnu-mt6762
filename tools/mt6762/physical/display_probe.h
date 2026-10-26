@@ -101,8 +101,7 @@ static inline uint64_t display_probe_console(const struct mtk_fdt_framebuffer *t
          * caching. Also admit capture10's exact wide-gamut profile: both LK
          * and stock Linux preserve bit31 with the same BGRA fetch layout.
          * Preserve it; its precise color transfer function remains unknown. */
-        if (((r->datapath & ~UINT32_C(0x05000009)) &&
-             r->datapath != UINT32_C(0x81000001)) || r->sbch) goto refuse;
+        if (!mt6762_display_datapath(r->datapath, r->sbch)) goto refuse;
         uint64_t candidate = 0;
         if (sources == 3) {
             struct mt6762_ovl_snapshot layers[2] = {r->scanout[0], r->scanout[1]};

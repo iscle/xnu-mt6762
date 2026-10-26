@@ -130,7 +130,10 @@ SECURITY_READ_ONLY_EARLY(struct console_ops) cons_ops[] = {
 
 SECURITY_READ_ONLY_EARLY(uint32_t) nconsops = (sizeof cons_ops / sizeof cons_ops[0]);
 
-#if __x86_64__
+#if __x86_64__ || defined(ARM64_BOARD_CONFIG_MT6762)
+/* MT6762 admits its inherited framebuffer after IOKit lockdown. Like x86,
+ * it must then switch between serial and video. Keep only this bounded
+ * selector mutable; cons_ops and nconsops retain their read-only protection. */
 uint32_t cons_ops_index = VC_CONS_OPS;
 #else
 SECURITY_READ_ONLY_LATE(uint32_t) cons_ops_index = VC_CONS_OPS;

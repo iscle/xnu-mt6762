@@ -268,6 +268,36 @@ int mtk_fdt_select_window(const struct mtk_fdt_info *i, uint64_t fdt_pa,
     if(found==UINT64_MAX) return MTK_FDT_E_NO_WINDOW;
     *base=found; return 0;
 }
+int mtk_fdt_expand_window(const struct mtk_fdt_info *i, uint64_t fdt_pa,
+    const struct mtk_fdt_range *excluded, size_t count,
+    uint64_t physical_limit, uint64_t *base, uint64_t *size)
+{
+    uint64_t selected, end=0;
+    if(!base || !size)return MTK_FDT_E_RANGE;
+    *base=0;*size=0;
+    int error=mtk_fdt_select_window(i,fdt_pa,excluded,count,&selected);
+    if(error)return error;
+    for(unsigned n=0;n<i->memory_count;n++) {
+        const struct mtk_fdt_range *r=&i->memory[n];
+        if(selected>=r->base && selected<r->base+r->size) {
+            /* Do not accept an ambiguous caller-created map either. */
+            if(end)return MTK_FDT_E_AMBIGUOUS;
+            end=r->base+r->size;
+        }
+    }
+    if(end>physical_limit)end=physical_limit;
+    if(fdt_pa>=selected && fdt_pa<end)end=fdt_pa;
+    if((i->framebuffer.present&1U) && i->framebuffer.base>=selected &&
+       i->framebuffer.base<end)end=i->framebuffer.base;
+    for(unsigned n=0;n<i->reserved_count;n++)
+        if(i->reserved[n].base>=selected && i->reserved[n].base<end)end=i->reserved[n].base;
+    for(size_t n=0;n<count;n++)
+        if(excluded[n].base>=selected && excluded[n].base<end)end=excluded[n].base;
+    end&=~(MTK_FDT_WINDOW_ALIGNMENT-1);
+    if(end<selected || end-selected<MTK_FDT_WINDOW_SIZE)return MTK_FDT_E_NO_WINDOW;
+    *base=selected;*size=end-selected;
+    return 0;
+}
 int mtk_fdt_framebuffer_reserved(const struct mtk_fdt_info *i)
 {
     uint32_t n; uint64_t end, memory_end; int in_ram=0;

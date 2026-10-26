@@ -22,6 +22,7 @@ def main():
     parser.add_argument('--native-input-schedule', type=Path,
                         help='JSON timed synthetic PMIC key/AXS gestures, never guest queue injection')
     parser.add_argument('--stop-on-panic', action='store_true')
+    parser.add_argument('--stop-on-storage-error', action='store_true')
     parser.add_argument('--host-scheduling', action='store_true',
                         help='Record bounded Linux host vCPU scheduling counters for timeout diagnosis')
     parser.add_argument('--gauge-clock-fault-at', type=float,
@@ -60,7 +61,7 @@ def main():
                 raise ValueError('Unknown schedule action')
         if [a['at'] for a in schedule]!=sorted(a['at'] for a in schedule):
             raise ValueError('Schedule actions must be ordered')
-    actions=[];next_action=0;panic_observed=False
+    actions=[];next_action=0;panic_observed=False;storage_failure_observed=False
     out = args.manifest.resolve().parent
     sockpath = out / (args.label + '.qmp')
     # Never unlink an existing monitor: another experiment may own it.
@@ -111,6 +112,7 @@ def main():
                     for option, prop in [('native_lab_i2c', 'lab-i2c-state'),
                                          ('native_lab_display', 'lab-display-state'),
                                          ('native_lab_power', 'lab-power-state'),
+                                         ('native_lab_msdc_image', 'lab-msdc-state'),
                                          ('native_lab_sspm', 'lab-sspm-state')]:
                         if manifest.get(option):
                             states[prop] = json.loads(execute('qom-get', {'path':'/machine', 'property':prop}))
@@ -127,6 +129,9 @@ def main():
                         raise RuntimeError('QEMU exited during capture wait')
                     if args.stop_on_panic and 'panic(' in (out / (args.label + '.serial.log')).read_text(errors='replace'):
                         panic_observed=True
+                        break
+                    if args.stop_on_storage_error and 'MSDC: terminal read failure' in (out / (args.label + '.serial.log')).read_text(errors='replace'):
+                        storage_failure_observed=True
                         break
                     if args.gauge_clock_fault_at is not None and gauge_clock_fault_injected is None and time.monotonic()-started>=args.gauge_clock_fault_at:
                         execute('qom-set',{'path':'/machine','property':'lab-power-fault','value':'gauge-clock'})
@@ -202,6 +207,7 @@ def main():
                 'synthetic_only':True, 'run_completed':run_completed, 'kernel_sha256':manifest['kernel_sha256'],
                 'qemu_binary_sha256':qemu_sha256, 'samples':model_states,
                 'native_input_actions':actions,'kernel_panic_observed':panic_observed,
+                'terminal_storage_failure_observed':storage_failure_observed,
                 'gauge_clock_fault_injected_seconds':gauge_clock_fault_injected,
                 'native_input_schedule_sha256':hashlib.sha256(args.native_input_schedule.read_bytes()).hexdigest() if args.native_input_schedule else None}, indent=2) + '\n')
     filename, visible = save_png(raw, fb)

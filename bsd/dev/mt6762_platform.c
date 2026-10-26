@@ -5,6 +5,8 @@
 #include <sys/mt6762_i2c.h>
 #include <kern/clock.h>
 #include <kern/locks.h>
+#include <kern/thread.h>
+#include <kern/sched_prim.h>
 #include <libkern/libkern.h>
 #include <mach/mach_types.h>
 #include <mach/vm_param.h>
@@ -14,6 +16,8 @@
 #include <vm/vm_kern.h>
 extern vm_offset_t ml_io_map(vm_offset_t, vm_size_t);
 extern uint64_t kvtophys(vm_offset_t);
+extern kern_return_t thread_terminate(thread_t);
+#include "../../tools/mt6762/hardware/display-touch/mt6762_touch_entry.h"
 
 static int ready;
 static DTEntry handoff;
@@ -23,7 +27,7 @@ static LCK_GRP_DECLARE(mt6762_i2c_group,"mt6762-i2c");
 static LCK_MTX_DECLARE(mt6762_i2c_lock,&mt6762_i2c_group);
 static LCK_MTX_DECLARE(mt6762_attach_lock,&mt6762_i2c_group);
 static int attached, initialized;
-struct native_bus { struct mtk_i2c_v2 engine; uintptr_t base,dma; unsigned id; };
+struct native_bus { struct mtk_i2c_v2 engine; uintptr_t base,dma,dma_page; unsigned id; size_t dma_used; };
 static struct native_bus buses[2];
 
 static int property(const char *name, void *out, unsigned size)
@@ -46,6 +50,7 @@ void *mt6762_map_mmio(uint64_t pa,size_t bytes)
     static const struct {uint64_t base,size;} regions[]={
         {0x00110c00,0x1400}, /* DVFS shared SRAM; consumer requires its own verified gate. */
         {0x10000000,0x2000}, {0x10005000,0x2000}, {0x1000c000,0x2000},
+        {0x10007000,0x1000}, {0x1000b000,0x1000}, /* Separately admitted watchdog/EINT observation. */
         {0x10002000,0x1000}, /* MSDC electrical pads; owned inherited state only. */
         {0x11230000,0x10000}, {0x11cd0000,0x1000}, /* MSDC0 and trained timing macro. */
         {0x10010000,0x1000}, {0x10200000,0x1000},
@@ -77,19 +82,27 @@ static void wait_us(void *p,unsigned us) {(void)p;delay_for_interval(us,NSEC_PER
  * Keep this page pinned forever after a DMA error. No reset/reuse guessing. */
 static void dma_to_device(void *p,size_t tx,size_t rx)
 {
-    struct native_bus *b=p;(void)tx;(void)rx;
-    for (uintptr_t va=(uintptr_t)b->engine.dma_buffer;
-        va<(uintptr_t)b->engine.dma_buffer+PAGE_SIZE;va+=64)
+    struct native_bus *b=p;
+    b->dma_used=tx>rx?tx:rx;
+    uint8_t *page=(void *)b->dma_page;
+    for(size_t i=0;i<64;i++)page[i]=0xa5;
+    for(size_t i=64+b->dma_used;i<PAGE_SIZE;i++)page[i]=0xa5;
+    for (uintptr_t va=b->dma_page;va<b->dma_page+PAGE_SIZE;va+=64)
         __asm__ volatile("dc civac, %0"::"r"(va):"memory");
     barrier(p);
 }
 static void dma_to_cpu(void *p,size_t rx)
 {
     struct native_bus *b=p;
-    if (rx) for (uintptr_t va=(uintptr_t)b->engine.dma_buffer;
-        va<(uintptr_t)b->engine.dma_buffer+PAGE_SIZE;va+=64)
+    if (rx) for (uintptr_t va=b->dma_page;va<b->dma_page+PAGE_SIZE;va+=64)
         __asm__ volatile("dc ivac, %0"::"r"(va):"memory");
     barrier(p);
+    uint8_t *page=(void *)b->dma_page;
+    for(size_t i=0;i<PAGE_SIZE;i++)if((i<64 || i>=64+b->dma_used) && page[i]!=0xa5) {
+        b->engine.faulted=1;
+        kprintf("MT6762_I2C_DMA canary failure bus=%u offset=%lu\n",b->id,i);
+        break;
+    }
 }
 static unsigned pin_mode(unsigned pin)
 {return (r32(gpio,0x300+(pin/8)*16)>>((pin%8)*4))&15;}
@@ -147,16 +160,20 @@ static void initialize_bus(struct native_bus *b,unsigned id)
         printf("MT6762: I2C%u GIC interrupt mask did not complete\n",id);return;
     }
     vm_offset_t memory=0;
-    if (kmem_alloc_contig(kernel_map,&memory,PAGE_SIZE,PAGE_MASK,0,0,
+    /* First physical APDMA path stays below4GiB; high-bit routing has not
+     * been measured. VM ppnum units follow PAGE_SHIFT, not the4KiB PTE size. */
+    ppnum_t dma_max_page=(ppnum_t)((UINT64_C(0x100000000)>>PAGE_SHIFT)-1);
+    if (kmem_alloc_contig(kernel_map,&memory,PAGE_SIZE,PAGE_MASK,dma_max_page,0,
         KMA_KOBJECT|KMA_ZERO|KMA_DATA,VM_KERN_MEMORY_IOKIT)!=KERN_SUCCESS) return;
     uint64_t physical=kvtophys(memory);
-    if (!physical || physical>=(1ULL<<33) || PAGE_SIZE>(1ULL<<33)-physical) {
+    if (!physical || physical>=UINT64_C(0x100000000) || PAGE_SIZE>UINT64_C(0x100000000)-physical) {
         kmem_free(kernel_map,memory,PAGE_SIZE);return;
     }
+    b->dma_page=memory;
     b->engine=(struct mtk_i2c_v2){.context=b,.read16=br16,.write16=bw16,
         .dma_read32=dr32,.dma_write32=dw32,.barrier=barrier,.delay_us=wait_us,
         .dma_sync_device=dma_to_device,.dma_sync_cpu=dma_to_cpu,
-        .dma_buffer=(uint8_t *)memory,.dma_address=physical,.dma_capacity=PAGE_SIZE,
+        .dma_buffer=(uint8_t *)memory+64,.dma_address=physical+64,.dma_capacity=PAGE_SIZE-128,
         .timeout_us=10000,.bus_hz=hz};
     bw16(b,8,0);bw16(b,0xc,0x1ff);bw16(b,0x38,1);
     bw16(b,0x48,timing.clock_div);bw16(b,0x20,timing.timing);
@@ -170,6 +187,35 @@ static void initialize_bus(struct native_bus *b,unsigned id)
     }
     b->engine.initialized=1;
     printf("MT6762: native I2C%u ready parent=%uHz bus=%uHz DMA=0x%llx\n",id,parent_hz,hz,physical);
+    kprintf("MT6762_I2C_READY bus=%u parent=%u hz=%u dma=%llx\n",id,parent_hz,hz,physical+64);
+}
+static uintptr_t entry_maps[MT6762_TOUCH_ENTRY_REGIONS];
+static uint32_t entry_read(void *unused,uint32_t address,unsigned width)
+{
+    (void)unused;
+    for(unsigned i=0;i<MT6762_TOUCH_ENTRY_REGIONS;i++) {
+        uint32_t base=mt6762_touch_entry_base(i);
+        if(address<base || address-base>=0x1000)continue;
+        uintptr_t p=entry_maps[i]+address-base;
+        uint32_t value=width==2?*(volatile uint16_t *)p:*(volatile uint32_t *)p;
+        barrier(NULL);return value;
+    }
+    return UINT32_MAX;
+}
+static int touch_entry_check(void)
+{
+    for(unsigned i=0;i<MT6762_TOUCH_ENTRY_REGIONS;i++) {
+        uint32_t base=mt6762_touch_entry_base(i);
+        entry_maps[i]=(uintptr_t)mt6762_map_mmio(base,0x1000);
+        if(!entry_maps[i]) {
+            kprintf("MT6762_TOUCH_ENTRY mapping failed address=%x\n",base);return 0;
+        }
+    }
+    struct mt6762_touch_entry_failure failure;
+    if(mt6762_touch_entry_detail(entry_read,NULL,&failure))return 1;
+    kprintf("MT6762_TOUCH_ENTRY mismatch address=%x width=%u pass=%u value=%x mask=%x expected=%x\n",
+        failure.address,failure.width,failure.pass,failure.actual,failure.mask,failure.expected);
+    return 0;
 }
 int mt6762_i2c_ready(unsigned bus)
 {
@@ -189,7 +235,7 @@ int mt6762_i2c_transfer(unsigned bus,unsigned addr,const void *tx,size_t nt,void
     int result=-1;
     if (mt6762_i2c_ready(bus)) {
         if (!clocks_stable()) b->engine.faulted=1;
-        else {result=mtk_i2c_v2_transfer(&b->engine,msgs,n);if (result==(int)n) result=0;}
+        else {result=mtk_i2c_v2_transfer(&b->engine,msgs,n);if (b->engine.faulted)result=-1;else if(result==(int)n)result=0;}
     }
     lck_mtx_unlock(&mt6762_i2c_lock);
     return result;
@@ -214,6 +260,9 @@ void mt6762_platform_init(void)
     mt6762_platform_attach();
     if (!mt6762_platform_ready() || initialized) return;
     initialized=1; /* Called only by the BSD initialization thread. */
+    if(flag("touch-inherited-probe") && !touch_entry_check()) {
+        kprintf("MT6762_TOUCH_ENTRY refused live clock/pad/reset/EINT/controller state\n");return;
+    }
     gpio=(uintptr_t)mt6762_map_mmio(0x10005000,0x1000);
     if (!flag("dma-direct") || !flag("i2c-pads-verified") ||
         mt6762_handoff_u32("i2c-parent-index",&parent_index) || parent_index>4 ||
@@ -232,6 +281,45 @@ void mt6762_platform_init(void)
     w32(infra,0x84,1u<<11);w32(infra,0x8c,1u<<18);
     if (!clocks_stable()) {printf("MT6762: I2C clock gates failed readback\n");return;}
     initialize_bus(&buses[0],0);initialize_bus(&buses[1],5);
+}
+static uintptr_t watchdog;
+static int watchdog_matches(void)
+{
+    return r32(watchdog,0)==0x7d && (r32(watchdog,4)&0xffe0)==0xf000 &&
+        r32(watchdog,0x30)==0x3f0036 && r32(watchdog,0x34)==0x3b0034;
+}
+static void watchdog_worker(void *parameter,wait_result_t wait_result)
+{
+    (void)parameter;(void)wait_result;
+    unsigned count=0;uint64_t previous=0;
+    for(;;) {
+        uint64_t now,ns,deadline;clock_get_uptime(&now);
+        absolutetime_to_nanoseconds(now-previous,&ns);
+        if(!watchdog_matches() || (previous && ns>10000000000ULL)) {
+            kprintf("MT6762_WATCHDOG stopped: inherited state changed or scheduling gap; attempts=%u\n",count);
+            break;
+        }
+        /* Exact stock ping: never change enable, period, reset/IRQ routing. */
+        __asm__ volatile("dsb st":::"memory");
+        w32(watchdog,8,0x1971);previous=now;++count;
+        if(count==1 || count%30==0)
+            kprintf("MT6762_WATCHDOG refresh attempts=%u gap_ms=%llu\n",count,count==1?0:ns/1000000);
+        clock_interval_to_deadline(1000,NSEC_PER_MSEC,&deadline);
+        assert_wait_deadline((event_t)&watchdog,THREAD_UNINT,deadline);
+        thread_block(THREAD_CONTINUE_NULL);
+    }
+    thread_terminate(current_thread());
+}
+void mt6762_watchdog_init(void)
+{
+    thread_t thread;
+    if(watchdog || !ready || !flag("watchdog-refresh-owned"))return;
+    watchdog=(uintptr_t)mt6762_map_mmio(0x10007000,0x1000);
+    if(!watchdog || !watchdog_matches()) {
+        kprintf("MT6762_WATCHDOG refused inherited profile\n");return;
+    }
+    if(kernel_thread_start(watchdog_worker,NULL,&thread)==KERN_SUCCESS)thread_deallocate(thread);
+    else kprintf("MT6762_WATCHDOG worker creation failed\n");
 }
 #else
 void mt6762_platform_init(void) {}

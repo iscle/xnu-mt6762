@@ -16,7 +16,9 @@
 #include <sys/mt6762_thermal.h>
 #include <sys/mt6762_gauge.h>
 extern void mt6762_touch_init(void);
+extern void mt6762_watchdog_init(void);
 extern void mt6762_display_init(void);
+extern void mt6762_display_diagnostic(void);
 extern void mt6762_power_init(void);
 extern void mt6762_cpufreq_init(void);
 #endif
@@ -233,7 +235,9 @@ redwood_input_init(void)
 	 */
 	printf("MT6762: Qualcomm board drivers disabled; checking native handoff\n");
 	mt6762_platform_init();
+	mt6762_watchdog_init();
 	mt6762_display_init();
+	mt6762_display_diagnostic();
 	mt6762_touch_init();
 	mt6762_power_init();
 	mt6762_gauge_init();

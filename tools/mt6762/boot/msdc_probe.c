@@ -2,6 +2,11 @@
  * Static Darwin PID1 read-only MSDC observer. No Apple binaries or libc. */
 typedef unsigned long u64;
 typedef unsigned int u32;
+#ifndef MSDC_PROBE_IOS_SLICE
+#define MSDC_PROBE_IOS_SLICE 0
+#endif
+static const char *raw_device=MSDC_PROBE_IOS_SLICE?"/dev/rmtkios0":"/dev/rmtkemmc0";
+static const char *block_device=MSDC_PROBE_IOS_SLICE?"/dev/mtkios0":"/dev/mtkemmc0";
 static long call3(long number, long a, long b, long c)
 {
     register long x16 __asm__("x16") = number;
@@ -71,7 +76,9 @@ static void read_sector(int console,int fd,const char *kind,u64 lba)
 }
 static void read_range(int console,int fd,u64 offset,unsigned count)
 {
-    unsigned char data[512];for(unsigned i=0;i<512;i++)data[i]=0xa5;
+    static unsigned char data[128*1024];
+    if(count>sizeof(data))return;
+    for(unsigned i=0;i<count;i++)data[i]=0xa5;
     long seek=call3(199,fd,offset,0);
     long result=seek==(long)offset?call3(3,fd,(long)data,count):seek;
     char line[192],*p=text(line,"MT6762_MSDC_RANGE offset=");p=decimal(p,offset);
@@ -98,7 +105,8 @@ void start(void)
 {
     int console=call3(5,(long)"/dev/console",2,0);
     print(console,"MT6762_MSDC_PROBE_READY readonly=1\n");
-    int fd=call3(5,(long)"/dev/rmtkemmc0",0,0);
+    scalar(console,"ios_slice",MSDC_PROBE_IOS_SLICE);
+    int fd=call3(5,(long)raw_device,0,0);
     scalar(console,"char_open",fd);
     if(fd>=0) {
         u32 size=0,writable=1;u64 count=0;
@@ -107,7 +115,7 @@ void start(void)
         scalar(console,"writable_error",call3(54,fd,0x4004641d,(long)&writable));
         scalar(console,"blocksize",size);scalar(console,"blockcount",count);
         scalar(console,"writable",writable);
-        int writefd=call3(5,(long)"/dev/rmtkemmc0",1,0);
+        int writefd=call3(5,(long)raw_device,1,0);
         scalar(console,"write_open",writefd);
         if(writefd>=0)call3(6,writefd,0,0); /* Never issue a storage write. */
         if(size==512 && count>0 && count<=0xffffffffu) {
@@ -116,7 +124,7 @@ void start(void)
             if(count>1)read_sector(console,fd,"char",1);
             pause_us(250000);
             read_sector(console,fd,"char",count-1);
-            int block=call3(5,(long)"/dev/mtkemmc0",0,0);
+            int block=call3(5,(long)block_device,0,0);
             scalar(console,"block_open",block);
             if(block>=0) {read_sector(console,block,"block",0);call3(6,block,0,0);}
             scalar(console,"negative_seek",call3(199,fd,-1,0));
@@ -124,6 +132,7 @@ void start(void)
             scalar(console,"negative_read",call3(3,fd,(long)&untouched,1));
             scalar(console,"negative_buffer",untouched);
             if(count>1)read_range(console,fd,480,64);
+            if(MSDC_PROBE_IOS_SLICE && count>=256)read_range(console,fd,0,128*1024);
             read_range(console,fd,count*512-16,32);
             read_range(console,fd,count*512,512);
             read_range(console,fd,(count+1)*512,512);

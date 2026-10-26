@@ -12,3 +12,4 @@ b24cd36ec47263695c9975f9ac3ff886f0679552bdd30fbd156e74179e754f70  0011-arm-add-e
 cf3cbf56adec1c7d08e71e7201f9a752fe37301a58947a99c3975cb725a37fe9  0012-arm-add-read-only-BIF-trim-observation-laboratory.patch
 d561fde5888dc4bff90b7e940ba8e8563f9042d0abdb57ab63b4be32de3c8f76  0013-arm-correct-MT6762-lab-DSI-selector-and-add-captured-two-layer-fixture.patch
 646db3b62098322385614d638a09581dbbc60f6067cbf4de5d09e19b5e91cd35  0014-arm-match-captured-MT6762-two-layer-datapath-word.patch
+58feb5efa80d62288e89708250cf94a40d405bc0302640b4b88ad0e914a9abef  0015-arm-mt6762-model-captured-LK-PWM-profile-in-opt-in-d.patch
