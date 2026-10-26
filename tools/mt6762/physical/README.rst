@@ -12,8 +12,12 @@ inherited bus and permits version/DMA/gesture diagnostics. Image18 reached PID1
 but refused touch because the kernel omitted the INFRA check's mapping; Image19
 fixes that coverage. Capture19 confirms entry acceptance, but the native I2C
 setup readback then fails before any touch transaction. Image21/kernel38
-retains every setup readback and adds the read-only LK PWRAP probe; its physical
-result is pending. Capture19 also validates the bounded LK card metadata
+retains every setup readback and adds the read-only LK PWRAP probe. Capture20
+identifies DIV0x0004 versus0x0404 and HS0x8000 versus0 as the setup mismatch;
+kernel42 corrects only these exact profile expectations. Capture20 also
+confirms read-only PWRAP profile2, PMIC ID0x5730 and two identical successful
+reads of each eMMC rail register. Physical touch transactions and native
+storage admission are pending Image24. Capture19 validates bounded LK card metadata
 (RCA1, sector addressing and244,285,440sectors), without granting storage
 ownership. See ../hardware/display-touch/physical-build36-evidence.json and the card audit.
 Touch, charging, keys and the physical iOS desktop remain incomplete.

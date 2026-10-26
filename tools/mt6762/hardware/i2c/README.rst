@@ -1,9 +1,10 @@
 MT6765-family I2C transaction core
 ================================
 
-This portable core is experimental source, not a connected XNU driver. It
-has not executed against the phone. Host tests check transaction programming
-and failure handling with a register model; they cannot verify real hardware.
+This portable core is connected to XNU's native platform worker. Emulated
+FIFO/DMA transactions and input events have run; physical capture20 reached
+the inherited I2C0 setup check and refused its readback before any touch
+transaction. Physical touch communication and gestures remain unverified.
 
 Evidence: the supplied stock DT's mediatek,i2c_common node selects version2,
 DMA support2 (33-bit), clock divider5, LTIMING and MT6765 counter constraints.
@@ -52,8 +53,22 @@ Required native integration
   have been tested. Verify normal reads before any charger or bias writes.
 
 Neither successful host tests nor setting ``initialized`` supplies these
-prerequisites. Clocks, native DMA allocation, reset recovery and XNU driver
-registration remain outstanding. Run ``bash test.sh`` for the host tests.
+prerequisites. The native integration checks inherited clock/IRQ/pad state,
+allocates a private coherent DMA buffer and polls from a worker. Physical
+DMA and reset recovery remain unaccepted. Run ``bash test.sh`` for host tests.
+
+Measured setup readback
+-----------------------
+
+Capture20/kernel38 programmed the stock-style DIV0x0404 and HS0 values, then
+read DIV0x0004 and HS0x8000. TIMING0x0419, LTIMING0x0118, IO3 and the inherited
+clock checks matched. ``native_setup.h`` gives the admitted physical I2C0
+profile these exact readback expectations; programming is unchanged. The
+emulated profile retains its original expectations. Unknown profiles,
+unmeasured dividers and other mismatches fail. This observation does not
+establish the undocumented bits' meaning. Kernel42 includes this correction;
+its physical transaction result is pending. See
+../display-touch/physical-build38-evidence.json.
 
 Clock dependency evidence
 -------------------------
@@ -84,9 +99,10 @@ but the actual DT references only the shared AP and APDMA clocks. Their presence
 in the clock table is not evidence they must all be enabled. Reconcile this
 against the exact stock controller and boot state before native initialization.
 
-These are source/DT observations, not register readbacks or a tested clock
-initialization sequence. APDMA channel addressing alone also does not prove
-cache coherency or IOMMU routing. No native clock or DMA experiment has run.
+These tables are source/DT observations; the native handoff additionally
+checks the captured clock and controller state. No physical clock reparenting
+has been attempted. APDMA channel addressing alone does not prove cache
+coherency or IOMMU routing, and physical touch DMA remains unverified.
 
 The exact stock Image independently corroborates these tables: ``ifr_clks``
 records at VAs0xffffff80090523e8 (ID11) and0xffffff8009052a28 (ID38) carry

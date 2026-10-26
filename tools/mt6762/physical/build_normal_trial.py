@@ -29,6 +29,7 @@ DIAGNOSTICS = (
     '17d812e16407974f934d56bf3dca63efb66303e82b26790e1ca1d738dc739347', # Image19: touch INFRA mapping fix and bounded LK card metadata
     '77d0183f98f523f3180a811c4b71cc9800af4a1203a4c56d95b87cf5e78393a8', # Image21: retained I2C setup values and read-only LK PWRAP probe
     'c1920f7877a8c48f6e1c1439ffd86681225153c77e02b95794be22406ab06551', # Image23: guarded synchronous LK storage probe, fully passing kernel41 build
+    'f96011b960ba669b8a4e001003115ea2eeb0912c3a2db11cfa03a5f697d321f0', # Image24: measured I2C0 readback fix and inherited storage probe
 )
 VBMETA_FLAGS3 = '2f3fb6474d7ff35ac4c48ab2bef71247ba50de4a94de2474b7d1b60cd6654f51'
 

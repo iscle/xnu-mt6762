@@ -1,4 +1,5 @@
 #include "mtk_i2c_v2.h"
+#include "native_setup.h"
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
@@ -100,6 +101,21 @@ int main(void) {
     assert(mtk_i2c_v2_timing(26000000,5,100000,&timing)==0);
     assert(timing.clock_div==0x404 && timing.timing==27 && timing.ltiming==26);
     assert(timing.ext==0x8001 && timing.timeout==386);
+    assert(mt6762_i2c_setup_ok(&timing,0,0x404,27,26,0,3));
+    /* Independently retained physical capture20 after the same vendor writes. */
+    assert(mtk_i2c_v2_timing(124800000,5,100000,&timing)==0);
+    assert(timing.clock_div==0x404 && timing.timing==0x419 && timing.ltiming==0x118);
+    assert(!mt6762_i2c_setup_ok(&timing,0,4,0x419,0x118,0x8000,3));
+    assert(mt6762_i2c_setup_ok(&timing,1,4,0x419,0x118,0x8000,3));
+    assert(!mt6762_i2c_setup_ok(&timing,1,5,0x419,0x118,0x8000,3));
+    assert(!mt6762_i2c_setup_ok(&timing,1,4,0x418,0x118,0x8000,3));
+    assert(!mt6762_i2c_setup_ok(&timing,1,4,0x419,0x119,0x8000,3));
+    assert(!mt6762_i2c_setup_ok(&timing,1,4,0x419,0x118,0x8001,3));
+    assert(!mt6762_i2c_setup_ok(&timing,1,4,0x419,0x118,0,3));
+    assert(!mt6762_i2c_setup_ok(&timing,1,4,0x419,0x118,0x8000,0));
+    assert(!mt6762_i2c_setup_ok(&timing,2,4,0x419,0x118,0x8000,3));
+    timing.clock_div=0x505;
+    assert(!mt6762_i2c_setup_ok(&timing,1,4,0x419,0x118,0x8000,3));
     assert(mtk_i2c_v2_timing(26000000,5,400000,&timing)==0);
     assert(timing.timing==7 && timing.ltiming==8 && timing.ext==0x1801);
     assert(mtk_i2c_v2_timing(26000000,0,100000,&timing)<0);

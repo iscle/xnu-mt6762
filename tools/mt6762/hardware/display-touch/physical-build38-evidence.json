@@ -1,0 +1,130 @@
+{
+  "physical_image": "Image21/kernel38",
+  "kernel_sha256": "1ad41c908775fce90a14a999e401882dd8439f082393c4b7db364a4fdac11338",
+  "normal_boot_sha256": "139c987d928ce87c0fd944d45f9695cacf3a0870aa52d4fbd89611dd4a3e9802",
+  "evidence_sha256": {
+    "trace.bin": "917f14cde718450de0904ee67a49a3b4070d28cedd5d1106057ddee1564d7093",
+    "xnu-log.bin": "78a0a7bf1ff99d900dce67cb2d100c7916181631e0e02bfa933e448f124f07c0",
+    "peripherals.bin": "c04d61b502df2dedfeafcde54eb8c2c692b6148cc34ceae6a134be6d1cb0015b",
+    "framebuffer.bgra": "b53e56423cceef3761d360248a7ea0865b9d094731ce6084c4e5a21456f23d86"
+  },
+  "diagnostic_pid1": true,
+  "driverkit_cases_per_pass": 205,
+  "driverkit_passes": 2,
+  "i2c_setup": {
+    "divider_written": "0x0404",
+    "divider_read": "0x0004",
+    "timing": "0x0419",
+    "ltiming": "0x0118",
+    "hs_written": "0x0000",
+    "hs_read": "0x8000",
+    "io": "0x0003",
+    "ext": "0x8001",
+    "timeout": "0x0190",
+    "clock_hz": 124800000,
+    "clock_readbacks_match": true
+  },
+  "touch_transactions_attempted": false,
+  "touch_physical_acceptance": false,
+  "pwrap": {
+    "profile": 2,
+    "identity": "0x5730",
+    "read_only": true,
+    "samples": [
+      {
+        "pass": 0,
+        "address": "0x0024",
+        "error": 0,
+        "value": "0x000e"
+      },
+      {
+        "pass": 0,
+        "address": "0x014c",
+        "error": 0,
+        "value": "0x1225"
+      },
+      {
+        "pass": 0,
+        "address": "0x1988",
+        "error": 0,
+        "value": "0x0001"
+      },
+      {
+        "pass": 0,
+        "address": "0x1958",
+        "error": 0,
+        "value": "0x0001"
+      },
+      {
+        "pass": 0,
+        "address": "0x1c20",
+        "error": 0,
+        "value": "0x0300"
+      },
+      {
+        "pass": 0,
+        "address": "0x1996",
+        "error": 0,
+        "value": "0xc200"
+      },
+      {
+        "pass": 0,
+        "address": "0x1966",
+        "error": 0,
+        "value": "0xc200"
+      },
+      {
+        "pass": 1,
+        "address": "0x0024",
+        "error": 0,
+        "value": "0x000e"
+      },
+      {
+        "pass": 1,
+        "address": "0x014c",
+        "error": 0,
+        "value": "0x1225"
+      },
+      {
+        "pass": 1,
+        "address": "0x1988",
+        "error": 0,
+        "value": "0x0001"
+      },
+      {
+        "pass": 1,
+        "address": "0x1958",
+        "error": 0,
+        "value": "0x0001"
+      },
+      {
+        "pass": 1,
+        "address": "0x1c20",
+        "error": 0,
+        "value": "0x0300"
+      },
+      {
+        "pass": 1,
+        "address": "0x1996",
+        "error": 0,
+        "value": "0xc200"
+      },
+      {
+        "pass": 1,
+        "address": "0x1966",
+        "error": 0,
+        "value": "0xc200"
+      }
+    ]
+  },
+  "lk_card_metadata": {
+    "valid": true,
+    "sectors": 244285440,
+    "ocr": 3237970048,
+    "rca": 1,
+    "state_ready": 66141,
+    "ownership_granted": false,
+    "authority": "stable exact-LK software metadata; requires live CMD13 and EXT_CSD"
+  },
+  "next_change": "Kernel42 compares the exact measured divider/HS readback for the admitted inherited I2C0 profile; programming writes unchanged"
+}
