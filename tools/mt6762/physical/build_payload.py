@@ -53,6 +53,22 @@ def encode_adt(tree):
                         [encode_adt(child) for child in tree['children']])
 
 
+def physical_identity(chosen, wifi_mac=None):
+    """Discard lab identities; optionally publish this phone's raw factory MAC.
+
+    MobileGestalt's WifiAddressData reads this OSData before falling back to
+    waiting for IONetworkController. This property grants no network hardware
+    ownership and does not imply that a Wi-Fi driver exists.
+    """
+    if wifi_mac is not None and (len(wifi_mac) != 6 or wifi_mac == bytes(6)
+                                 or wifi_mac[0] & 1):
+        raise ValueError('Wi-Fi identity must be six raw, nonzero unicast MAC bytes')
+    for key in ('unique-chip-id', 'mac-address-wifi0', 'mac-address-bluetooth0'):
+        chosen.pop(key, None)
+    if wifi_mac is not None:
+        chosen['mac-address-wifi0'] = wifi_mac
+
+
 CHARGER_SETUP_FLAGS = ('dma-direct','i2c-pads-verified','i2c5-verified',
                        'charger-inherited-probe','charger-setup-only')
 CHARGER_READONLY_FLAGS = CHARGER_SETUP_FLAGS[:-1] + ('charger-readonly-probe',)
@@ -135,6 +151,8 @@ def main():
                         help='require measured LK display/PWM admission and emit its native handoff')
     parser.add_argument('--cpus',type=int,choices=(1,2,4,8),default=1,
                         help='requires exact live PSCI/A53 topology and reviewed kernel for2/4/8; default1')
+    parser.add_argument('--wifi-mac-file', type=Path,
+                        help='six raw factory Wi-Fi MAC bytes from this phone; never a lab/donor address')
     parser.add_argument('--brightness-pulse', action='store_true',
                         help='opt in to the kernel dim/restore diagnostic before PID1')
     parser.add_argument('--probe-peripherals', action='store_true',
@@ -175,6 +193,8 @@ def main():
     if args.bootstrap_apfs and not (args.native_msdc_probe and args.expand_memory and args.refresh_watchdog):
         parser.error('desktop bootstrap requires native MSDC, expanded memory and watchdog servicing')
     ios_slice = desktop_ramdisk.validate_slice(*args.ios_system_slice) if args.ios_system_slice else None
+    wifi_mac = args.wifi_mac_file.read_bytes() if args.wifi_mac_file else None
+    physical_identity({}, wifi_mac)  # Reject malformed input before creating output.
     out = args.out.resolve()
     if out.exists():
         parser.error('output must be new')
@@ -244,8 +264,7 @@ def main():
     if args.bootstrap_apfs:
         chosen['props']['firmware-version'] = b'mt6762-physical-desktop-bootstrap\0'
     chosen['props']['boot-manifest-hash'] = hashlib.sha384(kernel).digest()
-    for key in ('unique-chip-id', 'mac-address-wifi0', 'mac-address-bluetooth0'):
-        chosen['props'].pop(key, None)
+    physical_identity(chosen['props'], wifi_mac)
     native_flags = ('native-io','display-verified','display-reserved','display-dma-physical',
         'display-pipeline-verified','brightness-verified','brightness-pins-verified','brightness-parent-verified')
     if args.native_display:
@@ -424,11 +443,16 @@ def main():
     sources_after = {os.path.relpath(p,HERE.parent):sha(p.read_bytes()) for p in source_paths}
     if sources_before != sources_after or template_sha != sha(args.template.read_bytes()):
         raise ValueError('build inputs changed during compilation; discard candidate')
+    if args.wifi_mac_file and args.wifi_mac_file.read_bytes() != wifi_mac:
+        raise ValueError('factory Wi-Fi identity changed during compilation; discard candidate')
     report=dict(format=1,purpose=('Physical XNU bootstrap for existing iOS system slice' if ios_slice else
                                 'Temporary physical XNU diagnostic, not full iOS userspace'),
         kernel_sha256=sha(original_kernel),diagnostic_sha256=sha(original_diagnostic),
         root_payload=dict(root_info,sha256=sha(original_diagnostic)),ios_system_slice=ios_slice,
         template_sha256=template_sha,source_sha256=sources_before,source_inputs_stable=True,
+        wifi_identity=(dict(source_file=str(args.wifi_mac_file.resolve()),
+                           sha256=sha(wifi_mac), bytes=6, property='mac-address-wifi0',
+                           network_driver_proven=False) if wifi_mac is not None else None),
         tool_sha256={name:sha((args.llvm/name).read_bytes()) for name in ('clang','ld.lld','llvm-objcopy')},
         blob_sha256={name:sha(data) for name,data in blobs.items()},image_sha256=sha(image_path.read_bytes()),
         image_bytes=image_path.stat().st_size,commands=commands,layout=constants,segments=segments,
