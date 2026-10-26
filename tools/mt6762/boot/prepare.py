@@ -318,13 +318,27 @@ def make_adt(seed, ramdisks=(), framebuffer=False, identity=None, native_lab_i2c
         ('model', cstr('iPhone10,3')), ('target-type', cstr('D22')), ('target-sub-type', cstr('D22AP')),
         ('serial-number', cstr('MT6762QEMULAB').ljust(32, b'\0')),
         ('#address-cells', u32(2)), ('#size-cells', u32(2))])
-    product = []
+    # The existing virtual iPhone X display uses 375x812 points at scale3.
+    # CoreUI needs its artwork traits to select the donor's phone assets even
+    # when the optional full identity header is absent. In particular, gesture
+    # navigation loads BoundingPathData; missing traits make that lookup fail
+    # and SpringBoard abort. Keep this default limited to UI asset selection.
+    product_props = {'artwork-device-idiom': cstr('phone'),
+                     'artwork-scale-factor': u32(3),
+                     'artwork-device-subtype': u32(2436)}
     if identity:
         root_props.update(identity['root'])
         root_props['compatible'] += cstr('mediatek,mt6762')
-        product = [node('product', identity['product'])]
+        product_props.update(identity['product'])
+    product = [node('product', list(product_props.items()))]
+    # This phone has Power and Volume keys, but no physical Home key. In 20F66,
+    # MobileGestalt reads HomeButtonType from this exact device-tree path and
+    # defaults to 0 (a Home button) when it is missing. Type 2 selects Apple's
+    # existing bottom-edge Home/app-switcher gestures. It is independent of the
+    # optional donor /product metadata and does not claim a working Face ID IC.
+    buttons = node('buttons', [('home-button-type', u32(2))])
     return node('device-tree', list(root_props.items()),
-        [chosen, node('defaults'), node('options'), node('cpus', children=cpu_nodes), io] + product)
+        [chosen, node('defaults'), node('options'), node('cpus', children=cpu_nodes), io, buttons] + product)
 
 
 def boot_args(adt_pa, adt_len, top, cmdline, framebuffer_pa=None):

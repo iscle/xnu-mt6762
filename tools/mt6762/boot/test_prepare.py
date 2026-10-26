@@ -253,6 +253,24 @@ class PrepareTests(unittest.TestCase):
         self.assertEqual(memory['RAMDisk'], struct.pack('<QQ', 0x45000000, 0x2000000))
         self.assertEqual(memory['RAMDisk1'], struct.pack('<QQ', 0x49000000, 0x4000000))
 
+    def test_no_home_key_policy_is_independent_of_donor_product(self):
+        # Exercise the serialized tree consumed by IOKit, both for the minimal
+        # physical profile and when optional donor product metadata is present.
+        for identity in (None, {'root': [('model', b'iPhone10,3\0')],
+                                'product': [('product-name', b'iPhone X\0')]}):
+            tree, consumed = parse_adt(p.make_adt(bytes(64), identity=identity, cpus=8))
+            buttons = [n for n in tree['children'] if n['name'] == b'buttons\0']
+            self.assertEqual(len(buttons), 1)
+            self.assertEqual(buttons[0]['home-button-type'], b'\x02\x00\x00\x00')
+            self.assertEqual(buttons[0]['children'], [])
+            product = next(n for n in tree['children'] if n['name'] == b'product\0')
+            self.assertEqual(product['artwork-device-idiom'], b'phone\0')
+            self.assertEqual(product['artwork-scale-factor'], b'\x03\x00\x00\x00')
+            self.assertEqual(product['artwork-device-subtype'], b'\x84\x09\x00\x00')
+            self.assertNotIn('oled-display', product)
+            self.assertNotIn('wifi-chipset', product)
+            self.assertEqual(consumed, len(p.make_adt(bytes(64), identity=identity, cpus=8)))
+
     def test_native_lab_handoff_is_opt_in_and_has_no_unmodeled_claims(self):
         for enabled in (False, True):
             tree, _ = parse_adt(p.make_adt(bytes(64), native_lab_i2c=enabled))
