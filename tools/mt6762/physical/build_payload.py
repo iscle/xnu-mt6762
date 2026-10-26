@@ -59,6 +59,11 @@ CHARGER_READONLY_FLAGS = CHARGER_SETUP_FLAGS[:-1] + ('charger-readonly-probe',)
 # Reviewed frozen kernel: secondary EL2 descent, firmware queries and cache
 # handoff; original-entry tests and an eight-core QEMU run passed.
 SMP_KERNELS = {'1d2310dfe3cc89fa29fadc896544503d89eedc01269c85d35278afa46f8f4f20'}
+# Capture34 exhausted the old20ms software wait before the inherited DDR
+# controller's approximately109ms data timeout. Allow its existing hardware
+# timeout/error reporting inside the protocol's bounded1s software envelope.
+# No controller timeout register is changed. See storage/DATA-TIMEOUT.rst.
+PHYSICAL_MSDC_TIMEOUT_US = 1000000
 
 
 def require_smp_kernel(kernel,cpus):
@@ -272,7 +277,7 @@ def main():
         if args.native_msdc_probe:
             assert len(msdc_values)==44
             props.update({name:prepare.u32(0) for name in msdc_flags+msdc_values})
-            props['msdc-timeout-us']=prepare.u32(20000)
+            props['msdc-timeout-us']=prepare.u32(PHYSICAL_MSDC_TIMEOUT_US)
         if ios_slice:
             props['ios-system-slice']=prepare.u32(0)
             props['ios-system-start-sector']=prepare.u64(ios_slice['start_sector'])
@@ -439,6 +444,7 @@ def main():
         watchdog_trial_seconds=args.trial_seconds,watchdog_trial_reset_guaranteed=False,
         native_pwrap_probe_requested=args.native_pwrap_probe,
         native_msdc_probe_requested=args.native_msdc_probe,
+        native_msdc_software_timeout_us=PHYSICAL_MSDC_TIMEOUT_US if args.native_msdc_probe else None,
         native_buttons_probe_requested=args.native_buttons_probe,
         native_charger_setup_probe_requested=args.native_charger_setup_probe,
         native_charger_readonly_probe_requested=args.native_charger_readonly_probe,

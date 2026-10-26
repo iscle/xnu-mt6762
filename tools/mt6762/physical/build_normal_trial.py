@@ -45,6 +45,7 @@ DIAGNOSTICS = (
     'c97942ad9a4f452f358bcec91e3100b1b6e180fd290bc040266595af279fd5c6', # Image38: kernel53 passive PMIC/external SSPM state; opt-in300second watchdog trial
     '4861ee010f69f22de4a2d323b2081edf5d8710bb9d7751b2f76cf56a53c370ca', # Image39: kernel54 storage polling/admission fixes and bounded read-only PSC probe
     '3d880b695d22a992555e951df717a3b4b5ad6667d6ed5a52b2c977d49553ce08', # Image40: kernel54, exact live topology admission for first two-core physical trial
+    '857bb39916e74a86fa67bf64e6930fe7be896c98570f28384fceaf08e5d36543', # Image41: same kernel54/two cores; bounded1s software wait for inherited eMMC data timeout
 )
 VBMETA_FLAGS3 = '2f3fb6474d7ff35ac4c48ab2bef71247ba50de4a94de2474b7d1b60cd6654f51'
 

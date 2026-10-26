@@ -1,0 +1,202 @@
+{
+  "format": 1,
+  "status": "physical-two-cpu-startup-confirmed-userspace-ended-after-terminal-storage-timeout",
+  "artifacts": {
+    "hardware/trace-boot-20261025/capture34/xnu-log.bin": {
+      "sha256": "21ffa3ebfc4a6598d604ad24042bb89a5f8a9272bc376df60e21974f41e141d7",
+      "bytes": 136052
+    },
+    "boot/physical-xnu-build40/physical-manifest.json": {
+      "sha256": "11c5fd45a91dd767fd5990af770ad429eb3882a13f5b867107c5b7e3ddf38abd",
+      "bytes": 15575
+    },
+    "boot/physical-normal-build32/manifest.json": {
+      "sha256": "9a1b2e64f780aad20c3c9f8f23454527c8fe885b68bb8308d2a4d9348b8827cb",
+      "bytes": 2866
+    },
+    "boot/native-desktop-build54/kernel.macho": {
+      "sha256": "1d2310dfe3cc89fa29fadc896544503d89eedc01269c85d35278afa46f8f4f20",
+      "bytes": 15775352
+    },
+    "boot/native-desktop-build54/desktop-smp8/desktop.models.json": {
+      "sha256": "5e2e81c5b70baa7dc36b4c94517f7d81d20c8155e2e0e1b7593c7da4e5450b86",
+      "bytes": 12940
+    },
+    "boot/native-desktop-build54/desktop-smp8/desktop.serial.log": {
+      "sha256": "b227f2860f503311e5056f6e7707fb1d7058993e328eea5d53e3036d8f16ad4e",
+      "bytes": 283285
+    }
+  },
+  "identity": {
+    "kernel_sha256": "1d2310dfe3cc89fa29fadc896544503d89eedc01269c85d35278afa46f8f4f20",
+    "normal_boot_image_sha256": "8a2a6131003fa8106f085959075959aa5196deb879fb538700436bb07a8f222c",
+    "raw_loader_sha256": "0d90d384aa8b15720873c519f5bc37dceea82734fd83fd27ca5c5c18546c95dc",
+    "physical_image_number": 40,
+    "kernel_build": 54,
+    "capture": 34,
+    "cpu_count": 2
+  },
+  "markers": {
+    "psci": "[   14.121784]: MT6762_PSCI cpu=1 mpidr=0x1 conduit=smc version=0x10000 features=0/0/0 affinity=1 entry=0xd345f000",
+    "cpu_online": "[   14.127058]: arm_cpu_init(): cpu 1 online",
+    "processors_running": "[   14.127204]: GenericARMPE: 2 of 2 processors are running",
+    "vm_granules": "[   13.985646]: MT6762: VM page=16384 hardware page=4096 TCR_EL1=0x22a51a251a",
+    "storage_timeout": "[   37.656020]: MT6762 MSDC: terminal read failure -4; lba=14154566 command=2000891 phase=2 bytes=0 irq=0 stalled_us=20000; no reset/retry",
+    "storage_performance": "[   14.300747]: MT6762_MSDC_PERF lab=0 sectors=1 bytes=512 wall_us=737 read_us=737 read_max_us=737 admissions=14 full=2 reused=12 full_us=328 full_max_us=166 slow_full=0 admission_errors=0 clock_reverse=0",
+    "first_user_fault": "[   37.658708]: usertrap: xpcproxy[19] exception 1 code 0xa 0x22ddf6b44: pc 0x1ced8e5e8 lr 0x1ced8b5f0 sp 0x16f951270, shared cache slide 0x4ecc8000",
+    "pid1_fault": "[   37.672656]: usertrap: launchd.ios[1] exception 1 code 0xa 0x21f920f0c: pc 0x21f920f0c lr 0x21f94093c sp 0x16ed8a220, shared cache slide 0x4ecc8000",
+    "pid1_exit": "[   37.673214]: pid 1 exited -- exit reason namespace 2 subcode 0xa, description none"
+  },
+  "log_handling": "Only timestamp-prefixed records used for sequence; capture contains initial untimed plus timed duplicate buffer.",
+  "physical_findings": {
+    "cpu1_online": true,
+    "reported_running_cpus": 2,
+    "psci_version": "0x10000",
+    "features_cpu_on_cpu_off_affinity": [
+      0,
+      0,
+      0
+    ],
+    "target_affinity_before_on": 1,
+    "vm_page_bytes": 16384,
+    "hardware_page_bytes": 4096,
+    "storage_timeout_seconds": 37.65602,
+    "first_user_fault_seconds": 37.658708,
+    "first_fault_delay_ms": 2.688,
+    "terminal_msdc_error": -4,
+    "command": "0x02000891",
+    "lba": 14154566,
+    "phase": 2,
+    "bytes_in_failed_transfer": 0,
+    "last_irq": 0,
+    "stall_us": 20000,
+    "completed_sectors_before_failure": 62966,
+    "completed_bytes_before_failure": 32238592,
+    "failed_user_exception": 1,
+    "failed_user_code": 10,
+    "failed_user_code_name": "KERN_MEMORY_ERROR",
+    "xpcproxy_fault_address": "0x22ddf6b44",
+    "pid1_fault_seconds": 37.672656,
+    "desktop_proven": false,
+    "full_smp_coherency_proven": false
+  },
+  "causal_assessment": {
+    "conclusion": "Terminal storage failure is the directly observed upstream event and sufficient source-level explanation for the shared file-backed page faults. No VM/TLB fault is demonstrated by these logs.",
+    "confidence": "Strong timeline plus explicit error propagation; no per-page I/O-to-vaddr trace was collected.",
+    "storage_root_cause": "Unresolved first FIFO/completion stall after successful CMD17 response. Physical card latency, scheduling and hardware state require investigation; SMP itself is not established as the cause.",
+    "source_chain": [
+      {
+        "file": "bsd/dev/mt6762_msdc_protocol.h",
+        "symbol": "mt6762_msdc_data512",
+        "fact": "Phase2 begins after command response; byte counter remains0 until first64-byte FIFO chunk. Timeout is terminal."
+      },
+      {
+        "file": "bsd/dev/mt6762_msdc.c",
+        "symbol": "read_sector",
+        "fact": "Faulted engine clears ready; timeout maps ETIMEDOUT; subsequent calls ENXIO."
+      },
+      {
+        "file": "bsd/dev/mt6762_msdc_bsd.c",
+        "symbol": "read_one/disk_strategy",
+        "fact": "Mutex serializes controller access; failure publishes buffer error and residual through buf_biodone."
+      },
+      {
+        "file": "bsd/vfs/vfs_cluster.c",
+        "symbol": "cluster_ioerror",
+        "fact": "Failed page-in uses UPL_ABORT_ERROR."
+      },
+      {
+        "file": "osfmk/vm/vm_pageout.c",
+        "symbol": "upl_abort_range",
+        "fact": "UPL_ABORT_ERROR marks vmp_error."
+      },
+      {
+        "file": "osfmk/vm/vm_fault.c",
+        "symbol": "vm_fault_page",
+        "fact": "VMP_ERROR_GET produces KERN_MEMORY_ERROR and VM_FAULT_MEMORY_ERROR."
+      },
+      {
+        "file": "osfmk/mach/kern_return.h",
+        "symbol": "KERN_MEMORY_ERROR",
+        "fact": "Numeric value10, distinct from invalid address/protection errors."
+      }
+    ]
+  },
+  "smp_vm_review": {
+    "tlb_stride": "pmap.c:flush_mmu_tlb_region_asid_async derives stride from page-table leaf shift (4KiB), not16KiB VM page; tlb.h loops by pmap_page_size/4096 and broadcasts IS invalidations.",
+    "mapping_updates": "PMAP_UPDATE_TLBS calls arm64_sync_tlb; PTEs declare shareability. No concrete skipped-subpage TLBI defect identified in this scoped review.",
+    "limits": [
+      "Physical EL2/SMPEN/cluster cache operation is not fully proved by CPU1 online.",
+      "QEMU does not reproduce real cache coherence or eMMC latency.",
+      "Do not change page geometry or add globalTLB flushes to mask observed storage failure."
+    ]
+  },
+  "prior_single_cpu_logs": [
+    {
+      "capture": 30,
+      "log_sha256": "621c565e615f477f78b9258fdb7ee429f4571dd25c036f4221e4afc691540c4f",
+      "log_bytes": 96885,
+      "cpu1_online_observed": false,
+      "terminal_storage_failure_observed": false,
+      "user_kern_memory_error_observed": false,
+      "pid1_exit_observed": false,
+      "comparability_limit": "Earlier single-CPU kernel/payload/timing differ; this is not a controlled same-build CPU-count comparison."
+    },
+    {
+      "capture": 31,
+      "log_sha256": "28cb13c7522898d16074bf766a69178e5d0515d9f4272361b51562379adf9135",
+      "log_bytes": 110808,
+      "cpu1_online_observed": false,
+      "terminal_storage_failure_observed": false,
+      "user_kern_memory_error_observed": false,
+      "pid1_exit_observed": false,
+      "comparability_limit": "Earlier single-CPU kernel/payload/timing differ; this is not a controlled same-build CPU-count comparison."
+    },
+    {
+      "capture": 33,
+      "log_sha256": "73275964fb858aea490204611b4de11ee019ac02a18192ec5461b0219aa3e9d4",
+      "log_bytes": 98170,
+      "cpu1_online_observed": false,
+      "terminal_storage_failure_observed": false,
+      "user_kern_memory_error_observed": false,
+      "pid1_exit_observed": false,
+      "comparability_limit": "Earlier single-CPU kernel/payload/timing differ; this is not a controlled same-build CPU-count comparison."
+    }
+  ],
+  "qemu54_comparison": {
+    "kernel_sha256": "1d2310dfe3cc89fa29fadc896544503d89eedc01269c85d35278afa46f8f4f20",
+    "seconds_last_sample": 120.002,
+    "terminal_storage_failure_observed": false,
+    "kernel_panic_observed": false,
+    "msdc_last_sample": {
+      "enabled": true,
+      "synthetic": true,
+      "readonly": true,
+      "dma_emulated": false,
+      "irq_delivery": false,
+      "fault": 0,
+      "sectors": 244285440,
+      "commands": 1323322,
+      "cmd8": 1,
+      "cmd13": 882215,
+      "cmd17": 441106,
+      "completed": 441107,
+      "bytes_read": 225846784,
+      "backend_reads": 441106,
+      "backend_errors": 0,
+      "rejected": 0,
+      "ack_writes": 1764428,
+      "reads": 140422435,
+      "writes": 4852179,
+      "arg": 65536,
+      "command": 141,
+      "irq": 256,
+      "response": 2304,
+      "fifo_bytes": 0,
+      "pending": false,
+      "reading": false
+    },
+    "limit": "Synthetic model timing and coherent host memory do not exercise physical eMMC first-byte latency/cache behavior."
+  },
+  "next_step": "Use exact stock read timeout evidence to select a bounded no-progress budget and retain fail-closed errors/no blind command retry. Record first-FIFO latency plus IRQ/FIFO state already sampled; then rerun same2-CPU payload before considering a VM/TLB change. No desktop or physical SMP stability claim."
+}

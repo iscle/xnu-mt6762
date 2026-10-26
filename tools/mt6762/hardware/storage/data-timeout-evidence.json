@@ -1,0 +1,113 @@
+{
+  "schema": "mt6762-msdc-physical-timeout-audit-v1",
+  "hardware_operations": false,
+  "kernel_header_changes": false,
+  "capture": {
+    "path": "hardware/trace-boot-20261025/capture34",
+    "image": 40,
+    "kernel": 54,
+    "cpus": 2,
+    "trace_identity": "fb9746b0cb951c024239de4814a5608a27f31845b0a9af09d5259412fa0b1d6c",
+    "artifact_sha256": {
+      "peripherals-result.json": "79e844f70ad39ab3ea7e251d5068d6b06f312229065e0276ddc7a40aecbf45e6",
+      "peripherals.bin": "bdc71eb6755930bb8930566c89b6b5dc68c054af8df7e5bb83f9f46fc96de95e",
+      "trace-result.json": "441aec45c9b66133c0b6f0756fd1e56bd935224f4a42c0065c0a7015d3501386",
+      "xnu-log.bin": "21ffa3ebfc4a6598d604ad24042bb89a5f8a9272bc376df60e21974f41e141d7"
+    },
+    "failure": "[37.656020] lba14154566 command0x02000891 phase2 bytes0 irq0 stalled_us20000",
+    "configuration": [
+      {
+        "address": "0x11230000",
+        "width": 4,
+        "group": 4,
+        "name": "MSDC0+0x0",
+        "valid": 3,
+        "first": 35651993,
+        "second": 35651993,
+        "stable": true
+      },
+      {
+        "address": "0x11230030",
+        "width": 4,
+        "group": 4,
+        "name": "MSDC0+0x30",
+        "valid": 3,
+        "first": 151126016,
+        "second": 151126016,
+        "stable": true
+      }
+    ]
+  },
+  "stock_elf_sha256": "643474799f7c300f2d3c7f5130f697ee359929f13db0750f4dd7b9d648af14fc",
+  "stock_function_ranges": [
+    {
+      "name": "msdc_set_timeout",
+      "start": "0xffffff8008afaa64",
+      "end": "0xffffff8008afab80",
+      "sha256": "701ad6e60fbc70874869758716e7e1f58ae9abc04ddb504b4c19ad47df97c233"
+    },
+    {
+      "name": "mmc_set_data_timeout",
+      "start": "0xffffff8008ade114",
+      "end": "0xffffff8008ade254",
+      "sha256": "56e6c65597779e1d3fb571e7f5bcdc6620080f7e7b18b472bb2cdf9501ad6c1c"
+    },
+    {
+      "name": "msdc_pio_read",
+      "start": "0xffffff8008afc5d0",
+      "end": "0xffffff8008afcc60",
+      "sha256": "2e1a86c803592880f22203730fb715308b1f2793ce5490209a49c1b31fd3c74c"
+    }
+  ],
+  "stock_embedded_config": {
+    "start_offset": "0xedc660",
+    "end_offset": "0xee4ab4",
+    "decompressed_sha256": "fd798a564d398f021b21e305cc46a6c0579e1a9a8295712f4fb45a29ba10c99f",
+    "CONFIG_HZ": 250,
+    "PIO_512byte_deadline_ticks": 1250,
+    "PIO_deadline_seconds": 5
+  },
+  "source_sha256": {
+    "tools/mt6762/hardware/storage/test_msdc_pio.c": "93e5bad04af8d8361d5092d134e97892567f52bba079a0aec3836745d88f39d6",
+    "tools/mt6762/hardware/storage/DATA-TIMEOUT.rst": "58d9dd4a60aa92d68b4bb8e587c7883327084f38029523d73cad1292c42d9d2b",
+    "bsd/dev/mt6762_msdc_protocol.h": "f7976bb9a9699efbafd66801f225e58f0d2c5dfb6906fda6342d404370130c69",
+    "tools/mt6762/physical/build_payload.py": "7897b2a72c97ef732390f56ff8773ca2aed135e810656e73e295e39bc936d340",
+    "bsp/kernel-4.14/drivers/mmc/core/core.c": "b8c6348076a572d3c58368663458a1f6776323c10b774c5dde1721512d2ac9c2",
+    "bsp/kernel-4.14/drivers/mmc/host/mediatek/ComboA/sd.c": "cf54e1359538c331891e192b59009708a52eba859fd9e3c6bc2f34def558dd90",
+    "bsp/kernel-4.14/drivers/mmc/host/mediatek/ComboA/mtk_sd.h": "246f9611132d8d17396b6e89cafcfdb1ea549cf98927e735019c00c52db1d55b"
+  },
+  "controller_nominal_decode": {
+    "sclk_hz": 47999984,
+    "ckmod": 2,
+    "dtoc": 9,
+    "formula_us": "(DTOC+1)*2^20*1e6/(sclk*2) for captured DDR",
+    "microseconds": 109226.7030755677,
+    "status": "inferred from exact stock programming convention, not measured hardware expiry"
+  },
+  "policy": {
+    "previous_us": 20000,
+    "proposed_us": 1000000,
+    "existing_protocol_cap_us": 1000000,
+    "unit": "per command response and per no-progress FIFO/completion interval; reset per64-byte progress",
+    "not_total_request_deadline": true,
+    "not_proven_card_worst_case": true
+  },
+  "tests": {
+    "command": "sh tools/mt6762/hardware/storage/test.sh",
+    "result": "PASS",
+    "new_cases": [
+      "first FIFO25ms and100ms:20ms rejects,1s succeeds",
+      "DATTMO/DATCRCERR/both at25ms with simultaneous FIFO ready remain terminal",
+      "missing FIFO:1s elapsed bound",
+      "frozen clock:independent poll count bound",
+      "zero and1000001us config reject beforeMMIO",
+      "failed output untouched and subsequent terminal call noMMIO"
+    ]
+  },
+  "limitations": [
+    "Read stall reason remains unknown.",
+    "CSD timing/active long-read quirk not established for the current card.",
+    "Decoded controller interval is not proof of active hardware timeout.",
+    "No physical trial or kernel build performed."
+  ]
+}

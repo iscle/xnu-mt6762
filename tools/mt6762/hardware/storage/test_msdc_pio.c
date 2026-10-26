@@ -7,6 +7,8 @@ struct fixture {
     uint32_t cfg,sdc,irq,block,arg,command,fifo_pos;
     uint32_t dma,cq,queue,crypto,inten,busy,r1_flags;
     uint64_t time;
+    uint64_t first_fifo_ready_at,data_error_at;
+    uint32_t delayed_data_error;
     unsigned reads,writes,commands,admitted,fault,data_active,ext_bad,time_mode,preempt,late_command,late_data;
     unsigned opcodes[32],count;
     uint8_t ext[512],sector[512];
@@ -24,6 +26,9 @@ static uint32_t read32(void *ctx,uint32_t reg)
     case 0x30:return f->sdc;
     case 0x0c:
         if(f->fault==DATA_CRC && f->data_active && f->fifo_pos>=128)f->irq|=0x8000;
+        if(f->command==0x02000891 && f->data_active &&
+           f->delayed_data_error && f->time>=f->data_error_at)
+            f->irq|=f->delayed_data_error;
         /* Completion arrives while the owner is descheduled after a stale
          * not-ready read, before it can inspect the elapsed deadline. */
         if(f->late_command && f->irq==0x100) {
@@ -40,6 +45,8 @@ static uint32_t read32(void *ctx,uint32_t reg)
     case 0x40:return (f->fault==BAD_STATUS?0xb00:0x900)|f->r1_flags;
     case 0x14:
         if(!f->data_active)return 0;
+        if(f->command==0x02000891 && !f->fifo_pos &&
+           f->time<f->first_fifo_ready_at)return 0;
         if(f->late_data && f->fifo_pos==128) {
             f->late_data=0;f->time+=1000;return 0;
         }
@@ -89,17 +96,96 @@ static void setup(struct fixture *f)
     f->ext[212]=8;f->ext[185]=2;f->ext[196]=0x56;
     for(unsigned i=0;i<512;i++)f->sector[i]=(uint8_t)(i*7+3);
 }
-static int initialize_as(struct mt6762_msdc *s,struct fixture *f,
-    uint32_t host_cfg,uint32_t host_sdc,uint32_t hz)
+static int initialize_as_timeout(struct mt6762_msdc *s,struct fixture *f,
+    uint32_t host_cfg,uint32_t host_sdc,uint32_t hz,uint32_t timeout_us)
 {
     struct mt6762_msdc_io io={f,admit,read32,write32,time_us,delay_us};
-    struct mt6762_msdc_config cfg={8,1,host_cfg,host_sdc,100,hz};
+    struct mt6762_msdc_config cfg={8,1,host_cfg,host_sdc,timeout_us,hz};
     return mt6762_msdc_init(s,&io,&cfg);
 }
+static int initialize_as(struct mt6762_msdc *s,struct fixture *f,
+    uint32_t host_cfg,uint32_t host_sdc,uint32_t hz)
+{return initialize_as_timeout(s,f,host_cfg,host_sdc,hz,100);}
 static int initialize(struct mt6762_msdc *s,struct fixture *f)
 {return initialize_as(s,f,0x89,0x20000,200000000);}
+static void setup_captured_ddr(struct fixture *f)
+{
+    setup(f);f->cfg=0x02200199;f->sdc=0x09020000;f->ext[185]=1;
+}
+static void assert_failed_output(const uint8_t output[512])
+{for(unsigned i=0;i<512;i++)assert(output[i]==0xa5);}
+static void test_delayed_first_fifo(void)
+{
+    const unsigned delays[]={25000,100000};
+    const unsigned deadlines[]={20000,1000000};
+    struct fixture f;struct mt6762_msdc s;uint8_t output[512];
+    /* Capture34 failed before its first FIFO chunk at20ms with no hardware
+     * error. Model actual absent FIFO data, not a scheduler/completion race.
+     * This exercises the unchanged production protocol with each handoff. */
+    for(unsigned i=0;i<sizeof(delays)/sizeof(delays[0]);i++)
+    for(unsigned j=0;j<sizeof(deadlines)/sizeof(deadlines[0]);j++) {
+        setup_captured_ddr(&f);memset(&s,0,sizeof(s));
+        assert(!initialize_as_timeout(&s,&f,f.cfg,f.sdc,47999984,deadlines[j]));
+        uint64_t start=f.time;unsigned commands=f.commands;
+        f.first_fifo_ready_at=start+delays[i];memset(output,0xa5,sizeof(output));
+        int error=mt6762_msdc_read512(&s,2,output);
+        if(j) {
+            assert(!error && !s.faulted && f.time-start==delays[i]);
+            assert(f.commands-commands==3 && !memcmp(output,f.sector,512));
+        } else {
+            assert(error==MT6762_MSDC_TIMEOUT && s.faulted);
+            assert(s.wait_phase==2 && s.data_bytes==0 && s.last_irq==0);
+            assert(s.stalled_us==20000 && f.time-start==20000);
+            assert(f.commands-commands==2);assert_failed_output(output);
+        }
+    }
+    /* Hardware DATTMO and DATCRCERR remain terminal even if data becomes
+     * ready simultaneously. A longer software deadline never overrides them. */
+    const uint32_t error_bits[]={0x4000,0x8000,0xc000};
+    for(unsigned i=0;i<sizeof(error_bits)/sizeof(error_bits[0]);i++) {
+        setup_captured_ddr(&f);memset(&s,0,sizeof(s));
+        assert(!initialize_as_timeout(&s,&f,f.cfg,f.sdc,47999984,1000000));
+        uint64_t start=f.time;
+        f.data_error_at=f.first_fifo_ready_at=start+25000;
+        f.delayed_data_error=error_bits[i];memset(output,0xa5,sizeof(output));
+        assert(mt6762_msdc_read512(&s,2,output)==MT6762_MSDC_DATA);
+        assert(s.faulted && s.data_bytes==0 && s.last_irq==error_bits[i]);
+        assert(f.time-start==25000);assert_failed_output(output);
+        unsigned reads=f.reads,writes=f.writes;
+        assert(mt6762_msdc_read512(&s,2,output)==MT6762_MSDC_FAULTED);
+        assert(f.reads==reads && f.writes==writes);
+    }
+    /* No data is bounded both by elapsed time and by the independent poll
+     * count when the supplied clock is frozen. No retry/reset is introduced. */
+    for(unsigned frozen=0;frozen<2;frozen++) {
+        setup_captured_ddr(&f);memset(&s,0,sizeof(s));
+        assert(!initialize_as_timeout(&s,&f,f.cfg,f.sdc,47999984,1000000));
+        uint64_t start=f.time;unsigned reads=f.reads,commands=f.commands;
+        f.first_fifo_ready_at=UINT64_MAX;f.time_mode=frozen;
+        memset(output,0xa5,sizeof(output));
+        assert(mt6762_msdc_read512(&s,2,output)==MT6762_MSDC_TIMEOUT);
+        assert(s.faulted && s.wait_phase==2 && !s.data_bytes && !s.last_irq);
+        assert(f.time-start==(frozen?0:1000000));
+        assert(s.stalled_us==(frozen?0:1000000));
+        assert(f.reads-reads<2000128 && f.commands-commands==2);
+        assert_failed_output(output);
+        reads=f.reads;unsigned writes=f.writes;
+        assert(mt6762_msdc_read512(&s,2,output)==MT6762_MSDC_FAULTED);
+        assert(f.reads==reads && f.writes==writes);
+    }
+    /* Keep the production handoff cap: zero or more than1s is rejected
+     * before any hardware access; accepting1s is covered above. */
+    const unsigned invalid[]={0,1000001};
+    for(unsigned i=0;i<sizeof(invalid)/sizeof(invalid[0]);i++) {
+        setup_captured_ddr(&f);memset(&s,0,sizeof(s));
+        assert(initialize_as_timeout(&s,&f,f.cfg,f.sdc,47999984,invalid[i])==MT6762_MSDC_ARGUMENT);
+        assert(!f.reads && !f.writes);
+    }
+    puts("PASS: delayed-first-FIFO20ms rejection/1s admission, terminal hardware errors, absent-data/frozen-clock bounds");
+}
 int main(void)
 {
+    test_delayed_first_fifo();
     struct fixture f;struct mt6762_msdc s={0};uint8_t output[512];
     setup(&f);assert(!initialize(&s,&f));
     assert(f.count==3 && f.opcodes[0]==13 && f.opcodes[1]==8 && f.opcodes[2]==13);
