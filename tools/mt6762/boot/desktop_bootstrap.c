@@ -51,7 +51,7 @@ __attribute__((used,noreturn)) static void desktop_main(const usize *initial_sta
     result=call6(167,(long)"apfs",(long)"/newroot",1,(long)"/dev/mtkios0",0,0);
     if(result)stop("mount",result);
     outcome("system_mounted",0);
-    const char key[]="kern.redwood_switch_root",value[]="/newroot redwood";
+    const char key[]="kern.hakios_switch_root",value[]="/newroot redwood";
     result=call6(274,(long)key,sizeof(key)-1,0,0,(long)value,sizeof(value)-1);
     if(result)stop("switch_root",result);
     result=call6(12,(long)"/",0,0,0,0,0);

@@ -109,7 +109,7 @@ bsd/dev/munge.c 			optional config_requires_u32_munging
 bsd/dev/unix_startup.c			standard
 
 bsd/dev/monotonic.c optional monotonic
-bsd/dev/redwood_input.c		standard
+bsd/dev/hakios.input.c		standard
 bsd/dev/mt6762_platform.c	standard
 bsd/dev/mt6762_i2c.c	standard
 bsd/dev/mt6762_input.c	standard
@@ -121,36 +121,40 @@ bsd/dev/mt6762_thermal.c	standard
 bsd/dev/mt6762_gauge.c	standard
 bsd/dev/mt6762_msdc.c	standard
 bsd/dev/mt6762_msdc_bsd.c	standard
-bsd/dev/redwood_virtio_input.c	standard
-bsd/dev/redwood_goodix.c	standard
-bsd/dev/redwood_buttons.c	standard
-bsd/dev/redwood_battery.c	standard
-bsd/dev/redwood_ufs.c	standard
-bsd/dev/redwood_ufshc.c	standard
-bsd/dev/redwood_net.c		standard
-bsd/dev/redwood_virtio_net.c	standard
-bsd/dev/redwood_apple80211.c	standard
-bsd/dev/redwood_cpufreq.c	standard
-bsd/dev/redwood_adreno.c	standard
-bsd/dev/redwood_audio.c		standard
-bsd/dev/redwood_virtio_sound.c	standard
-bsd/dev/redwood_speaker.c	standard
-bsd/dev/redwood_guard.c		standard
-bsd/dev/redwood_haptic.c		standard
-bsd/dev/redwood_torch.c		standard
-bsd/dev/redwood_camera.c	standard
-bsd/dev/redwood_mic.c		standard
-bsd/dev/redwood_wifi.c		standard
-bsd/dev/redwood_adsp.c		standard
-bsd/dev/redwood_image.c		standard
-bsd/dev/redwood_virtio_blk.c	standard
-bsd/dev/redwood_sparse.c	standard
-bsd/dev/redwood_apfs_check.c	optional apfs
-bsd/dev/redwood_sound.c		standard
-bsd/dev/redwood_qmi.c		standard
-bsd/dev/redwood_wlfw.c		standard
-bsd/dev/redwood_lx.c		standard
-bsd/dev/redwood_sta.c		standard
+bsd/dev/hakios.virtio_input.c	standard
+bsd/dev/hakios.goodix.c	standard
+bsd/dev/hakios.buttons.c	standard
+bsd/dev/hakios.battery.c	standard
+bsd/dev/hakios.ufs.c	standard
+bsd/dev/hakios.ufshc.c	standard
+bsd/dev/hakios.net.c		standard
+bsd/dev/hakios.ipa.c		standard
+bsd/dev/hakios.cell.c		standard
+bsd/dev/hakios.virtio_net.c	standard
+bsd/dev/hakios.apple80211.c	standard
+bsd/dev/hakios.cpufreq.c	standard
+bsd/dev/hakios.adreno.c	standard
+bsd/dev/hakios.audio.c		standard
+bsd/dev/hakios.virtio_sound.c	standard
+bsd/dev/hakios.speaker.c	standard
+bsd/dev/hakios.guard.c		standard
+bsd/dev/hakios.haptic.c		standard
+bsd/dev/hakios.torch.c		standard
+bsd/dev/hakios.camera.c	standard
+bsd/dev/hakios.mic.c		standard
+bsd/dev/hakios.wifi.c		standard
+bsd/dev/hakios.adsp.c		standard
+bsd/dev/hakios.mpss.c		standard
+bsd/dev/hakios.image.c		standard
+bsd/dev/hakios.virtio_blk.c	standard
+bsd/dev/hakios.sparse.c	standard
+bsd/dev/hakios.apfs_check.c	optional apfs
+bsd/dev/hakios.sound.c		standard
+bsd/dev/hakios.qmi.c		standard
+bsd/dev/hakios.nas.c		standard
+bsd/dev/hakios.wlfw.c		standard
+bsd/dev/hakios.lx.c		standard
+bsd/dev/hakios.sta.c		standard
 bsd/dev/dev_perfmon.c optional config_perfmon
 
 bsd/libkern/crc32.c			standard

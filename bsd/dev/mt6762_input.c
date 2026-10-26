@@ -10,7 +10,7 @@
 #include <sys/systm.h>
 #include <sys/mt6762_platform.h>
 #include <sys/mt6762_display.h>
-#include <sys/redwood_input.h>
+#include <sys/hakios.input.h>
 #include <pexpert/pexpert.h>
 #include "../../tools/mt6762/hardware/display-touch/axs_touch_state.h"
 extern kern_return_t thread_terminate(thread_t);
@@ -27,7 +27,7 @@ static void touch_emit(void *unused, unsigned type, unsigned id, unsigned x, uns
 {
     (void)unused;
     if(touch_events++<32)kprintf("MT6762_TOUCH_EVENT type=%u id=%u x=%u y=%u\n",type,id,x,y);
-    redwood_touch_post(type, id, x, y);
+    hakios_touch_post(type, id, x, y);
 }
 static int touch_property(const char *name, uint32_t expected)
 {

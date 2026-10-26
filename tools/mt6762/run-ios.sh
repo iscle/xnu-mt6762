@@ -86,7 +86,7 @@ if [[ "$NATIVE" == 1 ]]; then
     [[ -f "$MTK_BATTERY_PROBE" ]] || { echo 'Missing MTK_BATTERY_PROBE' >&2; exit 1; }
     cp "$MTK_BATTERY_PROBE" "$OUT/root/bin/battery_probe"
     chmod 755 "$OUT/root/bin/battery_probe"
-    # com.redwood.demo has AbandonProcessGroup=true; this bounded reader may
+    # com.hakios.demo has AbandonProcessGroup=true; this bounded reader may
     # continue while the foreground BKS request helper completes independently.
     PROBE_REPEATS=${MTK_BATTERY_PROBE_REPEATS:-16}
     PROBE_INTERVAL=${MTK_BATTERY_PROBE_INTERVAL_MS:-10000}
@@ -138,7 +138,7 @@ PY_SCHEDULE
 else
 cat > "$OUT/root/etc/rc.jobs" <<'RC'
 # Synthetic input through the project's helper, not a MediaTek touch/button driver.
-/redwood/bin/rwtouch wait 260 button lock 80 wait 5 notify com.redwood.layers wait 12 tap 0.5 0.5 wait 12 swipe 0.5 0.985 0.5 0.3 350 wait 12 notify com.redwood.layers wait 12 tap 0.5 0.5 wait 12 tap 0.5 0.5 wait 12 notify com.redwood.layers
+/redwood/bin/rwtouch wait 260 button lock 80 wait 5 notify com.hakios.layers wait 12 tap 0.5 0.5 wait 12 swipe 0.5 0.985 0.5 0.3 350 wait 12 notify com.hakios.layers wait 12 tap 0.5 0.5 wait 12 tap 0.5 0.5 wait 12 notify com.hakios.layers
 RC
 fi
 python3 -B "$RUNTIME/tools/apfs/mkapfs.py" -z -o "$OUT/root.apfs" "Root=$OUT/root" > "$OUT/root-image.log"

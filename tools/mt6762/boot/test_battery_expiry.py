@@ -37,9 +37,9 @@ class BatteryExpiryTests(unittest.TestCase):
 
     def test_native_properties_are_not_overwritten_by_legacy_service(self):
         log='MT6762_BAT_PROBE iteration=1 readonly=1 status=0 monotonic_ns=100 clock_status=0\n'
-        log+='MT6762_BAT_SERVICE name=MT6762Battery class=RedwoodBattery\n'
+        log+='MT6762_BAT_SERVICE name=MT6762Battery class=HakiosBattery\n'
         log+='MT6762_BAT_SNAPSHOT status=0\nMT6762_BAT_PROPERTY Voltage=<absent>\n'
-        log+='MT6762_BAT_SERVICE name=RedwoodBattery class=RedwoodBattery\n'
+        log+='MT6762_BAT_SERVICE name=HakiosBattery class=HakiosBattery\n'
         log+='MT6762_BAT_SNAPSHOT status=0\nMT6762_BAT_PROPERTY Voltage=sint32:4000\n'
         log+='MT6762_BAT_COUNT 2\n'
         parsed=c.parse(log)

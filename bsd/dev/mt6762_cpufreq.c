@@ -20,8 +20,8 @@ static int cpu0_idx=-1,cpu4_idx=-1,cci_idx=-1;
 static int cpu0_ceiling_khz=-1,cpu4_ceiling_khz=-1;
 static int cpu0_table_uv=-1,cpu4_table_uv=-1,cci_table_uv=-1;
 static int dvfs_control_ready; /* Remains false: mailbox/liveness not established. */
-SYSCTL_DECL(_kern_redwood);
-#define CPU_SYSCTL(name,description) SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_##name,CTLFLAG_RD|CTLFLAG_LOCKED,&name,0,description)
+SYSCTL_DECL(_kern_hakios);
+#define CPU_SYSCTL(name,description) SYSCTL_INT(_kern_hakios,OID_AUTO,mt6762_##name,CTLFLAG_RD|CTLFLAG_LOCKED,&name,0,description)
 CPU_SYSCTL(clock_valid,"Readback bits: CPU0=1 CPU4=2 CCI=4 VPROC=8 VSRAM=16");
 CPU_SYSCTL(table_valid,"Stable C62 shared-table representation; not EEM/SSPM liveness proof");
 CPU_SYSCTL(read_errors,"Native clock/table read failures");
@@ -46,7 +46,7 @@ static int sspm_recent_sysctl SYSCTL_HANDLER_ARGS
     int alive=mt6762_sspm_alive_recent();
     return sysctl_handle_int(oidp,&alive,0,req);
 }
-SYSCTL_PROC(_kern_redwood,OID_AUTO,mt6762_sspm_platform_alive,
+SYSCTL_PROC(_kern_hakios,OID_AUTO,mt6762_sspm_platform_alive,
     CTLTYPE_INT|CTLFLAG_RD|CTLFLAG_LOCKED,NULL,0,sspm_recent_sysctl,"I",
     "Unexpired active PLATFORM response, not CPU-DVFS readiness");
 

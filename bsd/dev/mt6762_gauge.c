@@ -45,7 +45,7 @@ static int observation_read(struct gauge_observation *out)
 }
 #ifndef MT6762_GAUGE_HOST_TEST
 static int started;
-SYSCTL_DECL(_kern_redwood);
+SYSCTL_DECL(_kern_hakios);
 static int gauge_sysctl SYSCTL_HANDLER_ARGS
 {
     struct gauge_observation value_snapshot;
@@ -59,15 +59,15 @@ static int gauge_charge_sysctl SYSCTL_HANDLER_ARGS
     int64_t value=observation_read(&value_snapshot)?INT64_MIN:value_snapshot.charge_uah;
     return sysctl_handle_quad(oidp,&value,0,req);
 }
-SYSCTL_PROC(_kern_redwood,OID_AUTO,mt6762_gauge_current_ua,CTLTYPE_INT|CTLFLAG_RD|CTLFLAG_LOCKED,NULL,0,gauge_sysctl,"I","Calibrated gauge snapshot current, positive charge; INT_MIN invalid/stale");
-SYSCTL_PROC(_kern_redwood,OID_AUTO,mt6762_gauge_current_valid,CTLTYPE_INT|CTLFLAG_RD|CTLFLAG_LOCKED,NULL,1,gauge_sysctl,"I","Current has completed snapshot and advancing NTER, unexpired");
-SYSCTL_PROC(_kern_redwood,OID_AUTO,mt6762_gauge_charge_uah,CTLTYPE_QUAD|CTLFLAG_RD|CTLFLAG_LOCKED,NULL,0,gauge_charge_sysctl,"Q","Signed calibrated accumulated Coulomb counter, not SOC/capacity; INT64_MIN invalid/stale");
-SYSCTL_PROC(_kern_redwood,OID_AUTO,mt6762_gauge_charge_valid,CTLTYPE_INT|CTLFLAG_RD|CTLFLAG_LOCKED,NULL,1,gauge_sysctl,"I","Charge shares current latch, calibration, NTER liveness and acquisition expiry");
-SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_gauge_freshness_rejections,CTLFLAG_RD|CTLFLAG_LOCKED,&freshness_rejections,0,"Nonadvancing NTER or completed acquisition already expired");
-SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_gauge_samples,CTLFLAG_RD|CTLFLAG_LOCKED,&samples,0,"Completed gauge snapshots; includes initial liveness baseline");
-SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_gauge_errors,CTLFLAG_RD|CTLFLAG_LOCKED,&errors,0,"Gauge admission/transaction/configuration failures");
-SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_gauge_fault,CTLFLAG_RD|CTLFLAG_LOCKED,&transport_fault,0,"Latched protocol/calibration ownership failure");
-SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_gauge_raw_current,CTLFLAG_RD|CTLFLAG_LOCKED,&raw_current,0,"Latest completed raw current, not calibrated freshness; -1 absent");
+SYSCTL_PROC(_kern_hakios,OID_AUTO,mt6762_gauge_current_ua,CTLTYPE_INT|CTLFLAG_RD|CTLFLAG_LOCKED,NULL,0,gauge_sysctl,"I","Calibrated gauge snapshot current, positive charge; INT_MIN invalid/stale");
+SYSCTL_PROC(_kern_hakios,OID_AUTO,mt6762_gauge_current_valid,CTLTYPE_INT|CTLFLAG_RD|CTLFLAG_LOCKED,NULL,1,gauge_sysctl,"I","Current has completed snapshot and advancing NTER, unexpired");
+SYSCTL_PROC(_kern_hakios,OID_AUTO,mt6762_gauge_charge_uah,CTLTYPE_QUAD|CTLFLAG_RD|CTLFLAG_LOCKED,NULL,0,gauge_charge_sysctl,"Q","Signed calibrated accumulated Coulomb counter, not SOC/capacity; INT64_MIN invalid/stale");
+SYSCTL_PROC(_kern_hakios,OID_AUTO,mt6762_gauge_charge_valid,CTLTYPE_INT|CTLFLAG_RD|CTLFLAG_LOCKED,NULL,1,gauge_sysctl,"I","Charge shares current latch, calibration, NTER liveness and acquisition expiry");
+SYSCTL_INT(_kern_hakios,OID_AUTO,mt6762_gauge_freshness_rejections,CTLFLAG_RD|CTLFLAG_LOCKED,&freshness_rejections,0,"Nonadvancing NTER or completed acquisition already expired");
+SYSCTL_INT(_kern_hakios,OID_AUTO,mt6762_gauge_samples,CTLFLAG_RD|CTLFLAG_LOCKED,&samples,0,"Completed gauge snapshots; includes initial liveness baseline");
+SYSCTL_INT(_kern_hakios,OID_AUTO,mt6762_gauge_errors,CTLFLAG_RD|CTLFLAG_LOCKED,&errors,0,"Gauge admission/transaction/configuration failures");
+SYSCTL_INT(_kern_hakios,OID_AUTO,mt6762_gauge_fault,CTLFLAG_RD|CTLFLAG_LOCKED,&transport_fault,0,"Latched protocol/calibration ownership failure");
+SYSCTL_INT(_kern_hakios,OID_AUTO,mt6762_gauge_raw_current,CTLFLAG_RD|CTLFLAG_LOCKED,&raw_current,0,"Latest completed raw current, not calibrated freshness; -1 absent");
 #endif
 int mt6762_gauge_current_snapshot(int *ua,uint64_t *expires_abs)
 {

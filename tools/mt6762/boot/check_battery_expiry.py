@@ -46,7 +46,7 @@ def parse(text):
         if match:
             current['count'] = int(match[1])
     for sample in samples:
-        native=[s for s in sample['services'] if s['name']=='MT6762Battery' and s['class_name']=='RedwoodBattery']
+        native=[s for s in sample['services'] if s['name']=='MT6762Battery' and s['class_name']=='HakiosBattery']
         if len(native)==1:
             sample['properties']=native[0]['properties']
             sample['snapshot_status']=native[0].get('snapshot_status')

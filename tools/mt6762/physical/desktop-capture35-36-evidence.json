@@ -1,0 +1,136 @@
+{
+  "format": 1,
+  "scope": "Physical Image41/kernel54 retained captures; presentation fix source/host validation only",
+  "kernel_sha256": "1d2310dfe3cc89fa29fadc896544503d89eedc01269c85d35278afa46f8f4f20",
+  "physical_manifest_sha256": "41871d19b2f000f770a451adcc3739c5d20f35d590c1275b0ad20146aaa5d9c0",
+  "captures": {
+    "35": {
+      "artifacts": {
+        "xnu-log.bin": {
+          "sha256": "ee4ebd4740ec810f3a5b5170e9a9c56849d1a375b0cdcae28adb89ac274afa0d",
+          "bytes": 177042
+        },
+        "framebuffer.png": {
+          "sha256": "510f18f2b584d6dfd562d7e5713bb949e2098916d7d455f3f45dec8b12542f42",
+          "bytes": 24199
+        },
+        "trace-result.json": {
+          "sha256": "1487b50ae21e72ba18ca143c53cc5ce3eba6feec6c4a7e9c16ee04c2954fe044",
+          "bytes": 1598
+        },
+        "runtime-memory.json": {
+          "sha256": "8c648df4c69790881397fa3c7da2dd548e398070e719517c129c2bf4e79311dc",
+          "bytes": 94
+        }
+      },
+      "trace_identity": "311cdbf4422c03760a888b7d0a33d270ef196f20a135eda74a9af829ff113d25",
+      "trace_phase": 10,
+      "memory": {
+        "physical_base": 3489660928,
+        "usable_bytes": 4024434688,
+        "actual_bytes": 4024434688
+      },
+      "last_msdc": {
+        "lab": 0,
+        "sectors": 542548,
+        "bytes": 277784576,
+        "wall_us": 180001417,
+        "read_us": 173164314,
+        "read_max_us": 24101,
+        "admissions": 3797843,
+        "full": 171450,
+        "reused": 3626393,
+        "full_us": 27506077,
+        "full_max_us": 1476,
+        "slow_full": 13,
+        "admission_errors": 0,
+        "clock_reverse": 0
+      },
+      "window_server_ready_lines": [],
+      "system_shell_connected_lines": [],
+      "native_touch_apple_lines": [],
+      "minifb_log_lines": 0,
+      "framebuffer_visual": "Kernel text console; no visible Apple UI in captured frame"
+    },
+    "36": {
+      "artifacts": {
+        "xnu-log.bin": {
+          "sha256": "84237acde964d7bd4d39b96f5f3375139e160fad2291717596c675b1d505711e",
+          "bytes": 439205
+        },
+        "framebuffer.png": {
+          "sha256": "74a721546a761bb06442760feb68f958cd42f051ef23e0f5679c0a97240a35dc",
+          "bytes": 26089
+        },
+        "trace-result.json": {
+          "sha256": "1487b50ae21e72ba18ca143c53cc5ce3eba6feec6c4a7e9c16ee04c2954fe044",
+          "bytes": 1598
+        },
+        "runtime-memory.json": {
+          "sha256": "8c648df4c69790881397fa3c7da2dd548e398070e719517c129c2bf4e79311dc",
+          "bytes": 94
+        }
+      },
+      "trace_identity": "311cdbf4422c03760a888b7d0a33d270ef196f20a135eda74a9af829ff113d25",
+      "trace_phase": 10,
+      "memory": {
+        "physical_base": 3489660928,
+        "usable_bytes": 4024434688,
+        "actual_bytes": 4024434688
+      },
+      "last_msdc": {
+        "lab": 0,
+        "sectors": 1067785,
+        "bytes": 546705920,
+        "wall_us": 524292168,
+        "read_us": 341067032,
+        "read_max_us": 43023,
+        "admissions": 7474502,
+        "full": 337419,
+        "reused": 7137083,
+        "full_us": 54281022,
+        "full_max_us": 12940,
+        "slow_full": 39,
+        "admission_errors": 0,
+        "clock_reverse": 0
+      },
+      "window_server_ready_lines": [
+        "1970-01-01 01:04:38.205912+0100 backboardd[12:211] [Common]       window server ready in 9.85704s. overall 36.0468s"
+      ],
+      "system_shell_connected_lines": [
+        "1970-01-01 01:04:39.399802+0100 backboardd[12:211] [SystemShell] System shell connected: SpringBoard pid 8"
+      ],
+      "native_touch_apple_lines": [
+        "1970-01-01 01:09:04.328702+0100 backboardd[12:1057] [TouchEvents] contact 1 presence: touching",
+        "1970-01-01 01:09:04.583174+0100 backboardd[12:1057] [TouchEvents] contact 1 presence: touching"
+      ],
+      "minifb_log_lines": 0,
+      "framebuffer_visual": "Kernel text console; no visible Apple UI in captured frame"
+    }
+  },
+  "interpretation": {
+    "storage": "No terminal storage failure observed in these logs; capture36 measured maximum read time 43023 microseconds and zero admission_errors. This does not prove storage can never fail.",
+    "ios_runtime": "Capture36 proves window server ready, SpringBoard system-shell connection and native contacts reaching original backboardd. These are not desktop or pixel-presentation proof.",
+    "bug": "Physical profile2 acquired a text console. First valid surface previously selected kPEGraphicsMode only; that command changes intent but does not call gc_enable(FALSE). ReleaseScreen does.",
+    "uncertainty": "No retained MiniFB logs, including registration, despite the discovered service. Therefore missing swap logs do not establish that swaps never occurred. Console interference is a concrete source bug, not a demonstrated sole cause of absent UI.",
+    "software_renderer": "Metal/GLES initialization errors precede software fallback and window-server readiness; they alone do not prove failure."
+  },
+  "source_chain": [
+    "bsd/dev/mt6762_display.c: display_init_locked profile2 ReleaseScreen/TextMode/AcquireScreen",
+    "iokit/Kernel/MiniIOMobileFramebuffer.cpp: show, drawLayer",
+    "osfmk/console/video_console.c: initialize_screen kPEGraphicsMode, kPEReleaseScreen; gc_enable",
+    "pexpert/arm/pe_kprintf.c: serial_putc_crlf routes to loader_log_putc"
+  ],
+  "fix_validation": {
+    "status": "source and host validated; kernel build and physical validation pending",
+    "test": "python3 tools/mt6762/physical/test_present_console.py",
+    "tests": 2,
+    "method": "Compile extracted actual drawLayer for MT6762 and non-MTK with host service stubs; exercise valid/fallback/parallel draw, malformed/offscreen/null backing and one-time console transition. Source checks blank/format guards and actual PE command semantics.",
+    "hardware_or_scheduler_emulated": false,
+    "limits": [
+      "No IOKit workloop/concurrent-console proof from host harness",
+      "First copy completion marker proves software copy returned, not visible scanout",
+      "Retained logs are bounded and depend on enabled kprintf/retention transport"
+    ]
+  }
+}

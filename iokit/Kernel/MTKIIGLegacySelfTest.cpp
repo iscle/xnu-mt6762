@@ -11,7 +11,7 @@
 #include <sys/errno.h>
 #include <sys/sysctl.h>
 
-extern "C" { SYSCTL_DECL(_kern_redwood); }
+extern "C" { SYSCTL_DECL(_kern_hakios); }
 LCK_GRP_DECLARE(mtk_iig_test_group, "mtk_iig_test");
 LCK_MTX_DECLARE(mtk_iig_test_lock, &mtk_iig_test_group);
 static int test_result, test_cases, handler_calls;
@@ -289,10 +289,10 @@ static int test_sysctl SYSCTL_HANDLER_ARGS
     lck_mtx_unlock(&mtk_iig_test_lock);
     return sysctl_handle_int(oidp, &value, 0, req);
 }
-SYSCTL_PROC(_kern_redwood, OID_AUTO, mt6762_iig_test_result,
+SYSCTL_PROC(_kern_hakios, OID_AUTO, mt6762_iig_test_result,
     CTLTYPE_INT | CTLFLAG_RD | CTLFLAG_LOCKED, nullptr, 0, test_sysctl, "I",
     "Opt-in actual generated Invoke test: 1 passed, negative failing case; disabled ENOTSUP");
-SYSCTL_PROC(_kern_redwood, OID_AUTO, mt6762_iig_test_cases,
+SYSCTL_PROC(_kern_hakios, OID_AUTO, mt6762_iig_test_cases,
     CTLTYPE_INT | CTLFLAG_RD | CTLFLAG_LOCKED, nullptr, 1, test_sysctl, "I",
     "Completed one-shot actual generated Invoke test cases");
 #endif

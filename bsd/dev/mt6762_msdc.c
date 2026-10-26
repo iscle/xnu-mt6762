@@ -35,7 +35,7 @@ static uint64_t perf_start_us,perf_report_us;
 static int perf_started;
 static uint64_t time_us(void *);
 
-SYSCTL_DECL(_kern_redwood);
+SYSCTL_DECL(_kern_hakios);
 static int msdc_sysctl SYSCTL_HANDLER_ARGS
 {
     int *field=NULL;
@@ -47,11 +47,11 @@ static int msdc_sysctl SYSCTL_HANDLER_ARGS
     int value=__atomic_load_n(field,__ATOMIC_ACQUIRE);
     return sysctl_handle_int(oidp,&value,0,req);
 }
-SYSCTL_PROC(_kern_redwood,OID_AUTO,mt6762_msdc_ready,CTLTYPE_INT|CTLFLAG_RD|CTLFLAG_LOCKED,NULL,0,msdc_sysctl,"I","Owned inherited PIO/card accepted and read-only disk published");
-SYSCTL_PROC(_kern_redwood,OID_AUTO,mt6762_msdc_fault,CTLTYPE_INT|CTLFLAG_RD|CTLFLAG_LOCKED,NULL,1,msdc_sysctl,"I","Terminal inherited PIO ownership/transaction fault");
-SYSCTL_PROC(_kern_redwood,OID_AUTO,mt6762_msdc_last_error,CTLTYPE_INT|CTLFLAG_RD|CTLFLAG_LOCKED,NULL,2,msdc_sysctl,"I","Last negative protocol code, or negative BSD publication error");
-SYSCTL_PROC(_kern_redwood,OID_AUTO,mt6762_msdc_reads,CTLTYPE_INT|CTLFLAG_RD|CTLFLAG_LOCKED,NULL,3,msdc_sysctl,"I","Completed successful512-byte media reads; excludes EXT_CSD");
-SYSCTL_PROC(_kern_redwood,OID_AUTO,mt6762_msdc_sectors,CTLTYPE_INT|CTLFLAG_RD|CTLFLAG_LOCKED,NULL,4,msdc_sysctl,"I","Capacity corroborated by actual EXT_CSD; transport readiness separate");
+SYSCTL_PROC(_kern_hakios,OID_AUTO,mt6762_msdc_ready,CTLTYPE_INT|CTLFLAG_RD|CTLFLAG_LOCKED,NULL,0,msdc_sysctl,"I","Owned inherited PIO/card accepted and read-only disk published");
+SYSCTL_PROC(_kern_hakios,OID_AUTO,mt6762_msdc_fault,CTLTYPE_INT|CTLFLAG_RD|CTLFLAG_LOCKED,NULL,1,msdc_sysctl,"I","Terminal inherited PIO ownership/transaction fault");
+SYSCTL_PROC(_kern_hakios,OID_AUTO,mt6762_msdc_last_error,CTLTYPE_INT|CTLFLAG_RD|CTLFLAG_LOCKED,NULL,2,msdc_sysctl,"I","Last negative protocol code, or negative BSD publication error");
+SYSCTL_PROC(_kern_hakios,OID_AUTO,mt6762_msdc_reads,CTLTYPE_INT|CTLFLAG_RD|CTLFLAG_LOCKED,NULL,3,msdc_sysctl,"I","Completed successful512-byte media reads; excludes EXT_CSD");
+SYSCTL_PROC(_kern_hakios,OID_AUTO,mt6762_msdc_sectors,CTLTYPE_INT|CTLFLAG_RD|CTLFLAG_LOCKED,NULL,4,msdc_sysctl,"I","Capacity corroborated by actual EXT_CSD; transport readiness separate");
 
 static uint32_t r32(uintptr_t base,unsigned offset)
 {

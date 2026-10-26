@@ -735,7 +735,7 @@ ml_get_machine_mem(void)
 }
 
 extern void loader_return(void);
-extern void redwood_adreno_stop(void);
+extern void hakios_adreno_stop(void);
 
 __attribute__((noreturn))
 void
@@ -749,7 +749,7 @@ halt_all_cpus(boolean_t reboot)
 		PEHaltRestart(kPEHaltCPU);
 	}
 	/* No platform driver powers the machine off: hand control (and the log) back to the loader. */
-	redwood_adreno_stop();
+	hakios_adreno_stop();
 	loader_return();
 	while (1) {
 		;
@@ -1016,7 +1016,7 @@ ml_pair_slow_processors(int cpu_id)
 	}
 }
 
-/* How long processor cpu_id has been idle since it started, in mach_absolute_time() units (redwood_cpufreq.c's cpuload). */
+/* How long processor cpu_id has been idle since it started, in mach_absolute_time() units (hakios.cpufreq.c's cpuload). */
 bool ml_cpu_idle_time(int cpu_id, uint64_t *idle);
 
 bool

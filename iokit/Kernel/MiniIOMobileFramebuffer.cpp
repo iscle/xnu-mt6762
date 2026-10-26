@@ -26,9 +26,6 @@
 #include <libkern/c++/OSDictionary.h>
 #include <libkern/c++/OSArray.h>
 #include <libkern/c++/OSBoolean.h>
-#include <libkern/c++/OSString.h>
-#include <libkern/c++/OSSymbol.h>
-#include <libkern/c++/OSCollectionIterator.h>
 #include <kern/thread_call.h>
 #include <kern/thread.h>
 #include <kern/clock.h>
@@ -49,7 +46,7 @@ extern struct vc_info vinfo;            /* the boot framebuffer, as the text con
 
 #include "MiniIOSurface.h"
 
-extern "C" void redwood_tl(const char * format, ...) __printflike(1, 2);
+extern "C" void hakios_tl(const char * format, ...) __printflike(1, 2);
 
 /* IOConnectCallMethod selectors of the framebuffer user client (iOS 16.5) */
 enum {
@@ -182,7 +179,7 @@ swapQueue(void)
  * Boot-arg touch_lat=1: a line for every swap handed over ("tl: s ID at US") and for every frame
  * put on the panel ("tl: v ID ready US shown US done US": the GPU done with it, its beat come, the
  * pixels in the panel's memory), in microseconds of mach_absolute_time, for measuring how long a
- * touch takes to show (tools/latency.py; the touch's own lines: bsd/dev/redwood_input.c).
+ * touch takes to show (tools/latency.py; the touch's own lines: bsd/dev/hakios.input.c).
  */
 static TUNABLE(uint32_t, gTouchLat, "touch_lat", 0);
 
@@ -254,6 +251,8 @@ public:
 	bool            fGraphics;              /* the text console has been told to stop */
 #if defined(ARM64_BOARD_CONFIG_MT6762)
 	bool            fNativeBlanked;          /* protected by fLock; scanout stays inherited */
+	uint8_t         fNativePresentLogs;      /* fSwapLock; bounded retained diagnostics */
+	uint8_t         fNativeShowLogs, fNativeLayerLogs; /* fLock */
 	IOReturn nativePower(bool on);
 #endif
 	/*
@@ -544,8 +543,12 @@ IOMobileFramebuffer::start(IOService * provider)
 
 	setProperty(kIOUserClientClassKey, "IOMobileFramebufferUserClient");
 	/* for who draws with the GPU (userland/src/eagl.c): a frame need not be waited for before it is handed over */
-	setProperty("RedwoodWaitsForGPU", kOSBooleanTrue);
+	setProperty("HakiosWaitsForGPU", kOSBooleanTrue);
 	publishModes();
+#if defined(ARM64_BOARD_CONFIG_MT6762)
+	kprintf("mt6762-present: service ready display=%ux%u panel=%ux%u stride=%u opaque=%#x\n",
+	    fWidth, fHeight, fPanelWidth, fPanelHeight, fRowBytes, fOpaqueMask);
+#endif
 	setName("disp0");
 	registerService();
 	return true;
@@ -809,6 +812,16 @@ IOMobileFramebuffer::drawLayer(MiniIOSurface * s, const int32_t * src, const int
 		dw = (int32_t) fWidth;
 		dh = (int32_t) fHeight;
 	}
+#if defined(ARM64_BOARD_CONFIG_MT6762)
+	/* Do not retire the diagnostic console for malformed or invisible geometry.
+	 * The common rasterizer below uses signed 32-bit sums. */
+	if (sw <= 0 || sh <= 0 || dw <= 0 || dh <= 0 ||
+	    (int64_t) sx + sw > INT32_MAX || (int64_t) sy + sh > INT32_MAX ||
+	    (int64_t) dx + dw > INT32_MAX || (int64_t) dy + dh > INT32_MAX ||
+	    fWidth == 0 || fHeight == 0) {
+		return;
+	}
+#endif
 	if (sx < 0 || sy < 0 || (uint32_t) (sx + sw) > s->info.width || (uint32_t) (sy + sh) > s->info.height) {
 		return;
 	}
@@ -820,6 +833,11 @@ IOMobileFramebuffer::drawLayer(MiniIOSurface * s, const int32_t * src, const int
 	if (px1 <= px0 || py1 <= py0) {
 		return;
 	}
+#if defined(ARM64_BOARD_CONFIG_MT6762)
+	if (px1 <= 0 || py1 <= 0 || (int64_t) px0 >= fPanelWidth || (int64_t) py0 >= fPanelHeight) {
+		return;
+	}
+#endif
 	/* (blending, a row of the picture mixed from two: room for it, for every one who draws rows) */
 	if (filter && fBlendRowSize < (uint32_t) sw) {
 		if (fBlendRow != NULL) {
@@ -871,8 +889,27 @@ IOMobileFramebuffer::drawLayer(MiniIOSurface * s, const int32_t * src, const int
 	job.cx1 = cx1;
 	job.filter = filter;
 	job.unscaled = px1 - px0 == sw && py1 - py0 == sh && px0 >= 0 && (uint32_t) px1 <= fPanelWidth;
+#if defined(ARM64_BOARD_CONFIG_MT6762)
+	if (job.pixels == NULL || cx0 >= cx1 || py1 <= 0 || (int64_t) py0 >= fPanelHeight) {
+		return;
+	}
+	bool firstNativeDraw = !fGraphics;
+	if (firstNativeDraw) {
+		/* kPEGraphicsMode changes intent only: the acquired physical text console
+		 * remains enabled until ReleaseScreen disables its writer. Keep the mapped
+		 * scanout and do not reacquire a progress/console overlay. fLock is held. */
+		PE_initialize_console(NULL, kPEReleaseScreen);
+		PE_initialize_console(NULL, kPEGraphicsMode);
+		fGraphics = true;
+		kprintf("mt6762-present: text console released; first drawable layer %ux%u panel=%ux%u\n",
+		    s->info.width, s->info.height, fPanelWidth, fPanelHeight);
+	}
+#endif
 	if (fThreads <= 1 || fDiff || fHelpersStarted + 1 < fThreads) {
 		drawRows(&job, py0, py1, fBlendRow);
+#if defined(ARM64_BOARD_CONFIG_MT6762)
+		if (firstNativeDraw) kprintf("mt6762-present: first drawable layer copy complete\n");
+#endif
 		return;
 	}
 	/* shared out: the helpers take their rows, this thread the first share, then waits for them */
@@ -888,6 +925,9 @@ IOMobileFramebuffer::drawLayer(MiniIOSurface * s, const int32_t * src, const int
 		IOLockSleep(fHelperLock, &fHelpersBusy, THREAD_UNINT);
 	}
 	IOLockUnlock(fHelperLock);
+#if defined(ARM64_BOARD_CONFIG_MT6762)
+	if (firstNativeDraw) kprintf("mt6762-present: first drawable layer copy complete\n");
+#endif
 }
 
 /*
@@ -941,9 +981,17 @@ IOMobileFramebuffer::present(const uint8_t * swap)
 	nanoseconds_to_absolutetime(FRAME_PAUSE * NSEC_PER_MSEC, &pause);
 	clock_interval_to_deadline(SWAP_HELD_MS, kMillisecondScale, &deadline);
 	if (gTouchLat) {
-		redwood_tl("tl: s %u at %llu\n", swapWord(swap, SWAP_ID), micros(now));
+		hakios_tl("tl: s %u at %llu\n", swapWord(swap, SWAP_ID), micros(now));
 	}
 	IOLockLock(fSwapLock);
+#if defined(ARM64_BOARD_CONFIG_MT6762)
+	if (fNativePresentLogs < 8) {
+		fNativePresentLogs++;
+		kprintf("mt6762-present: SwapEnd id=%u queued=%u surfaces=%u,%u,%u,%u\n",
+		    swapWord(swap, SWAP_ID), fSwapsWaiting, swapWord(swap, SWAP_SURFACE(0)),
+		    swapWord(swap, SWAP_SURFACE(1)), swapWord(swap, SWAP_SURFACE(2)), swapWord(swap, SWAP_SURFACE(3)));
+	}
+#endif
 	fStatSwapsLate += fSwapTime != 0 && now - fSwapTime > period && now - fSwapTime < pause;
 	fSwapTime = now;
 	fStatHeld += fSwapsWaiting >= swapQueue();
@@ -1049,6 +1097,11 @@ IOMobileFramebuffer::show(const uint8_t * swap, MiniIOSurface ** surfaces)
 	IOLockUnlock(fSwapLock);
 	IOLockLock(fLock);
 #if defined(ARM64_BOARD_CONFIG_MT6762)
+	if (fNativeShowLogs < 8) {
+		fNativeShowLogs++;
+		kprintf("mt6762-present: show id=%u blanked=%u graphics=%u\n",
+		    swapWord(swap, SWAP_ID), (unsigned) fNativeBlanked, (unsigned) fGraphics);
+	}
 	/* The queue slot was completed above. Keep processing swaps/notifications
 	 * while off, but leave the last confirmed framebuffer pixels untouched. */
 	if (fNativeBlanked) {
@@ -1100,6 +1153,15 @@ IOMobileFramebuffer::show(const uint8_t * swap, MiniIOSurface ** surfaces)
 		memcpy(src, swap + SWAP_SOURCE(layer), sizeof(src));
 		memcpy(dst, swap + SWAP_DEST(layer), sizeof(dst));
 		s = surfaces[layer];
+#if defined(ARM64_BOARD_CONFIG_MT6762)
+		if (fNativeLayerLogs < 16) {
+			fNativeLayerLogs++;
+			kprintf("mt6762-present: layer=%u sid=%u found=%u size=%ux%u bpe=%u planes=%u src=%d,%d,%d,%d dst=%d,%d,%d,%d\n",
+			    layer, sid, (unsigned) (s != NULL), s ? s->info.width : 0, s ? s->info.height : 0,
+			    s ? s->info.bytesPerElement : 0, s ? s->info.planeCount : 0,
+			    src[0], src[1], src[2], src[3], dst[0], dst[1], dst[2], dst[3]);
+		}
+#endif
 		if (report) {
 			IOLog("MiniIOMobileFramebuffer: swap %u layer %u: surface %u%s (%ux%u '%c%c%c%c') "
 			    "from %d,%d %dx%d to %d,%d %dx%d, layers set 0x%x\n", swapWord(swap, SWAP_ID), layer, sid,
@@ -1112,11 +1174,13 @@ IOMobileFramebuffer::show(const uint8_t * swap, MiniIOSurface ** surfaces)
 			continue;
 		}
 		if (s->info.bytesPerElement == 4 && s->info.planeCount == 0) {
+#if !defined(ARM64_BOARD_CONFIG_MT6762)
 			if (!fGraphics) {
 				/* the first picture: the kernel's text console must stop drawing over it */
 				fGraphics = true;
 				PE_initialize_console(NULL, kPEGraphicsMode);
 			}
+#endif
 			drawLayer(s, src, dst);
 			if (layer == 0) {
 				recorded = s;   /* (recorded once the frame is in the panel's memory: see below) */
@@ -1129,7 +1193,7 @@ IOMobileFramebuffer::show(const uint8_t * swap, MiniIOSurface ** surfaces)
 	}
 	fSwapsShown++;
 	if (gTouchLat) {
-		redwood_tl("tl: v %u ready %llu shown %llu done %llu\n", swapWord(swap, SWAP_ID), micros(ready), micros(shown),
+		hakios_tl("tl: v %u ready %llu shown %llu done %llu\n", swapWord(swap, SWAP_ID), micros(ready), micros(shown),
 		    micros(drawn));
 	}
 	if (layers != fLayersShown) {
@@ -1435,7 +1499,7 @@ IOMobileFramebufferUserClient::externalMethod(uint32_t selector, IOExternalMetho
 
 	case kFBMethodSwapWait:                         /* a swap is on the screen as soon as it is made */
 		if (gTouchLat) {
-			redwood_tl("tl: w %llu %#llx %#llx at %llu\n", args->scalarInputCount > 0 ? in[0] : 0,
+			hakios_tl("tl: w %llu %#llx %#llx at %llu\n", args->scalarInputCount > 0 ? in[0] : 0,
 			    args->scalarInputCount > 1 ? in[1] : 0, args->scalarInputCount > 2 ? in[2] : 0, micros(mach_absolute_time()));
 		}
 		return kIOReturnSuccess;
@@ -1575,136 +1639,22 @@ publishDisplayNode(void)
  * service of this class to appear before it looks for a GPU at all (once per process). An
  * accelerator without the properties that name its Metal and OpenGL ES drivers is passed
  * over by both, which leaves CoreAnimation with its software renderer, as before.
- *
- * With boot-arg metal=1 a user process may put those two properties here, which is the whole
- * of what keeps Metal from finding our driver; see setProperties below, and docs/metal.md 10.31
- * (10.14 for the measurement that made it a boot-arg).
  */
-
-/* Metal's step 2 reads exactly these two, in this order, off this service (docs/metal.md 1). */
-#define kAcceleratorPluginNameKey      "MetalPluginName"
-#define kAcceleratorPluginClassNameKey "MetalPluginClassName"
-
-static bool gAcceleratorTakesProperties;        /* boot-arg metal=1 */
-
 class IOAcceleratorES : public IOService
 {
 	OSDeclareDefaultStructors(IOAcceleratorES);
-
-public:
-	virtual IOReturn setProperties(OSObject * properties) APPLE_KEXT_OVERRIDE;
 };
 
 OSDefineMetaClassAndStructors(IOAcceleratorES, IOService);
-
-/*
- * Switch Metal's own device discovery on, from user space: IORegistryEntrySetCFProperties() with
- * MetalPluginName and MetalPluginClassName. Metal reads the first (getMetalPluginClassForService,
- * 0x181a39ba4), builds "/System/Library/Extensions/" + it + ".bundle", opens that with NSBundle
- * and takes the class the second names; with the first missing it returns nil before it even
- * reads the second, and that single `cbz` is where the chain breaks on this port today.
- *
- * This method is the only thing that was in the way. IORegistryEntry::setProperties is
- * "return kIOReturnUnsupported" (IORegistryEntry.cpp) and IOService does not override it; the
- * MAC check in front of the call has no policy to ask, because this kernel registers no iokit
- * hook (bsd/kern/kern_minimac.c); and this service carries no property whitelist.
- *
- * Why it is gated on a boot-arg, which is a measured risk and not caution in general
- * (docs/metal.md 10.14): the conditions Metal puts on a device object are asserts, not soft
- * refusals (10.2-10.3). A process that asks Metal and is handed a half-made device does not
- * degrade to another renderer -- it aborts ("Assertion failed: ([self
- * conformsToProtocol:@protocol(MTLDeviceSPI)])", "failed assertion _limits.maxColorAttachments
- * > 0"), and an aborting daemon is restarted by launchd, which is a loop. Published instead at
- * registerService() time, the properties would exist before launchd, backboardd and SpringBoard
- * are born, so each of the three would take the Metal road on its first call, with nobody left
- * to read the log. Behind a boot-arg, a machine that has them is a machine booted on purpose to
- * have them, and the first such boot is meant to be RC=rc.ios, where launchd is never born.
- *
- * An empty string removes a property rather than setting it. That is the way out of the loop
- * above without a reboot: the properties live only in the registry, so processes started after
- * they are gone go back to the software road.
- *
- * Everything else is refused, and refused whole, before anything is set: every process on the
- * machine can reach this method and the only thing it exists for is this one switch.
- */
-IOReturn
-IOAcceleratorES::setProperties(OSObject * properties)
-{
-	OSDictionary * dict = OSDynamicCast(OSDictionary, properties);
-	OSCollectionIterator * keys;
-	OSObject * next;
-	char who[32] = "?";
-
-	if (!gAcceleratorTakesProperties) {
-		static unsigned said;
-
-		if (said++ < 4) {
-			proc_selfname(who, sizeof(who));
-			IOLog("IOAcceleratorES: %s asks to set properties on it; boot-arg metal=1 was not given\n", who);
-		}
-		return kIOReturnUnsupported;
-	}
-	if (dict == NULL || dict->getCount() == 0) {
-		return kIOReturnBadArgument;
-	}
-	keys = OSCollectionIterator::withCollection(dict);
-	if (keys == NULL) {
-		return kIOReturnNoMemory;
-	}
-	proc_selfname(who, sizeof(who));
-	while ((next = keys->getNextObject()) != NULL) {
-		const OSSymbol * key = OSDynamicCast(OSSymbol, next);
-
-		if (key == NULL || (!key->isEqualTo(kAcceleratorPluginNameKey) &&
-		    !key->isEqualTo(kAcceleratorPluginClassNameKey))) {
-			IOLog("IOAcceleratorES: refusing what %s sent: only " kAcceleratorPluginNameKey " and "
-			    kAcceleratorPluginClassNameKey " are taken here\n", who);
-			keys->release();
-			return kIOReturnUnsupported;
-		}
-		if (OSDynamicCast(OSString, dict->getObject(key)) == NULL) {
-			IOLog("IOAcceleratorES: refusing \"%s\" from %s: Metal reads it as a CFString\n",
-			    key->getCStringNoCopy(), who);
-			keys->release();
-			return kIOReturnBadArgument;
-		}
-	}
-	keys->reset();
-	while ((next = keys->getNextObject()) != NULL) {
-		const OSSymbol * key = OSDynamicCast(OSSymbol, next);
-		OSString * value = OSDynamicCast(OSString, dict->getObject(key));
-
-		if (value->getLength() == 0) {
-			removeProperty(key);
-			IOLog("IOAcceleratorES: %s removed by %s\n", key->getCStringNoCopy(), who);
-		} else if (setProperty(key, value)) {
-			IOLog("IOAcceleratorES: %s = %s, set by %s\n", key->getCStringNoCopy(),
-			    value->getCStringNoCopy(), who);
-		} else {
-			IOLog("IOAcceleratorES: %s could not be set\n", key->getCStringNoCopy());
-			keys->release();
-			return kIOReturnNoMemory;
-		}
-	}
-	keys->release();
-	return kIOReturnSuccess;
-}
 
 static void
 publishAccelerator(IOService * provider)
 {
 	IOAcceleratorES * accelerator = OSTypeAlloc(IOAcceleratorES);
-	uint32_t metal = 0;
 
-	gAcceleratorTakesProperties = PE_parse_boot_argn("metal", &metal, sizeof(metal)) && metal != 0;
 	if (accelerator != NULL && accelerator->init() && accelerator->attach(provider)) {
 		accelerator->setName("sgx");
 		accelerator->registerService();
-		/* the first line to look for in the log of such a boot: the gate is open, nothing is set yet */
-		if (gAcceleratorTakesProperties) {
-			IOLog("IOAcceleratorES: metal=%u: this service takes " kAcceleratorPluginNameKey
-			    " and " kAcceleratorPluginClassNameKey " from user space\n", metal);
-		}
 	}
 	OSSafeReleaseNULL(accelerator);
 }

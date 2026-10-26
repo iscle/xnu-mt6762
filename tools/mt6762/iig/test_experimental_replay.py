@@ -15,6 +15,14 @@ class ExperimentalReplayTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.root = Path(__file__).resolve().parents[3]
+        selected = ('MTK_IIG_INPUTS', 'MTK_IIG_GENERATED', 'MTK_IIG_CANDIDATE',
+                    'MTK_IIG_INPUT_SHA256', 'MTK_IIG_GENERATION_SHA256', 'MTK_IIG_CANDIDATE_SHA256')
+        if any(name in os.environ for name in selected):
+            if not all(os.environ.get(name) for name in selected):
+                raise ValueError('actual replay tests require all three artifact paths and their explicit pins')
+            cls.inputs, cls.generated, cls.candidate = (Path(os.environ[name]) for name in selected[:3])
+            cls.ih, cls.gh, cls.ch = (os.environ[name] for name in selected[3:])
+            return
         work = Path(os.environ.get('MTK_WORKSPACE', str(cls.root.parent)))
         cls.inputs = work / 'toolchain/iig-inputs-8796-build21-diagnostic26c'
         cls.generated = work / 'toolchain/iig-generated-diagnostic26c'

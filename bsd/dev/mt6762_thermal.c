@@ -30,7 +30,7 @@ static unsigned valid_mask(uint64_t now)
 }
 #ifndef MT6762_THERMAL_HOST_TEST
 static int started,pmic_enabled,cpu_enabled;
-SYSCTL_DECL(_kern_redwood);
+SYSCTL_DECL(_kern_hakios);
 /* Every read checks expiry; a stopped worker cannot keep stale validity. */
 static int thermal_sysctl SYSCTL_HANDLER_ARGS
 {
@@ -48,7 +48,7 @@ static int thermal_sysctl SYSCTL_HANDLER_ARGS
     lck_mtx_unlock(&thermal_lock);
     return sysctl_handle_int(oidp,&value,0,req);
 }
-#define THERM_SYSCTL(name,index,description) SYSCTL_PROC(_kern_redwood,OID_AUTO,name,CTLTYPE_INT|CTLFLAG_RD|CTLFLAG_LOCKED,NULL,index,thermal_sysctl,"I",description)
+#define THERM_SYSCTL(name,index,description) SYSCTL_PROC(_kern_hakios,OID_AUTO,name,CTLTYPE_INT|CTLFLAG_RD|CTLFLAG_LOCKED,NULL,index,thermal_sysctl,"I",description)
 THERM_SYSCTL(mt6762_pmic_die_mc,0,"Calibrated PMIC die mC; -273000 invalid/stale");
 THERM_SYSCTL(mt6762_pmic_buck1_mc,1,"Calibrated PMIC VCORE sensor mC; -273000 invalid/stale");
 THERM_SYSCTL(mt6762_pmic_buck2_mc,2,"Calibrated PMIC VPROC sensor mC; -273000 invalid/stale");
@@ -59,8 +59,8 @@ THERM_SYSCTL(mt6762_cpu_ts4_mc,6,"Calibrated CPU TS4 cached observation; freshne
 THERM_SYSCTL(mt6762_cpu_ts5_mc,7,"Calibrated CPU TS5 cached observation; freshness unknown");
 THERM_SYSCTL(mt6762_thermal_observed,8,"Unexpired observation bits: PMIC0..2 CPU3..7; not control readiness");
 THERM_SYSCTL(mt6762_thermal_fresh,9,"Fresh calibrated conversions; CPU bits remain clear");
-SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_thermal_errors,CTLFLAG_RD|CTLFLAG_LOCKED,&errors,0,"Rejected calibration/sensor observations");
-SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_thermal_samples,CTLFLAG_RD|CTLFLAG_LOCKED,&samples,0,"Successful sensor observations");
+SYSCTL_INT(_kern_hakios,OID_AUTO,mt6762_thermal_errors,CTLFLAG_RD|CTLFLAG_LOCKED,&errors,0,"Rejected calibration/sensor observations");
+SYSCTL_INT(_kern_hakios,OID_AUTO,mt6762_thermal_samples,CTLFLAG_RD|CTLFLAG_LOCKED,&samples,0,"Successful sensor observations");
 #endif
 int mt6762_pmic_temperature_read(unsigned sensor,int *mc)
 {

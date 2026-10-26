@@ -20,11 +20,11 @@ static uint64_t alive_deadline;
 static LCK_GRP_DECLARE(sspm_group,"mt6762-sspm");
 static LCK_MTX_DECLARE(sspm_mutex,&sspm_group);
 static struct mt6762_sspm_transport transport;
-SYSCTL_DECL(_kern_redwood);
-SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_sspm_alive,CTLFLAG_RD|CTLFLAG_LOCKED,&sspm_alive,0,"Last PLATFORM alive response: -1 unknown; not CPU-DVFS readiness");
-SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_sspm_probes,CTLFLAG_RD|CTLFLAG_LOCKED,&sspm_probes,0,"Attempted active PLATFORM liveness transactions");
-SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_sspm_errors,CTLFLAG_RD|CTLFLAG_LOCKED,&sspm_errors,0,"SSPM attachment or protocol failures");
-SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_sspm_fault,CTLFLAG_RD|CTLFLAG_LOCKED,&sspm_transport_fault,0,"Latched ownership/transport fault; no automatic reset or stale-ACK clear");
+SYSCTL_DECL(_kern_hakios);
+SYSCTL_INT(_kern_hakios,OID_AUTO,mt6762_sspm_alive,CTLFLAG_RD|CTLFLAG_LOCKED,&sspm_alive,0,"Last PLATFORM alive response: -1 unknown; not CPU-DVFS readiness");
+SYSCTL_INT(_kern_hakios,OID_AUTO,mt6762_sspm_probes,CTLFLAG_RD|CTLFLAG_LOCKED,&sspm_probes,0,"Attempted active PLATFORM liveness transactions");
+SYSCTL_INT(_kern_hakios,OID_AUTO,mt6762_sspm_errors,CTLFLAG_RD|CTLFLAG_LOCKED,&sspm_errors,0,"SSPM attachment or protocol failures");
+SYSCTL_INT(_kern_hakios,OID_AUTO,mt6762_sspm_fault,CTLFLAG_RD|CTLFLAG_LOCKED,&sspm_transport_fault,0,"Latched ownership/transport fault; no automatic reset or stale-ACK clear");
 
 static int flag(const char *name)
 {uint32_t v;return !mt6762_handoff_u32(name,&v) && v==1;}

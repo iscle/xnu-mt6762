@@ -2,43 +2,47 @@
 # Build a fresh linked artifact. Report donor post-link export-check failures separately.
 set -euo pipefail
 XNU_TREE=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd)
-WORK=${MTK_WORKSPACE:-$(dirname "$XNU_TREE")}
+MONOREPO=$(cd "$XNU_TREE/../.." && pwd)
+[[ -f "$MONOREPO/devices/mt6762/build_inputs.py" ]] || { echo 'Use the migrated HakiOS monorepo.' >&2; exit 1; }
+WORK=${MTK_WORKSPACE:-$(dirname "$MONOREPO")}
 WORK=$(cd "$WORK" && pwd)
-HELPER="$WORK/toolchain/hackios-build"
-if [[ -z ${MTK_LLVM_BIN:-} ]]; then
-  compiler=$(command -v clang || true)
-  [[ -n "$compiler" ]] || { echo 'Set MTK_LLVM_BIN, then run bootstrap.sh.' >&2; exit 1; }
-  MTK_LLVM_BIN=$(dirname "$(readlink -f "$compiler")")
+HELPER="$MONOREPO"
+export MTK_WORKSPACE="$WORK" XNU_SRC="$XNU_TREE" MACHINE=MT6762 JOBS=${MTK_BUILD_JOBS:-12}
+source "$MONOREPO/xnu-env.sh"
+profile="$MONOREPO/devices/mt6762/build_inputs.py"
+if [[ ${1:-} == --check && $# == 1 ]]; then
+  python3 "$profile" check-reuse
+  python3 "$profile" check-iig
+  exit 0
 fi
-export MTK_LLVM_BIN THEOS="$WORK/toolchain/theos" XNU_SRC="$XNU_TREE"
-export PATH="$WORK/toolchain/bin:$PATH"
-export MACHINE=MT6762 JOBS=${MTK_BUILD_JOBS:-12}
-[[ -x "$HELPER/xnu-deps/host/bin/migcom" ]] || { echo 'Run bootstrap.sh first.' >&2; exit 1; }
+[[ $# == 0 ]] || { echo 'Usage: build.sh [--check]' >&2; exit 1; }
+python3 "$profile" check-reuse
+[[ -x "$HELPER/xnu-deps/host/bin/migcom" && -x "$HELPER/xnu-deps/host/bin/xnu-clang++" &&
+   -f "$XNU_SDK_PATH/.mt6762-base-sdk" ]] || { echo 'Run the new-tree tools/mt6762/bootstrap.sh first.' >&2; exit 1; }
 LOGDIR="$WORK/evidence/builds/$(date -u +%Y%m%dT%H%M%SZ)-$$"
 mkdir -p "$LOGDIR"
+# Reject stale source, wrong-tree replay and placeholder IIG before touching BUILD.
+python3 "$profile" check-iig > "$LOGDIR/iig-verify.log" 2>&1 || {
+  cat "$LOGDIR/iig-verify.log" >&2; exit 1;
+}
+python3 "$profile" snapshot "$LOGDIR/build-inputs-before.json"
 python3 "$XNU_TREE/tools/mt6762/source_snapshot.py" "$XNU_TREE" "$LOGDIR/source-before.json"
 python3 "$XNU_TREE/tools/mt6762/iig_snapshot.py" "$HELPER/xnu-deps/host/bin/iig" "$LOGDIR/iig-before.json"
-python3 - "$XNU_TREE/BUILD" "$LOGDIR/iig-before.json" <<'PY'
+python3 - "$XNU_TREE/BUILD" "$LOGDIR/iig-before.json" "$LOGDIR/build-inputs-before.json" <<'PYPROFILE'
 import json, pathlib, sys
-build, inputs = map(pathlib.Path, sys.argv[1:])
+build = pathlib.Path(sys.argv[1])
+inputs = [(build/'.mt6762-iig-inputs.json', pathlib.Path(sys.argv[2])),
+          (build/'.mt6762-build-inputs.json', pathlib.Path(sys.argv[3]))]
+# Never silently adopt an old BUILD or switch toolchain/IIG inside it.
+if build.exists():
+    for marker, source in inputs:
+        if not marker.is_file() or json.loads(marker.read_text()) != json.loads(source.read_text()):
+            if any(build.iterdir()):
+                raise SystemExit('BUILD profile/IIG inputs changed or unmarked: preserve BUILD and create a fresh BUILD.')
 build.mkdir(exist_ok=True)
-marker = build/'.mt6762-iig-inputs.json'
-current = json.loads(inputs.read_text())
-if marker.exists():
-    if json.loads(marker.read_text()) != current:
-        raise SystemExit('IIG mode/inputs changed: preserve the existing BUILD directory and create a fresh BUILD before rebuilding.')
-elif any(build.iterdir()):
-    raise SystemExit('Existing BUILD has no IIG provenance marker: preserve it and create a fresh BUILD before rebuilding.')
-else:
-    marker.write_text(inputs.read_text())
-PY
-# Revalidate current header/interface inputs even when make would reuse every
-# generated pair. A stable prior build marker cannot prove source equivalence.
-if [[ -n ${MTK_IIG_GENERATED:-} ]]; then
-  "${IIG:?Explicit IIG replay command required}" verify > "$LOGDIR/iig-verify.log" 2>&1 || {
-    cat "$LOGDIR/iig-verify.log" >&2; exit 1;
-  }
-fi
+for marker, source in inputs:
+    marker.write_text(source.read_text())
+PYPROFILE
 "$HELPER/xnu-deps/setup.sh" --rebuild-libs > "$LOGDIR/dependencies.log" 2>&1 || {
   cat "$LOGDIR/dependencies.log" >&2; exit 1;
 }
@@ -52,6 +56,7 @@ set +e
 result=$?
 set -e
 python3 "$XNU_TREE/tools/mt6762/source_snapshot.py" "$XNU_TREE" "$LOGDIR/source-after.json"
+python3 "$profile" snapshot "$LOGDIR/build-inputs-after.json"
 python3 "$XNU_TREE/tools/mt6762/iig_snapshot.py" "$HELPER/xnu-deps/host/bin/iig" "$LOGDIR/iig-after.json"
 python3 - "$ARTIFACT" "$LOGDIR" "$result" "$XNU_TREE" <<'PY'
 import hashlib, json, pathlib, re, struct, subprocess, sys
@@ -83,13 +88,22 @@ changed = sorted(name for name in before['files'].keys() | after['files'].keys()
 iig_before = json.loads((logs/'iig-before.json').read_text())
 iig_after = json.loads((logs/'iig-after.json').read_text())
 iig_stable = iig_before == iig_after
-accepted = bool(linked and valid_header and not changed and iig_stable and (rc == 0 or known_postlink))
+build_before = json.loads((logs/'build-inputs-before.json').read_text())
+build_after = json.loads((logs/'build-inputs-after.json').read_text())
+build_stable = build_before == build_after
+build_changed = sorted(name for name in build_before['files'].keys() | build_after['files'].keys()
+                       if build_before['files'].get(name) != build_after['files'].get(name))
+accepted = bool(linked and valid_header and not changed and iig_stable and build_stable and (rc == 0 or known_postlink))
 report = {
     'artifact_ready': accepted, 'artifact': str(artifact), 'make_exit_code': rc,
-    'all_checks_passed': rc == 0, 'known_postlink_export_failures_only': bool(known_postlink),
+    'all_checks_passed': accepted and rc == 0, 'make_checks_passed': rc == 0, 'known_postlink_export_failures_only': bool(known_postlink),
     'new_link_observed': linked, 'macho_arm64_executable': valid_header,
     'kernel_source_sha256': after['sha256'], 'source_unchanged_during_build': not changed,
     'source_files_changed_during_build': changed,
+    'build_inputs_unchanged_during_build': build_stable,
+    'build_input_files_changed_during_build': build_changed,
+    'build_inputs_sha256': build_after['sha256'],
+    'build_monorepo': build_after['monorepo'],
     'iig_inputs_unchanged_during_build': iig_stable,
     'iig_inputs_sha256': iig_after['sha256'],
     'iig_executable': iig_after['executable'],

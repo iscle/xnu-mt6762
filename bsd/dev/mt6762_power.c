@@ -12,7 +12,7 @@
 #include <sys/mt6762_platform.h>
 #include <sys/mt6762_power.h>
 #include <sys/mt6762_gauge.h>
-#include <sys/redwood_input.h>
+#include <sys/hakios.input.h>
 #include <sys/sysctl.h>
 #include <sys/systm.h>
 #include "mt6762_power_protocol.h"
@@ -42,35 +42,35 @@ static uint32_t report_gap_start_ms,report_gap_ms;
 static uint64_t report_gap_start,report_gap_end;
 static int report_gap_state,reports_suppressed;
 
-SYSCTL_DECL(_kern_redwood);
-SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_battery_report_gap_state,CTLFLAG_RD|CTLFLAG_LOCKED,&report_gap_state,0,"Explicit synthetic publication gap:0disabled/armed,1active,2complete");
-SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_battery_reports_suppressed,CTLFLAG_RD|CTLFLAG_LOCKED,&reports_suppressed,0,"Reports omitted by explicit lab-only publication-gap test");
-SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_pmic_id,CTLFLAG_RD|CTLFLAG_LOCKED,&pmic_id,0,"Observed MT6357 hardware ID, -1 unknown");
+SYSCTL_DECL(_kern_hakios);
+SYSCTL_INT(_kern_hakios,OID_AUTO,mt6762_battery_report_gap_state,CTLFLAG_RD|CTLFLAG_LOCKED,&report_gap_state,0,"Explicit synthetic publication gap:0disabled/armed,1active,2complete");
+SYSCTL_INT(_kern_hakios,OID_AUTO,mt6762_battery_reports_suppressed,CTLFLAG_RD|CTLFLAG_LOCKED,&reports_suppressed,0,"Reports omitted by explicit lab-only publication-gap test");
+SYSCTL_INT(_kern_hakios,OID_AUTO,mt6762_pmic_id,CTLFLAG_RD|CTLFLAG_LOCKED,&pmic_id,0,"Observed MT6357 hardware ID, -1 unknown");
 static int power_valid_sysctl SYSCTL_HANDLER_ARGS
 {
     int value=(int)mt6762_battery_valid_fields();
     return sysctl_handle_int(oidp,&value,0,req);
 }
-SYSCTL_PROC(_kern_redwood,OID_AUTO,mt6762_power_valid,CTLTYPE_INT|CTLFLAG_RD|CTLFLAG_LOCKED,NULL,0,power_valid_sysctl,"I","Unexpired native battery sample validity mask");
-SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_power_errors,CTLFLAG_RD|CTLFLAG_LOCKED,&power_errors,0,"Native power read failures");
-SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_charger_state,CTLFLAG_RD|CTLFLAG_LOCKED,&charger_state,0,"PSC5425E raw state 0..3, -1 unknown");
-SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_battery_adc_mv,CTLFLAG_RD|CTLFLAG_LOCKED,&battery_adc_mv,0,"MT6357 battery ADC millivolts, -1 unknown");
-SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_ntc_adc_mv,CTLFLAG_RD|CTLFLAG_LOCKED,&ntc_adc_mv,0,"MT6357 thermistor ADC millivolts, -1 unknown");
-SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_ntc_nominal_deci_c,CTLFLAG_RD|CTLFLAG_LOCKED,&ntc_nominal_deci_c,0,"Uncalibrated NTC estimate, never used to enable charging; -2730 unknown");
+SYSCTL_PROC(_kern_hakios,OID_AUTO,mt6762_power_valid,CTLTYPE_INT|CTLFLAG_RD|CTLFLAG_LOCKED,NULL,0,power_valid_sysctl,"I","Unexpired native battery sample validity mask");
+SYSCTL_INT(_kern_hakios,OID_AUTO,mt6762_power_errors,CTLFLAG_RD|CTLFLAG_LOCKED,&power_errors,0,"Native power read failures");
+SYSCTL_INT(_kern_hakios,OID_AUTO,mt6762_charger_state,CTLFLAG_RD|CTLFLAG_LOCKED,&charger_state,0,"PSC5425E raw state 0..3, -1 unknown");
+SYSCTL_INT(_kern_hakios,OID_AUTO,mt6762_battery_adc_mv,CTLFLAG_RD|CTLFLAG_LOCKED,&battery_adc_mv,0,"MT6357 battery ADC millivolts, -1 unknown");
+SYSCTL_INT(_kern_hakios,OID_AUTO,mt6762_ntc_adc_mv,CTLFLAG_RD|CTLFLAG_LOCKED,&ntc_adc_mv,0,"MT6357 thermistor ADC millivolts, -1 unknown");
+SYSCTL_INT(_kern_hakios,OID_AUTO,mt6762_ntc_nominal_deci_c,CTLFLAG_RD|CTLFLAG_LOCKED,&ntc_nominal_deci_c,0,"Uncalibrated NTC estimate, never used to enable charging; -2730 unknown");
 
-SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_charger_control_safe,CTLFLAG_RD|CTLFLAG_LOCKED,&charger_control_safe,0,"CE readback disabled: 1; rejected 0; unknown -1. No independent fallback guarantee");
-SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_adc_voltage_requests,CTLFLAG_RD|CTLFLAG_LOCKED,&adc_voltage_requests,0,"Successful battery-voltage ADC request transactions");
-SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_adc_ntc_requests,CTLFLAG_RD|CTLFLAG_LOCKED,&adc_ntc_requests,0,"Successful NTC ADC request transactions");
-SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_adc_voltage_samples,CTLFLAG_RD|CTLFLAG_LOCKED,&adc_voltage_samples,0,"Valid voltage conversions");
-SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_adc_ntc_samples,CTLFLAG_RD|CTLFLAG_LOCKED,&adc_ntc_samples,0,"Valid NTC conversions, not calibrated temperature");
-SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_adc_voltage_min,CTLFLAG_RD|CTLFLAG_LOCKED,&adc_voltage_min,0,"Minimum observed battery ADC mV, -1 none");
-SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_adc_voltage_max,CTLFLAG_RD|CTLFLAG_LOCKED,&adc_voltage_max,0,"Maximum observed battery ADC mV, -1 none");
-SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_adc_ntc_min,CTLFLAG_RD|CTLFLAG_LOCKED,&adc_ntc_min,0,"Minimum observed NTC ADC mV, -1 none");
-SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_adc_ntc_max,CTLFLAG_RD|CTLFLAG_LOCKED,&adc_ntc_max,0,"Maximum observed NTC ADC mV, -1 none");
+SYSCTL_INT(_kern_hakios,OID_AUTO,mt6762_charger_control_safe,CTLFLAG_RD|CTLFLAG_LOCKED,&charger_control_safe,0,"CE readback disabled: 1; rejected 0; unknown -1. No independent fallback guarantee");
+SYSCTL_INT(_kern_hakios,OID_AUTO,mt6762_adc_voltage_requests,CTLFLAG_RD|CTLFLAG_LOCKED,&adc_voltage_requests,0,"Successful battery-voltage ADC request transactions");
+SYSCTL_INT(_kern_hakios,OID_AUTO,mt6762_adc_ntc_requests,CTLFLAG_RD|CTLFLAG_LOCKED,&adc_ntc_requests,0,"Successful NTC ADC request transactions");
+SYSCTL_INT(_kern_hakios,OID_AUTO,mt6762_adc_voltage_samples,CTLFLAG_RD|CTLFLAG_LOCKED,&adc_voltage_samples,0,"Valid voltage conversions");
+SYSCTL_INT(_kern_hakios,OID_AUTO,mt6762_adc_ntc_samples,CTLFLAG_RD|CTLFLAG_LOCKED,&adc_ntc_samples,0,"Valid NTC conversions, not calibrated temperature");
+SYSCTL_INT(_kern_hakios,OID_AUTO,mt6762_adc_voltage_min,CTLFLAG_RD|CTLFLAG_LOCKED,&adc_voltage_min,0,"Minimum observed battery ADC mV, -1 none");
+SYSCTL_INT(_kern_hakios,OID_AUTO,mt6762_adc_voltage_max,CTLFLAG_RD|CTLFLAG_LOCKED,&adc_voltage_max,0,"Maximum observed battery ADC mV, -1 none");
+SYSCTL_INT(_kern_hakios,OID_AUTO,mt6762_adc_ntc_min,CTLFLAG_RD|CTLFLAG_LOCKED,&adc_ntc_min,0,"Minimum observed NTC ADC mV, -1 none");
+SYSCTL_INT(_kern_hakios,OID_AUTO,mt6762_adc_ntc_max,CTLFLAG_RD|CTLFLAG_LOCKED,&adc_ntc_max,0,"Maximum observed NTC ADC mV, -1 none");
 
 int mt6762_charger_control_safe(void) {return charger_control_safe==1;}
 
-SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_charger_control,CTLFLAG_RD|CTLFLAG_LOCKED,&charger_control,0,"Last verified disabled PSC control byte; -1 unknown");
+SYSCTL_INT(_kern_hakios,OID_AUTO,mt6762_charger_control,CTLFLAG_RD|CTLFLAG_LOCKED,&charger_control,0,"Last verified disabled PSC control byte; -1 unknown");
 
 static int verified(const char *name)
 {
@@ -242,12 +242,12 @@ static void adc_observed(int value,int *count,int *minimum,int *maximum)
 }
 static void button_sample(unsigned which,int valid,unsigned pressed)
 {
-    static const uint32_t ids[]={REDWOOD_BUTTON_LOCK,REDWOOD_BUTTON_VOLUME_UP,
-                                REDWOOD_BUTTON_VOLUME_DOWN};
+    static const uint32_t ids[]={HAKIOS_BUTTON_LOCK,HAKIOS_BUTTON_VOLUME_UP,
+                                HAKIOS_BUTTON_VOLUME_DOWN};
     int change=mt6762_key_update(&key_filter[which],valid,pressed);
     if(change && keys_only)
         kprintf("MT6762_KEY button=%u direction=%d valid=%d\n",ids[which],change,valid);
-    if(change)redwood_touch_post(change>0?REDWOOD_BUTTON_DOWN:REDWOOD_BUTTON_UP,
+    if(change)hakios_touch_post(change>0?HAKIOS_BUTTON_DOWN:HAKIOS_BUTTON_UP,
                                ids[which],0,0);
 }
 static uint32_t keys_entry_read(void *unused,uint32_t address,unsigned width)

@@ -7,7 +7,7 @@
 #ifndef MT6762_AXS_TOUCH_STATE_H
 #define MT6762_AXS_TOUCH_STATE_H
 #include "axs_touch.h"
-/* Values match bsd/sys/redwood_input.h. Sink adapts to redwood_touch_post(). */
+/* Values match bsd/sys/hakios.input.h. Sink adapts to hakios_touch_post(). */
 enum { AXS_DOWN = 1, AXS_MOVE = 2, AXS_UP = 3 };
 typedef void (*axs_event_sink)(void *, unsigned type, unsigned id, unsigned x, unsigned y);
 struct axs_state {

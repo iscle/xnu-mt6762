@@ -45,7 +45,7 @@ static void diagnostics(int console, unsigned pass)
 {
     static const char *const keys[]={"mt6762_iig_test_result","mt6762_iig_test_cases"};
     for(unsigned i=0;i<sizeof(keys)/sizeof(keys[0]);i++) {
-        char name[96],line[192],*end=text(name,"kern.redwood.");
+        char name[96],line[192],*end=text(name,"kern.hakios.");
         end=text(end,keys[i]);*end=0;int value=0;u64 size=sizeof(value);
         long error=call6(274,(long)name,end-name,(long)&value,(long)&size,0,0);
         char *p=text(line,"MT6762_IIG_SYSCTL pass=");p=decimal(p,pass);*p++=' ';

@@ -16,7 +16,7 @@ static void diagnostic(const char *key)
     char name[128];
     int value = 0;
     size_t size = sizeof(value);
-    snprintf(name, sizeof(name), "kern.redwood.%s", key);
+    snprintf(name, sizeof(name), "kern.hakios.%s", key);
     errno = 0;
     int status = sysctlbyname(name, &value, &size, NULL, 0);
     int error = status ? errno : (size == sizeof(value) ? 0 : EINVAL);
@@ -24,7 +24,7 @@ static void diagnostic(const char *key)
 }
 static void charge_diagnostic(void)
 {
-    const char *name = "kern.redwood.mt6762_gauge_charge_uah";
+    const char *name = "kern.hakios.mt6762_gauge_charge_uah";
     int64_t value = 0;
     size_t size = sizeof(value);
     errno = 0;

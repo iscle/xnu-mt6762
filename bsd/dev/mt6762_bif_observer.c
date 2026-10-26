@@ -51,15 +51,15 @@ static int bif_observation_sysctl SYSCTL_HANDLER_ARGS
     if(e)return -e;
     return SYSCTL_OUT(req,&observation,sizeof(observation));
 }
-SYSCTL_PROC(_kern_redwood,OID_AUTO,mt6762_bif_observation,CTLTYPE_OPAQUE|CTLFLAG_RD|CTLFLAG_LOCKED,NULL,0,bif_observation_sysctl,"S,mt6762_bif_observation","Atomic fresh raw NTC/BIF and trim observation; not calibrated temperature");
-SYSCTL_PROC(_kern_redwood,OID_AUTO,mt6762_bif_raw,CTLTYPE_INT|CTLFLAG_RD|CTLFLAG_LOCKED,NULL,0,bif_sysctl,"I","Fresh paired BIF raw ADC count; -1 invalid, not calibrated voltage");
-SYSCTL_PROC(_kern_redwood,OID_AUTO,mt6762_bif_ntc_raw,CTLTYPE_INT|CTLFLAG_RD|CTLFLAG_LOCKED,NULL,1,bif_sysctl,"I","Fresh paired NTC raw ADC count; -1 invalid, not temperature");
-SYSCTL_PROC(_kern_redwood,OID_AUTO,mt6762_bif_pair_fresh,CTLTYPE_INT|CTLFLAG_RD|CTLFLAG_LOCKED,NULL,2,bif_sysctl,"I","Fresh paired samples with unchanged configuration and TDET");
-SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_bif_samples,CTLFLAG_RD|CTLFLAG_LOCKED,&bif_samples,0,"Completed diagnostic NTC/BIF pairs");
-SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_bif_errors,CTLFLAG_RD|CTLFLAG_LOCKED,&bif_errors,0,"BIF admission or sampling failures");
-SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_bif_fault,CTLFLAG_RD|CTLFLAG_LOCKED,&bif_fault,0,"Sticky diagnostic BIF ownership/configuration failure");
-SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_bif_generation_rejections,CTLFLAG_RD|CTLFLAG_LOCKED,&bif_generation_rejections,0,"Invalid missed-generation pairs eligible for next-period retry");
-SYSCTL_INT(_kern_redwood,OID_AUTO,mt6762_bif_last_error,CTLFLAG_RD|CTLFLAG_LOCKED,&bif_last_error,0,"Last BIF result: 0 completed, -5 missed generation; other negatives are errors");
+SYSCTL_PROC(_kern_hakios,OID_AUTO,mt6762_bif_observation,CTLTYPE_OPAQUE|CTLFLAG_RD|CTLFLAG_LOCKED,NULL,0,bif_observation_sysctl,"S,mt6762_bif_observation","Atomic fresh raw NTC/BIF and trim observation; not calibrated temperature");
+SYSCTL_PROC(_kern_hakios,OID_AUTO,mt6762_bif_raw,CTLTYPE_INT|CTLFLAG_RD|CTLFLAG_LOCKED,NULL,0,bif_sysctl,"I","Fresh paired BIF raw ADC count; -1 invalid, not calibrated voltage");
+SYSCTL_PROC(_kern_hakios,OID_AUTO,mt6762_bif_ntc_raw,CTLTYPE_INT|CTLFLAG_RD|CTLFLAG_LOCKED,NULL,1,bif_sysctl,"I","Fresh paired NTC raw ADC count; -1 invalid, not temperature");
+SYSCTL_PROC(_kern_hakios,OID_AUTO,mt6762_bif_pair_fresh,CTLTYPE_INT|CTLFLAG_RD|CTLFLAG_LOCKED,NULL,2,bif_sysctl,"I","Fresh paired samples with unchanged configuration and TDET");
+SYSCTL_INT(_kern_hakios,OID_AUTO,mt6762_bif_samples,CTLFLAG_RD|CTLFLAG_LOCKED,&bif_samples,0,"Completed diagnostic NTC/BIF pairs");
+SYSCTL_INT(_kern_hakios,OID_AUTO,mt6762_bif_errors,CTLFLAG_RD|CTLFLAG_LOCKED,&bif_errors,0,"BIF admission or sampling failures");
+SYSCTL_INT(_kern_hakios,OID_AUTO,mt6762_bif_fault,CTLFLAG_RD|CTLFLAG_LOCKED,&bif_fault,0,"Sticky diagnostic BIF ownership/configuration failure");
+SYSCTL_INT(_kern_hakios,OID_AUTO,mt6762_bif_generation_rejections,CTLFLAG_RD|CTLFLAG_LOCKED,&bif_generation_rejections,0,"Invalid missed-generation pairs eligible for next-period retry");
+SYSCTL_INT(_kern_hakios,OID_AUTO,mt6762_bif_last_error,CTLFLAG_RD|CTLFLAG_LOCKED,&bif_last_error,0,"Last BIF result: 0 completed, -5 missed generation; other negatives are errors");
 #endif
 static int bif_wr(void *unused,uint16_t address,uint16_t value)
 {
