@@ -15,6 +15,7 @@
 #include "peripheral_probe.h"
 #include "../hardware/display-touch/mt6762_touch_entry.h"
 #include "../hardware/power/mt6762_pwrap_entry.h"
+#include "../hardware/power/mt6762_keys_entry.h"
 
 extern unsigned char image_start[], image_end[];
 extern const unsigned char xnu_blob[], diagnostic_blob[], adt_blob[], args_blob[];
@@ -154,6 +155,10 @@ const struct entry_result *loader_main(uint64_t fdt_address, uint64_t original_e
     if(!mt6762_pwrap_entry_ok(pwrap_entry_read,NULL))
         stop("inherited PWRAP read profile",11);
 #endif
+#if PAYLOAD_NATIVE_BUTTONS_PROBE
+    if(!mt6762_keys_entry_ok(peripheral_read,NULL))
+        stop("inherited keypad read profile",14);
+#endif
 #if PAYLOAD_NATIVE_MSDC_PROBE
     struct mt6762_storage_profile storage;
     if(!mt6762_storage_profile_read(pwrap_entry_read,NULL,&storage))
@@ -221,6 +226,10 @@ const struct entry_result *loader_main(uint64_t fdt_address, uint64_t original_e
 #if PAYLOAD_NATIVE_PWRAP_PROBE
     for(unsigned n=0;n<sizeof(payload_pwrap_flags)/sizeof(payload_pwrap_flags[0]);n++)
         memcpy(adt+payload_pwrap_flags[n],&granted,sizeof(granted));
+#endif
+#if PAYLOAD_NATIVE_BUTTONS_PROBE
+    for(unsigned n=0;n<sizeof(payload_keys_flags)/sizeof(payload_keys_flags[0]);n++)
+        memcpy(adt+payload_keys_flags[n],&granted,sizeof(granted));
 #endif
 #if PAYLOAD_NATIVE_MSDC_PROBE
     _Static_assert(sizeof(payload_msdc_values)==sizeof(storage),"storage field/ADT patch count");

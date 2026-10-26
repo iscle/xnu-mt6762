@@ -31,6 +31,8 @@ DIAGNOSTICS = (
     'c1920f7877a8c48f6e1c1439ffd86681225153c77e02b95794be22406ab06551', # Image23: guarded synchronous LK storage probe, fully passing kernel41 build
     'f96011b960ba669b8a4e001003115ea2eeb0912c3a2db11cfa03a5f697d321f0', # Image24: measured I2C0 readback fix and inherited storage probe
     'b0c0a3368981ee98f7b67e3c0918be3533d9d7ba65760713142d9991aa78c580', # Image25: APFS bootstrap for bounded eMMC iOS slice; physical result pending
+    '3da6756329e3e859cdd2d6be3aae22024851f7cc4ccd7cd863937747002958ef', # Image26: kernel43 inherited read-only power/volume probe
+    '7a6c42436822cdfee2e778673b4d78ad985d25fe81f7971d97a52a99091ffb9c', # Image27: kernel43 APFS bootstrap with native button probe
 )
 VBMETA_FLAGS3 = '2f3fb6474d7ff35ac4c48ab2bef71247ba50de4a94de2474b7d1b60cd6654f51'
 

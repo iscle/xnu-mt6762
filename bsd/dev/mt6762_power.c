@@ -19,11 +19,14 @@
 #include "mt6762_charger_protocol.h"
 #include "mt6762_thermal_protocol.h"
 #include "../../tools/mt6762/hardware/power/mt6762_pwrap_entry.h"
+#include "../../tools/mt6762/hardware/power/mt6762_keys_entry.h"
 
 static LCK_GRP_DECLARE(power_lck_group,"mt6762-power");
 static LCK_MTX_DECLARE(pwrap_mutex,&power_lck_group);
 static LCK_MTX_DECLARE(adc_mutex,&power_lck_group);
 static volatile uint8_t *pwrap, *keypad;
+static volatile uint8_t *keys_gpio,*keys_gic;
+static int keys_only,keys_fault;
 static int pwrap_ready, pwrap_fault, adc_ready, charger_ready, started;
 static uint32_t pwrap_profile;
 static int pwrap_read_only;
@@ -200,11 +203,29 @@ static void button_sample(unsigned which,int valid,unsigned pressed)
     static const uint32_t ids[]={REDWOOD_BUTTON_LOCK,REDWOOD_BUTTON_VOLUME_UP,
                                 REDWOOD_BUTTON_VOLUME_DOWN};
     int change=mt6762_key_update(&key_filter[which],valid,pressed);
+    if(change && keys_only)
+        kprintf("MT6762_KEY button=%u direction=%d valid=%d\n",ids[which],change,valid);
     if(change)redwood_touch_post(change>0?REDWOOD_BUTTON_DOWN:REDWOOD_BUTTON_UP,
                                ids[which],0,0);
 }
+static uint32_t keys_entry_read(void *unused,uint32_t address,unsigned width)
+{
+    (void)unused;
+    volatile uint8_t *base=address>=0x10010000?keypad:
+        address>=0x10005000?keys_gpio:keys_gic;
+    unsigned offset=address&0xfff;
+    uint32_t value=width==2?*(volatile uint16_t *)(base+offset):
+        *(volatile uint32_t *)(base+offset);
+    __asm__ volatile("dsb oshld":::"memory");return value;
+}
 static void poll_buttons(void)
 {
+    if(keys_only && (keys_fault || !mt6762_keys_entry_ok(keys_entry_read,NULL))) {
+        if(!keys_fault)kprintf("MT6762_KEYS fault: inherited keypad state changed\n");
+        keys_fault=1;
+        for(unsigned i=0;i<3;i++)button_sample(i,0,0);
+        return;
+    }
     uint16_t status=0;
     int valid=pwrap_ready && !mt6762_pwrap_read16(0x24,&status);
     button_sample(0,valid,!(status&2));
@@ -304,7 +325,7 @@ static void power_thread(__unused void *parameter,__unused wait_result_t result)
 {
     for(unsigned tick=0;;tick++) {
         poll_buttons();
-        if(tick%60==0)poll_battery();
+        if(!keys_only && tick%60==0)poll_battery();
         delay_for_interval(16,NSEC_PER_MSEC);
     }
 }
@@ -341,12 +362,26 @@ void mt6762_power_init(void)
     }
     if(verified("pwrap-inherited-probe")) {
         /* PMIC ordinary readable words only: keys/reset policy and eMMC rails.
-         * No ADC/gauge commands, rail writes, charger control or key events. */
+         * No ADC/gauge commands, rail writes or charger control. The separate
+         * inherited-key grant below permits only filtered key observations. */
         static const uint16_t regs[]={0x24,0x14c,0x1988,0x1958,0x1c20,0x1996,0x1966};
         for(unsigned pass=0;pwrap_ready && pass<2;pass++)for(unsigned i=0;i<sizeof(regs)/sizeof(regs[0]);i++) {
             uint16_t value=0;int error=mt6762_pwrap_read16(regs[i],&value);
             kprintf("MT6762_PWRAP_SAMPLE pass=%u address=%04x error=%d value=%04x\n",pass,regs[i],error,value);
             if(error)return;
+        }
+        if(pwrap_ready && pwrap_read_only && verified("keys-inherited-probe") && verified("keypad-verified")) {
+            keypad=mt6762_map_mmio(0x10010000,0x1000);
+            keys_gpio=mt6762_map_mmio(0x10005000,0x1000);
+            keys_gic=mt6762_map_mmio(0x0c000000,0x1000);
+            if(!keypad || !keys_gpio || !keys_gic || !mt6762_keys_entry_ok(keys_entry_read,NULL)) {
+                kprintf("MT6762_KEYS refused inherited keypad state\n");return;
+            }
+            keys_only=1;
+            if(kernel_thread_start(power_thread,NULL,&thread)==KERN_SUCCESS) {
+                started=1;thread_deallocate(thread);
+                kprintf("MT6762_KEYS_READY readonly=1 boot_held_suppressed=1\n");
+            }
         }
         return;
     }

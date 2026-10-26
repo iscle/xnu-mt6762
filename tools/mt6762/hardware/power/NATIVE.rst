@@ -4,16 +4,18 @@ Native XNU integration
 ``bsd/dev/mt6762_power.c`` observes power and quiesces an owned charger. It consumes the common version-1
 ``/chosen/mt6762-handoff`` contract and starts no hardware path without
 ``native-io=1`` accepted by ``mt6762_platform_init``. This is source under
-validation, not a working physical-device charging implementation. All device
-register activity described below is gated; no physical execution has been
-performed. The ordinary QEMU boot has none of these native flags.
+validation, not a working physical-device charging implementation. Physical
+capture20 confirms profile2 read-only PMIC identification and rail reads.
+ADC, gauge, charging and native button events remain unaccepted. The ordinary
+QEMU boot has none of these native flags.
 
 Ownership and readiness
 -----------------------
 
-* ``pwrap-verified=1`` means the loader has configured the PMIC wrapper,
-  transferred exclusive AP WACS2 ownership, and quiesced previous AP users.
-  The driver separately checks WACS2 initialization bit 21 and reads PMIC
+* ``pwrap-verified=1`` means the loader has checked the inherited PMIC wrapper
+  and transferred AP WACS2 use with previous AP users quiesced. The physical
+  profile2 uses initialization bit22; legacy bit21 is allowed only in the
+  explicit laboratory profile. The driver separately checks readiness and reads PMIC
   hardware ID at 0x0008, requiring the MT6357 family byte 0x57. A timeout or
   lost initialization latches a fault. It does not reset or clear an unknown
   owner's transaction. SSPM/modem channels are not claimed by this contract.
@@ -33,6 +35,16 @@ Ownership and readiness
   power. The advertised PMIC home/volume-up mapping is not used.
   Boot-held keys are ignored until released; transitions require two samples,
   and failed reads release any previously emitted key.
+  The optional physical ``keys-inherited-probe=1`` path additionally checks
+  the captured GPIO92/93/94 mux, keypad enable/debounce/selection and masked,
+  inactive INTID212 twice before entry and on each poll. A changed keypad
+  profile stops key reporting and releases held events. It keeps PMIC access
+  read-only and starts only the button worker, without ADC/gauge/charger
+  operations or battery publication. ``--native-buttons-probe`` requests this
+  path in the physical builder; both grants begin zero. Kernel43 compiles
+  this path, with host admission tests and the existing emulated input
+  regression passing. Physical key events remain pending. Captured values are
+  in physical-keys-profile.json; emulator results are in native-build43-evidence.json.
 * ``charger-verified=1`` plus an independently ready I2C5 bus permits access
   to PSC5425E at 0x6a. A real handoff additionally requires
   ``charger-control-owned=1``. The loader must already disable charging before

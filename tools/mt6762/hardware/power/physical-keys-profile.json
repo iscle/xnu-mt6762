@@ -1,0 +1,74 @@
+{
+  "source": "capture20 passive inherited profile",
+  "capture_sha256": "c04d61b502df2dedfeafcde54eb8c2c692b6148cc34ceae6a134be6d1cb0015b",
+  "registers": [
+    {
+      "address": "0x100053b0",
+      "width": 4,
+      "group": 0,
+      "name": "GPIO+0x3b0",
+      "valid": 3,
+      "first": 286327312,
+      "second": 286327312,
+      "stable": true
+    },
+    {
+      "address": "0xc000118",
+      "width": 4,
+      "group": 0,
+      "name": "GICD+0x118",
+      "valid": 3,
+      "first": 0,
+      "second": 0,
+      "stable": true
+    },
+    {
+      "address": "0xc000318",
+      "width": 4,
+      "group": 0,
+      "name": "GICD+0x318",
+      "valid": 3,
+      "first": 0,
+      "second": 0,
+      "stable": true
+    },
+    {
+      "address": "0x10010018",
+      "width": 2,
+      "group": 0,
+      "name": "KEYPAD+0x18",
+      "valid": 3,
+      "first": 1024,
+      "second": 1024,
+      "stable": true
+    },
+    {
+      "address": "0x10010020",
+      "width": 2,
+      "group": 0,
+      "name": "KEYPAD+0x20",
+      "valid": 3,
+      "first": 7280,
+      "second": 7280,
+      "stable": true
+    },
+    {
+      "address": "0x10010024",
+      "width": 2,
+      "group": 0,
+      "name": "KEYPAD+0x24",
+      "valid": 3,
+      "first": 1,
+      "second": 1,
+      "stable": true
+    }
+  ],
+  "stock_dt_clock_hz": 26000000,
+  "stock_dt_interrupt_intid": 212,
+  "pin_binding": "MT6765 GPIO92=KPROW0,93=KPCOL0,94=KPCOL1; function1",
+  "writes": false,
+  "physical_polling_executed": false,
+  "button_event_acceptance": false,
+  "host_invalid_states": 9,
+  "host_second_pass_changes": 6
+}

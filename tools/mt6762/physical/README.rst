@@ -21,6 +21,10 @@ storage admission are pending Image24. Capture19 validates bounded LK card metad
 (RCA1, sector addressing and244,285,440sectors), without granting storage
 ownership. See ../hardware/display-touch/physical-build36-evidence.json and the card audit.
 Touch, charging, keys and the physical iOS desktop remain incomplete.
+The optional ``--native-buttons-probe`` (kernel43 onward) requires the
+read-only PWRAP probe and separately admits the captured keypad configuration.
+It polls power/volume state without changing pins, clocks, IRQs or reset
+policy. Hardware event validation is pending; see ../hardware/power/NATIVE.rst.
 
 Physical trial status: the dumped LK's fastboot boot path panics before XNU
 entry. Its caller passes the download pointer to a routine that instead looks

@@ -77,6 +77,8 @@ def main():
                         help='admit inherited LK WACS2 for bounded read-only PMIC/rail observations')
     parser.add_argument('--native-msdc-probe',action='store_true',
                         help='admit exact synchronous LK eMMC handoff; kernel must verify rails/CMD13/EXT_CSD')
+    parser.add_argument('--native-buttons-probe',action='store_true',
+                        help='read-only power/volume polling through measured PWRAP and inherited keypad')
     args = parser.parse_args()
     if args.brightness_pulse and not args.native_display:
         parser.error('--brightness-pulse requires --native-display')
@@ -84,6 +86,8 @@ def main():
         parser.error('touch/watchdog/PWRAP requires native display and passive peripheral capture')
     if args.native_msdc_probe and not args.native_pwrap_probe:
         parser.error('native MSDC requires the read-only PWRAP probe')
+    if args.native_buttons_probe and not args.native_pwrap_probe:
+        parser.error('native buttons require the read-only PWRAP probe')
     if bool(args.bootstrap_apfs) != bool(args.ios_system_slice):
         parser.error('--bootstrap-apfs and --ios-system-slice require each other')
     if args.bootstrap_apfs and not (args.native_msdc_probe and args.expand_memory and args.refresh_watchdog):
@@ -100,6 +104,7 @@ def main():
     source_paths += [Path(prepare.__file__), HERE.parent/'hardware/display-touch/mt6762_display_core.h']
     source_paths += [HERE.parent/'hardware/display-touch/mt6762_touch_entry.h']
     source_paths += [HERE.parent/'hardware/power/mt6762_pwrap_entry.h']
+    source_paths += [HERE.parent/'hardware/power/mt6762_keys_entry.h']
     source_paths += [HERE.parents[2]/'bsd/dev/mt6762_msdc_clock.h']
     sources_before = {os.path.relpath(p,HERE.parent):sha(p.read_bytes()) for p in source_paths}
     original_kernel = args.kernel.read_bytes()
@@ -166,6 +171,9 @@ def main():
         if args.native_pwrap_probe:
             props.update({name:prepare.u32(0) for name in pwrap_flags})
             props['pwrap-profile']=prepare.u32(2)
+        keys_flags=('keys-inherited-probe','keypad-verified')
+        if args.native_buttons_probe:
+            props.update({name:prepare.u32(0) for name in keys_flags})
         msdc_flags=('msdc-owned','msdc-inherited-verified','msdc-irq-owned','msdc-clock-owned',
             'msdc-pads-owned','msdc-rails-preserved','msdc-tuning-preserved',
             'msdc-card-quiesced','msdc-writes-drained','msdc-sector-addressed',
@@ -217,6 +225,7 @@ def main():
     constants['REFRESH_WATCHDOG']=int(args.refresh_watchdog)
     constants['NATIVE_PWRAP_PROBE']=int(args.native_pwrap_probe)
     constants['NATIVE_MSDC_PROBE']=int(args.native_msdc_probe)
+    constants['NATIVE_BUTTONS_PROBE']=int(args.native_buttons_probe)
     constants['IOS_SYSTEM_SLICE']=int(ios_slice is not None)
     if ios_slice:
         constants['IOS_SYSTEM_START']=ios_slice['start_sector']
@@ -241,6 +250,8 @@ def main():
             header+=f'#define PAYLOAD_ADT_WATCHDOG_PATCH {positions[native_path+"watchdog-refresh-owned"]}\n'
         if args.native_pwrap_probe:
             header+='static const unsigned payload_pwrap_flags[] = {'+','.join(str(positions[native_path+name]) for name in pwrap_flags)+'};\n'
+        if args.native_buttons_probe:
+            header+='static const unsigned payload_keys_flags[] = {'+','.join(str(positions[native_path+name]) for name in keys_flags)+'};\n'
         if args.native_msdc_probe:
             for kind,names in (('flags',msdc_flags),('values',msdc_values)):
                 header+=f'static const unsigned payload_msdc_{kind}[] = '+'{'+','.join(str(positions[native_path+name]) for name in names)+'};\n'
@@ -315,6 +326,7 @@ def main():
             (['i2c0-touch-operability-probe'] if args.native_touch_probe else [])+
             (['pwrap-read-only-probe'] if args.native_pwrap_probe else [])+
             (['msdc-inherited-read-only-probe'] if args.native_msdc_probe else [])+
+            (['power-volume-read-only-probe'] if args.native_buttons_probe else [])+
             (['watchdog-refresh'] if args.refresh_watchdog else []),
         native_display_requested=args.native_display,brightness_pulse_requested=args.brightness_pulse,
         passive_peripheral_probe=args.probe_peripherals,
@@ -322,6 +334,7 @@ def main():
         native_touch_probe_requested=args.native_touch_probe,watchdog_refresh_requested=args.refresh_watchdog,
         native_pwrap_probe_requested=args.native_pwrap_probe,
         native_msdc_probe_requested=args.native_msdc_probe,
+        native_buttons_probe_requested=args.native_buttons_probe,
         peripheral_trace=dict(offset=peripheral_record.OFFSET,physical_address=peripheral_record.ADDRESS,
             size=peripheral_record.SIZE,initialized_sha256=sha(peripheral_record.initialized(trace_identity)),
             register_writes=False,native_ownership=False),
