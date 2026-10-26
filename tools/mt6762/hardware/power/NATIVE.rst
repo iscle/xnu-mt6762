@@ -29,6 +29,12 @@ Host tests cover every control/status byte pair,255 wrong identities, each
 read failure, missing arguments and operation without a write callback.
 The installed Image33 predates this addition; its pending I2C5 capture is
 still needed before a physical bus profile can enable the probe.
+Kernel51 builds with all checks passing. Two20-second synthetic runs confirm
+six successful one-byte reads with unchanged control/status and zero PMIC
+writes/ADC requests, or zero bus5 transactions when its handoff is absent.
+See ``native-build51-charger-evidence.json``. These tests exercise the compiled
+kernel path with the laboratory PWRAP profile; they do not validate physical
+I2C5 timing or charger protection.
 
 * ``pwrap-verified=1`` means the loader has checked the inherited PMIC wrapper
   and transferred AP WACS2 use with previous AP users quiesced. The physical

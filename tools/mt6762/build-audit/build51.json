@@ -1,0 +1,28 @@
+{
+  "artifact_ready": true,
+  "artifact": "/home/iscle/mt6762-ios-port/xnu/BUILD/obj/DEVELOPMENT_ARM64_MT6762/mach.development.mt6762",
+  "make_exit_code": 0,
+  "all_checks_passed": true,
+  "known_postlink_export_failures_only": false,
+  "new_link_observed": true,
+  "macho_arm64_executable": true,
+  "kernel_source_sha256": "a2b6ed76859c642acdd3fad639220d87ecc3f33bd3b8229bde40957c242761a1",
+  "source_unchanged_during_build": true,
+  "source_files_changed_during_build": [],
+  "iig_inputs_unchanged_during_build": true,
+  "iig_inputs_sha256": "5ca710c32c87ab927c4d71eedc672a9577599d27162ab293f32038d0bc10915a",
+  "iig_executable": "/home/iscle/mt6762-ios-port/xnu/tools/mt6762/iig/experimental_legacy_replay.py",
+  "iig_selected_environment": {
+    "MTK_IIG_CANDIDATE": "/home/iscle/mt6762-ios-port/toolchain/iig-legacy-candidate-build51",
+    "MTK_IIG_CANDIDATE_SHA256": "3880b69383b09284798289b22e553e8b223168bb4c2661b33acbecb0ddd7f35d",
+    "MTK_IIG_GENERATED": "/home/iscle/mt6762-ios-port/toolchain/iig-generated-build51",
+    "MTK_IIG_GENERATION_SHA256": "8f0e5e11885aceb9c48a830b7450e0c98d1c5d50b2173843df26ae88cebe28d8",
+    "MTK_IIG_INPUTS": "/home/iscle/mt6762-ios-port/toolchain/iig-inputs-build51",
+    "MTK_IIG_INPUT_SHA256": "817e5f7ccccd2380eb49dbd7fcfc67e8a9786d535bc1f25638f9e4f7d674d815",
+    "MTK_IIG_OUTPUT_ROOT": "/home/iscle/mt6762-ios-port/xnu/BUILD",
+    "MTK_IIG_XNU": "/home/iscle/mt6762-ios-port/xnu"
+  },
+  "sha256": "4521bbd6627984bbfeee6f945c1b67a7f17a36e3f1018078559947247800d8f3",
+  "source_head": "cd9d807dd16045efa57790d86405159e9f4d04a9",
+  "build_log": "/home/iscle/mt6762-ios-port/evidence/builds/20261026T103150Z-2983053/make.log"
+}

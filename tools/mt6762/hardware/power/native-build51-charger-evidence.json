@@ -1,0 +1,69 @@
+{
+  "purpose": "Native read-only charger probe, exact6-byte acquisition and absent-bus refusal",
+  "tests": {
+    "valid": {
+      "synthetic_only": true,
+      "run_completed": true,
+      "kernel_sha256": "4521bbd6627984bbfeee6f945c1b67a7f17a36e3f1018078559947247800d8f3",
+      "qemu_binary_sha256": "3fe4d9e1a496f8a9f6a88e7e25c23057e6c19c959ae15605ba2e04c54ebda08e",
+      "elapsed_seconds": 20.001,
+      "panic": false,
+      "probe_lines": [
+        "MT6762_PSC_PROBE pass=0 error=0 id=f0 control=00 status=10",
+        "MT6762_PSC_PROBE pass=1 error=0 id=f0 control=00 status=10"
+      ],
+      "bus5": {
+        "transactions": 6,
+        "dma_reads": 0,
+        "rx_bytes": 6,
+        "last_status": 1,
+        "psc_control": 0,
+        "psc_status": 16
+      },
+      "pmic_writes": 0,
+      "adc_requests": [
+        0,
+        0
+      ],
+      "evidence_sha256": {
+        "manifest.json": "8ce97f4a76b7d8e8678225ab4c96f5985d1c217ab6e69afb0a0077568d28ca67",
+        "charger.models.json": "62ebf1901f4ef786e859bee4583db1486e4fc48d5f4a74c65a711a97a1149d00",
+        "charger.serial.log": "a7c245dd77fefc0534f685a07a286f22e1d0d20e1cf0f2d2ee1398e43cf7f613"
+      }
+    },
+    "no-bus": {
+      "synthetic_only": true,
+      "run_completed": true,
+      "kernel_sha256": "4521bbd6627984bbfeee6f945c1b67a7f17a36e3f1018078559947247800d8f3",
+      "qemu_binary_sha256": "3fe4d9e1a496f8a9f6a88e7e25c23057e6c19c959ae15605ba2e04c54ebda08e",
+      "elapsed_seconds": 20.001,
+      "panic": false,
+      "probe_lines": [
+        "MT6762_PSC_PROBE pass=0 error=-6"
+      ],
+      "bus5": {
+        "transactions": 0,
+        "dma_reads": 0,
+        "rx_bytes": 0,
+        "last_status": 0,
+        "psc_control": 0,
+        "psc_status": 16
+      },
+      "pmic_writes": 0,
+      "adc_requests": [
+        0,
+        0
+      ],
+      "evidence_sha256": {
+        "manifest.json": "8c19915b436c5aaebe05324334e57381b4b4dfd0deb494e8fbe39e7d95ccd821",
+        "charger.models.json": "6e06e6ab81ac295d4805ae41081b595a4cd8b9d691f6aadb790c2ad22e8aa8c6",
+        "charger.serial.log": "d6398163fe119f2f86869c3b5f5d23a12c980d563893f64f6dd49aabcdd17cc5"
+      }
+    }
+  },
+  "limits": [
+    "Synthetic legacy PWRAP/I2C fixture; physical I2C5 setup remains unmeasured.",
+    "Control/status reads do not confer charger ownership, thermal protection or charging readiness.",
+    "Installed Image33/kernel50 remains unchanged."
+  ]
+}
