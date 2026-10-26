@@ -1,0 +1,15 @@
+{
+  "image": "Image36/kernel52",
+  "installed": false,
+  "physical_execution_proven": false,
+  "image_sha256": "0e326fed7ef89751d7a73a2d9c16d7097acc627533f9e54a96a0bff811b77fc9",
+  "raw_image_sha256": "3947a4012aa6dfbae60fd2b30a0f25abb98bdae8f0741ec957f9a7f358d62c6e",
+  "kernel_sha256": "b2999d92505ce79238a202ff965066236f97664bec3ddc08e886237e0ddb63e9",
+  "trace_identity": "bbb291dec48ad2318bee918399d1828b84d6f3d33fba4a10793e0df20cdc69d5",
+  "source_inputs_stable": true,
+  "charger_setup_only": true,
+  "charger_transactions_granted": false,
+  "charger_control_granted": false,
+  "bootstrap_sha256": "f749024a376321a6d5ba31ff674103b4520420c67b6e61908ced37f505a1ba32",
+  "ios_system_rewritten": false
+}

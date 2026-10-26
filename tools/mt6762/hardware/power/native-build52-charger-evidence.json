@@ -1,0 +1,62 @@
+{
+  "kernel": "kernel52",
+  "kernel_sha256": "b2999d92505ce79238a202ff965066236f97664bec3ddc08e886237e0ddb63e9",
+  "fresh_build_all_checks_passed": true,
+  "wrapper_sha256": "43e8493a031ef8657dda9924d48f3af2da190439828758ca0309b57e281f0ec1",
+  "runs": [
+    {
+      "mode": "valid",
+      "elapsed_seconds": 20.001,
+      "kernel_sha256": "b2999d92505ce79238a202ff965066236f97664bec3ddc08e886237e0ddb63e9",
+      "qemu_binary_sha256": "3fe4d9e1a496f8a9f6a88e7e25c23057e6c19c959ae15605ba2e04c54ebda08e",
+      "manifest_sha256": "3cde106adfa10957eed2387cea0d0505798453bcd9a2ecb6a897ae3c9b02ecd5",
+      "serial_sha256": "3700e24c22de42d6e0fe4a96dff28e8bd826ad579f870b74ac5b8d40f49c1267",
+      "models_sha256": "c26278e0ecdc75f33a2f39139802656525c4aa0df673ef3adb2e3c8350af2116",
+      "i2c5": {
+        "transactions": 6,
+        "dma_reads": 0,
+        "rx_bytes": 6,
+        "last_status": 1,
+        "psc_control": 0,
+        "psc_status": 16
+      },
+      "touch_dma_reads": 2089,
+      "pmic_writes": 0,
+      "adc_requests": [
+        0,
+        0
+      ],
+      "panic": false
+    },
+    {
+      "mode": "entry-refused",
+      "elapsed_seconds": 20.001,
+      "kernel_sha256": "b2999d92505ce79238a202ff965066236f97664bec3ddc08e886237e0ddb63e9",
+      "qemu_binary_sha256": "3fe4d9e1a496f8a9f6a88e7e25c23057e6c19c959ae15605ba2e04c54ebda08e",
+      "manifest_sha256": "72f7af3eaff084b9a3ab9d3b5f0c55d207786e19c86b0b4889fefff03f75d1c9",
+      "serial_sha256": "43d458c588de03b827edaafe5271eab6fe3c587603bcb9b5b17e341781c70528",
+      "models_sha256": "fc2097f19787a7c1192c4a57ca5e383857b6e6c2344b7537180604581457d513",
+      "i2c5": {
+        "transactions": 0,
+        "dma_reads": 0,
+        "rx_bytes": 0,
+        "last_status": 0,
+        "psc_control": 0,
+        "psc_status": 16
+      },
+      "touch_dma_reads": 2088,
+      "pmic_writes": 0,
+      "adc_requests": [
+        0,
+        0
+      ],
+      "panic": false
+    }
+  ],
+  "physical_hardware_tested": false,
+  "limits": [
+    "QEMU entry refusal exercises the clock mismatch before controller access; positive physical-entry/setup admission is covered only by captured-vector and actual-function host tests.",
+    "Read-only PSC observations are synthetic; no physical charger identity, setup readbacks or charging policy is established.",
+    "Setup-only physical image is prepared, not installed."
+  ]
+}
