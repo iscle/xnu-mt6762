@@ -1,0 +1,60 @@
+{
+  "schema": "mt6762-msdc-admission-performance-v1",
+  "physical_speedup_proven": false,
+  "kernel_headers_changed": false,
+  "physical_operations_performed": false,
+  "source_sha256": {
+    "bsd/dev/mt6762_msdc.c": "ca6036a56ff00a7ec6f7c70f70675369a595180d5b2f0790826024cf94256442",
+    "bsd/dev/mt6762_msdc_protocol.h": "f7976bb9a9699efbafd66801f225e58f0d2c5dfb6906fda6342d404370130c69",
+    "bsd/dev/mt6762_msdc_bsd.c": "eafed8a255ee7cab3feb9635e46e2212f25a2405bfc285acc4e4608b23610eee",
+    "bsd/dev/mt6762_power_protocol.h": "2488c25e65d224d925da65a6156f2fcd2988ebe27413f43b0d8b94445a69df10",
+    "iokit/Kernel/GenericARMPE.cpp": "58e59b822d81110a3680391d258eca4b7ef13a94ca90deacac013d6010b9e9cb",
+    "osfmk/arm64/machine_routines.c": "afec49c27cfd0c74fd42183d937329f6fff35357b1f83692cff9690227d4e9a0",
+    "osfmk/kern/clock.c": "001630fcf2089f7f8df7c39ee79f8ba9279b84aa06ec5d8883b016eb15fdc5b1",
+    "osfmk/arm/rtclock.c": "fe73cdccc1b4e5b952ff28bbe6eb107811f33983a41f0e6528bcde927003154b",
+    "tools/mt6762/hardware/storage/mt6762_msdc_admission.h": "24622f449b3fc4fd4c8ee301c219e1268d7255b141770f477de0e51c5be4408c",
+    "tools/mt6762/hardware/storage/test_msdc_admission.c": "70627d4ba8b7e54da0f6d4e5bdf384897a9a1840f45a0bf3f97ffe80863b391b",
+    "tools/mt6762/hardware/storage/test_msdc_poll_delay.py": "d1d1039c8d3f5ba53aeb67eb4ce84ddaafeafe176548a59565c6feac76f3e83f",
+    "tools/mt6762/hardware/storage/ADMISSION-PERFORMANCE.rst": "bb2da2e438461af79673bebd7f1d67bae4acba6327048d8392f87f9094e218d0",
+    "bsd/dev/mt6762_power.c": "dae49d222a4a162d9ecb16bf366e6f5796afcac0886b9ebf78ded15c72aa3868",
+    "tools/mt6762/hardware/power/test_wacs_delay.py": "f455efb6c576b45152d7f8ea00bdb3ddc9a3ede99b950ef104148339f428c08b"
+  },
+  "prechange_msdc_c_sha256": "b14b94366698bc37ff704873dcaa50fce29e0b1d40a0f663c5c209a33f938451",
+  "evidence_sha256": {
+    "capture31/xnu-log.bin": "28cb13c7522898d16074bf766a69178e5d0515d9f4272361b51562379adf9135",
+    "capture31/runtime.dtb": "2418cd92ebc862f983f15fefd15aeef5163e837ae44f9407af03a26caed53515",
+    "capture31/framebuffer.bgra": "7157c7af73cef09266ccee7ca4a0977a9c8cc76dd0fe1debab6cd81ca0a132ee",
+    "kernel48/desktop.serial.log": "c36f2d3768b436168d2888a13258525b57d5c0e150becd447cbc1946da3dc2bc",
+    "kernel48/desktop.models.json": "9762ea6092f07da02530a2562055d2447fc050bfc8b24e528970f1606c49c362"
+  },
+  "source_counts_before": {
+    "admissions_per_sector": 7,
+    "pmic_transactions_per_admission": 10,
+    "pmic_transactions_per_sector": 70,
+    "pmic_transactions_per_128KiB": 17920,
+    "non_msdc_mmio_reads_per_admission": 86
+  },
+  "policy": {
+    "max_age_us_exclusive": 1000,
+    "max_completed_sectors": 256,
+    "timestamp": "beginning of full admission",
+    "clock_irq_controller_dma_card_checks": "unchanged at every existing protocol phase",
+    "error_policy": "invalidate observation on any admission/protocol failure",
+    "analog_measurement": false,
+    "secure_firmware_continuity_proven": false
+  },
+  "tests": {
+    "command": "sh tools/mt6762/hardware/storage/test.sh",
+    "result": "passed",
+    "modeled_fast_sector_full_observations": 1,
+    "modeled_fast_sector_reuses": 6,
+    "modeled_fast_sector_dynamic_admissions": 7,
+    "modeled_fast_sector_commands": 3,
+    "physical_timing_measured": false
+  },
+  "limitations": [
+    "Static configuration may change autonomously between observations; bounded reuse is not exclusive secure-world ownership.",
+    "Physical capture31 did not contain storage admission or latency counters.",
+    "QEMU physical pad/rail/clock checks are bypassed, and QEMU was not a controlled performance comparison."
+  ]
+}

@@ -5,7 +5,9 @@ Physical inherited I2C5 entry, capture26
 44 width-specific reads in each of two passes. It performs no writes and
 does not enable a bus or grant charger-control ownership. The captured state
 is sufficient for a separately enabled, bounded controller-setup trial.
-Physical PSC5425E identity and bus5 post-write behavior remain unmeasured.
+Physical PSC5425E identity remains unmeasured. Capture31 subsequently
+established bus5 post-write behavior; its separate matcher and bounded
+read-only mode are documented in ``CHARGER-POSTSETUP.rst``.
 
 Evidence binding
 ----------------
@@ -81,30 +83,32 @@ No kernel or physical setup trial was built by this change.
    controller completion/FIFO clearing and timing writes execute only after
    the entry check. The legacy synthetic paths retain their old behavior.
 4. The post-write matcher remains strict: bus5 never selects the touch
-   inherited DIV/HS profile. Existing SETUP/AUX/PROFILE logging captures all
+   inherited DIV/HS profile. The new capture31-specific bus5 matcher is
+   independent of this capture26 entry profile. SETUP/AUX/PROFILE logging captures all
    programmed values, with new SETUP_GATES and SETUP_ONLY lines. Setup-only
    always leaves the engine uninitialized/faulted and keeps its DMA page
    pinned. mt6762_i2c_ready also rejects its explicit setup-only latch, so
    neither PSC nor display-bias transactions can run even if readbacks match
    or another call tests bus readiness.
-5. Only after bus5 post-write readbacks are observed should a separate
-   bus5-specific setup profile be admitted and tested. Then enable the
-   existing kernel51 charger-readonly-probe path within pwrap-inherited-probe.
-   It reads fixed0x6a ID3/control1/status0 twice after mt6762_i2c_ready(5).
-   It grants neither CE-disable nor charge-enable and must not reach the
-   normal charger-control policy branch.
+5. Capture31 now supplies the separate bus5 post-write profile. A future
+   explicit producer option can request the existing kernel51
+   charger-readonly-probe path within pwrap-inherited-probe. The consumer now
+   restricts this physical mode to six fixed0x6a ID3/control1/status0 reads
+   in order, after setup admission. It grants neither CE-disable nor
+   charge-enable and cannot reach the normal charger-control policy branch.
 
-Unresolved setup distinction
-----------------------------
+Entry versus post-write evidence
+--------------------------------
 
 At parent124.8MHz / requested100kHz, current initialize_bus writes DIV0x0404,
 TIMING0x0419, LTIMING0x0118, HS0, EXT0x8001, IO3, DELAY0xa, TIMEOUT0x190.
 Capture26 observes bus5 before those writes. In particular, entry TIMING0x418,
 IO0x1a3 and TIMEOUT0 explicitly differ from programmed values. Entry DIV4
-and HS0x8000 resemble measured bus0 readbacks, but neither proves what bus5
-returns after a write. Do not select the existing touch inherited_profile
-for bus5 merely because of that resemblance. An unsuccessful strict setup
-trial still provides useful actual readbacks; it must leave bus5 faulted.
+and HS0x8000 resembled measured bus0 readbacks, but that resemblance did not
+prove bus5 behavior. Capture31's independent XNU log now records the actual
+result of these writes, including DIV4/HS8000 and matching other fields.
+``CHARGER-POSTSETUP.rst`` binds the new matcher to that evidence. An unsuccessful
+setup still leaves bus5 faulted; setup-only remains blocked even on success.
 
 Validation
 ----------
@@ -122,9 +126,10 @@ is claimed by these tests.
 
 ``test_charger_setup.py`` adds five tests, including host execution of the
 actual platform initialize_bus/readiness/transfer-admission functions against
-fake MMIO. Both strict matching and mismatched bus5 readbacks remain blocked;
-entry/gate failures stop setup, later gate changes block transfers, and the
-old bus0 and synthetic bus5 behavior is preserved. ADT tests check zero
+fake MMIO. Setup-only remains blocked for matching and mismatched readbacks;
+the separate read-only mode is restricted to six fixed PSC reads. Entry/gate
+failures stop setup, later gate changes block transfers, and the old bus0 and
+synthetic bus5 behavior is preserved. ADT tests check zero
 initial grants, absent PSC permissions and invalid-option refusal before file
 access. Both suites are wired into power/test.sh. Kernel source identity
 automatically includes shared tools headers; its existing snapshot mechanism

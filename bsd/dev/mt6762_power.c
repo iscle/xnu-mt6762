@@ -93,7 +93,23 @@ static void pwrap_wr(void *unused,uint32_t offset,uint32_t value)
     __asm__ volatile("dsb sy" ::: "memory");
 }
 static void pwrap_delay(void *unused,unsigned us) {(void)unused;delay(us);}
-static const struct mt6762_wacs_io pwrap_io={NULL,pwrap_rd,pwrap_wr,pwrap_delay};
+static void pwrap_wacs_delay(void *unused,unsigned us)
+{
+    uint64_t interval,start;
+    (void)unused;
+    if(!us)return;
+    /* WACS polls request10us. GenericARMCPU has no idle-latency estimate,
+     * so delay() otherwise schedules away on every not-ready poll while
+     * holding pwrap_mutex. Keep these short polls synchronous, with IRQs and
+     * preemption unchanged. YIELD is a CPU hint, not a scheduler operation;
+     * WFE would depend on another event to wake this single-core trial. */
+    if(us>10) {delay(us);return;}
+    clock_interval_to_absolutetime_interval(us,NSEC_PER_USEC,&interval);
+    start=mach_absolute_time();
+    while(mach_absolute_time()-start<interval)
+        __asm__ volatile("yield" ::: "memory");
+}
+static const struct mt6762_wacs_io pwrap_io={NULL,pwrap_rd,pwrap_wr,pwrap_wacs_delay};
 static uint32_t pwrap_entry_read(void *unused,uint32_t address)
 {
     (void)unused;

@@ -1,0 +1,199 @@
+{
+  "schema": "mt6762-sspm-capture33-review-v1",
+  "identity": "ab1f5e0df19932df6f498b03af28f543e7029705f50e04dd4ea2309e173a71c1",
+  "kernel_sha256": "d3365d0629efbfea31e293e3699637f7487834f466ae260126dec63e4548364a",
+  "original_el": 1,
+  "raw_peripheral_record_sha256": "80a039a5d4135ad75d344bac88ebce0a56147eee88db410a2ce1cc668f6d7996",
+  "capture_files_sha256": {
+    "peripherals-result.json": "47c5ee1d0eb5e7f135cfb9a855082f907f3bc9330a41b1f04c52c3e10c027481",
+    "peripherals.bin": "80a039a5d4135ad75d344bac88ebce0a56147eee88db410a2ce1cc668f6d7996",
+    "trace-result.json": "83a1a5b88d1198f3c7503b408571c027bf347ca435c21517ef182bc2e207c955",
+    "trace.bin": "5b7b12a1cd056d3851d7a47d6104634756c735360594ab7aab444a3598c15451",
+    "dram-log-complete.bin": "d80467849c94a1442c57b1156cb490eeb7930eee0def8effd3cbcf1507ceaa1f"
+  },
+  "loader_elf_sha256": "d99b89e292a1f7e38c99b126b6169220bd7375e83fb0cf2fb400bfa638167c3f",
+  "loader_load_commit_span": {
+    "start": "0x40086a44",
+    "end_exclusive": "0x40086aa8",
+    "sha256": "588c6cd431e73214a816409ff60d7ceccc527efb4809f2a7f19f471341518057"
+  },
+  "registers": [
+    {
+      "index": 108,
+      "raw_record_offset": "0x720",
+      "address": "0x10000040",
+      "width": 4,
+      "group": 0,
+      "name": "SSPM prerequisite AXI CLK_CFG_0",
+      "evidence": "sspm-prerequisite-registers-evidence.json",
+      "valid": 3,
+      "first": 131329,
+      "second": 131329,
+      "stable": true
+    },
+    {
+      "index": 109,
+      "raw_record_offset": "0x730",
+      "address": "0x10000090",
+      "width": 4,
+      "group": 0,
+      "name": "SSPM prerequisite CLK_CFG_5",
+      "evidence": "sspm-prerequisite-registers-evidence.json",
+      "valid": 3,
+      "first": 16843265,
+      "second": 16843265,
+      "stable": true
+    },
+    {
+      "index": 110,
+      "raw_record_offset": "0x740",
+      "address": "0x10006350",
+      "width": 4,
+      "group": 0,
+      "name": "SSPM prerequisite SYSRAM_CON",
+      "evidence": "sspm-prerequisite-registers-evidence.json",
+      "valid": 3,
+      "first": 4294901760,
+      "second": 4294901760,
+      "stable": true
+    },
+    {
+      "index": 111,
+      "raw_record_offset": "0x750",
+      "address": "0x10006358",
+      "width": 4,
+      "group": 0,
+      "name": "SSPM prerequisite SSPM_SRAM_CON",
+      "evidence": "sspm-prerequisite-registers-evidence.json",
+      "valid": 3,
+      "first": 18,
+      "second": 18,
+      "stable": true
+    },
+    {
+      "index": 112,
+      "raw_record_offset": "0x760",
+      "address": "0x1001a010",
+      "width": 4,
+      "group": 0,
+      "name": "SSPM prerequisite SRAMROM_SEC_CTRL",
+      "evidence": "sspm-prerequisite-registers-evidence.json",
+      "valid": 3,
+      "first": 0,
+      "second": 0,
+      "stable": true
+    },
+    {
+      "index": 113,
+      "raw_record_offset": "0x770",
+      "address": "0x1001a024",
+      "width": 4,
+      "group": 0,
+      "name": "SSPM prerequisite SRAMROM_SEC_CTRL5",
+      "evidence": "sspm-prerequisite-registers-evidence.json",
+      "valid": 3,
+      "first": 0,
+      "second": 0,
+      "stable": true
+    },
+    {
+      "index": 114,
+      "raw_record_offset": "0x780",
+      "address": "0x1001a050",
+      "width": 4,
+      "group": 0,
+      "name": "SSPM prerequisite SRAMROM_SEC_ADDR",
+      "evidence": "sspm-prerequisite-registers-evidence.json",
+      "valid": 3,
+      "first": 0,
+      "second": 0,
+      "stable": true
+    },
+    {
+      "index": 115,
+      "raw_record_offset": "0x790",
+      "address": "0x1001a054",
+      "width": 4,
+      "group": 0,
+      "name": "SSPM prerequisite SRAMROM_SEC_ADDR1",
+      "evidence": "sspm-prerequisite-registers-evidence.json",
+      "valid": 3,
+      "first": 0,
+      "second": 0,
+      "stable": true
+    },
+    {
+      "index": 116,
+      "raw_record_offset": "0x7a0",
+      "address": "0x1001a058",
+      "width": 4,
+      "group": 0,
+      "name": "SSPM prerequisite SRAMROM_SEC_ADDR2",
+      "evidence": "sspm-prerequisite-registers-evidence.json",
+      "valid": 3,
+      "first": 0,
+      "second": 0,
+      "stable": true
+    }
+  ],
+  "preloader_sha256": "7e62da99110271864c330cffcef5237e20ca03881b933263af828561d963f674",
+  "tee1_sha256": "e1fa33d9afff0895708a8f214322878fd8b398bca3024006a0695cd770d551c3",
+  "preloader_initializer_span": {
+    "start": "0x228128",
+    "end_exclusive": "0x228200",
+    "sha256": "c85950503b4330ab7332e9f10afb56b2da3c9dd43c679f8ae915727d80fcee59"
+  },
+  "exact_preloader_expected": {
+    "0x1001a010_mask0xfff": "0xb69",
+    "0x1001a024_mask0x0fff0000": "0x01680000",
+    "0x1001a050": "0x9000dc00",
+    "0x1001a054": "0xdc00",
+    "0x1001a058": "0xdc00"
+  },
+  "historical_physical_log": {
+    "path": "hardware/mtk-unlock-20261024/expdb-posttrial-complete.bin",
+    "sha256": "febda44f4e7455617a127617c6bc4013dd13e4027f16e558416247a977de6cbc",
+    "start_offset": "0x698f88",
+    "end_exclusive": "0x699034",
+    "span_sha256": "22a2e802ef9060d120e0b614f35e2075217c2cdb74018d0ae79b389be653779c",
+    "text": "[TZ_SEC_CFG] [A]SRAMROM SEC_ADDR:0x9000DC00, SEC_ADDR1:0xDC00, SEC_ADDR2:0xDC00\n[TZ_SEC_CFG] [A]SRAMROM SEC_CTRL:0xB69, SEC_CTRL2:0x0, SEC_CTRL5:0x1680000, SEC_CTRL6:0x0\n",
+    "same_boot_as_capture33": false
+  },
+  "bsp_sources": [
+    {
+      "path": "vendor/mediatek/proprietary/bootable/bootloader/preloader/platform/mt6765/src/security/trustzone/tz_sec_cfg.c",
+      "sha256": "26503de0c4f415b36b8d3b4bbefd3c8c7212445bb1c06664b671419280b1bdef"
+    },
+    {
+      "path": "vendor/mediatek/proprietary/bootable/bootloader/preloader/platform/mt6765/src/security/trustzone/inc/tz_sec_reg.h",
+      "sha256": "a639476a6b01b7d3ce5f112a72ce6eb8061c7be5db302279cead5df657833b1c"
+    },
+    {
+      "path": "vendor/mediatek/proprietary/trustzone/atf/v1.4/plat/mediatek/mt6765/drivers/devapc/devapc.c",
+      "sha256": "2f4416b3c503516f7a0c2960a90fdc55343ba509f306019e38ddbaa7e15efbc9"
+    },
+    {
+      "path": "vendor/mediatek/proprietary/trustzone/atf/v1.4/plat/mediatek/mt6765/drivers/spm/mt_spm_reg.h",
+      "sha256": "ed6c9fdc640c4b09a3a207b684fdf57aeb6be12e0a391d3aa65ef106e4a0bc4f"
+    }
+  ],
+  "source_review": {
+    "region_enable_zero": "BSP explicitly describes cleared bits as protection disabled, conditional on real register visibility.",
+    "outer_devapc": "Exact ATF initializes domain0 permission0 for SECURITY_AO26 and SRAMROM52; not proof of individual security-register visibility.",
+    "read_as_zero_semantics_proven": false,
+    "later_protection_clear_proven": false
+  },
+  "admission": {
+    "classification": "completed_nonsecure_zero_view_unknown",
+    "sspm_inherited_probe_admitted": false,
+    "csram_access_admitted": false,
+    "mailbox_access_admitted": false,
+    "dvfs_admitted": false,
+    "next_discriminator": "Same-boot authenticated secure view of five words paired with EL1 view, via independently audited read-only mechanism; none established here."
+  },
+  "operations": {
+    "device_access": false,
+    "kernel_header_changes": false,
+    "ownership_grants": false
+  }
+}

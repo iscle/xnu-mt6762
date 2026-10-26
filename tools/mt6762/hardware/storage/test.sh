@@ -7,3 +7,6 @@ cc -std=c11 -Wall -Wextra -Werror -g test_msdc_pio.c -o "$testdir/msdc-pio"
 "$testdir/msdc-pio"
 cc -std=c11 -Wall -Wextra -Werror -g test_msdc_clock.c -o "$testdir/msdc-clock"
 "$testdir/msdc-clock"
+cc -std=c11 -Wall -Wextra -Werror -g test_msdc_admission.c -o "$testdir/msdc-admission"
+"$testdir/msdc-admission"
+python3 test_msdc_poll_delay.py

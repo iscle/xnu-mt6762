@@ -20,6 +20,7 @@ extern kern_return_t thread_terminate(thread_t);
 #include "../../tools/mt6762/hardware/display-touch/mt6762_touch_entry.h"
 #include "../../tools/mt6762/hardware/i2c/native_setup.h"
 #include "../../tools/mt6762/hardware/power/mt6762_charger_entry.h"
+#include "../../tools/mt6762/hardware/power/mt6762_charger_setup.h"
 #include "../../tools/mt6762/hardware/watchdog/trial_deadline.h"
 extern unsigned mt6762_trial_flush_log(uint32_t *,uint32_t *);
 
@@ -31,7 +32,7 @@ static LCK_GRP_DECLARE(mt6762_i2c_group,"mt6762-i2c");
 static LCK_MTX_DECLARE(mt6762_i2c_lock,&mt6762_i2c_group);
 static LCK_MTX_DECLARE(mt6762_attach_lock,&mt6762_i2c_group);
 static int attached, initialized;
-struct native_bus { struct mtk_i2c_v2 engine; uintptr_t base,dma,dma_page; unsigned id,setup_only; size_t dma_used; };
+struct native_bus { struct mtk_i2c_v2 engine; uintptr_t base,dma,dma_page; unsigned id,setup_only,charger_readonly,charger_reads; size_t dma_used; };
 static struct native_bus buses[2];
 static int charger_entry_admitted;
 static int charger_entry_check(void);
@@ -138,7 +139,8 @@ static int clocks_stable(void)
 }
 static int bus_clocks_stable(unsigned id)
 {
-    return clocks_stable() && (id!=5 || !flag("charger-inherited-probe") ||
+    return clocks_stable() && (id!=5 ||
+        (!flag("charger-inherited-probe") && !buses[1].setup_only && !buses[1].charger_readonly) ||
         mt6762_charger_i2c5_gates_ok(r32(infra,0xc8)));
 }
 static void initialize_bus(struct native_bus *b,unsigned id)
@@ -149,7 +151,16 @@ static void initialize_bus(struct native_bus *b,unsigned id)
     const char *verified=id==0 ? "i2c0-verified" : "i2c5-verified";
     if (!flag(verified)) return;
     b->setup_only=id==5 && flag("charger-setup-only");
-    if(id==5 && (flag("charger-inherited-probe") || b->setup_only)) {
+    b->charger_readonly=id==5 && flag("charger-readonly-probe");
+    if(id==5 && (flag("charger-inherited-probe") || b->setup_only || b->charger_readonly)) {
+        /* The physical entry profile is not a general-purpose bus grant.
+         * Setup-only always wins; the other supported mode is a fixed six-read
+         * PSC probe inside the existing read-only PWRAP observation branch. */
+        if(!flag("charger-inherited-probe") || (!b->setup_only && !b->charger_readonly) ||
+           (b->charger_readonly && (!flag("pwrap-inherited-probe") ||
+            flag("charger-verified") || flag("charger-control-owned") || flag("pwrap-write-owned")))) {
+            kprintf("MT6762_CHARGER_ENTRY refused missing/conflicting probe mode\n");return;
+        }
         if(!charger_entry_admitted || !charger_entry_check()) {
             kprintf("MT6762_CHARGER_ENTRY refused bus5 setup; other buses unchanged\n");return;
         }
@@ -220,9 +231,15 @@ static void initialize_bus(struct native_bus *b,unsigned id)
             r32(infra,0xc8),MT6762_CHARGER_I2C5_GATE_MASK,b->setup_only);
     int setup_ok=mt6762_i2c_setup_ok(&timing,inherited_profile,actual_div,actual_timing,
         actual_ltiming,actual_hs,actual_io,actual_ext,actual_delay,actual_timeout) && stable;
+    if(id==5 && flag("charger-inherited-probe")) {
+        const struct mt6762_charger_setup_readback actual={actual_div,actual_timing,
+            actual_ltiming,actual_hs,actual_io,actual_ext,actual_delay,actual_timeout};
+        setup_ok=mt6762_charger_setup_ok(parent_index,parent_hz,hz,&timing,&actual) && stable;
+        kprintf("MT6762_I2C_CHARGER_SETUP profile=31 match=%u readonly=%u\n",setup_ok,b->charger_readonly);
+    }
     if(b->setup_only) {
         /* Keep the DMA page pinned and never publish transfer readiness, even
-         * if strict laboratory readbacks happen to match physical bus5. */
+         * if the separately measured physical bus5 profile matches. */
         b->engine.faulted=1;
         kprintf("MT6762_I2C_SETUP_ONLY bus=%u strict=%u transactions=0\n",id,setup_ok);
         return;
@@ -231,6 +248,8 @@ static void initialize_bus(struct native_bus *b,unsigned id)
         b->engine.faulted=1;printf("MT6762: I2C%u setup readback failed\n",id);return;
     }
     b->engine.initialized=1;
+    if(b->charger_readonly)
+        kprintf("MT6762_PSC_READONLY_ADMITTED transactions=6\n");
     printf("MT6762: native I2C%u ready parent=%uHz bus=%uHz DMA=0x%llx\n",id,parent_hz,hz,physical);
     kprintf("MT6762_I2C_READY bus=%u parent=%u hz=%u dma=%llx\n",id,parent_hz,hz,physical+64);
 }
@@ -295,7 +314,8 @@ int mt6762_i2c_ready(unsigned bus)
 {
     if (bus!=0 && bus!=5) return 0;
     struct native_bus *b=&buses[bus==5];
-    return ready && !b->setup_only && b->engine.initialized && !b->engine.faulted;
+    return ready && !b->setup_only && b->engine.initialized && !b->engine.faulted &&
+        (!b->charger_readonly || b->charger_reads<MT6762_CHARGER_READONLY_LIMIT);
 }
 int mt6762_i2c_transfer(unsigned bus,unsigned addr,const void *tx,size_t nt,void *rx,size_t nr)
 {
@@ -308,8 +328,24 @@ int mt6762_i2c_transfer(unsigned bus,unsigned addr,const void *tx,size_t nt,void
     lck_mtx_lock(&mt6762_i2c_lock);
     int result=-1;
     if (mt6762_i2c_ready(bus)) {
-        if (!bus_clocks_stable(bus)) b->engine.faulted=1;
-        else {result=mtk_i2c_v2_transfer(&b->engine,msgs,n);if (b->engine.faulted)result=-1;else if(result==(int)n)result=0;}
+        if(b->charger_readonly && !mt6762_charger_readonly_request_ok(b->charger_reads,addr,tx,nt,nr)) {
+            /* Reject charger writes, arbitrary reads and display-bias access
+             * before touching the controller or consuming the read budget. */
+            result=-1;
+        }else if (!bus_clocks_stable(bus)) b->engine.faulted=1;
+        else {
+            unsigned index=b->charger_reads;
+            if(b->charger_readonly)b->charger_reads++; /* An attempted read is never retried. */
+            result=mtk_i2c_v2_transfer(&b->engine,msgs,n);
+            if(b->engine.faulted)result=-1;
+            else if(result==(int)n)result=0;
+            else if(b->charger_readonly && result>=0)result=-1;
+            if(b->charger_readonly) {
+                if(result)b->engine.faulted=1;
+                kprintf("MT6762_I2C_PSC_READ index=%u reg=%02x result=%d value=%02x\n",
+                    index,*(const uint8_t *)tx,result,result?0:*(uint8_t *)rx);
+            }
+        }
     }
     lck_mtx_unlock(&mt6762_i2c_lock);
     return result;

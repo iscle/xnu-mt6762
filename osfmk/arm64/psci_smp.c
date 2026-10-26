@@ -93,10 +93,10 @@ psci_call(uint64_t function, uint64_t arg1, uint64_t arg2, uint64_t arg3)
 
 	if (psci_smp_hvc) {
 		__asm__ volatile ("hvc #0" : "+r" (x0), "+r" (x1), "+r" (x2), "+r" (x3) : :
-                    "x4", "x5", "x6", "x7", "x8", "x9", "x10", "x11", "x12", "x13", "x14", "x15", "x16", "x17");
+                    "x4", "x5", "x6", "x7", "x8", "x9", "x10", "x11", "x12", "x13", "x14", "x15", "x16", "x17", "memory");
 	} else {
 		__asm__ volatile ("smc #0" : "+r" (x0), "+r" (x1), "+r" (x2), "+r" (x3) : :
-                    "x4", "x5", "x6", "x7", "x8", "x9", "x10", "x11", "x12", "x13", "x14", "x15", "x16", "x17");
+                    "x4", "x5", "x6", "x7", "x8", "x9", "x10", "x11", "x12", "x13", "x14", "x15", "x16", "x17", "memory");
 	}
 	return (int64_t)x0;
 }
@@ -165,6 +165,24 @@ psci_smp_start_cpu(int cpu)
 	uint64_t now, deadline;
 	int64_t status;
 
+#if defined(ARM64_BOARD_CONFIG_MT6762)
+	/* Read-only firmware queries precede every physical CPU_ON attempt. The
+	 * synthetic HVC fixture is retained; physical producer must select SMC.
+	 * PSCI32 results have unspecified high32bits, so interpret their low word. */
+	uint32_t version=(uint32_t)psci_call(0x84000000u,0,0,0);
+	int32_t on_feature=(int32_t)psci_call(0x8400000au,PSCI_CPU_ON,0,0);
+	int32_t off_feature=(int32_t)psci_call(0x8400000au,PSCI_CPU_OFF,0,0);
+	int32_t affinity_feature=(int32_t)psci_call(0x8400000au,PSCI_AFFINITY_INFO,0,0);
+	int32_t affinity=-1;
+	if ((version>>16)==1 && !on_feature && !off_feature && !affinity_feature)
+		affinity=(int32_t)psci_call(PSCI_AFFINITY_INFO,phys_id,0,0);
+	printf("MT6762_PSCI cpu=%d mpidr=0x%x conduit=%s version=0x%x features=%d/%d/%d affinity=%d entry=0x%llx\n",
+	    cpu,phys_id,psci_smp_hvc?"hvc":"smc",version,on_feature,off_feature,affinity_feature,affinity,entry);
+	if ((version>>16)!=1 || on_feature || off_feature || affinity_feature ||
+	    affinity!=PSCI_AFFINITY_OFF || !entry || (entry&3))
+		return KERN_FAILURE;
+#endif
+
 	/*
 	 * What that core reads with its MMU off: the code and the page tables of start.s, and what
 	 * the reset vector finds its way by (ResetHandlerData, CpuDataEntries, the boot arguments,
@@ -187,6 +205,9 @@ psci_smp_start_cpu(int cpu)
 
 	os_atomic_store(&psci_smp_cpu_stage[cpu], PSCI_SMP_CPU_ASKED, release);
 	status = psci_call(PSCI_CPU_ON, phys_id, entry, 0);
+#if defined(ARM64_BOARD_CONFIG_MT6762)
+	status = (int32_t)status; /* Defined PSCI status is a signed32-bit value. */
+#endif
 	if (status != 0) {
 		os_atomic_store(&psci_smp_cpu_stage[cpu], 0, release);
 		printf("psci: cpu %d (MPIDR 0x%x) was not started: the firmware answers %lld (%s)\n",

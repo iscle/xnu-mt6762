@@ -42,6 +42,9 @@ DIAGNOSTICS = (
     '5cc8787f0dbc7627ce1ba282c237e994a0f7168e7db7837756bc76ed219a080b', # Image35: kernel51, aligned project bootstrap entry after physical SP-alignment fault
     '3947a4012aa6dfbae60fd2b30a0f25abb98bdae8f0741ec957f9a7f358d62c6e', # Image36: kernel52, corrected bootstrap and setup-only inherited I2C5 observation
     'e83d7382f91afc7fdfac9e47c7b631778f47b4497fb792e44ccd37c5c33dfc41', # Image37: kernel52 charger setup-only; restrict syscall logging to project bootstrap
+    'c97942ad9a4f452f358bcec91e3100b1b6e180fd290bc040266595af279fd5c6', # Image38: kernel53 passive PMIC/external SSPM state; opt-in300second watchdog trial
+    '4861ee010f69f22de4a2d323b2081edf5d8710bb9d7751b2f76cf56a53c370ca', # Image39: kernel54 storage polling/admission fixes and bounded read-only PSC probe
+    '3d880b695d22a992555e951df717a3b4b5ad6667d6ed5a52b2c977d49553ce08', # Image40: kernel54, exact live topology admission for first two-core physical trial
 )
 VBMETA_FLAGS3 = '2f3fb6474d7ff35ac4c48ab2bef71247ba50de4a94de2474b7d1b60cd6654f51'
 

@@ -14,6 +14,7 @@
 #include <sys/sysctl.h>
 #include <sys/systm.h>
 #include "mt6762_msdc_protocol.h"
+#include "../../tools/mt6762/hardware/storage/mt6762_msdc_admission.h"
 
 static struct mt6762_msdc engine;
 static uintptr_t controller,gic,top,infra,pll,gpio,pads,tuning;
@@ -27,6 +28,12 @@ static uint32_t top_tune[12],controller_tune[18];
 static const uint16_t tune_regs[18]={0x04,0xb0,0xb4,0xb8,0xf0,0xf4,0xf8,0xfc,
     0x100,0x104,0x180,0x184,0x188,0x18c,0x190,0x194,0x198,0x19c};
 static uint32_t pll_snapshot[6];
+/* All transport callbacks run under msdc_bsd_lock after publication. */
+static struct mt6762_msdc_admission admission;
+static uint64_t perf_sectors,perf_read_us,perf_read_max_us;
+static uint64_t perf_start_us,perf_report_us;
+static int perf_started;
+static uint64_t time_us(void *);
 
 SYSCTL_DECL(_kern_redwood);
 static int msdc_sysctl SYSCTL_HANDLER_ARGS
@@ -120,14 +127,23 @@ static int rails_stable(void)
            (again&mask[i])!=(values[i]&mask[i]))return 0;
     return 1;
 }
+static int admit_before(void *unused)
+{
+    (void)unused;
+    return mt6762_platform_ready() && irq_quiet() && clocks_stable()?0:-1;
+}
+static int admit_static(void *unused)
+{(void)unused;return pads_stable() && rails_stable()?0:-1;}
+static int admit_after(void *unused)
+{(void)unused;return clocks_stable() && irq_quiet()?0:-1;}
 static int admit(void *unused)
 {
     (void)unused;
-    if(!mt6762_platform_ready() || !irq_quiet())return -1;
     /* Lab fixtures model protocol state only; no physical gates are inferred. */
-    if(lab)return 0;
-    return clocks_stable() && pads_stable() && rails_stable() &&
-        clocks_stable() && irq_quiet()?0:-1;
+    if(lab)return mt6762_platform_ready() && irq_quiet()?0:-1;
+    const struct mt6762_msdc_admission_io io={NULL,time_us,
+        admit_before,admit_static,admit_after};
+    return mt6762_msdc_admission_check(&admission,&io);
 }
 static uint32_t read32(void *unused,uint32_t offset)
 {
@@ -156,12 +172,42 @@ static uint64_t time_us(void *unused)
     return ns/1000;
 }
 static void delay_us(void *unused,uint32_t us)
-{(void)unused;delay_for_interval(us,NSEC_PER_USEC);}
+{
+    uint64_t interval;
+    (void)unused;
+    clock_interval_to_absolutetime_interval(us,NSEC_PER_USEC,&interval);
+    uint64_t start=mach_absolute_time();
+    /* GenericARMCPU has no powergate latency: delay_for_interval(1us)
+     * schedules away on every not-ready poll. These protocol pauses are
+     * short; keep IRQs/preemption enabled and poll the proven timer instead.
+     * Do not use WFE, whose completion requires an event. */
+    while(mach_absolute_time()-start<interval)
+        __asm__ volatile("yield" ::: "memory");
+}
+static void performance_report(uint64_t now,int force)
+{
+    if(!force && now>=perf_report_us && now-perf_report_us<30000000)return;
+    perf_report_us=now;
+    kprintf("MT6762_MSDC_PERF lab=%u sectors=%llu bytes=%llu wall_us=%llu read_us=%llu read_max_us=%llu admissions=%llu full=%llu reused=%llu full_us=%llu full_max_us=%llu slow_full=%llu admission_errors=%llu clock_reverse=%llu\n",
+        lab,perf_sectors,perf_sectors*512,now>=perf_start_us?now-perf_start_us:0,
+        perf_read_us,perf_read_max_us,admission.calls,admission.full,
+        admission.reused,admission.full_us,admission.full_max_us,
+        admission.slow_full,admission.failures,admission.clock_reversals);
+}
 static int read_sector(uint64_t lba,void *out)
 {
     if(!__atomic_load_n(&ready,__ATOMIC_ACQUIRE))return ENXIO;
+    uint64_t start=time_us(NULL);
+    if(!perf_started) {perf_started=1;perf_start_us=perf_report_us=start;}
     int error=mt6762_msdc_read512(&engine,lba,out);
+    uint64_t end=time_us(NULL);
+    if(end>=start) {
+        uint64_t elapsed=end-start;
+        perf_read_us+=elapsed;
+        if(elapsed>perf_read_max_us)perf_read_max_us=elapsed;
+    }
     if(error) {
+        mt6762_msdc_admission_invalidate(&admission);
         __atomic_store_n(&last_error,error,__ATOMIC_RELEASE);
         if(engine.faulted) {
             __atomic_store_n(&fault,1,__ATOMIC_RELEASE);
@@ -170,9 +216,13 @@ static int read_sector(uint64_t lba,void *out)
                 error,lba,engine.last_command,engine.wait_phase,engine.data_bytes,
                 engine.last_irq,engine.stalled_us);
         }
+        performance_report(end,1);
         return error==MT6762_MSDC_ARGUMENT?EINVAL:
             (error==MT6762_MSDC_TIMEOUT?ETIMEDOUT:EIO);
     }
+    mt6762_msdc_admission_sector_done(&admission);
+    perf_sectors++;
+    performance_report(end,perf_sectors==1);
     int count=__atomic_load_n(&reads,__ATOMIC_RELAXED);
     if(count<2147483647)__atomic_store_n(&reads,count+1,__ATOMIC_RELEASE);
     return 0;
@@ -243,6 +293,8 @@ void mt6762_storage_init(void)
     }
     struct mt6762_msdc_io io={NULL,admit,read32,write32,time_us,delay_us};
     int error=mt6762_msdc_init(&engine,&io,&config);
+    /* Publication starts a new bounded observation window. */
+    mt6762_msdc_admission_invalidate(&admission);
     if(ext_bytes==512) {
         uint32_t card_sectors=(uint32_t)ext_snapshot[212]|((uint32_t)ext_snapshot[213]<<8)|
             ((uint32_t)ext_snapshot[214]<<16)|((uint32_t)ext_snapshot[215]<<24);
@@ -267,6 +319,8 @@ void mt6762_storage_init(void)
     __atomic_store_n(&ready,1,__ATOMIC_RELEASE);
     kprintf("MT6762_MSDC_READY lab=%u sectors=%u hz=%u rca=%u readonly=1\n",
         lab,count,config.card_clock_hz,config.rca);
+    kprintf("MT6762_MSDC_ADMISSION static_reuse_us=%u max_sectors=%u dynamic_each_phase=1 continuous_rail_measurement=0\n",
+        MT6762_MSDC_STATIC_US,MT6762_MSDC_STATIC_SECTORS);
     printf("MT6762 MSDC: %s inherited PIO, %u sectors, %u Hz, read-only /dev/mtkemmc0; no reset/DMA\n",
         lab?"SYNTHETIC LAB":"verified handoff",count,config.card_clock_hz);
 }

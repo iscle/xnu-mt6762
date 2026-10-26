@@ -1,0 +1,27 @@
+{
+  "image": "Image38/kernel53",
+  "kernel_sha256": "d3365d0629efbfea31e293e3699637f7487834f466ae260126dec63e4548364a",
+  "trace_identity": "ab1f5e0df19932df6f498b03af28f543e7029705f50e04dd4ea2309e173a71c1",
+  "capture_sha256": {
+    "trace.bin": "5b7b12a1cd056d3851d7a47d6104634756c735360594ab7aab444a3598c15451",
+    "peripherals.bin": "80a039a5d4135ad75d344bac88ebce0a56147eee88db410a2ce1cc668f6d7996",
+    "xnu-log.bin": "73275964fb858aea490204611b4de11ee019ac02a18192ec5461b0219aa3e9d4",
+    "watchdog-trial.bin": "08f6bc501eeab3e3dfd32d5ab7ed70d92df9a1ec0d88547e6fa10e4ab726b2a2",
+    "runtime.dtb": "2996eb7917bb26f1b405cb0c7c2ccd22ac6bd5f1b86fac3b0ec3f0de4821ab1c"
+  },
+  "physical_xnu_execution_proven": true,
+  "apple_launchd_and_springboard_spawn_proven": true,
+  "desktop_proven": false,
+  "pmic_entry_passes_complete": 2,
+  "pmic_registers_per_pass": 13,
+  "watchdog_record_state": "armed",
+  "watchdog_deadline_seconds": 300,
+  "expiry_proven": false,
+  "last_watchdog_refresh_report": 120,
+  "limits": [
+    "No proof of automatic reset from this armed record.",
+    "No newADC conversion/gauge latch measurement; captured output words may be old.",
+    "Security register zero observations do not establish SSPM ownership.",
+    "No additional backups; user-supplied full dump retained."
+  ]
+}

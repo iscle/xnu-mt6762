@@ -55,6 +55,17 @@ def encode_adt(tree):
 
 CHARGER_SETUP_FLAGS = ('dma-direct','i2c-pads-verified','i2c5-verified',
                        'charger-inherited-probe','charger-setup-only')
+CHARGER_READONLY_FLAGS = CHARGER_SETUP_FLAGS[:-1] + ('charger-readonly-probe',)
+# Reviewed frozen kernel: secondary EL2 descent, firmware queries and cache
+# handoff; original-entry tests and an eight-core QEMU run passed.
+SMP_KERNELS = {'1d2310dfe3cc89fa29fadc896544503d89eedc01269c85d35278afa46f8f4f20'}
+
+
+def require_smp_kernel(kernel,cpus):
+    if type(cpus) is not int or cpus not in (1,2,4,8):
+        raise ValueError('physical CPU count must be1,2,4or8')
+    if cpus>1 and sha(kernel) not in SMP_KERNELS:
+        raise ValueError('multicore boot requires a reviewed frozen secondary-entry kernel')
 
 
 def charger_setup_properties():
@@ -70,6 +81,33 @@ def require_charger_setup_kernel(kernel,requested):
         raise ValueError('native charger setup requires a kernel with setup-only transaction blocking')
 
 
+def charger_readonly_properties():
+    """Six bounded PSC register reads after live admission; no charger control."""
+    props=charger_setup_properties()
+    del props['charger-setup-only']
+    props['charger-readonly-probe']=prepare.u32(0)
+    return props
+
+
+def require_charger_readonly_kernel(kernel,requested):
+    if requested and (b'MT6762_PSC_READONLY_ADMITTED transactions=6\n\0' not in kernel or
+                      b'MT6762_PSC_PROBE pass=' not in kernel):
+        raise ValueError('native charger reads require the bounded six-transaction kernel implementation')
+
+
+def trial_bootarg(kernel,seconds,refresh_watchdog):
+    """Opt in only when this kernel implements the bounded stop-feed path."""
+    if type(seconds) is not int or (seconds != 0 and not 60 <= seconds <= 1800):
+        raise ValueError('trial seconds must be0 or60..1800')
+    if not seconds:
+        return ''
+    if not refresh_watchdog:
+        raise ValueError('trial deadline requires inherited watchdog servicing')
+    if b'MT6762_TRIAL armed seconds=' not in kernel:
+        raise ValueError('trial deadline requires a kernel with the stop-feed implementation')
+    return ' mt6762_trial_seconds='+str(seconds)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ('kernel', 'template', 'llvm', 'out'):
@@ -81,6 +119,8 @@ def main():
                         metavar=('START','COUNT'), help='read-only 512-byte sector extent inside captured userdata')
     parser.add_argument('--native-display', action='store_true',
                         help='require measured LK display/PWM admission and emit its native handoff')
+    parser.add_argument('--cpus',type=int,choices=(1,2,4,8),default=1,
+                        help='requires exact live PSCI/A53 topology and reviewed kernel for2/4/8; default1')
     parser.add_argument('--brightness-pulse', action='store_true',
                         help='opt in to the kernel dim/restore diagnostic before PID1')
     parser.add_argument('--probe-peripherals', action='store_true',
@@ -90,14 +130,19 @@ def main():
     parser.add_argument('--native-touch-probe',action='store_true',
                         help='admit measured inherited I2C0 for version/DMA then polling; never changes touch rail/reset')
     parser.add_argument('--refresh-watchdog',action='store_true',help='refresh the measured inherited watchdog without reconfiguring it')
+    parser.add_argument('--trial-seconds',type=int,default=0,
+                        help='stop inherited watchdog refresh after60..1800seconds; default0 disables; reset/retention not guaranteed')
     parser.add_argument('--native-pwrap-probe',action='store_true',
                         help='admit inherited LK WACS2 for bounded read-only PMIC/rail observations')
     parser.add_argument('--native-msdc-probe',action='store_true',
                         help='admit exact synchronous LK eMMC handoff; kernel must verify rails/CMD13/EXT_CSD')
     parser.add_argument('--native-buttons-probe',action='store_true',
                         help='read-only power/volume polling through measured PWRAP and inherited keypad')
-    parser.add_argument('--native-charger-setup-probe',action='store_true',
+    charger=parser.add_mutually_exclusive_group()
+    charger.add_argument('--native-charger-setup-probe',action='store_true',
                         help='admit measured inherited I2C5 for setup/readbacks only; no PSC or bias transactions')
+    charger.add_argument('--native-charger-readonly-probe',action='store_true',
+                        help='admit measured inherited I2C5 for six PSC register reads; no charging control')
     args = parser.parse_args()
     if args.brightness_pulse and not args.native_display:
         parser.error('--brightness-pulse requires --native-display')
@@ -109,6 +154,8 @@ def main():
         parser.error('native buttons require the read-only PWRAP probe')
     if args.native_charger_setup_probe and not args.native_pwrap_probe:
         parser.error('native charger setup requires the read-only PWRAP probe')
+    if args.native_charger_readonly_probe and not args.native_pwrap_probe:
+        parser.error('native charger reads require the read-only PWRAP probe')
     if bool(args.bootstrap_apfs) != bool(args.ios_system_slice):
         parser.error('--bootstrap-apfs and --ios-system-slice require each other')
     if args.bootstrap_apfs and not (args.native_msdc_probe and args.expand_memory and args.refresh_watchdog):
@@ -122,6 +169,7 @@ def main():
         'trace_record.py','display_probe.h','display_record.py','pwm_probe.h','pwm_record.py',
         'native_display.h','native_storage.h','peripheral_probe.h','peripheral_record.py','peripheral-registers.json',
         'build_payload.py','bootimg.py','desktop_ramdisk.py')]
+    source_paths += [HERE/'psci/psci_fdt.c',HERE/'psci/psci_fdt.h']
     source_paths += [Path(prepare.__file__), HERE.parent/'hardware/display-touch/mt6762_display_core.h']
     source_paths += [HERE.parent/'hardware/display-touch/mt6762_touch_entry.h']
     source_paths += [HERE.parent/'hardware/power/mt6762_pwrap_entry.h']
@@ -130,7 +178,10 @@ def main():
     source_paths += [HERE.parents[2]/'bsd/dev/mt6762_msdc_clock.h']
     sources_before = {os.path.relpath(p,HERE.parent):sha(p.read_bytes()) for p in source_paths}
     original_kernel = args.kernel.read_bytes()
+    require_smp_kernel(original_kernel,args.cpus)
     require_charger_setup_kernel(original_kernel,args.native_charger_setup_probe)
+    require_charger_readonly_kernel(original_kernel,args.native_charger_readonly_probe)
+    trial_arg = trial_bootarg(original_kernel,args.trial_seconds,args.refresh_watchdog)
     root_path = args.bootstrap_apfs or args.diagnostic
     if args.bootstrap_apfs and root_path.stat().st_size > desktop_ramdisk.MAX_BOOTSTRAP_BYTES:
         raise ValueError('bootstrap exceeds32MiB')
@@ -165,9 +216,16 @@ def main():
     prepare.PHYS = 0xd0000000  # Template only; runtime replaces it after FDT admission.
     prepare.MEMORY = 0x20000000
     tree, _, _ = decode_adt(prepare.make_adt(__import__('os').urandom(64),
-        [(prepare.PHYS+ramdisk_offset, ramdisk_size)], cpus=1))
+        [(prepare.PHYS+ramdisk_offset, ramdisk_size)], cpus=args.cpus))
     tree['props']['serial-number'] = b'MT6762DIAGNOSTIC\0'.ljust(32,b'\0')
     chosen = next(child for child in tree['children'] if child['name']=='chosen')
+    if chosen['props'].get('psci-method') != b'smc\0':
+        raise ValueError('physical CPU startup requires the SMC conduit')
+    cpu_nodes=next(child for child in tree['children'] if child['name']=='cpus')['children']
+    expected_mpids=[(index//4)*0x100+index%4 for index in range(args.cpus)]
+    if (len(cpu_nodes)!=args.cpus or
+        [child['props'].get('reg') for child in cpu_nodes]!=[prepare.u32(v) for v in expected_mpids]):
+        raise ValueError('generated CPU topology does not match the runtime admission profile')
     chosen['props']['firmware-version'] = b'mt6762-physical-diagnostic\0'
     if args.bootstrap_apfs:
         chosen['props']['firmware-version'] = b'mt6762-physical-desktop-bootstrap\0'
@@ -191,6 +249,8 @@ def main():
                 'i2c0-hz':100000,'touch-bus':0,'touch-address':0x3b,'touch-max-x':384,'touch-max-y':854}.items()})
         if args.native_charger_setup_probe:
             props.update(charger_setup_properties())
+        if args.native_charger_readonly_probe:
+            props.update(charger_readonly_properties())
         if args.refresh_watchdog:props['watchdog-refresh-owned']=prepare.u32(0)
         pwrap_flags=('pwrap-verified','pwrap-inherited-probe')
         if args.native_pwrap_probe:
@@ -226,7 +286,7 @@ def main():
         raise ValueError('laboratory-only metadata in physical ADT')
     args_offset = prepare.align(adt_offset+len(adt))
     top_offset = prepare.align(args_offset+736)
-    command = 'debug=0x14e serial=3 keepsyms=1 -v -enable_kprintf_spam rd=md0 cpus=1 mt6762_iig_selftest=1'
+    command = f'debug=0x14e serial=3 keepsyms=1 -v -enable_kprintf_spam rd=md0 cpus={args.cpus} mt6762_iig_selftest=1'
     if ios_slice:
         # Keep fatal exception tracing for every process, but limit failed-BSD
         # syscall printing to the small bootstrap. SpringBoard performs many
@@ -235,6 +295,7 @@ def main():
         command += ' systrace=1 systrace_name=launchd applog=1'
     if args.brightness_pulse:
         command += ' mt6762_brightness_diagnostic=1'
+    command += trial_arg
     boot_args = prepare.boot_args(prepare.PHYS+adt_offset,len(adt),prepare.PHYS+top_offset,command)
     if top_offset > prepare.MEMORY:
         raise ValueError('diagnostic objects exceed target window')
@@ -250,6 +311,7 @@ def main():
         ADT_RAMDISK_PATCH=positions['/device-tree/chosen/memory-map/RAMDisk'],
         SERIAL_PATCH=108+command.index('serial=3')+len('serial='))
     constants['NATIVE_DISPLAY'] = int(args.native_display)
+    constants['CPUS'] = args.cpus
     constants['PROBE_PERIPHERALS'] = int(args.probe_peripherals)
     constants['EXPAND_MEMORY'] = int(args.expand_memory)
     constants['NATIVE_TOUCH_PROBE']=int(args.native_touch_probe)
@@ -258,6 +320,7 @@ def main():
     constants['NATIVE_MSDC_PROBE']=int(args.native_msdc_probe)
     constants['NATIVE_BUTTONS_PROBE']=int(args.native_buttons_probe)
     constants['NATIVE_CHARGER_SETUP_PROBE']=int(args.native_charger_setup_probe)
+    constants['NATIVE_CHARGER_READONLY_PROBE']=int(args.native_charger_readonly_probe)
     constants['IOS_SYSTEM_SLICE']=int(ios_slice is not None)
     if ios_slice:
         constants['IOS_SYSTEM_START']=ios_slice['start_sector']
@@ -286,6 +349,8 @@ def main():
             header+='static const unsigned payload_keys_flags[] = {'+','.join(str(positions[native_path+name]) for name in keys_flags)+'};\n'
         if args.native_charger_setup_probe:
             header+='static const unsigned payload_charger_setup_flags[] = {'+','.join(str(positions[native_path+name]) for name in CHARGER_SETUP_FLAGS)+'};\n'
+        if args.native_charger_readonly_probe:
+            header+='static const unsigned payload_charger_readonly_flags[] = {'+','.join(str(positions[native_path+name]) for name in CHARGER_READONLY_FLAGS)+'};\n'
         if args.native_msdc_probe:
             for kind,names in (('flags',msdc_flags),('values',msdc_values)):
                 header+=f'static const unsigned payload_msdc_{kind}[] = '+'{'+','.join(str(positions[native_path+name]) for name in names)+'};\n'
@@ -316,11 +381,11 @@ def main():
               '-ffreestanding','-fno-builtin','-fno-stack-protector','-fno-pic','-O2',
               '-Wall','-Wextra','-Werror','-I'+str(HERE),'-I'+str(out)]
     commands = []
-    for source in (HERE/'start.S',HERE/'loader.c',HERE/'fdt_handoff.c',out/'payload.S',out/'trace.S'):
+    for source in (HERE/'start.S',HERE/'loader.c',HERE/'fdt_handoff.c',HERE/'psci/psci_fdt.c',out/'payload.S',out/'trace.S'):
         command_line = common+['-c',str(source),'-o',str(out/(source.stem+'.o'))]
         commands.append(command_line);subprocess.run(command_line,check=True)
     command_line = [str(args.llvm/'ld.lld'),'-T',str(HERE/'loader.ld'),'-o',str(out/'loader.elf')]
-    command_line += [str(out/(name+'.o')) for name in ('start','loader','fdt_handoff','payload','trace')]
+    command_line += [str(out/(name+'.o')) for name in ('start','loader','fdt_handoff','psci_fdt','payload','trace')]
     commands.append(command_line);subprocess.run(command_line,check=True)
     command_line = [str(args.llvm/'llvm-objcopy'),'-O','binary',str(out/'loader.elf'),str(out/'Image')]
     commands.append(command_line);subprocess.run(command_line,check=True)
@@ -356,22 +421,29 @@ def main():
         chained_rebases=rebases,boot_command_line=command,physical_hardware_tested=False,
         verified_framebuffer_boot_override='serial=0 retains video console through PID1',
         vm_page_size=16384,hardware_page_size=4096,unconditional_native_peripheral_ownership=False,
+        requested_cpu_count=args.cpus,requested_cpu_mpids=expected_mpids,
+        secondary_cpu_start_requires_live_topology=args.cpus>1,
+        physical_secondary_cpu_start_proven=False,
         conditional_native_grants=(['display','brightness'] if args.native_display else [])+
             (['i2c0-touch-operability-probe'] if args.native_touch_probe else [])+
             (['pwrap-read-only-probe'] if args.native_pwrap_probe else [])+
             (['msdc-inherited-read-only-probe'] if args.native_msdc_probe else [])+
             (['power-volume-read-only-probe'] if args.native_buttons_probe else [])+
             (['i2c5-inherited-setup-only-probe'] if args.native_charger_setup_probe else [])+
+            (['i2c5-inherited-six-PSC-reads'] if args.native_charger_readonly_probe else [])+
             (['watchdog-refresh'] if args.refresh_watchdog else []),
         native_display_requested=args.native_display,brightness_pulse_requested=args.brightness_pulse,
         passive_peripheral_probe=args.probe_peripherals,
         expand_memory_requested=args.expand_memory,
         native_touch_probe_requested=args.native_touch_probe,watchdog_refresh_requested=args.refresh_watchdog,
+        watchdog_trial_seconds=args.trial_seconds,watchdog_trial_reset_guaranteed=False,
         native_pwrap_probe_requested=args.native_pwrap_probe,
         native_msdc_probe_requested=args.native_msdc_probe,
         native_buttons_probe_requested=args.native_buttons_probe,
         native_charger_setup_probe_requested=args.native_charger_setup_probe,
+        native_charger_readonly_probe_requested=args.native_charger_readonly_probe,
         charger_transactions_granted=False,charger_control_granted=False,
+        conditional_charger_read_transaction_limit=6 if args.native_charger_readonly_probe else 0,
         peripheral_trace=dict(offset=peripheral_record.OFFSET,physical_address=peripheral_record.ADDRESS,
             size=peripheral_record.SIZE,initialized_sha256=sha(peripheral_record.initialized(trace_identity)),
             register_writes=False,native_ownership=False),

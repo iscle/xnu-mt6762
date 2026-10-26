@@ -135,6 +135,82 @@ LEXT(reset_vector)
 	 * that is not for this core to do.
 	 */
 	msr		DAIFSet, #(DAIFSC_ALL)				// Disable all interrupts
+#if defined(ARM64_BOARD_CONFIG_MT6762)
+/* MT6762_PSCI_EL2_BEGIN: also compiled independently by the offline entry test.
+ * Shipped ATF chooses EL2h when SCR.HCE=1, regardless of CPU_ON caller EL.
+ * Do not assume that the primary loader's EL2 descent affected another CPU.
+ * x0 (PSCI context) remains untouched through this no-stack trampoline. */
+	mrs		x9, CurrentEL
+	cmp		x9, #4
+	b.eq	Lmt6762_secondary_el1
+	cmp		x9, #8
+	b.ne	Lmt6762_secondary_bad_entry
+	mrs		x9, SCTLR_EL2
+	tbnz	x9, #0, Lmt6762_secondary_bad_entry
+	tbnz	x9, #2, Lmt6762_secondary_bad_entry
+	tbnz	x9, #25, Lmt6762_secondary_bad_entry
+	adrp	x10, EXT(LowSecondaryExceptionVectorBase)@page
+	add		x10, x10, EXT(LowSecondaryExceptionVectorBase)@pageoff
+	msr		VBAR_EL2, x10
+	isb
+	bic		x9, x9, #(1 << 12)
+	msr		SCTLR_EL2, x9
+	isb
+	mov		x9, #(1 << 31)
+	msr		HCR_EL2, x9
+	isb
+	mrs		x9, CNTHCTL_EL2
+	orr		x9, x9, #3
+	msr		CNTHCTL_EL2, x9
+	msr		CNTVOFF_EL2, xzr
+	mrs		x9, ID_AA64PFR0_EL1
+	ubfx	x9, x9, #24, #4
+	cbz		x9, Lmt6762_secondary_gic_done
+	mrs		x9, S3_4_C12_C9_5
+	orr		x9, x9, #1
+	orr		x9, x9, #8
+	msr		S3_4_C12_C9_5, x9
+	isb
+	mrs		x9, S3_4_C12_C9_5
+	tbz		x9, #0, Lmt6762_secondary_bad_entry
+	msr		S3_4_C12_C11_0, xzr
+Lmt6762_secondary_gic_done:
+	mrs		x9, MIDR_EL1
+	msr		VPIDR_EL2, x9
+	mrs		x9, MPIDR_EL1
+	msr		VMPIDR_EL2, x9
+	mov		x9, #0x0800
+	movk	x9, #0x30d0, lsl #16
+	msr		SCTLR_EL1, x9
+	mov		x9, #0x33ff
+	msr		CPTR_EL2, x9
+	msr		HSTR_EL2, xzr
+	mrs		x9, ID_AA64DFR0_EL1
+	sbfx	x9, x9, #8, #4
+	cmp		x9, #1
+	b.lt	Lmt6762_secondary_no_pmu
+	mrs		x9, PMCR_EL0
+	ubfx	x9, x9, #11, #5
+	b		Lmt6762_secondary_mdcr
+Lmt6762_secondary_no_pmu:
+	mov		x9, xzr
+Lmt6762_secondary_mdcr:
+	msr		MDCR_EL2, x9
+	msr		VTTBR_EL2, xzr
+	/* No stack is used before common reset code finds this CPU's own stack. */
+	msr		SP_EL1, xzr
+	adr		x9, Lmt6762_secondary_el1
+	msr		ELR_EL2, x9
+	mov		x9, #0x3c5
+	msr		SPSR_EL2, x9
+	isb
+	eret
+Lmt6762_secondary_bad_entry:
+	wfe
+	b		Lmt6762_secondary_bad_entry
+Lmt6762_secondary_el1:
+/* MT6762_PSCI_EL2_END */
+#endif /* ARM64_BOARD_CONFIG_MT6762 */
 	adrp	x0, EXT(LowSecondaryExceptionVectorBase)@page
 	add		x0, x0, EXT(LowSecondaryExceptionVectorBase)@pageoff
 	msr		VBAR_EL1, x0
@@ -398,12 +474,28 @@ Lsecondary_early_exception:
 	add		x9, x9, EXT(psci_smp_start_fault)@pageoff
 	mrs		x10, MPIDR_EL1
 	str		x10, [x9, #8]
+#if defined(ARM64_BOARD_CONFIG_MT6762)
+	mrs		x10, CurrentEL
+	cmp		x10, #8
+	b.eq	Lmt6762_secondary_el2_exception
+#endif
 	mrs		x10, ESR_EL1
 	str		x10, [x9, #16]
 	mrs		x10, ELR_EL1
 	str		x10, [x9, #24]
 	mrs		x10, FAR_EL1
 	str		x10, [x9, #32]
+#if defined(ARM64_BOARD_CONFIG_MT6762)
+	b		Lsecondary_exception_registers_done
+Lmt6762_secondary_el2_exception:
+	mrs		x10, ESR_EL2
+	str		x10, [x9, #16]
+	mrs		x10, ELR_EL2
+	str		x10, [x9, #24]
+	mrs		x10, FAR_EL2
+	str		x10, [x9, #32]
+Lsecondary_exception_registers_done:
+#endif
 	str		lr, [x9, #40]
 	mov		x10, sp
 	str		x10, [x9, #48]

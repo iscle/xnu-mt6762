@@ -1,0 +1,52 @@
+{
+  "schema": "mt6762-charger-postsetup-capture31-v1",
+  "offline_only": true,
+  "source_sha256": {
+    "/home/iscle/mt6762-ios-port/boot/physical-xnu-build37/physical-manifest.json": "870b5e1911bd4eaaee50ada1da93081b40399b90ff3b0de12516e49da5181dfe",
+    "/home/iscle/mt6762-ios-port/hardware/trace-boot-20261025/capture31/trace.bin": "fb2fc20aa60eabfc1d39dbd959c0fb9c9fa49afc1f5cac480306d57007e9754b",
+    "/home/iscle/mt6762-ios-port/hardware/trace-boot-20261025/capture31/trace-result.json": "ef1a0b1e341b45d08563c37a1c68a5581338ab97b41e351011a015f0fcc63cb5",
+    "/home/iscle/mt6762-ios-port/hardware/trace-boot-20261025/capture31/xnu-retained.json": "240cbb1b42334ba1b09ac767ec0d95c32c43a5b12aab3e4d1563dfb5cb65d465",
+    "/home/iscle/mt6762-ios-port/hardware/trace-boot-20261025/capture31/xnu-log.bin": "28cb13c7522898d16074bf766a69178e5d0515d9f4272361b51562379adf9135",
+    "/home/iscle/mt6762-ios-port/hardware/trace-boot-20261025/capture31/peripherals.bin": "d20b7161cc7dd1844cc211d0d2cab698e3a30f840747d90894e749cfc36ce8d8",
+    "/home/iscle/mt6762-ios-port/hardware/trace-boot-20261025/capture31/peripherals-result.json": "8299db2df154af5ff982715ab6bc302525b9d9f3b151df39b7c2f8ea17058425"
+  },
+  "image_identity": "928dc8c9068ce07fb533552af1e1f2ceac1794f92ceb00d7a96f1d1ba85dd5c2",
+  "kernel_sha256": "b2999d92505ce79238a202ff965066236f97664bec3ddc08e886237e0ddb63e9",
+  "programmed": {
+    "div": 1028,
+    "timing": 1049,
+    "ltiming": 280,
+    "hs": 0,
+    "io": 3,
+    "ext": 32769,
+    "delay": 10,
+    "timeout": 400
+  },
+  "actual": {
+    "div": 4,
+    "timing": 1049,
+    "ltiming": 280,
+    "hs": 32768,
+    "io": 3,
+    "ext": 32769,
+    "delay": 10,
+    "timeout": 400
+  },
+  "clocks": {
+    "stable": true,
+    "top": 16974338,
+    "infra0": 0,
+    "infra1": 0,
+    "infra4": 0,
+    "dedicated_mask": 1835008
+  },
+  "scope": "Actual XNU bus5 post-write readbacks. Peripheral record is earlier inherited entry, not post-write data.",
+  "observed_setup_only": true,
+  "observed_transactions": 0,
+  "observed_psc_identity": false,
+  "limitations": [
+    "Retained cache may be incomplete; raw trace alone records entry, while retained XNU logs show setup execution.",
+    "Readbacks do not establish PSC identity, charge-control ownership, CE-disable or an electrical safety fallback.",
+    "Neither bus0 measurements nor bus5 pre-XNU entry values substitute for these post-write fields."
+  ]
+}

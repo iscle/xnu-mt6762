@@ -1,10 +1,11 @@
 /* SPDX-License-Identifier: MIT
- * One-core XNU diagnostic entry. Optional native grants require live admission;
+ * XNU diagnostic entry. Optional native grants require live admission;
  * this loader writes no peripheral registers. Runtime FDT gates all RAM use.
  */
 #include <stdint.h>
 #include <stddef.h>
 #include "fdt_handoff.h"
+#include "psci/psci_fdt.h"
 #include "payload_layout.h"
 #include "loader_trace.h"
 #include "diagnostic_console.h"
@@ -126,6 +127,16 @@ const struct entry_result *loader_main(uint64_t fdt_address, uint64_t original_e
     int error = mtk_fdt_parse((void *)(uintptr_t)fdt_address, 0x80000, &fdt);
     if (error) stop(mtk_fdt_error_string(error), TRACE_FDT_ERROR - error);
     if (!fdt.board_compatible) stop("unsupported root compatible", TRACE_BAD_COMPATIBLE);
+#if PAYLOAD_CPUS > 1
+    struct mtk_psci_topology topology;
+    if(mtk_psci_fdt_topology((void *)(uintptr_t)fdt_address,0x80000,
+        physical_trace.mpidr,PAYLOAD_CPUS,&topology) || topology.count!=PAYLOAD_CPUS)
+        stop("PSCI CPU topology",16);
+    for(unsigned i=0;i<PAYLOAD_CPUS;i++)
+        if(topology.mpidr[i]!=(i/4)*0x100+i%4)stop("PSCI CPU mapping",16);
+    text("Live PSCI/SMC topology admitted; requested cores=");hex(PAYLOAD_CPUS);
+    text(". Kernel must verify firmware and secondary startup.\r\n");
+#endif
     loader_trace_commit(TRACE_FDT, 0);
     uint64_t framebuffer = validated_console();
     console.pixels = (void *)(uintptr_t)framebuffer;
@@ -147,7 +158,7 @@ const struct entry_result *loader_main(uint64_t fdt_address, uint64_t original_e
     if(!mt6762_touch_entry_ok(peripheral_read,NULL))
         stop("inherited touch bus",9);
 #endif
-#if PAYLOAD_NATIVE_CHARGER_SETUP_PROBE
+#if PAYLOAD_NATIVE_CHARGER_SETUP_PROBE || PAYLOAD_NATIVE_CHARGER_READONLY_PROBE
     struct mt6762_charger_entry_failure charger_failure;
     if(!mt6762_charger_entry_detail(peripheral_read,NULL,&charger_failure)) {
         text("I2C5 entry mismatch address=");hex(charger_failure.address);
@@ -238,6 +249,10 @@ const struct entry_result *loader_main(uint64_t fdt_address, uint64_t original_e
     for(unsigned n=0;n<sizeof(payload_charger_setup_flags)/sizeof(payload_charger_setup_flags[0]);n++)
         memcpy(adt+payload_charger_setup_flags[n],&granted,sizeof(granted));
 #endif
+#if PAYLOAD_NATIVE_CHARGER_READONLY_PROBE
+    for(unsigned n=0;n<sizeof(payload_charger_readonly_flags)/sizeof(payload_charger_readonly_flags[0]);n++)
+        memcpy(adt+payload_charger_readonly_flags[n],&granted,sizeof(granted));
+#endif
 #if PAYLOAD_REFRESH_WATCHDOG
     memcpy(adt+PAYLOAD_ADT_WATCHDOG_PATCH,&granted,sizeof(granted));
 #endif
@@ -280,6 +295,9 @@ const struct entry_result *loader_main(uint64_t fdt_address, uint64_t original_e
 #endif
 #if PAYLOAD_NATIVE_CHARGER_SETUP_PROBE
     text("Inherited I2C5 setup-only probe admitted; PSC/bias transactions disabled.\r\n");
+#endif
+#if PAYLOAD_NATIVE_CHARGER_READONLY_PROBE
+    text("Inherited I2C5 probe admitted; six PSC reads require native setup acceptance.\r\n");
 #endif
 #if PAYLOAD_REFRESH_WATCHDOG
     text("Inherited watchdog refresh requested; configuration preserved.\r\n");
