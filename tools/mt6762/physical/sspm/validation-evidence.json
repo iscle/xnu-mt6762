@@ -1,0 +1,698 @@
+{
+  "schema": "mt6762-sspm-guard-offline-validation-v1",
+  "prototype_origin": "old xnu checkpoint 2d16066b",
+  "production_integrated": false,
+  "hardware_operations": false,
+  "kernel_or_kernel_header_changes": false,
+  "test_groups_passed": 15,
+  "source_sha256": {
+    "tools/mt6762/physical/sspm/audit.py": "3ea1269ed931a9e9c7d36b3334c79614522822fb8e0647da98db159b61003b30",
+    "tools/mt6762/physical/sspm/decode.py": "71173d5bc6479be79398212cc57c61b37f9a60b7d518276a4dc1cb66bc436125",
+    "tools/mt6762/physical/sspm/probe_fixture.py": "4aff4903c8161123350d3cd50d96e4aebc93bdc4543174711f7d4fd01738b45f",
+    "tools/mt6762/physical/sspm/test_probe.py": "4d05242ff2854c0faa16f304e59c96ea6f2d9b85d4c1f7a27364d5f4dcf7e363",
+    "tools/mt6762/physical/sspm/fixture.S": "d7c3a7be00867176829dc9e2c878f5d5f29b16b52ca9e1c4e432ab769f4cde46",
+    "tools/mt6762/physical/sspm/guard.S": "4e883b0f51229ec8aaf34dcbe07426729b4d9c22caed3cbe92c9867301e345cd",
+    "tools/mt6762/physical/sspm/probe.c": "6f56ed48b093b2f8a2844b78ab02eb6eb609625f866a010456841aa0976013a9",
+    "tools/mt6762/physical/sspm/probe.h": "5f1cdfcec9ea5d4ed5ea5f2516ce27848cca365947d717ad0f1a527c6189a8f2",
+    "tools/mt6762/physical/sspm/fixture.ld": "75085136d14fc699f621e5808c257c2c3b4e6fa8834958e1756bec996e3fda50",
+    "tools/mt6762/physical/sspm/README.rst": "01480485ac3ea52057263ae3448759e9f7411a72fbb35c870532447c3db1fe63",
+    "tools/mt6762/physical/start.S": "f5b32067eaaa3a573d4f0f37074dc4e1832ccde2d3cde21a579e666e857efe62",
+    "tools/mt6762/physical/loader.c": "447882fa13ecc5d5be3aeab254d0eec5786357e2b7c9b6da2a8d9397534fa448",
+    "tools/mt6762/physical/loader.ld": "29b766e72d4fa3d9bceae160187c6a38dd58e39efed956b2faefdfdb2640baf6",
+    "tools/mt6762/physical/SSPM-GUARDED-PROBE-DESIGN.rst": "45746f5d151374dd847e1987382c7275bf35d71b7d9e5848b6fa05f27e454d9a",
+    "tools/mt6762/physical/sspm-guarded-probe-design-evidence.json": "f45e8f71d4392a3519dce3f526a570b02ae2b101fa1d84e7c0a5e332f6e68195"
+  },
+  "dependencies": {
+    "unicorn": "2.1.4",
+    "capstone": "5.0.7",
+    "pyelftools": "0.33"
+  },
+  "compiler": "Android (16134705, +pgo, +bolt, +lto, +mlgo, based on r574158c) clang version 21.0.0 (https://android.googlesource.com/toolchain/llvm-project 9f872551d3c681d06fd303b36f16ed5c274735eb)\nTarget: x86_64-unknown-linux-gnu\nThread model: posix\nInstalledDir: /home/iscle/Android/Sdk/ndk/30.0.16248370/toolchains/llvm/prebuilt/linux-x86_64/bin",
+  "compile_link_command": [
+    "/home/iscle/mt6762-ios-port/toolchain/bin/clang",
+    "--target=aarch64-none-elf",
+    "-mcpu=cortex-a53",
+    "-mgeneral-regs-only",
+    "-mstrict-align",
+    "-ffixed-x28",
+    "-ffreestanding",
+    "-fno-builtin",
+    "-fno-stack-protector",
+    "-fno-pic",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-nostdlib",
+    "-fuse-ld=lld",
+    "-Wl,--build-id=none",
+    "-Wl,-T,/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/tools/mt6762/physical/sspm/fixture.ld",
+    "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/tools/mt6762/physical/start.S",
+    "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/tools/mt6762/physical/sspm/probe.c",
+    "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/tools/mt6762/physical/sspm/guard.S",
+    "/home/iscle/mt6762-ios-port/hakios/xnu-src/xnu-8796.121.2/tools/mt6762/physical/sspm/fixture.S",
+    "-o",
+    "$TEMP/probe.elf"
+  ],
+  "linked_fixture_sha256": "76647a6b9e015308547c90be6d112fd2f6d114499867488d620e8983b359cf28",
+  "fixture_symbols": {
+    "image_start": "0x40080000",
+    "image_end": "0x40097b20",
+    "fixture_record": "0x40085400",
+    "fixture_identity": "0x40087a90",
+    "physical_vectors": "0x40080800",
+    "sspm_probe_vectors": "0x40087000",
+    "sspm_guard_read": "0x40086800",
+    "sspm_guard_load": "0x400869c8",
+    "sspm_guard_after_load": "0x400869cc",
+    "sspm_guard_failed": "0x400869e0",
+    "sspm_guard_sync": "0x40087800",
+    "sspm_guard_context": "0x40087ae0",
+    "__stack_start": "0x40087b20",
+    "__stack_end": "0x40097b20"
+  },
+  "fixture_identity_hex": "5353504d2d4f46464c494e452d464958545552452d4944454e544954592d3031",
+  "protected_addresses": [
+    "0x110c00",
+    "0x110c04",
+    "0x110c08",
+    "0x110c0c",
+    "0x110ea0",
+    "0x10450000",
+    "0x10450004",
+    "0x10450008",
+    "0x1045000c",
+    "0x10450010",
+    "0x10450014",
+    "0x10450018",
+    "0x10451004"
+  ],
+  "external_addresses": [
+    "0x10000040",
+    "0x10000090",
+    "0x100010c8",
+    "0x1000c23c",
+    "0x1000c240",
+    "0x1000c248",
+    "0x10006350",
+    "0x10006358",
+    "0x1001a010",
+    "0x1001a024",
+    "0x1001a050",
+    "0x1001a054",
+    "0x1001a058"
+  ],
+  "completed_fixture_reads": 104,
+  "completed_fixture_instructions": 9027,
+  "completed_fixture_max_stack_bytes": 416,
+  "abort_fixture_max_stack_bytes": 672,
+  "bug_fixed": "Reject destinations overlapping the future 256-byte exception frame, in addition to the 288-byte wrapper frame.",
+  "modeled": [
+    "EL1 exception entry",
+    "ERET",
+    "system registers",
+    "counter",
+    "barriers"
+  ],
+  "not_established": [
+    "physical bus completion or permission",
+    "RAZ versus genuine zero",
+    "SSPM firmware identity/liveness/preservation",
+    "mailbox/clock/PMIC ownership",
+    "interconnect hang, asynchronous SError or EL2/EL3 containment"
+  ],
+  "reports": {
+    "all_zero": {
+      "schema": "mt6762-guarded-sspm-read-v1",
+      "record_sha256": "fbcbe17415f21a721f8475d217c57522965c53e49cf89c1fadc55ef302517e18",
+      "identity": "5353504d2d4f46464c494e452d464958545552452d4944454e544954592d3031",
+      "state": "complete",
+      "classification": "completed_zero",
+      "reason": "none",
+      "completed_reads": 26,
+      "sequence": 60,
+      "current_index": 12,
+      "current_pass": 1,
+      "operation": 0,
+      "screen_count": 6,
+      "external_valid": 8191,
+      "bad_screen_word": 4294967295,
+      "began_ticks": 1000,
+      "ended_ticks": 2092,
+      "dispatch_budget_ticks": 130000,
+      "counter_hz": 13000000,
+      "fault": {
+        "esr": "0x0",
+        "far": "0x0",
+        "elr": "0x0",
+        "spsr": "0x0"
+      },
+      "fault_committed": false,
+      "latest_external": [
+        {
+          "address": "0x10000040",
+          "value": 131329
+        },
+        {
+          "address": "0x10000090",
+          "value": 16843265
+        },
+        {
+          "address": "0x100010c8",
+          "value": 0
+        },
+        {
+          "address": "0x1000c23c",
+          "value": 3565158785
+        },
+        {
+          "address": "0x1000c240",
+          "value": 2165637120
+        },
+        {
+          "address": "0x1000c248",
+          "value": 2147483649
+        },
+        {
+          "address": "0x10006350",
+          "value": 4294901760
+        },
+        {
+          "address": "0x10006358",
+          "value": 18
+        },
+        {
+          "address": "0x1001a010",
+          "value": 0
+        },
+        {
+          "address": "0x1001a024",
+          "value": 0
+        },
+        {
+          "address": "0x1001a050",
+          "value": 0
+        },
+        {
+          "address": "0x1001a054",
+          "value": 0
+        },
+        {
+          "address": "0x1001a058",
+          "value": 0
+        }
+      ],
+      "words": [
+        {
+          "address": "0x110c00",
+          "valid": 3,
+          "first": 0,
+          "second": 0,
+          "stable": true,
+          "began_ticks": [
+            1039,
+            1585
+          ],
+          "ended_ticks": [
+            1052,
+            1598
+          ]
+        },
+        {
+          "address": "0x110c04",
+          "valid": 3,
+          "first": 0,
+          "second": 0,
+          "stable": true,
+          "began_ticks": [
+            1078,
+            1624
+          ],
+          "ended_ticks": [
+            1091,
+            1637
+          ]
+        },
+        {
+          "address": "0x110c08",
+          "valid": 3,
+          "first": 0,
+          "second": 0,
+          "stable": true,
+          "began_ticks": [
+            1117,
+            1663
+          ],
+          "ended_ticks": [
+            1130,
+            1676
+          ]
+        },
+        {
+          "address": "0x110c0c",
+          "valid": 3,
+          "first": 0,
+          "second": 0,
+          "stable": true,
+          "began_ticks": [
+            1156,
+            1702
+          ],
+          "ended_ticks": [
+            1169,
+            1715
+          ]
+        },
+        {
+          "address": "0x110ea0",
+          "valid": 3,
+          "first": 0,
+          "second": 0,
+          "stable": true,
+          "began_ticks": [
+            1195,
+            1741
+          ],
+          "ended_ticks": [
+            1208,
+            1754
+          ]
+        },
+        {
+          "address": "0x10450000",
+          "valid": 3,
+          "first": 0,
+          "second": 0,
+          "stable": true,
+          "began_ticks": [
+            1247,
+            1793
+          ],
+          "ended_ticks": [
+            1260,
+            1806
+          ]
+        },
+        {
+          "address": "0x10450004",
+          "valid": 3,
+          "first": 0,
+          "second": 0,
+          "stable": true,
+          "began_ticks": [
+            1286,
+            1832
+          ],
+          "ended_ticks": [
+            1299,
+            1845
+          ]
+        },
+        {
+          "address": "0x10450008",
+          "valid": 3,
+          "first": 0,
+          "second": 0,
+          "stable": true,
+          "began_ticks": [
+            1325,
+            1871
+          ],
+          "ended_ticks": [
+            1338,
+            1884
+          ]
+        },
+        {
+          "address": "0x1045000c",
+          "valid": 3,
+          "first": 0,
+          "second": 0,
+          "stable": true,
+          "began_ticks": [
+            1364,
+            1910
+          ],
+          "ended_ticks": [
+            1377,
+            1923
+          ]
+        },
+        {
+          "address": "0x10450010",
+          "valid": 3,
+          "first": 0,
+          "second": 0,
+          "stable": true,
+          "began_ticks": [
+            1403,
+            1949
+          ],
+          "ended_ticks": [
+            1416,
+            1962
+          ]
+        },
+        {
+          "address": "0x10450014",
+          "valid": 3,
+          "first": 0,
+          "second": 0,
+          "stable": true,
+          "began_ticks": [
+            1442,
+            1988
+          ],
+          "ended_ticks": [
+            1455,
+            2001
+          ]
+        },
+        {
+          "address": "0x10450018",
+          "valid": 3,
+          "first": 0,
+          "second": 0,
+          "stable": true,
+          "began_ticks": [
+            1481,
+            2027
+          ],
+          "ended_ticks": [
+            1494,
+            2040
+          ]
+        },
+        {
+          "address": "0x10451004",
+          "valid": 3,
+          "first": 0,
+          "second": 0,
+          "stable": true,
+          "began_ticks": [
+            1533,
+            2079
+          ],
+          "ended_ticks": [
+            1546,
+            2092
+          ]
+        }
+      ],
+      "sspm_ownership_granted": false,
+      "dvfs_granted": false,
+      "limitations": [
+        "Zero cannot distinguish real contents from read-as-zero.",
+        "Completion proves only the recorded accesses at that instant, not firmware identity or ownership.",
+        "Stalled bus/barrier, delayed SError and EL2/EL3 faults are not contained.",
+        "Identity/inverse checks are not an authenticated record or whole-record checksum."
+      ]
+    },
+    "abort_at_out_irq": {
+      "schema": "mt6762-guarded-sspm-read-v1",
+      "record_sha256": "1f260abb88823e71753e7f312dcddd8fc6be1e56dc7f26a3e8c61d457581fefe",
+      "identity": "5353504d2d4f46464c494e452d464958545552452d4944454e544954592d3031",
+      "state": "synchronous_abort",
+      "classification": "synchronous_abort",
+      "reason": "none",
+      "completed_reads": 12,
+      "sequence": 30,
+      "current_index": 12,
+      "current_pass": 0,
+      "operation": 2,
+      "screen_count": 3,
+      "external_valid": 8191,
+      "bad_screen_word": 4294967295,
+      "began_ticks": 1000,
+      "ended_ticks": 1546,
+      "dispatch_budget_ticks": 130000,
+      "counter_hz": 13000000,
+      "fault": {
+        "esr": "0x96000010",
+        "far": "0x10451004",
+        "elr": "0x400869c8",
+        "spsr": "0x800003c5"
+      },
+      "fault_committed": true,
+      "latest_external": [
+        {
+          "address": "0x10000040",
+          "value": 131329
+        },
+        {
+          "address": "0x10000090",
+          "value": 16843265
+        },
+        {
+          "address": "0x100010c8",
+          "value": 0
+        },
+        {
+          "address": "0x1000c23c",
+          "value": 3565158785
+        },
+        {
+          "address": "0x1000c240",
+          "value": 2165637120
+        },
+        {
+          "address": "0x1000c248",
+          "value": 2147483649
+        },
+        {
+          "address": "0x10006350",
+          "value": 4294901760
+        },
+        {
+          "address": "0x10006358",
+          "value": 18
+        },
+        {
+          "address": "0x1001a010",
+          "value": 0
+        },
+        {
+          "address": "0x1001a024",
+          "value": 0
+        },
+        {
+          "address": "0x1001a050",
+          "value": 0
+        },
+        {
+          "address": "0x1001a054",
+          "value": 0
+        },
+        {
+          "address": "0x1001a058",
+          "value": 0
+        }
+      ],
+      "words": [
+        {
+          "address": "0x110c00",
+          "valid": 1,
+          "first": 0,
+          "second": null,
+          "stable": null,
+          "began_ticks": [
+            1039,
+            0
+          ],
+          "ended_ticks": [
+            1052,
+            0
+          ]
+        },
+        {
+          "address": "0x110c04",
+          "valid": 1,
+          "first": 0,
+          "second": null,
+          "stable": null,
+          "began_ticks": [
+            1078,
+            0
+          ],
+          "ended_ticks": [
+            1091,
+            0
+          ]
+        },
+        {
+          "address": "0x110c08",
+          "valid": 1,
+          "first": 0,
+          "second": null,
+          "stable": null,
+          "began_ticks": [
+            1117,
+            0
+          ],
+          "ended_ticks": [
+            1130,
+            0
+          ]
+        },
+        {
+          "address": "0x110c0c",
+          "valid": 1,
+          "first": 0,
+          "second": null,
+          "stable": null,
+          "began_ticks": [
+            1156,
+            0
+          ],
+          "ended_ticks": [
+            1169,
+            0
+          ]
+        },
+        {
+          "address": "0x110ea0",
+          "valid": 1,
+          "first": 0,
+          "second": null,
+          "stable": null,
+          "began_ticks": [
+            1195,
+            0
+          ],
+          "ended_ticks": [
+            1208,
+            0
+          ]
+        },
+        {
+          "address": "0x10450000",
+          "valid": 1,
+          "first": 0,
+          "second": null,
+          "stable": null,
+          "began_ticks": [
+            1247,
+            0
+          ],
+          "ended_ticks": [
+            1260,
+            0
+          ]
+        },
+        {
+          "address": "0x10450004",
+          "valid": 1,
+          "first": 0,
+          "second": null,
+          "stable": null,
+          "began_ticks": [
+            1286,
+            0
+          ],
+          "ended_ticks": [
+            1299,
+            0
+          ]
+        },
+        {
+          "address": "0x10450008",
+          "valid": 1,
+          "first": 0,
+          "second": null,
+          "stable": null,
+          "began_ticks": [
+            1325,
+            0
+          ],
+          "ended_ticks": [
+            1338,
+            0
+          ]
+        },
+        {
+          "address": "0x1045000c",
+          "valid": 1,
+          "first": 0,
+          "second": null,
+          "stable": null,
+          "began_ticks": [
+            1364,
+            0
+          ],
+          "ended_ticks": [
+            1377,
+            0
+          ]
+        },
+        {
+          "address": "0x10450010",
+          "valid": 1,
+          "first": 0,
+          "second": null,
+          "stable": null,
+          "began_ticks": [
+            1403,
+            0
+          ],
+          "ended_ticks": [
+            1416,
+            0
+          ]
+        },
+        {
+          "address": "0x10450014",
+          "valid": 1,
+          "first": 0,
+          "second": null,
+          "stable": null,
+          "began_ticks": [
+            1442,
+            0
+          ],
+          "ended_ticks": [
+            1455,
+            0
+          ]
+        },
+        {
+          "address": "0x10450018",
+          "valid": 1,
+          "first": 0,
+          "second": null,
+          "stable": null,
+          "began_ticks": [
+            1481,
+            0
+          ],
+          "ended_ticks": [
+            1494,
+            0
+          ]
+        },
+        {
+          "address": "0x10451004",
+          "valid": 0,
+          "first": null,
+          "second": null,
+          "stable": null,
+          "began_ticks": [
+            1533,
+            0
+          ],
+          "ended_ticks": [
+            1546,
+            0
+          ]
+        }
+      ],
+      "sspm_ownership_granted": false,
+      "dvfs_granted": false,
+      "limitations": [
+        "Zero cannot distinguish real contents from read-as-zero.",
+        "Completion proves only the recorded accesses at that instant, not firmware identity or ownership.",
+        "Stalled bus/barrier, delayed SError and EL2/EL3 faults are not contained.",
+        "Identity/inverse checks are not an authenticated record or whole-record checksum."
+      ]
+    }
+  }
+}

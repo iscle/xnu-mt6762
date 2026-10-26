@@ -1,0 +1,92 @@
+{
+  "schema": "mt6762-sspm-guarded-probe-design-v1",
+  "implemented": false,
+  "hardware_operations": false,
+  "kernel_header_or_code_changes": false,
+  "source_snapshot_sha256": {
+    "tools/mt6762/physical/start.S": "f5b32067eaaa3a573d4f0f37074dc4e1832ccde2d3cde21a579e666e857efe62",
+    "tools/mt6762/physical/loader.c": "447882fa13ecc5d5be3aeab254d0eec5786357e2b7c9b6da2a8d9397534fa448",
+    "tools/mt6762/physical/loader.ld": "29b766e72d4fa3d9bceae160187c6a38dd58e39efed956b2faefdfdb2640baf6",
+    "tools/mt6762/physical/loader_trace.h": "ff61f8ae3a9a488b2f1397827ed08cc20971bef3a0af9e58fd8e5154b553aee1",
+    "osfmk/arm64/loose_ends.c": "7d5b08a08b42520eb7a3a8a94fc6d70ca93cd94197365f6b267f0af5034b8333",
+    "osfmk/arm64/machine_routines.c": "afec49c27cfd0c74fd42183d937329f6fff35357b1f83692cff9690227d4e9a0",
+    "osfmk/arm64/machine_routines_asm.s": "f2d3f19c0a7d1c22e4bfec685bb6f8b8a2e39272291571ffe71fca0d96c56a29",
+    "osfmk/arm64/sleh.c": "710c576eeeb6d735c5f5bb3df8ad84efe3a390c87e1c1bda06476cc770167de9",
+    "osfmk/arm64/proc_reg.h": "03c17f12ce335a3a1ff9490953fb6b74dc2c518a6bdc8d8af130524856141c2a",
+    "bsd/dev/mt6762_sspm.c": "acccb3aea254dc0082e3ccfe31d82f4a99091047ab07de526be81d88b2f2607b",
+    "tools/mt6762/hardware/cpu-power/evidence/sspm-observer-evidence.json": "c6d672069906c6d5c40811b57b8ba8f62436e15d18191465325439131c10294b",
+    "tools/mt6762/hardware/cpu-power/evidence/stock-sspm-layout.json": "683ef851713efe92e46b93778a7c2e37c22e37b2d1fbc6f90d8c82948ca334c1",
+    "tools/mt6762/physical/sspm-capture33-evidence.json": "07f509a8fba3dfc0ce4f51f0a6cbe3225a92fcd1e8533025b384a91dfced5bbb",
+    "tools/mt6762/physical/SSPM-GUARDED-PROBE-DESIGN.rst": "45746f5d151374dd847e1987382c7275bf35d71b7d9e5848b6fa05f27e454d9a"
+  },
+  "proposed_protected_reads": {
+    "addresses": [
+      "0x110c00",
+      "0x110c04",
+      "0x110c08",
+      "0x110c0c",
+      "0x110ea0",
+      "0x10450000",
+      "0x10450004",
+      "0x10450008",
+      "0x1045000c",
+      "0x10450010",
+      "0x10450014",
+      "0x10450018",
+      "0x10451004"
+    ],
+    "width": 4,
+    "passes": 2,
+    "maximum_loads": 26,
+    "on_first_abort": "stop all further protected reads, no retry",
+    "excludes_in_irq": true
+  },
+  "recoverable_syndrome": {
+    "current_el": 1,
+    "mode": "EL1h",
+    "vector": "current EL SPx synchronous only",
+    "ec": "0x25",
+    "il": 1,
+    "dfsc": "0x10",
+    "wnr": 0,
+    "cm": 0,
+    "s1ptw": 0,
+    "fnv": 0,
+    "elr": "exact dedicated load PC",
+    "far": "exact whitelisted load address",
+    "nested": false
+  },
+  "classification": [
+    "completed_nonzero",
+    "completed_zero",
+    "synchronous_abort",
+    "incomplete"
+  ],
+  "proven_by_success": "Only that exact access completed in that execution state.",
+  "not_distinguishable": [
+    "genuine zero data versus read-as-zero",
+    "permissions versus other causes of an external bus abort"
+  ],
+  "not_contained": [
+    "non-returning load or barrier",
+    "asynchronous or deferred SError",
+    "EL2/EL3-routed faults",
+    "platform error state requiring independent recovery"
+  ],
+  "recommended_scope": "separate explicit loader-only diagnostic, no XNU entry, no SSPM/DVFS grant",
+  "required_tests": "Actual assembly execution with modeled EL1 exception entry/ERET plus all26 fault positions, negative syndrome/context checks, address whitelist and no-target-write audit.",
+  "references": [
+    {
+      "title": "Arm ESR_EL1",
+      "url": "https://support.arm.com/documentation/111107/2026-09/AArch64-Registers/ESR-EL1--Exception-Syndrome-Register--EL1-"
+    },
+    {
+      "title": "Arm memory attributes guide, section3.2",
+      "url": "https://documentation-service.arm.com/static/63a43e333f28e5456434e18b%3Ftoken%3D"
+    },
+    {
+      "title": "Arm Cortex-A53 TRM DDI0500J, section5.4",
+      "url": "https://documentation-service.arm.com/static/6040c321ee937942ba301626"
+    }
+  ]
+}
